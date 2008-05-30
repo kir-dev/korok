@@ -1,0 +1,34 @@
+<!-- 
+    Document   : ErtekelesReszletek
+    Created on : May 26, 2008, 7:03:16 PM
+    Author     : hege
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <wicket:extend xmlns:wicket="http://wicket.apache.org">
+            <a href="#" wicket:id="backlink">vissza</a><br/><br/>
+            
+            Csoport: <span wicket:id="csoport.nev">csoport</span><br/>
+            Feladó: <span wicket:id="felado">felado</span><br/>
+            Szemeszter: <span wicket:id="szemeszter">szemeszter</span><br/>
+            <a wicket:id="belepokerelmeklink">Belépőkérelmek</a> státusza: <span wicket:id="belepoStatusz">bs</span><br/>
+            <a wicket:id="pontkerelmeklink">Pontkérelmek</a> státusza: <span wicket:id="pontStatusz">ps</span><br/>
+            Kiosztott pontok átlaga: <span wicket:id="stat.atlagPont">0.0</span><br/>
+            Kiosztott belépők: KDO - <span wicket:id="stat.kiosztottKDO"/>, KB - <span wicket:id="stat.kiosztottKB"/>, ÁB - <span wicket:id="stat.kiosztottAB"/><br/>
+            <br/>
+            Szöveges értékelés: <br/>
+            <div wicket:id="szovegesErtekeles">ert</div><br/>
+            
+            <br/><br/>
+            Utolsó módosítás: <span wicket:id="utolsoModositas"></span><br/>
+            Utolsó elbírálás: <span wicket:id="utolsoElbiralas"></span><br/>
+        </wicket:extend>
+    </body>
+</html>
+
+
