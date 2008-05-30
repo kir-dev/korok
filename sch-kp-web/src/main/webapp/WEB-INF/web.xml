@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <!--filter>
+        <filter-name>Agent</filter-name>
+        <filter-class> com.sun.identity.agents.filter.AmAgentFilter </filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>Agent</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping-->
+    
+    <servlet>
+        <servlet-name>Wicket</servlet-name>
+        <servlet-class>org.apache.wicket.protocol.http.WicketServlet</servlet-class>
+        <init-param>
+            <param-name>applicationClassName</param-name>
+            <param-value>hu.sch.kp.web.SchKpApplication</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>Wicket</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CommonTestServlet</servlet-name>
+        <servlet-class>hu.uml13.servlets.CommonTestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CommonTestServlet</servlet-name>
+        <url-pattern>/CommonTestServlet</url-pattern>
+    </servlet-mapping>
+    
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+        
+</web-app>
