@@ -7,6 +7,17 @@
     <version>1.0-SNAPSHOT</version>
     <name>Közösségi pontozás project</name>
     <url>http://maven.apache.org</url>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <enableRulesSummary>false</enableRulesSummary>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <repositories>
         <!-- for oswego-concurrent 1.3.4 jboss package -->
         <repository>
@@ -35,3 +46,4 @@
     <module>sch-kp-ear</module>
   </modules>
 </project>
+
