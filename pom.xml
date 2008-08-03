@@ -5,7 +5,7 @@
     <artifactId>sch-kp</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>Közösségi pontozás project</name>
+    <name>SCH KP Application</name>
     <url>http://maven.apache.org</url>
     <build>
         <plugins>
