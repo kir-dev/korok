@@ -43,10 +43,10 @@ under the License.
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocMethod"/>
-        <module name="JavadocType"/>
+        <!--module name="JavadocMethod"/-->
+        <!--module name="JavadocType"/-->
         <!--module name="JavadocVariable"/-->
-        <module name="JavadocStyle"/>
+        <!--module name="JavadocStyle"/-->
 
 
         <!-- Checks for Naming Conventions.                  -->
@@ -150,7 +150,7 @@ under the License.
 
         <!-- Checks for class design                         -->
         <!-- See http://checkstyle.sf.net/config_design.html -->
-        <module name="DesignForExtension"/>
+        <!--module name="DesignForExtension"/-->
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
@@ -160,7 +160,7 @@ under the License.
         <!-- Miscellaneous other checks.                   -->
         <!-- See http://checkstyle.sf.net/config_misc.html -->
         <module name="ArrayTypeStyle"/>
-        <module name="FinalParameters"/>
+        <!--module name="FinalParameters"/-->
         <!--module name="GenericIllegalRegexp">
             <property name="format" value="\s+$"/>
             <property name="message" value="Line has trailing spaces."/>
