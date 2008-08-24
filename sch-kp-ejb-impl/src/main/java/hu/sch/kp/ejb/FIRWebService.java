@@ -21,10 +21,12 @@ import javax.jws.WebService;
 @WebService
 @Stateless
 public class FIRWebService implements FIRWebServiceInterface {
-    @EJB(name="ErtekelesManagerBean")
-    ErtekelesManagerLocal ertekelesManager;
-    
-    public List<ElfogadottBelepo> getElfogadottBelepokForSzemeszter(String szemeszter) {
+    @EJB(name = "ErtekelesManagerBean")
+    private ErtekelesManagerLocal ertekelesManager;
+
+    public List<ElfogadottBelepo> getElfogadottBelepokForSzemeszter(
+            final String szemeszter) {
+
         Szemeszter sz = new Szemeszter();
         sz.setId(szemeszter);
         return ertekelesManager.findElfogadottBelepoIgenyekForSzemeszter(sz);
