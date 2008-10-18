@@ -28,15 +28,6 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>CommonTestServlet</servlet-name>
-        <servlet-class>hu.uml13.servlets.CommonTestServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>CommonTestServlet</servlet-name>
-        <url-pattern>/CommonTestServlet</url-pattern>
-    </servlet-mapping>
-    
     <session-config>
         <session-timeout>
             30
