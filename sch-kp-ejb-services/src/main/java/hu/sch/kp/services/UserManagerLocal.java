@@ -39,4 +39,8 @@ public interface UserManagerLocal {
     void deleteMembership(Felhasznalo user, Csoport group);
     
     List<Felhasznalo> getCsoporttagok(Long csoportId);
+    
+    List<BelepoIgeny> getBelepoIgenyekForUser(Felhasznalo felhasznalo);
+    
+    List<PontIgeny> getPontIgenyekForUser(Felhasznalo felhasznalo);
 }

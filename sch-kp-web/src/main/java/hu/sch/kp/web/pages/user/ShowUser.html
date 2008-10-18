@@ -1,20 +1,35 @@
 <html>
     <body>
         <wicket:extend>
-            <table id="profile">
+            <h2><span wicket:id="nev">Név</span> felhasználó közösségi adatlapja</h2>
+            <h3>Pontigények</h3>
+            <table id="pontigenyek">
                 <tr>
-                    <td><wicket:message key="user.name"/></td>
-                    <td><span wicket:id="name">[user name]</span></td>
+                    <th>Szemeszter</th>
+                    <th>Kör</th>
+                    <th>Igényelt pontszám</th>
                 </tr>
+                <tr wicket:id="pontigeny">
+                    <td><span wicket:id="ertekeles.szemeszter" /></td>
+                    <td><span wicket:id="ertekeles.csoport.nev" /></td>
+                    <td><span wicket:id="pont" /></td>
+                </tr>
+            </table>
+            <h3>Belépőigények</h3>
+            <table id="belepoigenyek">
                 <tr>
-                    <td><wicket:message key="user.loginname"/></td>
-                    <td><span wicket:id="loginName">[user login name]</span></td>
+                    <th>Szemeszter</th>
+                    <th>Kör</th>
+                    <th>Igényelt belépő</th>
+                    <th>Szöveges indoklás</th>
                 </tr>
-                <tr>
-                    <td><wicket:message key="user.emailAddress"/></td>
-                    <td><span wicket:id="emailAddress">[user email address]</span></td>
+                <tr wicket:id="belepoigeny">
+                    <td><span wicket:id="ertekeles.szemeszter" /></td>
+                    <td><span wicket:id="ertekeles.csoport.nev" /></td>
+                    <td><span wicket:id="belepotipus" /></td>
+                    <td><span wicket:id="szovegesErtekeles" /></td>
                 </tr>
-            </table>            
+            </table>
         </wicket:extend>
     </body>
 </html>

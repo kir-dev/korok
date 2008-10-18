@@ -138,4 +138,22 @@ public class UserManagerBean implements UserManagerLocal {
         
         return q.getResultList();
     }
+
+    public List<BelepoIgeny> getBelepoIgenyekForUser(Felhasznalo felhasznalo) {
+        Query q = em.createQuery("SELECT b FROM BelepoIgeny b " +
+                "WHERE b.felhasznalo=:felhasznalo " +
+                "ORDER BY b.ertekeles.szemeszter ASC, b.belepotipus ASC");
+        q.setParameter("felhasznalo", felhasznalo);
+        
+        return q.getResultList();
+    }
+
+    public List<PontIgeny> getPontIgenyekForUser(Felhasznalo felhasznalo) {
+           Query q = em.createQuery("SELECT p FROM PontIgeny p " +
+                "WHERE p.felhasznalo=:felhasznalo " +
+                "ORDER BY p.ertekeles.szemeszter ASC, p.pont DESC");
+        q.setParameter("felhasznalo", felhasznalo);
+        
+        return q.getResultList();
+    }
 }

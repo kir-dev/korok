@@ -27,8 +27,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -151,6 +154,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         }
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void ErtekeleseketElbiral(Collection<ElbiraltErtekeles> elbiralas, Felhasznalo felhasznalo) {
         for (ElbiraltErtekeles ee : elbiralas) {
             PontIgenyElbiral(ee.getErtekeles(), felhasznalo, ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA));
