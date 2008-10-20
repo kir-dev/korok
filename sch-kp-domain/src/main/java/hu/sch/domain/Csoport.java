@@ -23,7 +23,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -141,7 +140,7 @@ public class Csoport implements Serializable {
         this.statusz = statusz;
     }
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, fetch=FetchType.LAZY)
     @JoinColumn(name = "grp_parent")
     public Csoport getSzulo() {
         return szulo;

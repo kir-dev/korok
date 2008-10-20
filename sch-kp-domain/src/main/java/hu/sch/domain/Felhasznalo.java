@@ -28,10 +28,10 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "users")
 public class Felhasznalo implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    public static final String findAll="findAllUser";
-    public static final String findByLoginName="findUserByLoginName";
-    
+    public static final String findAll = "findAllUser";
+    public static final String findByLoginName = "findUserByLoginName";
     /**
      * Felhasználó azonosítója
      */
@@ -57,7 +57,6 @@ public class Felhasznalo implements Serializable {
      * Csoporttagságok - tagsági idővel kiegészítve
      */
     private List<Csoporttagsag> csoporttagsagok;
-    
     /**
      * Tranziens csoporttagsagok
      */
@@ -72,13 +71,14 @@ public class Felhasznalo implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+    "users_usr_id_seq")
     @Column(name = "usr_id")
     public Long getId() {
         return id;
     }
 
-    @Column(name = "usr_nickname", nullable = true, columnDefinition="text")
+    @Column(name = "usr_nickname", nullable = true, columnDefinition = "text")
     public String getBecenev() {
         return becenev;
     }
@@ -87,7 +87,7 @@ public class Felhasznalo implements Serializable {
         this.becenev = becenev;
     }
 
-    @Column(name="usr_firstname", nullable=false, columnDefinition="text")
+    @Column(name = "usr_firstname", nullable = false, columnDefinition = "text")
     public String getKeresztnev() {
         return keresztnev;
     }
@@ -96,7 +96,7 @@ public class Felhasznalo implements Serializable {
         this.keresztnev = keresztnev;
     }
 
-    @Column(name="usr_lastname", nullable=false, columnDefinition="text")
+    @Column(name = "usr_lastname", nullable = false, columnDefinition = "text")
     public String getVezeteknev() {
         return vezeteknev;
     }
@@ -105,7 +105,8 @@ public class Felhasznalo implements Serializable {
         this.vezeteknev = vezeteknev;
     }
 
-    @Column(name="usr_neptun", columnDefinition="char(6)", length=6, nullable=true, updatable=false)
+    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6, nullable =
+    true, updatable = false)
     public String getNeptunkod() {
         return neptunkod;
     }
@@ -114,8 +115,8 @@ public class Felhasznalo implements Serializable {
         this.neptunkod = neptunkod;
     }
 
-    
-    @Column(name = "usr_email", length = 64, nullable = false, columnDefinition="varchar(64)")
+    @Column(name = "usr_email", length = 64, nullable = false, columnDefinition =
+    "varchar(64)")
     public String getEmailcim() {
         return emailcim;
     }
@@ -131,7 +132,7 @@ public class Felhasznalo implements Serializable {
         }
         return csoportok;
     }
-    
+
     private void loadCsoportok() {
         csoportok = new ArrayList<Csoport>();
         for (Csoporttagsag m : csoporttagsagok) {
@@ -139,7 +140,7 @@ public class Felhasznalo implements Serializable {
         }
     }
 
-    @OneToMany(mappedBy="felhasznalo", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "felhasznalo", fetch = FetchType.EAGER)
     public List<Csoporttagsag> getCsoporttagsagok() {
         return csoporttagsagok;
     }
@@ -147,19 +148,18 @@ public class Felhasznalo implements Serializable {
     public void setCsoporttagsagok(List<Csoporttagsag> csoporttagsagok) {
         this.csoporttagsagok = csoporttagsagok;
     }
-    
-    
+
     @Transient
     public String getNev() {
-        return getVezeteknev()+" "+getKeresztnev();
+        return getVezeteknev() + " " + getKeresztnev();
     }
-    
+
     @Override
     public String toString() {
-        return "hu.uml13.domain.User "+
-                "id="+(getId()==null ? "NULL" : getId())+
-                ", nev="+getNev()+
-                ", becenev="+getBecenev()+
-                ", email="+getEmailcim();
+        return "hu.uml13.domain.User " +
+                "id=" + (getId() == null ? "NULL" : getId()) +
+                ", nev=" + getNev() +
+                ", becenev=" + getBecenev() +
+                ", email=" + getEmailcim();
     }
 }

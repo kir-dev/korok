@@ -8,6 +8,7 @@ import hu.sch.domain.*;
 import hu.sch.kp.services.exceptions.GroupAlreadyExistsException;
 import hu.sch.kp.services.exceptions.UserAlreadyExistsException;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.services.UserManagerRemote;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -21,7 +22,7 @@ import javax.persistence.Query;
  * @author hege
  */
 @Stateless
-public class UserManagerBean implements UserManagerLocal {
+public class UserManagerBean implements UserManagerLocal, UserManagerRemote {
 
     @PersistenceContext
     EntityManager em;
@@ -32,16 +33,15 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public Felhasznalo saveOrAddUser(Felhasznalo user) throws UserAlreadyExistsException {
-        Felhasznalo olduser = findUserByLoginName(user.getBecenev());
-        System.out.println("olduser: " + olduser + " newuser: " + user);
-        if (olduser != null && !olduser.getId().equals(user.getId())) { //ha volt már ilyen user, akkor nem mentjük el
-
-            throw new UserAlreadyExistsException("User már létezik ezzel a login névvel: " + user.getBecenev());
+        if (user.getId() != null) {
+            em.persist(user);
+            
+            return user;
+        } else {
+            user = em.merge(user);
+            
+            return user;
         }
-
-        user = em.merge(user);
-        em.flush();
-        return user;
     }
 
     public Felhasznalo findUserById(Long userId) {
