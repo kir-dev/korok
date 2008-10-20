@@ -21,7 +21,7 @@ import javax.persistence.Query;
  *
  * @author hege
  */
-@Stateless
+@Stateless(name="UserManager")
 public class UserManagerBean implements UserManagerLocal, UserManagerRemote {
 
     @PersistenceContext
