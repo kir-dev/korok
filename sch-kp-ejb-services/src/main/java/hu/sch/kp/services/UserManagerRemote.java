@@ -6,36 +6,69 @@ package hu.sch.kp.services;
 
 import hu.sch.domain.*;
 import hu.sch.kp.services.exceptions.GroupAlreadyExistsException;
-import hu.sch.kp.services.exceptions.UserAlreadyExistsException;
 import java.rmi.RemoteException;
-import java.util.Date;
-import java.util.List;
 import javax.ejb.Remote;
 
 /**
- * Felhasználó kezelés, távoli interfész
+ * Felhasználó kezelés, távoli interfész.
  * @author hege
  */
 @Remote
 public interface UserManagerRemote {
 
-    Felhasznalo saveOrAddUser(Felhasznalo user) throws 
-            UserAlreadyExistsException, RemoteException;
-
-    Felhasznalo findUserById(Long userId) throws RemoteException;
-
-    void addUserToGroup(Felhasznalo user, Csoport group, Date membership_start, Date membership_end)
+    /**
+     * Létrehoz egy új VIR usert az adatbázisban.
+     * 
+     * @param firstName
+     * @param lastName
+     * @param nickName
+     * @return VIR-ID
+     * @throws java.rmi.RemoteException
+     */
+    Long createUser(String firstName, String lastName, String nickName) 
+            throws RemoteException;
+    
+    /**
+     * Egy felhasználó nevét írja be adatbázisba.
+     * 
+     * @param userId
+     * @param firstName
+     * @param lastName
+     * @param nickName
+     * @throws java.rmi.RemoteException
+     */
+    void changeUser(Long userId, String firstName, String lastName, String nickName)
             throws RemoteException;
 
-    Csoport saveOrAddGroup(Csoport group) throws GroupAlreadyExistsException, 
+    /**
+     * Egy csoport aktív tagjává teszi a usert.
+     * 
+     * @param userId
+     * @param groupId
+     * @throws java.rmi.RemoteException
+     */
+    void createActiveMembership(Long userId, Long groupId)
+            throws RemoteException;
+    
+    /**
+     * Egy csoport öregtagjává teszi a usert.
+     * 
+     * @param userId
+     * @param groupId
+     * @throws java.rmi.RemoteException
+     */
+    void inactivateMembership(Long userId, Long groupId)
+            throws RemoteException;
+
+    /**
+     * Új csoportot hoz létre az adott névvel és szülő csoporttal.
+     * 
+     * @param groupName
+     * @param parentGroupId
+     * @return
+     * @throws hu.sch.kp.services.exceptions.GroupAlreadyExistsException
+     * @throws java.rmi.RemoteException
+     */
+    Long createGroup(String groupName, Long parentGroupId) throws GroupAlreadyExistsException, 
             RemoteException;
-
-    void modifyMembership(Felhasznalo user, Csoport group, Date start, Date end)
-            throws RemoteException;
-
-    void deleteMembership(Felhasznalo user, Csoport group)
-            throws RemoteException;
-
-    List<Felhasznalo> getCsoporttagok(Long csoportId)
-            throws RemoteException;
 }

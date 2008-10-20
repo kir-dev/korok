@@ -64,17 +64,19 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public void addUserToGroup(Felhasznalo felhasznalo, Csoport csoport, Date kezdet, Date veg) {
+        Felhasznalo f = em.find(Felhasznalo.class, felhasznalo.getId());
+        Csoport cs = em.find(Csoport.class, csoport.getId());
         Csoporttagsag m = new Csoporttagsag();
-        m.setFelhasznalo(felhasznalo);
-        m.setCsoport(csoport);
+        m.setFelhasznalo(f);
+        m.setCsoport(cs);
         m.setKezdet(kezdet);
         m.setVeg(veg);
-        felhasznalo.getCsoporttagsagok().add(m);
-        csoport.getCsoporttagsagok().add(m);
+        f.getCsoporttagsagok().add(m);
+        cs.getCsoporttagsagok().add(m);
 
         em.merge(m);
-        felhasznalo = em.merge(felhasznalo);
-        csoport = em.merge(csoport);
+        em.merge(f);
+        em.merge(cs);
         em.flush();
     }
 
