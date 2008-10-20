@@ -71,8 +71,7 @@ public class Felhasznalo implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
-    "users_usr_id_seq")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "usr_id")
     public Long getId() {
         return id;
