@@ -21,8 +21,8 @@ import javax.persistence.Query;
  *
  * @author hege
  */
-@Stateless(mappedName="UserManager")
-public class UserManagerBean implements UserManagerLocal, UserManagerRemote {
+@Stateless()
+public class UserManagerBean implements UserManagerLocal {
 
     @PersistenceContext
     EntityManager em;
@@ -35,28 +35,17 @@ public class UserManagerBean implements UserManagerLocal, UserManagerRemote {
     public Felhasznalo saveOrAddUser(Felhasznalo user) throws UserAlreadyExistsException {
         if (user.getId() != null) {
             em.persist(user);
-            
-            return user;
         } else {
             user = em.merge(user);
-            
-            return user;
         }
+        
+        return user;
     }
 
     public Felhasznalo findUserById(Long userId) {
         try {
-	    Felhasznalo f = em.find(Felhasznalo.class, userId);
+	    return em.find(Felhasznalo.class, userId);
 
-	    Felhasznalo f2 = new Felhasznalo();
-	    f2.setId(f.getId());
-	    f2.setBecenev(f.getBecenev());
-	    f2.setVezeteknev(f.getVezeteknev());
-	    f2.setKeresztnev(f.getKeresztnev());
-	    f2.setNeptunkod(f.getNeptunkod());
-	    f2.setEmailcim(f.getEmailcim());
-
-	    return f2;
         } catch (NoResultException e) {
             return null;
         }
