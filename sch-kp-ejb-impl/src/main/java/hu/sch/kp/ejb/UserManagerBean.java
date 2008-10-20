@@ -21,7 +21,7 @@ import javax.persistence.Query;
  *
  * @author hege
  */
-@Stateless(name="UserManager")
+@Stateless(mappedName="UserManager")
 public class UserManagerBean implements UserManagerLocal, UserManagerRemote {
 
     @PersistenceContext
@@ -46,7 +46,17 @@ public class UserManagerBean implements UserManagerLocal, UserManagerRemote {
 
     public Felhasznalo findUserById(Long userId) {
         try {
-            return em.find(Felhasznalo.class, userId);
+	    Felhasznalo f = em.find(Felhasznalo.class, userId);
+
+	    Felhasznalo f2 = new Felhasznalo();
+	    f2.setId(f.getId());
+	    f2.setBecenev(f.getBecenev());
+	    f2.setVezeteknev(f.getVezeteknev());
+	    f2.setKeresztnev(f.getKeresztnev());
+	    f2.setNeptunkod(f.getNeptunkod());
+	    f2.setEmailcim(f.getEmailcim());
+
+	    return f2;
         } catch (NoResultException e) {
             return null;
         }
