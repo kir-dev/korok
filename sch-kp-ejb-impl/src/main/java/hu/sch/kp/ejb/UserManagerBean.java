@@ -169,7 +169,9 @@ public class UserManagerBean implements UserManagerLocal {
     public Csoport getGroupHierarchy() {
         Query q = em.createNamedQuery("groupHierarchy");
         List<Csoport> csoportok = q.getResultList();
-        Csoport rootCsoport = null;
+        Csoport rootCsoport = new Csoport();
+        List<Csoport> rootCsoportok = new LinkedList<Csoport>();
+        rootCsoport.setAlcsoportok(rootCsoportok);
         
         for (Csoport cs : csoportok) {
             if (cs.getSzulo() != null) {
@@ -178,7 +180,7 @@ public class UserManagerBean implements UserManagerLocal {
                 }
                 cs.getSzulo().getAlcsoportok().add(cs);
             } else {
-                rootCsoport = cs;
+                rootCsoportok.add(cs);
             }
         }
         
