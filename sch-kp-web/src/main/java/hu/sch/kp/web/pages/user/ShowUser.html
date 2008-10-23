@@ -1,33 +1,26 @@
 <html>
     <body>
         <wicket:extend>
-            <h2><span wicket:id="nev">Név</span> felhasználó közösségi adatlapja</h2>
-            <h3>Pontigények</h3>
-            <table id="pontigenyek">
+            <h2><span wicket:id="nev">Név</span> felhasználó adatlapja</h2>
+            <h3>Linkek</h3>
+            <a href="#" wicket:id="profilelink">Teljes profil</a><br/>
+            <a href="#" wicket:id="historylink">Részletes közösségi adatlap</a><br/>
+            <h3>Csoporttagságok</h3>
+            <table>
                 <tr>
-                    <th>Szemeszter</th>
-                    <th>Kör</th>
-                    <th>Igényelt pontszám</th>
+                    <th>Csoport neve</th>
+                    <th>Tagság státusza</th>
+                    <th>Tagsági idő</th>
+                    <!--th>Közösségi pontozások</th-->
                 </tr>
-                <tr wicket:id="pontigeny">
-                    <td><span wicket:id="ertekeles.szemeszter" /></td>
-                    <td><span wicket:id="ertekeles.csoport.nev" /></td>
-                    <td><span wicket:id="pont" /></td>
-                </tr>
-            </table>
-            <h3>Belépőigények</h3>
-            <table id="belepoigenyek">
-                <tr>
-                    <th>Szemeszter</th>
-                    <th>Kör</th>
-                    <th>Igényelt belépő</th>
-                    <th>Szöveges indoklás</th>
-                </tr>
-                <tr wicket:id="belepoigeny">
-                    <td><span wicket:id="ertekeles.szemeszter" /></td>
-                    <td><span wicket:id="ertekeles.csoport.nev" /></td>
-                    <td><span wicket:id="belepotipus" /></td>
-                    <td><span wicket:id="szovegesErtekeles" /></td>
+                <tr wicket:id="csoptagsag">
+                    <td>
+                        <a href="#" wicket:id="csoplink">
+                            <span wicket:id="csoport.nev"/>
+                        </a>
+                    </td>
+                    <td wicket:id="jogok" />
+                    <td><span wicket:id="kezdet"/> - <span wicket:id="veg"/></td>
                 </tr>
             </table>
         </wicket:extend>

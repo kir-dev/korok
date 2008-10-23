@@ -10,8 +10,9 @@ package hu.sch.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,6 +26,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -39,9 +41,11 @@ import javax.persistence.Transient;
     "WHERE cs.statusz='akt' ORDER BY cs.nev"),
     @NamedQuery(name = "groupHierarchy", query =
     "SELECT cs FROM Csoport cs LEFT JOIN FETCH cs.szulo " +
-    "WHERE cs.statusz='akt' ORDER BY cs.nev")
+    "WHERE cs.statusz='akt' ORDER BY cs.nev"),
+    @NamedQuery(name = "findCsoportWithCsoporttagsagok", query = "SELECT cs FROM " +
+    "Csoport cs LEFT JOIN FETCH cs.csoporttagsagok WHERE cs.id = :id")
 })
-public class Csoport implements Serializable {
+public class Csoport implements Serializable, Comparable<Csoport> {
 
     private static final long serialVersionUID = 1L;
     public static final String findAll = "findAllCsoport";
@@ -246,10 +250,29 @@ public class Csoport implements Serializable {
             csoporttagok.add(cst.getFelhasznalo());
         }
     }
+    
+    public void sortCsoporttagsagok() {
+        if (this.getCsoporttagsagok() != null) {
+            Collections.sort(this.getCsoporttagsagok(), 
+                    new Comparator<Csoporttagsag>() {
+
+                public int compare(Csoporttagsag o1, Csoporttagsag o2) {
+                    if (o1.getVeg() == null ^ o2.getVeg() == null) {
+                        return o1.getVeg() == null ? -1 : 1;
+                    }
+                    return o1.getFelhasznalo().compareTo(o2.getFelhasznalo());
+                }
+            });
+        }
+    }
 
     @Override
     public String toString() {
         return "hu.uml13.domain.Csoport id=" + getId() +
                 ", nev=" + getNev();
+    }
+
+    public int compareTo(Csoport o) {
+        return getNev().compareTo(o.getNev());
     }
 }

@@ -52,18 +52,6 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
-    public Felhasznalo findUserByLoginName(String loginName) {
-        /*Query q = em.createNamedQuery(Felhasznalo.findByLoginName);
-        q.setParameter("loginName", loginName);
-        
-        try {
-        return (Felhasznalo) q.getSingleResult();
-        } catch (NoResultException e) {
-        return null;
-        }*/
-        throw new UnsupportedOperationException();
-    }
-
     public void addUserToGroup(Felhasznalo felhasznalo, Csoport csoport, Date kezdet, Date veg) {
         Felhasznalo f = em.find(Felhasznalo.class, felhasznalo.getId());
         Csoport cs = em.find(Csoport.class, csoport.getId());
@@ -185,5 +173,19 @@ public class UserManagerBean implements UserManagerLocal {
         }
         
         return rootCsoport;
+    }
+
+    public Felhasznalo findUserWithCsoporttagsagokById(Long userId) {
+        Query q = em.createNamedQuery("findUserWithCsoporttagsagok");
+        q.setParameter("id", userId);
+        
+        return (Felhasznalo)q.getSingleResult();
+    }
+
+    public Csoport findGroupWithCsoporttagsagokById(Long id) {
+        Query q = em.createNamedQuery("findCsoportWithCsoporttagsagok");
+        q.setParameter("id", id);
+        
+        return (Csoport)q.getSingleResult();
     }
 }

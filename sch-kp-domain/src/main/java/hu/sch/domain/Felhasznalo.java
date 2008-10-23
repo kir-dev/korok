@@ -10,6 +10,8 @@ package hu.sch.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +19,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -27,7 +32,12 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "users")
-public class Felhasznalo implements Serializable {
+@NamedQueries({
+    @NamedQuery(name = "findUserWithCsoporttagsagok",
+    query =
+    "SELECT f FROM Felhasznalo f JOIN FETCH f.csoporttagsagok WHERE f.id = :id")
+})
+public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
 
     private static final long serialVersionUID = 1L;
     public static final String findAll = "findAllUser";
@@ -139,7 +149,7 @@ public class Felhasznalo implements Serializable {
         }
     }
 
-    @OneToMany(mappedBy = "felhasznalo", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "felhasznalo", fetch = FetchType.LAZY)
     public List<Csoporttagsag> getCsoporttagsagok() {
         return csoporttagsagok;
     }
@@ -153,6 +163,21 @@ public class Felhasznalo implements Serializable {
         return getVezeteknev() + " " + getKeresztnev();
     }
 
+    public void sortCsoporttagsagok() {
+        if (this.getCsoporttagsagok() != null) {
+            Collections.sort(this.getCsoporttagsagok(),
+                    new Comparator<Csoporttagsag>() {
+
+                        public int compare(Csoporttagsag o1, Csoporttagsag o2) {
+                            if (o1.getVeg() == null ^ o2.getVeg() == null) {
+                                return o1.getVeg() == null ? -1 : 1;
+                            }
+                            return o1.getCsoport().compareTo(o2.getCsoport());
+                        }
+                    });
+        }
+    }
+
     @Override
     public String toString() {
         return "hu.uml13.domain.User " +
@@ -160,5 +185,9 @@ public class Felhasznalo implements Serializable {
                 ", nev=" + getNev() +
                 ", becenev=" + getBecenev() +
                 ", email=" + getEmailcim();
+    }
+
+    public int compareTo(Felhasznalo o) {
+        return getNev().compareTo(o.getNev());
     }
 }

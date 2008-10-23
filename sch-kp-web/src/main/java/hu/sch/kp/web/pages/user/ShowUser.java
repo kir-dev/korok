@@ -4,21 +4,25 @@
  */
 package hu.sch.kp.web.pages.user;
 
-import hu.sch.domain.BelepoIgeny;
+import hu.sch.domain.Csoport;
+import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
-import hu.sch.domain.PontIgeny;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.web.pages.group.ShowGroup;
+import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
-import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.datetime.DateConverter;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.ResourceModel;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  *
@@ -26,53 +30,50 @@ import org.apache.wicket.model.ResourceModel;
  */
 public class ShowUser extends SecuredPageTemplate {
 
-    @EJB(name = "ejb/UserManagerLocal") UserManagerLocal userManager;
+    @EJB(name = "ejb/UserManagerLocal")
+    UserManagerLocal userManager;
     Long id;
 
     public ShowUser() {
         initComponents();
     }
-    
+
     public void initComponents() {
         if (id == null) {
             id = ((VirSession) getSession()).getUser().getId();
         }
         if (id == null) {
-            error(new ResourceModel("message.noUserId"));
-
+            setResponsePage(Index.class);
             return;
         }
 
-        Felhasznalo user = userManager.findUserById(id);
+        Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
         setModel(new CompoundPropertyModel(user));
         add(new Label("nev"));
-        
-        List<PontIgeny> pontIgenyek = userManager.getPontIgenyekForUser(user);
-        ListView plv = new ListView("pontigeny", pontIgenyek) {
-            @Override
-            protected void populateItem(ListItem item) {
-                item.setModel(new CompoundPropertyModel(item.getModelObject()));
-                item.add(new Label("ertekeles.szemeszter"));
-                item.add(new Label("ertekeles.csoport.nev"));
-                item.add(new Label("pont"));
-            }
-        };
-        add(plv);
-        
-        List<BelepoIgeny> belepoIgenyek = userManager.getBelepoIgenyekForUser(user);
-        ListView blv = new ListView("belepoigeny", belepoIgenyek) {
-            @Override
-            protected void populateItem(ListItem item) {
-                item.setModel(new CompoundPropertyModel(item.getModelObject()));
-                item.add(new Label("ertekeles.szemeszter"));
-                item.add(new Label("ertekeles.csoport.nev"));
-                item.add(new Label("belepotipus"));
-                item.add(new Label("szovegesErtekeles"));
-            }
-        };
-        add(blv);
-        
+        add(new BookmarkablePageLink(
+                "historylink", UserHistory.class,
+                new PageParameters("id=" + id.toString())));
 
+        add(new ExternalLink("profilelink",
+                "https://idp.sch.bme.hu/profile/show/virid/" + id.toString()));
+        user.sortCsoporttagsagok();
+        ListView csoptagsagok = new ListView("csoptagsag", user.getCsoporttagsagok()) {
+
+            @Override
+            protected void populateItem(ListItem item) {
+                Csoporttagsag cs = (Csoporttagsag) item.getModelObject();
+                item.setModel(new CompoundPropertyModel(cs));
+                BookmarkablePageLink csoplink = 
+                        new BookmarkablePageLink("csoplink", ShowGroup.class,
+                        new PageParameters("id=" + cs.getCsoport().getId().toString()));
+                csoplink.add(new Label("csoport.nev"));
+                item.add(csoplink);
+                item.add(new Label("jogok"));
+                item.add(DateLabel.forDatePattern("kezdet", "yyyy.MM.dd."));
+                item.add(DateLabel.forDatePattern("veg", "yyyy.MM.dd."));
+            }
+        };
+        add(csoptagsagok);
     }
 
     public ShowUser(PageParameters parameters) {

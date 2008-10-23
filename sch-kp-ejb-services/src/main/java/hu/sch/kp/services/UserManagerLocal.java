@@ -23,8 +23,8 @@ public interface UserManagerLocal {
     Felhasznalo saveOrAddUser(Felhasznalo user) throws UserAlreadyExistsException;
 
     Felhasznalo findUserById(Long userId);
-
-    Felhasznalo findUserByLoginName(String loginName);
+    
+    Felhasznalo findUserWithCsoporttagsagokById(Long userId);
 
     void addUserToGroup(Felhasznalo user, Csoport group, Date membership_start, Date membership_end);
 
@@ -35,6 +35,8 @@ public interface UserManagerLocal {
     Csoport findGroupByName(String name);
     
     Csoport findGroupById(Long id);
+    
+    Csoport findGroupWithCsoporttagsagokById(Long id);
 
     Csoport saveOrAddGroup(Csoport group) throws GroupAlreadyExistsException;
 

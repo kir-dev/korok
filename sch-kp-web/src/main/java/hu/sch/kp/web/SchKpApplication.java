@@ -9,17 +9,15 @@
 
 package hu.sch.kp.web;
 
-import hu.sch.domain.BelepoIgeny;
 import hu.sch.kp.web.util.BelepoTipusConverter;
 import hu.sch.domain.BelepoTipus;
 import hu.sch.domain.ErtekelesStatusz;
-import hu.sch.domain.PontIgeny;
-import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
-import hu.sch.kp.web.pages.admin.EditSemesterPage;
-import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
+import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
+import hu.sch.kp.web.pages.group.GroupHierarchy;
+import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
 import org.apache.wicket.IConverterLocator;
@@ -28,7 +26,6 @@ import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.util.convert.ConverterLocator;
-import org.apache.wicket.util.lang.PackageName;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
 
 /**
@@ -45,6 +42,7 @@ public class SchKpApplication extends WebApplication {
     protected void init() {
         addComponentInstantiationListener(new JavaEEComponentInjector(this));
         
+        /*
         mount("/index", PackageName.forClass(Index.class));
         mount("/felhasznalo", PackageName.forClass(ShowUser.class));
         mount("/csoport", PackageName.forClass(ShowGroup.class));
@@ -53,7 +51,14 @@ public class SchKpApplication extends WebApplication {
         mount("/belepoigenyles", PackageName.forClass(BelepoIgeny.class));
         mount("/admin", PackageName.forClass(EditSemesterPage.class));
         mount("/elbiralas", PackageName.forClass(OsszesErtekeles.class));
-
+        */
+        
+        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
+        mountBookmarkablePage("/group", ShowGroup.class);
+        mountBookmarkablePage("/user", ShowUser.class);
+        mountBookmarkablePage("/grouphistory", ErtekelesReszletek.class);
+        mountBookmarkablePage("/userhistory", UserHistory.class);
+        
         getMarkupSettings().setStripWicketTags(true);
     }
 

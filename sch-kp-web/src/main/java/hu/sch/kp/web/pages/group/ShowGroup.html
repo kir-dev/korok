@@ -12,6 +12,7 @@
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
             <h2>Csoport adatlap</h2>
+            <h3>Csoport adatai</h3>
             <table>
                 <tr>
                     <td>Csoport neve</td><td wicket:id="nev" />
@@ -27,6 +28,21 @@
                 </tr>
                 <tr>
                     <td>Csoport leírása</td><td><span wicket:id="leiras" /></td>
+                </tr>
+            </table>
+            <h3>Csoport tagjai</h3>
+            <table>
+                <tr>
+                    <th>Felhasználó neve</th>
+                    <th>Jogok</th>
+                    <th>Tagság ideje</th>
+                </tr>
+                <tr wicket:id="csoptagsag">
+                    <td>
+                        <span wicket:id="felhlink" />
+                    </td>
+                    <td wicket:id="jogok" />
+                    <td><span wicket:id="kezdet" /> - <span wicket:id="veg" /></td>
                 </tr>
             </table>
         </wicket:extend>
