@@ -82,7 +82,7 @@ public class SecuredPageTemplate extends WebPage {
     protected Felhasznalo loadFelhasznalo() {
         HttpServletRequest req =
                 ((WebRequest) getRequest()).getHttpServletRequest();
-        String virid = req.getParameter("virid");
+        String virid = req.getAttribute("virid").toString();
         if (virid != null) {
             Matcher m = Pattern.compile("^.*:([0-9]+)$").matcher(virid);
             if (m.matches()) {
