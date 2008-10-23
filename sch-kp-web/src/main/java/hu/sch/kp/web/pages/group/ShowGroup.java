@@ -10,6 +10,7 @@ import hu.sch.kp.web.templates.SecuredPageTemplate;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 /**
@@ -23,8 +24,12 @@ public class ShowGroup extends SecuredPageTemplate {
 
     public ShowGroup(PageParameters parameters) {
         Object p = parameters.get("id");
-        Long id = (Long) p;
-        Csoport cs = userManager.findGroupById(id);
-        add(new Label("groupName", new PropertyModel(cs, "nev")));
+        try {
+            Long id = Long.parseLong(p.toString());
+            Csoport cs = userManager.findGroupById(id);
+            add(new Label("groupName", new PropertyModel(cs, "nev")));
+        } catch (NumberFormatException e) {
+            add(new Label("groupName", new Model("Nincs ilyen csoport")));
+        }
     }
 }
