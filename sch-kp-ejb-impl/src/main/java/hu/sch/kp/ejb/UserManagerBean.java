@@ -99,6 +99,10 @@ public class UserManagerBean implements UserManagerLocal {
         }*/
         throw new UnsupportedOperationException();
     }
+    
+    public Csoport findGroupById(Long id) {
+        return em.find(Csoport.class, id);
+    }
 
     public Csoport saveOrAddGroup(Csoport group) throws 
             GroupAlreadyExistsException {

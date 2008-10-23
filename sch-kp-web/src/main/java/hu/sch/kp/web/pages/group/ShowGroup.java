@@ -4,23 +4,27 @@
  */
 package hu.sch.kp.web.pages.group;
 
+import hu.sch.domain.Csoport;
+import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  *
  * @author hege
  */
 public class ShowGroup extends SecuredPageTemplate {
-    Long id;
-    
+
+    @EJB(name = "UserManagerBean")
+    UserManagerLocal userManager;
+
     public ShowGroup(PageParameters parameters) {
-        try {
-            Object p = parameters.get("id");
-            if (p != null) {
-                id = (Long) p;
-            }
-        } catch (Throwable t) {
-        }
+        Object p = parameters.get("id");
+        Long id = (Long) p;
+        Csoport cs = userManager.findGroupById(id);
+        add(new Label("groupName", new PropertyModel(cs, "nev")));
     }
 }

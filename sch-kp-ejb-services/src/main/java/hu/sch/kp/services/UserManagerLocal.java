@@ -33,6 +33,8 @@ public interface UserManagerLocal {
     Csoport getGroupHierarchy();
 
     Csoport findGroupByName(String name);
+    
+    Csoport findGroupById(Long id);
 
     Csoport saveOrAddGroup(Csoport group) throws GroupAlreadyExistsException;
 
