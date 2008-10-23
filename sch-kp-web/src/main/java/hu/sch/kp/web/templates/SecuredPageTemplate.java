@@ -16,6 +16,7 @@ import hu.sch.kp.web.pages.group.SelectGroup;
 import hu.sch.kp.web.pages.index.SelectUser;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.session.VirSession;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
@@ -82,9 +83,10 @@ public class SecuredPageTemplate extends WebPage {
     protected Felhasznalo loadFelhasznalo() {
         HttpServletRequest req =
                 ((WebRequest) getRequest()).getHttpServletRequest();
-        Object virid = req.getAttribute("virid");
-        if (virid != null) {
-            Matcher m = Pattern.compile("^.*:([0-9]+)$").matcher(virid.toString());
+        Set viridSet = (Set)req.getAttribute("virid");
+        if (viridSet != null) {
+            String virid = viridSet.iterator().next().toString();
+            Matcher m = Pattern.compile("^.*:([0-9]+)$").matcher(virid);
             if (m.matches()) {
                 Long virID = Long.parseLong(m.group(1));
                 Felhasznalo user = userManager.findUserById(virID);
