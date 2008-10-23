@@ -6,12 +6,13 @@ package hu.sch.kp.web.pages.group;
 
 import hu.sch.domain.Csoport;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
+import org.apache.wicket.model.CompoundPropertyModel;
 
 /**
  *
@@ -27,9 +28,15 @@ public class ShowGroup extends SecuredPageTemplate {
         try {
             Long id = Long.parseLong(p.toString());
             Csoport cs = userManager.findGroupById(id);
-            add(new Label("groupName", new PropertyModel(cs, "nev")));
+            setModel(new CompoundPropertyModel(cs));
+            add(new Label("nev"));
+            add(new Label("alapitasEve"));
+            add(new Label("webpage"));
+            add(new Label("levelezoLista"));
+            add(new MultiLineLabel("leiras"));
+            
         } catch (NumberFormatException e) {
-            add(new Label("groupName", new Model("Nincs ilyen csoport")));
+            setResponsePage(Index.class);
         }
     }
 }

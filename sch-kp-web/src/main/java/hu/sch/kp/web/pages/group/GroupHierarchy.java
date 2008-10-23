@@ -40,9 +40,8 @@ public class GroupHierarchy extends SecuredPageTemplate {
             protected void onNodeLinkClicked(
                     TreeNode node, BaseTree tree, AjaxRequestTarget target) {
                 Long csoportId = ((CsoportTreeNode) node).getCsoport().getId();
-                setResponsePage(
-                        new ShowGroup(
-                        new PageParameters("id=" + csoportId.toString())));
+                setResponsePage(ShowGroup.class,
+                        new PageParameters("id=" + csoportId.toString()));
             }
         };
         tree.setRootLess(true);

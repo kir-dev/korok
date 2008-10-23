@@ -11,6 +11,7 @@ package hu.sch.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -38,7 +39,7 @@ import javax.persistence.Transient;
     "WHERE cs.statusz='akt' ORDER BY cs.nev"),
     @NamedQuery(name = "groupHierarchy", query =
     "SELECT cs FROM Csoport cs LEFT JOIN FETCH cs.szulo " +
-            "WHERE cs.statusz='akt' ORDER BY cs.nev")
+    "WHERE cs.statusz='akt' ORDER BY cs.nev")
 })
 public class Csoport implements Serializable {
 
@@ -78,6 +79,22 @@ public class Csoport implements Serializable {
      * Szülő csoport
      */
     private Csoport szulo;
+    /**
+     * Publikus weboldal címe
+     */
+    private String webpage;
+    /**
+     * Kör bemutatkozása
+     */
+    private String leiras;
+    /**
+     * Levelezési lista címe
+     */
+    private String levelezoLista;
+    /**
+     * Alapítás éve
+     */
+    private Integer alapitasEve;
     /**
      * Alcsoportok
      */
@@ -159,6 +176,42 @@ public class Csoport implements Serializable {
 
     public void setSzulo(Csoport szulo) {
         this.szulo = szulo;
+    }
+
+    @Column(name = "grp_founded")
+    public Integer getAlapitasEve() {
+        return alapitasEve;
+    }
+
+    public void setAlapitasEve(Integer alapitasEve) {
+        this.alapitasEve = alapitasEve;
+    }
+
+    @Column(name = "grp_description", columnDefinition = "text")
+    public String getLeiras() {
+        return leiras;
+    }
+
+    public void setLeiras(String leiras) {
+        this.leiras = leiras;
+    }
+
+    @Column(name = "grp_maillist", length = 64)
+    public String getLevelezoLista() {
+        return levelezoLista;
+    }
+
+    public void setLevelezoLista(String levelezoLista) {
+        this.levelezoLista = levelezoLista;
+    }
+
+    @Column(name = "grp_webpage", length = 64)
+    public String getWebpage() {
+        return webpage;
+    }
+
+    public void setWebpage(String webpage) {
+        this.webpage = webpage;
     }
 
     @Transient
