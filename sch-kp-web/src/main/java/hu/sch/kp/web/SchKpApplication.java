@@ -35,7 +35,7 @@ import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
 public class SchKpApplication extends WebApplication {
 
     public Class getHomePage() {
-        return Index.class;
+        return GroupHierarchy.class;
     }
     
     @Override
