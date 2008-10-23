@@ -8,8 +8,8 @@ import hu.sch.domain.*;
 import hu.sch.kp.services.exceptions.GroupAlreadyExistsException;
 import hu.sch.kp.services.exceptions.UserAlreadyExistsException;
 import hu.sch.kp.services.UserManagerLocal;
-import hu.sch.kp.services.UserManagerRemote;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -32,19 +32,20 @@ public class UserManagerBean implements UserManagerLocal {
         throw new UnsupportedOperationException();
     }
 
-    public Felhasznalo saveOrAddUser(Felhasznalo user) throws UserAlreadyExistsException {
+    public Felhasznalo saveOrAddUser(Felhasznalo user) throws 
+            UserAlreadyExistsException {
         if (user.getId() != null) {
             em.persist(user);
         } else {
             user = em.merge(user);
         }
-        
+
         return user;
     }
 
     public Felhasznalo findUserById(Long userId) {
         try {
-	    return em.find(Felhasznalo.class, userId);
+            return em.find(Felhasznalo.class, userId);
 
         } catch (NoResultException e) {
             return null;
@@ -54,11 +55,11 @@ public class UserManagerBean implements UserManagerLocal {
     public Felhasznalo findUserByLoginName(String loginName) {
         /*Query q = em.createNamedQuery(Felhasznalo.findByLoginName);
         q.setParameter("loginName", loginName);
-
+        
         try {
-            return (Felhasznalo) q.getSingleResult();
+        return (Felhasznalo) q.getSingleResult();
         } catch (NoResultException e) {
-            return null;
+        return null;
         }*/
         throw new UnsupportedOperationException();
     }
@@ -90,19 +91,20 @@ public class UserManagerBean implements UserManagerLocal {
     public Csoport findGroupByName(String name) {
         /*Query q = em.createNamedQuery(Csoport.findByName);
         q.setParameter("name", name);
-
+        
         try {
-            return (Csoport) q.getSingleResult();
+        return (Csoport) q.getSingleResult();
         } catch (NoResultException e) {
-            return null;
+        return null;
         }*/
         throw new UnsupportedOperationException();
     }
 
-    public Csoport saveOrAddGroup(Csoport group) throws GroupAlreadyExistsException {
+    public Csoport saveOrAddGroup(Csoport group) throws 
+            GroupAlreadyExistsException {
         /*Csoport oldgroup = findGroupByName(group.getNev());
         if (oldgroup != null && oldgroup.getId() != group.getId()) {
-            throw new GroupAlreadyExistsException("A csoport már létezik: " + group.getNev());
+        throw new GroupAlreadyExistsException("A csoport már létezik: " + group.getNev());
         }*/
         group = em.merge(group);
         em.flush();
@@ -111,7 +113,8 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public void modifyMembership(Felhasznalo user, Csoport group, Date start, Date end) {
-        Csoporttagsag m = em.find(Csoporttagsag.class, new CsoporttagsagPK(user.getId(), group.getId()));
+        Csoporttagsag m =
+                em.find(Csoporttagsag.class, new CsoporttagsagPK(user.getId(), group.getId()));
 
         m.setKezdet(start);
         m.setVeg(end);
@@ -130,13 +133,14 @@ public class UserManagerBean implements UserManagerLocal {
     @SuppressWarnings({"unchecked"})
     public List<Felhasznalo> getCsoporttagok(Long csoportId) {
         //Csoport cs = em.find(Csoport.class, csoportId);
-        Query q = em.createQuery("SELECT cst.felhasznalo FROM Csoporttagsag cst JOIN " +
+        Query q =
+                em.createQuery("SELECT cst.felhasznalo FROM Csoporttagsag cst JOIN " +
                 "cst.felhasznalo " +
                 "WHERE cst.csoport.id=:csoportId " +
                 "ORDER BY cst.felhasznalo.vezeteknev ASC, cst.felhasznalo.keresztnev ASC");
-        
+
         q.setParameter("csoportId", csoportId);
-        
+
         return q.getResultList();
     }
 
@@ -145,16 +149,35 @@ public class UserManagerBean implements UserManagerLocal {
                 "WHERE b.felhasznalo=:felhasznalo " +
                 "ORDER BY b.ertekeles.szemeszter ASC, b.belepotipus ASC");
         q.setParameter("felhasznalo", felhasznalo);
-        
+
         return q.getResultList();
     }
 
     public List<PontIgeny> getPontIgenyekForUser(Felhasznalo felhasznalo) {
-           Query q = em.createQuery("SELECT p FROM PontIgeny p " +
+        Query q = em.createQuery("SELECT p FROM PontIgeny p " +
                 "WHERE p.felhasznalo=:felhasznalo " +
                 "ORDER BY p.ertekeles.szemeszter ASC, p.pont DESC");
         q.setParameter("felhasznalo", felhasznalo);
-        
+
         return q.getResultList();
+    }
+
+    public Csoport getGroupHierarchy() {
+        Query q = em.createNamedQuery("groupHierarchy");
+        List<Csoport> csoportok = q.getResultList();
+        Csoport rootCsoport = null;
+        
+        for (Csoport cs : csoportok) {
+            if (cs.getSzulo() != null) {
+                if (cs.getSzulo().getAlcsoportok() == null) {
+                    cs.getSzulo().setAlcsoportok(new LinkedList<Csoport>());
+                }
+                cs.getSzulo().getAlcsoportok().add(cs);
+            } else {
+                rootCsoport = cs;
+            }
+        }
+        
+        return rootCsoport;
     }
 }

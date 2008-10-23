@@ -21,6 +21,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -32,7 +33,13 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "groups")
-@NamedQuery(name = "findAllCsoport", query = "SELECT cs FROM Csoport cs")
+@NamedQueries({
+    @NamedQuery(name = "findAllCsoport", query = "SELECT cs FROM Csoport cs " +
+    "WHERE cs.statusz='akt' ORDER BY cs.nev"),
+    @NamedQuery(name = "groupHierarchy", query =
+    "SELECT cs FROM Csoport cs LEFT JOIN FETCH cs.szulo " +
+            "WHERE cs.statusz='akt' ORDER BY cs.nev")
+})
 public class Csoport implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -71,6 +78,10 @@ public class Csoport implements Serializable {
      * Szülő csoport
      */
     private Csoport szulo;
+    /**
+     * Alcsoportok
+     */
+    private List<Csoport> alcsoportok;
     /**
      * Státusz (aktiv / öreg)
      */
@@ -140,7 +151,7 @@ public class Csoport implements Serializable {
         this.statusz = statusz;
     }
 
-    @ManyToOne(optional = true, fetch=FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "grp_parent")
     public Csoport getSzulo() {
         return szulo;
@@ -148,6 +159,15 @@ public class Csoport implements Serializable {
 
     public void setSzulo(Csoport szulo) {
         this.szulo = szulo;
+    }
+
+    @Transient
+    public List<Csoport> getAlcsoportok() {
+        return alcsoportok;
+    }
+
+    public void setAlcsoportok(List<Csoport> alcsoportok) {
+        this.alcsoportok = alcsoportok;
     }
 
     @Column(name = "grp_type")
@@ -166,14 +186,13 @@ public class Csoport implements Serializable {
         }
         return csoporttagok;
     }
-    
+
     private void loadCsoporttagok() {
         csoporttagok = new ArrayList<Felhasznalo>();
         for (Csoporttagsag cst : getCsoporttagsagok()) {
             csoporttagok.add(cst.getFelhasznalo());
         }
     }
-    
 
     @Override
     public String toString() {

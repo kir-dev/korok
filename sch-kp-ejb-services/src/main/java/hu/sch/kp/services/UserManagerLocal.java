@@ -29,6 +29,8 @@ public interface UserManagerLocal {
     void addUserToGroup(Felhasznalo user, Csoport group, Date membership_start, Date membership_end);
 
     List<Csoport> getAllGroups();
+    
+    Csoport getGroupHierarchy();
 
     Csoport findGroupByName(String name);
 

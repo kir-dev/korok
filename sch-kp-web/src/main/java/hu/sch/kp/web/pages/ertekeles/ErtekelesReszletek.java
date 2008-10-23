@@ -50,7 +50,11 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
         add(backlink);
         add(new CsoportLink("csoport.nev", ertekeles.getCsoport()));
         //TODO fix this with compoundpropertymodel :)
-        add(new FelhasznaloLink("felado", ertekeles.getFelado()));
+        if (ertekeles.getFelado() != null) {
+            add(new FelhasznaloLink("felado", ertekeles.getFelado()));
+        } else {
+            add(new Label("felado", ""));
+        }
         add(new Label("szemeszter"));
         add(new Label("belepoStatusz"));
         add(new Label("pontStatusz"));

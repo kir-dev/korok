@@ -6,9 +6,7 @@ package hu.sch.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -87,7 +85,7 @@ public class Ertekeles implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne
+    @ManyToOne(optional=true)
     @JoinColumn(name = "felado_usr_id")
     public Felhasznalo getFelado() {
         return felado;
@@ -192,7 +190,7 @@ public class Ertekeles implements Serializable {
         setBelepoStatusz(ErtekelesStatusz.NINCS);
     }
 
-    @ManyToOne
+    @ManyToOne(optional=true)
     @JoinColumn(name="elbiralo_usr_id")
     public Felhasznalo getElbiralo() {
         return elbiralo;
