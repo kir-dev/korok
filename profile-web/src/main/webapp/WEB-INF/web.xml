@@ -3,7 +3,7 @@
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	 version="2.5">
-    <filter>
+    <!--<filter>
         <filter-name>Agent</filter-name>
         <filter-class>com.sun.identity.agents.filter.AmAgentFilter</filter-class>
     </filter>
@@ -78,7 +78,7 @@
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
+    </filter-mapping>-->
    
 	 <!--  
 	      There are three means to configure Wickets configuration mode and they are

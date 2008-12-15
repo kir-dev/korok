@@ -30,13 +30,13 @@ public abstract class ProfilePage extends WebPage {
     }
     
     protected String getUid() {
-        return  ((WebRequest)getRequest()).getHttpServletRequest().getRemoteUser();
-//        return "konvergal";
+//        return  ((WebRequest)getRequest()).getHttpServletRequest().getRemoteUser();
+        return "konvergal";
     }
     
     public boolean isCurrentUserAdmin() {
-        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
-//        return true;
+//        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
+        return true;
     }
     
     public void setHeaderLabelText(String text) {

@@ -44,6 +44,6 @@
     <module>sch-kp-ejb-impl</module>
     <module>sch-kp-web</module>
     <module>sch-kp-ear</module>
+    <module>profile-web</module>
   </modules>
 </project>
-
