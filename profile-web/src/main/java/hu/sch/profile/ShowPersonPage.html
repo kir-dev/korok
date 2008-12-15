@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <wicket:extend xmlns:wicket="http://wicket.apache.org">
+                        
+            <span wicket:id="feedbackPanel" id="feedbackPanel" style="display: block; margin-bottom: 20px;"></span>
+
+            <div class="photo">
+                <img wicket:id="photo"/>
+            </div>
+            
+            <div style="width: 440px; padding-bottom: 100px; min-height: 350px;">
+                
+                <table id="list">
+                    <!--tr>
+                        <td class="listtitle">Azonosító</td>
+                        <td><span wicket:id="uid"/></td>
+                    </tr-->
+                    <tr wicket:id="nickNameWMC">
+                        <td class="listtitle">Becenév</td>
+                        <td><span wicket:id="nickName"/></td>
+                    </tr>
+                    <tr wicket:id="mailWMC">
+                        <td class="listtitle">E-Mail</td>
+                        <td><span wicket:id="mail"/></td>
+                    </tr>
+                    <tr wicket:id="mobileWMC">
+                        <td class="listtitle">Mobil</td>
+                        <td><span wicket:id="mobile"/></td>
+                    </tr>
+                    <tr wicket:id="homePhoneWMC">
+                        <td class="listtitle">Vezetékes</td>
+                        <td><span wicket:id="homePhone"/></td>
+                    </tr>
+                    <tr wicket:id="webpageWMC">
+                        <td class="listtitle">Weboldal</td>
+                        <td><span wicket:id="webpage"/></td>
+                    </tr>
+                    <tr wicket:id="roomNumberWMC">
+                        <td class="listtitle">Szoba</td>
+                        <td><span wicket:id="roomNumber"/></td>
+                    </tr>
+                    <tr wicket:id="homePostalAddressWMC">
+                        <td class="listtitle">Cím</td>
+                        <td><span wicket:id="homePostalAddress"/></td>
+                    </tr>
+                    <tr wicket:id="dateOfBirthWMC">
+                        <td class="listtitle">Születési dátum</td>
+                        <td><span wicket:id="dateOfBirth"/></td>
+                    </tr>
+                    <!--<tr wicket:id="neptunWMC">
+                    <td class="listtitle">Neptun</td>
+                        <td><span wicket:id="neptun"/></td>
+                    </tr>-->
+                    <!--<tr>
+                        <td class="listtitle">Státusz</td>
+                        <td><span wicket:id="status"/></td>
+                    </tr>-->
+                </table>
+                
+                <div wicket:id="aktivcsoptagsagok" style="margin-top: 20px; margin-left: 60px; width: 440px;">
+                    <strong>Aktív tagságok</strong>
+                    <ul>
+                        <li wicket:id="csoptagsag" style="margin-left: 60px;">
+                            <span wicket:id="groupName">[csoport neve]</span>
+                            <span wicket:id="statusWMC">(<span wicket:id="status">[statusz]</span>)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div wicket:id="inaktivcsoptagsagok" style="margin-top: 20px; margin-left: 60px; width: 440px;">
+                    <strong>Öregtagságok</strong>
+                    <ul>
+                        <li wicket:id="csoptagsag" style="margin-left: 60px;">
+                            <span wicket:id="groupName">[csoport neve]</span>
+                            <span wicket:id="statusWMC">(<span wicket:id="status">[statusz]</span>)</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div wicket:id="editPersonMembershipTable"></div>
+                
+                <div style="clear: both;"></div>
+                
+            </div>
+            
+        </wicket:extend>
+    </body>
+</html>

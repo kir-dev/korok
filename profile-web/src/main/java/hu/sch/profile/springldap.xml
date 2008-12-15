@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : springldap.xml.xml
+    Created on : August 17, 2008, 1:59 AM
+    Author     : konvergal
+    Description:
+        Purpose of the document follows.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+    <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+        <property name="url" value="ldap://maszat.sch.bme.hu:4389" />
+        <property name="base" value="dc=sch,dc=hu" />
+        <property name="userDn" value="cn=Directory Manager" />
+        <property name="password" value="foobar2000" />
+    </bean>
+    <bean id="authContext" class="org.springframework.ldap.core.support.LdapContextSource">
+        <property name="url" value="ldap://maszat.sch.bme.hu:4389" />
+        <property name="base" value="dc=sch,dc=hu" />
+    </bean>
+    <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+        <constructor-arg ref="contextSource" />
+    </bean>
+    <bean id="ldapContact" class="hu.sch.profile.LDAPPersonManager">
+        <property name="ldapTemplate" ref="ldapTemplate" />
+    </bean>
+    <bean id="ldapGroup" class="hu.sch.profile.LDAPGroupManager">
+        <property name="ldapTemplate" ref="ldapTemplate" />
+    </bean>
+</beans>

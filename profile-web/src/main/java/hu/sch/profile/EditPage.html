@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <wicket:extend>
+            
+            <!--script type="text/javascript">
+                function inverseAttribute(link) {
+                    if (link.firstChild.src.match("public.gif") != null) {
+                        link.firstChild.src = "images/private.gif";
+                    }
+                    else if (link.firstChild.src.match("private.gif") != null) {
+                        link.firstChild.src = "images/public.gif";
+                    }
+                }
+            </script-->
+            
+            <span wicket:id="feedbackPanel" id="feedbackPanel"></span>
+            
+            <div id="admincont">
+                <form wicket:id="personForm">
+                    <wicket:child></wicket:child>
+                    <table>
+                        <tr>
+                            <td><label wicket:id="lastNameLabel">Vezetéknév *</label></td>
+                            <td><input class="textinput" wicket:id="lastName"/></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="firstNameLabel">Keresztnév *</label></td>
+                            <td><input class="textinput" wicket:id="firstName"/></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="nickNameLabel">Becenév *</label></td>
+                            <td><input class="textinput" wicket:id="nickName"/></td>
+                        </tr>
+                        <tr class="gender_line">
+                            <td><label wicket:id="genderLabel">Nem</label></td>
+                            <td><span class="gender_radios" wicket:id="gender"/></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="dateOfBirthLabel">Születési dátum</label></td>
+                            <td><input class="textinput" wicket:id="dateOfBirth"/><a wicket:id="dateOfBirthAttributeLink" class="lockLink"><img class="lock" wicket:id="dateOfBirthAttributeImg"/></a></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="homePostalAddressLabel">Cím</label></td>
+                            <td><input class="textinput" wicket:id="homePostalAddress"/><a wicket:id="homePostalAddressAttributeLink" class="lockLink"><img class="lock" wicket:id="homePostalAddressAttributeImg"/></a></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="mailLabel">Mail</label></td>
+                            <td><input class="textinput" wicket:id="mail"/><a wicket:id="mailAttributeLink" class="lockLink"><img class="lock" wicket:id="mailAttributeImg"/></a></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="mobileLabel">Mobil</label></td>
+                            <td><input class="textinput" wicket:id="mobile"/><a wicket:id="mobileAttributeLink" class="lockLink"><img class="lock" wicket:id="mobileAttributeImg"/></a></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="homePhoneLabel">Vezetékes</label></td>
+                            <td><input class="textinput" wicket:id="homePhone"/><a wicket:id="homePhoneAttributeLink" class="lockLink"><img class="lock" wicket:id="homePhoneAttributeImg"/></a></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="webpageLabel">Weboldal</label></td>
+                            <td><input class="textinput" wicket:id="webpage"/><a wicket:id="webpageAttributeLink" class="lockLink"><img class="lock" wicket:id="webpageAttributeImg"/></a></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="dormitoryLabel">Kollégium</label></td>
+                            <td><select wicket:id="dormitory"></select><a wicket:id="roomNumberAttributeLink" class="lockLink"><img class="lock" wicket:id="roomNumberAttributeImg"/></a></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="rNumberLabel">Szobaszám</label></td>
+                            <td><input class="textinput" wicket:id="rNumber"></td>
+                        </tr>
+                        <tr>
+                            <td><label>Fotó</label></td>
+                            <td><img wicket:id="photo"/><a style="position: relative; top: -5px;" wicket:id="photoRemoveLink" class="photoRemoveLink">Fotó eltávolítása</a><input style="display: block;" class="textinput" wicket:id="fileInput" type="file"/></td>
+                        </tr>
+                        <tr>
+                            <td><label>Neptun</label></td>
+                            <td><span wicket:id="neptunLabel"/></td>
+                        </tr>
+                    </table>
+                    <span id="btns"><input class="btn" type="submit" value="Módosítás"/></span>
+                </form>
+            </div>
+            
+        </wicket:extend>
+    </body>
+</html>
