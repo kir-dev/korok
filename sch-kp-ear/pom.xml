@@ -25,12 +25,6 @@
                             <contextRoot>/schkp</contextRoot>
                             <!--unpack>true</unpack-->
                         </webModule>
-                        <webModule>
-                            <groupId>hu.sch</groupId>
-                            <artifactId>profile-web</artifactId>
-                            <contextRoot>/profile-teszt</contextRoot>
-                            <!--unpack>true</unpack-->
-                        </webModule>
                         <ejbModule>
                             <groupId>hu.sch</groupId>
                             <artifactId>sch-kp-ejb-impl</artifactId>
@@ -73,13 +67,6 @@
             <groupId>hu.sch</groupId>
             <artifactId>sch-kp-web</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <type>war</type>
-            <groupId>hu.sch</groupId>
-            <artifactId>profile-web</artifactId>
-            <version>1.3-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
