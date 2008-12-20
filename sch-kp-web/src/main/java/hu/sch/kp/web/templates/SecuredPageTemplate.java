@@ -11,6 +11,10 @@ import hu.sch.domain.Szemeszter;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
+import hu.sch.kp.web.pages.admin.EditErtekelesIdoszakPage;
+import hu.sch.kp.web.pages.admin.EditSemesterPage;
+import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
+import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.SelectGroup;
 import hu.sch.kp.web.pages.index.SelectUser;
@@ -23,8 +27,13 @@ import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 
 /**
@@ -44,7 +53,7 @@ public class SecuredPageTemplate extends WebPage {
                 throw new RestartResponseAtInterceptPageException(SelectUser.class);
             }
         }
-        /*
+
         add(new Label("actualuser",new PropertyModel(getSession().getUser(), "nev")));
         
         IModel agmodel = null;
@@ -73,7 +82,7 @@ public class SecuredPageTemplate extends WebPage {
         add(new BookmarkablePageLink("setsemester", EditSemesterPage.class).setAutoEnable(true));
         add(new BookmarkablePageLink("selectgroup", SelectGroup.class).setAutoEnable(true));
         add(new BookmarkablePageLink("setidoszak", EditErtekelesIdoszakPage.class).setAutoEnable(true));
-         * */
+
 
         add(new FeedbackPanel("pagemessages"));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
