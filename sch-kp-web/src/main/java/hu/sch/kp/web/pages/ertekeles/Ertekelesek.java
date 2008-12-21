@@ -35,7 +35,7 @@ public class Ertekelesek extends SecuredPageTemplate {
 
     public Ertekelesek() {
         super();
-        
+        //TODO: csak korvezetonek menjen az oldal.
         WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
         
         Csoport csoport = getCsoport();

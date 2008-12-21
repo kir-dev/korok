@@ -54,31 +54,33 @@ public class SecuredPageTemplate extends WebPage {
             }
         }
 
-        add(new Label("actualuser",new PropertyModel(getSession().getUser(), "nev")));
-        
+        add(new Label("actualuser", new PropertyModel(getSession().getUser(), "nev")));
+
         IModel agmodel = null;
         if (getSession().getCsoport() != null) {
-        agmodel = new PropertyModel(getSession().getCsoport(), "nev");
+            agmodel = new PropertyModel(getSession().getCsoport(), "nev");
         } else {
-        agmodel = new StringResourceModel("msg.NoGroupSelected",this, null);
+            agmodel = new StringResourceModel("msg.NoGroupSelected", this, null);
         }
-        add(new Label("actualgroup",agmodel));
-        
+        add(new Label("actualgroup", agmodel));
+
         IModel szmodel = null;
         Szemeszter szemeszter = getSzemeszter();
         if (szemeszter != null) {
-        szmodel = new Model(szemeszter);
+            szmodel = new Model(szemeszter);
         } else {
-        szmodel = new StringResourceModel("msg.NoSemester", this, null);
+            szmodel = new StringResourceModel("msg.NoSemester", this, null);
         }
-        add(new Label("actualsemester",szmodel));
-        
-        add(new Label("actualidoszak",new StringResourceModel("ertekelesidoszak."+getIdoszak().toString(), this, null)));
-        
-        
-        
+        add(new Label("actualsemester", szmodel));
+
+        add(new Label("actualidoszak", new StringResourceModel("ertekelesidoszak." + getIdoszak().toString(), this, null)));
+
+
+        //((VirSession)getSession()).getUser().
+        //TODO: Korvezetonek jelenjen csak meg a link
         add(new BookmarkablePageLink("ertekelesek", Ertekelesek.class).setAutoEnable(true));
-        add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setAutoEnable(true));
+        //TODO: csak JETInek jelenjen meg a link
+        add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
         add(new BookmarkablePageLink("setsemester", EditSemesterPage.class).setAutoEnable(true));
         add(new BookmarkablePageLink("selectgroup", SelectGroup.class).setAutoEnable(true));
         add(new BookmarkablePageLink("setidoszak", EditErtekelesIdoszakPage.class).setAutoEnable(true));
@@ -92,7 +94,7 @@ public class SecuredPageTemplate extends WebPage {
     protected Felhasznalo loadFelhasznalo() {
         HttpServletRequest req =
                 ((WebRequest) getRequest()).getHttpServletRequest();
-        Set viridSet = (Set)req.getAttribute("virid");
+        Set viridSet = (Set) req.getAttribute("virid");
         if (viridSet != null) {
             String virid = viridSet.iterator().next().toString();
             Matcher m = Pattern.compile("^.*:([0-9]+)$").matcher(virid);
@@ -104,7 +106,7 @@ public class SecuredPageTemplate extends WebPage {
                 return user;
             }
         }
-        
+
         return null;
     }
 

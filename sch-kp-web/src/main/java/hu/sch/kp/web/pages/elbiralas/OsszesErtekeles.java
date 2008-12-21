@@ -49,6 +49,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
     }
 
     public OsszesErtekeles() {
+        //TODO: csak JETI-nek menjen az oldal
         add(new Label("szemeszter", new PropertyModel(this, "szemeszter")));
         final SortableDataProvider dp = new SortableErtekelesStatisztikaDataProvider(ertekelesManager, getSzemeszter());
         Form form = new Form("elbiralasform") {
