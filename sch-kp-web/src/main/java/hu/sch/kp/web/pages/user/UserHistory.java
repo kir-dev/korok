@@ -52,8 +52,8 @@ public class UserHistory extends SecuredPageTemplate {
         }
 
         Felhasznalo user = userManager.findUserById(id);
+        setHeaderLabelText(user.getNev() + " részletes közösségi története");
         setModel(new CompoundPropertyModel(user));
-        add(new Label("nev"));
 
         List<PontIgeny> pontIgenyek = userManager.getPontIgenyekForUser(user);
         ListView plv = new ListView("pontigeny", pontIgenyek) {

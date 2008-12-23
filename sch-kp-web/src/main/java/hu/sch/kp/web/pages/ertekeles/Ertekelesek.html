@@ -12,38 +12,40 @@
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
             <a wicket:id="ujertekeles"><wicket:message key="ujertekeles"></wicket:message></a><br/>
-            <table wicket:id="ertekelesektabla">
-                <tr>
-                    <th><wicket:message key="szemeszter"/></th>
-                    <th><wicket:message key="pontStatusz"/></th>
-                    <th><wicket:message key="belepoStatusz"/></th>
-                    <th><wicket:message key="utolsoModositas"/></th>
-                    <th><wicket:message key="utolsoElbiralas"/></th>
-                    <th>&nbsp;</th>
-                </tr>
-                <tr wicket:id="ertekeles">
-                    <td>
-                        <a wicket:id="ertekeleslink">
-                            <span wicket:id="ertekelesszemeszter"></span>
-                        </a>
-                    </td>
-                    <td>
-                        <a wicket:id="pontkerelemlink"><span wicket:id="pontStatusz"></span></a>
-                    </td>
-                    <td>
-                        <a wicket:id="belepokerelemlink"><span wicket:id="belepoStatusz"></span></a>
-                    </td>
-                    <td>
-                        <span wicket:id="utolsoModositas"></span>
-                    </td>
-                    <td>
-                        <span wicket:id="utolsoElbiralas"></span>
-                    </td>
-                    <td>
-                        <a wicket:id="uzeneteklink"><wicket:message key="uzenetek"/></a>
-                    </td>
-                </tr>
-            </table>
+            <div id="data">
+                <table wicket:id="ertekelesektabla" class="withheader">
+                    <tr class="headers">
+                        <th><wicket:message key="szemeszter"/></th>
+                        <th><wicket:message key="pontStatusz"/></th>
+                        <th><wicket:message key="belepoStatusz"/></th>
+                        <th><wicket:message key="utolsoModositas"/></th>
+                        <th><wicket:message key="utolsoElbiralas"/></th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    <tr wicket:id="ertekeles">
+                        <td>
+                            <a wicket:id="ertekeleslink">
+                                <span wicket:id="ertekelesszemeszter"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a wicket:id="pontkerelemlink"><span wicket:id="pontStatusz"></span></a>
+                        </td>
+                        <td>
+                            <a wicket:id="belepokerelemlink"><span wicket:id="belepoStatusz"></span></a>
+                        </td>
+                        <td>
+                            <span wicket:id="utolsoModositas"></span>
+                        </td>
+                        <td>
+                            <span wicket:id="utolsoElbiralas"></span>
+                        </td>
+                        <td>
+                            <a wicket:id="uzeneteklink"><wicket:message key="uzenetek"/></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </wicket:extend>
     </body>
 </html>

@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -55,7 +56,7 @@ public class SecuredPageTemplate extends WebPage {
             }
         }
 
-        add(new Label("actualuser", new PropertyModel(getSession().getUser(), "nev")));
+        //add(new Label("actualuser", new PropertyModel(getSession().getUser(), "nev")));
 
         IModel agmodel = null;
         if (getSession().getCsoport() != null) {
@@ -63,7 +64,7 @@ public class SecuredPageTemplate extends WebPage {
         } else {
             agmodel = new StringResourceModel("msg.NoGroupSelected", this, null);
         }
-        add(new Label("actualgroup", agmodel));
+        //add(new Label("actualgroup", agmodel));
 
         IModel szmodel = null;
         Szemeszter szemeszter = getSzemeszter();
@@ -72,9 +73,9 @@ public class SecuredPageTemplate extends WebPage {
         } else {
             szmodel = new StringResourceModel("msg.NoSemester", this, null);
         }
-        add(new Label("actualsemester", szmodel));
+        //add(new Label("actualsemester", szmodel));
 
-        add(new Label("actualidoszak", new StringResourceModel("ertekelesidoszak." + getIdoszak().toString(), this, null)));
+        //add(new Label("actualidoszak", new StringResourceModel("ertekelesidoszak." + getIdoszak().toString(), this, null)));
 
 
         //((VirSession)getSession()).getUser().
@@ -83,9 +84,12 @@ public class SecuredPageTemplate extends WebPage {
         //TODO: csak JETInek jelenjen meg a link
         add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
         add(new BookmarkablePageLink("setsemester", EditSemesterPage.class).setAutoEnable(true));
-        add(new BookmarkablePageLink("selectgroup", SelectGroup.class).setAutoEnable(true));
+        //add(new BookmarkablePageLink("selectgroup", SelectGroup.class).setAutoEnable(true));
         add(new BookmarkablePageLink("setidoszak", EditErtekelesIdoszakPage.class).setAutoEnable(true));
-
+        WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
+        add(headerLabelContainer);
+        headerLabelContainer.add(new Label("headerLabel", new Model()));
+        headerLabelContainer.setVisible(false);
 
         add(new FeedbackPanel("pagemessages"));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
@@ -142,5 +146,15 @@ public class SecuredPageTemplate extends WebPage {
 
     public Felhasznalo getFelhasznalo() {
         return getSession().getUser();
+    }
+
+    public void setHeaderLabelText(String text) {
+        get("headerLabelContainer").setVisible(true);
+        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setModel(new Model(text));
+    }
+
+    public void setHeaderLabelModel(IModel model) {
+        get("headerLabelContainer").setVisible(true);
+        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setModel(model);
     }
 }

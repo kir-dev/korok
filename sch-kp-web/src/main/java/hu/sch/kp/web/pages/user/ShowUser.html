@@ -1,28 +1,29 @@
 <html>
     <body>
         <wicket:extend>
-            <h2><span wicket:id="nev">Név</span> felhasználó adatlapja</h2>
             <h3>Linkek</h3>
             <a href="#" wicket:id="profilelink">Teljes profil</a><br/>
             <a href="#" wicket:id="historylink">Részletes közösségi adatlap</a><br/>
-            <h3>Csoporttagságok</h3>
-            <table>
-                <tr>
-                    <th>Csoport neve</th>
-                    <th>Tagság státusza</th>
-                    <th>Tagsági idő</th>
-                    <!--th>Közösségi pontozások</th-->
-                </tr>
-                <tr wicket:id="csoptagsag">
-                    <td>
-                        <a href="#" wicket:id="csoplink">
-                            <span wicket:id="csoport.nev"/>
-                        </a>
-                    </td>
-                    <td wicket:id="jogok" />
-                    <td><span wicket:id="kezdet"/> - <span wicket:id="veg"/></td>
-                </tr>
-            </table>
+            <h2>Csoporttagságok</h2>
+            <div id="data">
+                    <table class="withheader">
+                        <tr class="headers">
+                            <th>Csoport neve</th>
+                            <th>Betöltött posztat </th>
+                            <th>Tagsági idő</th>
+                            <!--th>Közösségi pontozások</th-->
+                        </tr>
+                        <tr wicket:id="csoptagsag">
+                            <td>
+                                <a href="#" wicket:id="csoplink">
+                                    <span wicket:id="csoport.nev"/>
+                                </a>
+                            </td>
+                            <td wicket:id="jogok" />
+                            <td><span wicket:id="kezdet"/> - <span wicket:id="veg"/></td>
+                        </tr>
+                    </table>
+            </div>
         </wicket:extend>
     </body>
 </html>

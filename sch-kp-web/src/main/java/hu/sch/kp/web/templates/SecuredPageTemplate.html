@@ -1,42 +1,70 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns:wicket="http://wicket.apache.org/">
     <head>
-        <title><wicket:message key="title"/></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1250" />
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <style>
+        <!--<style>
             .kotelezo {
                 border-color: red;
             }
-        </style>
+        </style>-->
     </head>
     <body>
-        <h1><wicket:message key="title"/></h1>
-        <div id="header">
-            <!--a wicket:id="ertekelesek"><wicket:message key="link.ertekelesek"/></a-->
-            <a wicket:id="ertekeleseklink">Közösségi profil</a>
-            &nbsp;|&nbsp;
-            <a wicket:id="elbiralas"><wicket:message key="link.elbiralas"/></a><br/>
-            
-            <wicket:message key="actualuser"/>:&nbsp;
-            <span wicket:id="actualuser"/>
-            &nbsp;|&nbsp;
-            <a wicket:id="selectgroup"><wicket:message key="actualgroup"/></a>:&nbsp;
-            <span wicket:id="actualgroup"/>
-            &nbsp;|&nbsp;
-            <a wicket:id="setsemester"><wicket:message key="actualsemester"/></a>:&nbsp;
-            <span wicket:id="actualsemester"/>
-            &nbsp;|&nbsp;
-            <a wicket:id="setidoszak"><wicket:message key="actualidoszak"/></a>:&nbsp;
-            <span wicket:id="actualidoszak" />
-            <a wicket:id="grouphierarchylink">Egységek</a>
-            &nbsp;|&nbsp;
-            <a wicket:id="showuserlink">Közösségi profil</a>
+        <div id="container">
+            <ul id="navbar">
+                <li><a href="http://idp.sch.bme.hu"><img src="images/navbar/profilIcon.gif" alt="Profil logó" /> VIR Profil</a></li>
+                <li><a href="http://news.sch.bme.hu"><img src="images/navbar/newsIcon.gif" alt="News logó" /> VIR News</a></li>
+                <!--<li class="login"><a wicket:id="logoutPageLink">Kijelentkezés</a></li>-->
+            </ul>
+            <div id="header">
+                <img id="logo" src="images/logoKorok.gif" alt="VIR Körök logó" />
+                <img id="txtVirKorok" src="images/txtVirKorok.png" alt="VIR Körök" />
+                <ul class="horizontal" id="pagemenu">
+                    <li><a wicket:id="ertekeleseklink">Értékelések</a></li>
+                    <li><a wicket:id="elbiralas">Elbírálás</a></li>
+                    <!--<li><a wicket:id="selectgroup">Csoportok</a></li>-->
+                    <li><a wicket:id="setsemester">Szemeszter</a></li>
+                    <li><a wicket:id="setidoszak">Időszakok</a></li>
+                    <li><a wicket:id="grouphierarchylink">Egységek</a></li>
+                    <li><a wicket:id="showuserlink">Közösségi profil</a></li>
+                </ul>
+                <!--<a wicket:id="ertekelesek"><wicket:message key="link.ertekelesek"/></a>&nbsp;|&nbsp;
+                <a wicket:id="elbiralas"><wicket:message key="link.elbiralas"/></a><br/>
+
+                <wicket:message key="actualuser"/>:&nbsp;
+                <span wicket:id="actualuser"/>
+                &nbsp;|&nbsp;
+                <a wicket:id="selectgroup"><wicket:message key="actualgroup"/></a>:&nbsp;
+                <span wicket:id="actualgroup"/>
+                &nbsp;|&nbsp;
+                <a wicket:id="setsemester"><wicket:message key="actualsemester"/></a>:&nbsp;
+                <span wicket:id="actualsemester"/>
+                &nbsp;|&nbsp;
+                <a wicket:id="setidoszak"><wicket:message key="actualidoszak"/></a>:&nbsp;
+                <span wicket:id="actualidoszak" />
+                <a wicket:id="grouphierarchylink">Egységek</a>
+                &nbsp;|&nbsp;
+                <a wicket:id="showuserlink">Közösségi profil</a>-->
+            </div>
+            <div id="content">
+                <div class="header" wicket:id="headerLabelContainer">
+                    <span wicket:id="headerLabel"></span>
+                </div>
+                <wicket:child></wicket:child>
+            </div>
+
+            <div wicket:id="pagemessages" id="pagemessages"></div>
+            <!--<hr/>-->
+            <!--
+                <wicket:child />
+            </div>-->
+            <div id="fogaskerek"></div>
         </div>
-        <div wicket:id="pagemessages" id="pagemessages">
-        </div>
-        <hr/>
-        <div id="content">
-            <wicket:child />
+        <div id="footer">
+            <div id="footercont">
+                <span>&copy; 2008 VIR Profil | Design by KIR-DEV Team</span>
+            </div>
         </div>
     </body>
 </html>

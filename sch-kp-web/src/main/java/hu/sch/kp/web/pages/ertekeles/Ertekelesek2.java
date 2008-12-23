@@ -48,6 +48,7 @@ public class Ertekelesek2 extends SecuredPageTemplate {
     Long id;
 
     public Ertekelesek2() {
+        setHeaderLabelText("Csoportválasztás");
         if (id == null) {
             id = ((VirSession) getSession()).getUser().getId();
         }

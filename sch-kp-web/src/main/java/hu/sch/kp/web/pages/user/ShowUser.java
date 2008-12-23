@@ -49,7 +49,8 @@ public class ShowUser extends SecuredPageTemplate {
 
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
         setModel(new CompoundPropertyModel(user));
-        add(new Label("nev"));
+        setHeaderLabelText(user.getNev() + " felhasználó lapja");
+
         add(new BookmarkablePageLink(
                 "historylink", UserHistory.class,
                 new PageParameters("id=" + id.toString())));

@@ -34,6 +34,7 @@ public class SelectGroup extends SecuredPageTemplate {
 
     public SelectGroup() {
         super();
+        setHeaderLabelText("Csoportválasztás");
         add(new FeedbackPanel("feedback"));
 
         /*        List<Csoport> csoportok = 

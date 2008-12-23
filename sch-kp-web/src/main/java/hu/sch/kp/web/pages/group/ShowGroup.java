@@ -30,6 +30,7 @@ public class ShowGroup extends SecuredPageTemplate {
     UserManagerLocal userManager;
 
     public ShowGroup(PageParameters parameters) {
+        setHeaderLabelText("Csoport adatlap");
         Object p = parameters.get("id");
         Long id = null;
         try {

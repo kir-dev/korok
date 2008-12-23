@@ -27,6 +27,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
     UserManagerLocal userManager;
 
     public GroupHierarchy() {
+        setHeaderLabelText("Csoportok listája");
         TreeModel model = new DefaultTreeModel(
                 new CsoportTreeNode(userManager.getGroupHierarchy()));
         LinkTree tree = new LinkTree("hierarchyTree", model) {
