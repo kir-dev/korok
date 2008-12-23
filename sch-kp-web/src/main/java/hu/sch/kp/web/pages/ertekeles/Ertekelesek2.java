@@ -1,0 +1,158 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package hu.sch.kp.web.pages.ertekeles;
+
+import hu.sch.domain.Csoport;
+import hu.sch.domain.Csoporttagsag;
+import hu.sch.domain.Ertekeles;
+import hu.sch.domain.Felhasznalo;
+import hu.sch.kp.services.ErtekelesManagerLocal;
+import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
+import hu.sch.kp.web.pages.index.Index;
+import hu.sch.kp.web.pages.pontigenyles.PontIgenylesLeadas;
+import hu.sch.kp.web.session.VirSession;
+import hu.sch.kp.web.templates.SecuredPageTemplate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.ejb.EJB;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+
+/**
+ *
+ * @author konvergal
+ */
+public class Ertekelesek2 extends SecuredPageTemplate {
+
+    @EJB(name = "ErtekelesManagerBean")
+    ErtekelesManagerLocal ertekelesManager;
+    @EJB(name = "UserManagerBean")
+    UserManagerLocal userManager;
+    public String selected = "";
+    List<Ertekeles> ertekelesList = new ArrayList<Ertekeles>();
+    Long id;
+
+    public Ertekelesek2() {
+        if (id == null) {
+            id = ((VirSession) getSession()).getUser().getId();
+        }
+        if (id == null) {
+            setResponsePage(Index.class);
+            return;
+        }
+
+        Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
+        user.sortCsoporttagsagok();
+
+        final List<Csoporttagsag> cstag = user.getCsoporttagsagok();
+        Iterator iterator = cstag.iterator();
+        final ArrayList<String> csoportok = new ArrayList<String>();
+        while (iterator.hasNext()) {
+            csoportok.add(((Csoporttagsag) iterator.next()).getCsoport().getNev());
+        }
+        Form csoportForm = new Form("csoportform") {
+
+            @Override
+            protected void onSubmit() {
+                Iterator iterator = cstag.iterator();
+                Csoport cs = null;
+                while (iterator.hasNext()) {
+                    cs = ((Csoporttagsag) iterator.next()).getCsoport();
+                    if (cs.getNev().equals(selected)) {
+                        ((VirSession) getSession()).setCsoport(cs);
+                        setErtekelesList();
+                        break;
+                    }
+                }
+//                if (!continueToOriginalDestination()) {
+//                    setResponsePage(ShowGroup.class, new PageParameters("id=" + cs.getId().toString()));
+//                } else {
+//                return;
+//                }
+            }
+        };
+        DropDownChoice ddc = new DropDownChoice("groups", csoportok);
+
+        ddc.setModel(new PropertyModel(this, "selected"));
+
+        csoportForm.add(ddc);
+        add(csoportForm);
+
+        WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
+        final ListView ertekelesListView = new ListView("ertekeles", ertekelesList) {
+
+            @Override
+            protected void populateItem(ListItem item) {
+                final Ertekeles e = (Ertekeles) item.getModelObject();
+                Link ert = new Link("ertekeleslink") {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new ErtekelesReszletek(e));
+                    }
+                };
+                ert.add(new Label("ertekelesszemeszter", new PropertyModel(e, "szemeszter")));
+                item.add(ert);
+                IModel model = new CompoundPropertyModel(e);
+                item.setModel(model);
+
+                Link uzenetekLink = new Link("uzeneteklink") {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new ErtekelesUzenetek(e.getId()));
+                    }
+                };
+                item.add(uzenetekLink);
+
+                Link pontkerelemLink = new Link("pontkerelemlink", model) {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new PontIgenylesLeadas(e));
+                    }
+                };
+                pontkerelemLink.add(new Label("pontStatusz"));
+                item.add(pontkerelemLink);
+
+                Link belepokerelemLink = new Link("belepokerelemlink", model) {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new BelepoIgenylesLeadas((e)));
+                    }
+                };
+                item.add(belepokerelemLink);
+                belepokerelemLink.add(new Label("belepoStatusz"));
+
+                item.add(DateLabel.forDatePattern("utolsoModositas", "yyyy.MM.dd. kk:mm"));
+                item.add(DateLabel.forDatePattern("utolsoElbiralas", "yyyy.MM.dd. kk:mm"));
+            }
+        };
+        ertekelesListView.setOutputMarkupId(true);
+        table.add(ertekelesListView);
+        add(table);
+    }
+
+    public void setErtekelesList() {
+        Csoport csoport = getCsoport();
+        ertekelesList.clear();
+        ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
+    }
+}
+

@@ -15,6 +15,7 @@ import hu.sch.kp.web.pages.admin.EditErtekelesIdoszakPage;
 import hu.sch.kp.web.pages.admin.EditSemesterPage;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
+import hu.sch.kp.web.pages.ertekeles.Ertekelesek2;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.SelectGroup;
 import hu.sch.kp.web.pages.index.SelectUser;
@@ -78,7 +79,7 @@ public class SecuredPageTemplate extends WebPage {
 
         //((VirSession)getSession()).getUser().
         //TODO: Korvezetonek jelenjen csak meg a link
-        add(new BookmarkablePageLink("ertekelesek", Ertekelesek.class).setAutoEnable(true));
+        //add(new BookmarkablePageLink("ertekelesek", Ertekelesek.class).setAutoEnable(true));
         //TODO: csak JETInek jelenjen meg a link
         add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
         add(new BookmarkablePageLink("setsemester", EditSemesterPage.class).setAutoEnable(true));
@@ -89,6 +90,8 @@ public class SecuredPageTemplate extends WebPage {
         add(new FeedbackPanel("pagemessages"));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
+        
+        add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek2.class));
     }
 
     protected Felhasznalo loadFelhasznalo() {

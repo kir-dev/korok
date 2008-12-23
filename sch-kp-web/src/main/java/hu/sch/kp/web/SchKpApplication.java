@@ -20,6 +20,7 @@ import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
+import hu.sch.kp.web.pages.ertekeles.Ertekelesek2;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.session.VirSession;
@@ -50,12 +51,13 @@ public class SchKpApplication extends WebApplication {
 //        mount("/index", PackageName.forClass(Index.class));
         mount("/felhasznalo", PackageName.forClass(ShowUser.class));
         mount("/csoport", PackageName.forClass(ShowGroup.class));
-        mount("/ertekeles", PackageName.forClass(Ertekelesek.class));
+//        mount("/ertekeles", PackageName.forClass(Ertekelesek.class));
         mount("/pontigenyles", PackageName.forClass(PontIgeny.class));
         mount("/belepoigenyles", PackageName.forClass(BelepoIgeny.class));
         mount("/admin", PackageName.forClass(EditSemesterPage.class));
         mount("/elbiralas", PackageName.forClass(OsszesErtekeles.class));
-        
+
+        mountBookmarkablePage("/ertekeles", Ertekelesek2.class);
 /*        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
         mountBookmarkablePage("/group", ShowGroup.class);
         mountBookmarkablePage("/user123", ShowUser.class);
