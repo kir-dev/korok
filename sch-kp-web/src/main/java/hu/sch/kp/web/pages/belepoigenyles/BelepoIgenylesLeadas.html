@@ -11,23 +11,25 @@
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
-            Csoport: <span wicket:id="csoport.nev"></span><br/>
-            Szemeszter: <span wicket:id="szemeszter"></span><br/><br/>
-            <form wicket:id="igenyekform">
-                <table>
-                    <tr>
-                        <th>Név</th>
-                        <th>Becenév</th>
-                        <th>Belépő típusa</th>
-                    </tr>
-                    <tr wicket:id="igenyek">
-                        <td><span wicket:id="felhasznalo.nev"/></td>
-                        <td><span wicket:id="felhasznalo.becenev"/></td>
-                        <td><select wicket:id="belepotipus"/></td>
-                    </tr>
-                </table>
-                <input type="submit" value="OK"/>
-            </form>
+            <div id="data">
+                Csoport: <span wicket:id="csoport.nev"></span><br/>
+                Szemeszter: <span wicket:id="szemeszter"></span><br/><br/>
+                <form wicket:id="igenyekform">
+                    <table>
+                        <tr>
+                            <th>Név</th>
+                            <th>Becenév</th>
+                            <th>Belépő típusa</th>
+                        </tr>
+                        <tr wicket:id="igenyek">
+                            <td><span wicket:id="felhasznalo.nev"/></td>
+                            <td><span wicket:id="felhasznalo.becenev"/></td>
+                            <td><select wicket:id="belepotipus"/></td>
+                        </tr>
+                    </table>
+                    <input type="submit" value="OK"/>
+                </form>
+            </div>
         </wicket:extend>
     </body>
 </html>

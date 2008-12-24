@@ -11,19 +11,21 @@
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
-            <strong>A belépőigénylés leadása előtt minden színes belépő igényléséhez
-            szöveges indoklást kell fűzöd!</strong><br/>
-            <form wicket:id="indoklasform">
-                <ul>
-                    <li wicket:id="indoklas">
-                        Név: <span wicket:id="felhasznalo.nev"></span><br/>
-                        Becenév: <span wicket:id="felhasznalo.becenev"></span><br/>
-                        Belépőtípus: <span wicket:id="belepotipus"></span><br/>
-                        <textarea wicket:id="szovegesErtekeles"></textarea>
-                    </li>
-                </ul>
-                <input type="submit" value="OK"/>
-            </form>
+            <div id="#data">
+                <strong>A belépőigénylés leadása előtt minden színes belépő igényléséhez
+                szöveges indoklást kell fűznöd!</strong><br/>
+                <form wicket:id="indoklasform">
+                    <ul>
+                        <li wicket:id="indoklas">
+                            Név: <span wicket:id="felhasznalo.nev"></span><br/>
+                            Becenév: <span wicket:id="felhasznalo.becenev"></span><br/>
+                            Belépőtípus: <span wicket:id="belepotipus"></span><br/>
+                            <textarea wicket:id="szovegesErtekeles"></textarea>
+                        </li>
+                    </ul>
+                    <input type="submit" value="OK"/>
+                </form>
+            </div>
         </wicket:extend>
     </body>
 </html>
