@@ -14,19 +14,23 @@
             Csoport: <span wicket:id="csoport.nev"></span><br/>
             Szemeszter: <span wicket:id="szemeszter"></span><br/><br/>
             <form wicket:id="igenyekform">
-                <table>
-                    <tr>
-                        <th>Név</th>
-                        <th>Becenév</th>
-                        <th>Pont</th>
-                    </tr>
-                    <tr wicket:id="igenyek">
-                        <td><span wicket:id="felhasznalo.nev"/></td>
-                        <td><span wicket:id="felhasznalo.becenev"/></td>
-                        <td><input wicket:id="pont"/></td>
-                    </tr>
-                </table>
-                <input type="submit" value="OK"/>
+                <div id="data">
+                    <div class="subdata">
+                        <table class="withheader">
+                            <tr class ="headers">
+                                <th>Név</th>
+                                <th>Becenév</th>
+                                <th>Pont</th>
+                            </tr>
+                            <tr wicket:id="igenyek">
+                                <td><span wicket:id="felhasznalo.nev"/></td>
+                                <td><span wicket:id="felhasznalo.becenev"/></td>
+                                <td><input wicket:id="pont"/></td>
+                            </tr>
+                        </table>
+                        <input type="submit" value="OK"/>
+                    </div>
+                </div>
             </form>
         </wicket:extend>
     </body>

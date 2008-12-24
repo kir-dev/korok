@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.kp.web.pages.admin;
 
 import hu.sch.domain.ErtekelesIdoszak;
@@ -19,35 +18,37 @@ import org.apache.wicket.model.PropertyModel;
  * @author hege
  */
 public class EditErtekelesIdoszakPage extends SecuredPageTemplate {
+
     ErtekelesIdoszak ertekelesIdoszak;
-    
+
     public EditErtekelesIdoszakPage() {
         setErtekelesIdoszak(systemManager.getErtekelesIdoszak());
-        
-        Form ertekelesidoszakform = new Form("ertekelesidoszakform"){
+
+        Form ertekelesidoszakform = new Form("ertekelesidoszakform") {
+
             @Override
             protected void onSubmit() {
                 systemManager.setErtekelesIdoszak(getErtekelesIdoszak());
                 setResponsePage(Index.class);
             }
         };
-        DropDownChoice ddc1 = new DropDownChoice("ertekelesidoszak", 
+        DropDownChoice ddc1 = new DropDownChoice("ertekelesidoszak",
                 Arrays.asList(ErtekelesIdoszak.values()));
         ddc1.setRequired(true);
-        ddc1.setModel(new PropertyModel(this,"ertekelesIdoszak"));
-        
+        ddc1.setModel(new PropertyModel(this, "ertekelesIdoszak"));
+
         ddc1.setChoiceRenderer(new IChoiceRenderer() {
-            
+
             public Object getDisplayValue(Object object) {
-                return getLocalizer().getString("ertekelesidoszak."+object.toString(), getParent());
+                return getLocalizer().getString("ertekelesidoszak." + object.toString(), getParent());
             }
 
             public String getIdValue(Object object, int index) {
                 return object.toString();
             }
         });
-        
-        ertekelesidoszakform.add(ddc1);        
+
+        ertekelesidoszakform.add(ddc1);
         add(ertekelesidoszakform);
     }
 
@@ -58,6 +59,4 @@ public class EditErtekelesIdoszakPage extends SecuredPageTemplate {
     public void setErtekelesIdoszak(ErtekelesIdoszak idoszak) {
         this.ertekelesIdoszak = idoszak;
     }
-    
-    
 }

@@ -37,7 +37,7 @@ public class Ertekelesek extends SecuredPageTemplate {
         super();
         //TODO: csak korvezetonek menjen az oldal.
         WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
-        
+
         Csoport csoport = getCsoport();
         List<Ertekeles> list = ertekelesManager.findErtekeles(csoport);
         ListView ertekelesek = new ListView("ertekeles", list) {
@@ -56,36 +56,36 @@ public class Ertekelesek extends SecuredPageTemplate {
                 item.add(ert);
                 IModel model = new CompoundPropertyModel(e);
                 item.setModel(model);
-                
+
                 Link uzenetekLink = new Link("uzeneteklink") {
+
                     @Override
                     public void onClick() {
                         setResponsePage(new ErtekelesUzenetek(e.getId()));
                     }
                 };
                 item.add(uzenetekLink);
-                
+
                 Link pontkerelemLink = new Link("pontkerelemlink", model) {
 
                     @Override
                     public void onClick() {
                         setResponsePage(new PontIgenylesLeadas(e));
-                    }  
+                    }
                 };
                 pontkerelemLink.add(new Label("pontStatusz"));
                 item.add(pontkerelemLink);
-                
+
                 Link belepokerelemLink = new Link("belepokerelemlink", model) {
 
                     @Override
                     public void onClick() {
                         setResponsePage(new BelepoIgenylesLeadas((e)));
                     }
-                    
                 };
                 item.add(belepokerelemLink);
                 belepokerelemLink.add(new Label("belepoStatusz"));
-                
+
                 item.add(DateLabel.forDatePattern("utolsoModositas", "yyyy.MM.dd. kk:mm"));
                 item.add(DateLabel.forDatePattern("utolsoElbiralas", "yyyy.MM.dd. kk:mm"));
             }
@@ -108,6 +108,7 @@ public class Ertekelesek extends SecuredPageTemplate {
         if (!ertekelesManager.isErtekelesLeadhato(csoport)) {
             ujertekeles.setVisible(false);
         }
+        System.out.println(ertekelesManager.isErtekelesLeadhato(csoport));
         add(ujertekeles);
     }
 }

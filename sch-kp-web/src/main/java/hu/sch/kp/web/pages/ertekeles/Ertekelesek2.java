@@ -10,6 +10,7 @@ import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.pontigenyles.PontIgenylesLeadas;
@@ -19,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -46,6 +45,7 @@ public class Ertekelesek2 extends SecuredPageTemplate {
     public String selected = "";
     List<Ertekeles> ertekelesList = new ArrayList<Ertekeles>();
     Long id;
+    Csoport csoport;
 
     public Ertekelesek2() {
         setHeaderLabelText("Csoportválasztás");
@@ -75,6 +75,7 @@ public class Ertekelesek2 extends SecuredPageTemplate {
                 while (iterator.hasNext()) {
                     cs = ((Csoporttagsag) iterator.next()).getCsoport();
                     if (cs.getNev().equals(selected)) {
+                        setHeaderLabelText(cs.getNev() + " csoport értékelései");
                         ((VirSession) getSession()).setCsoport(cs);
                         setErtekelesList();
                         break;
@@ -148,10 +149,28 @@ public class Ertekelesek2 extends SecuredPageTemplate {
         ertekelesListView.setOutputMarkupId(true);
         table.add(ertekelesListView);
         add(table);
+
+        setErtekelesList();
+        if (ertekelesList.size() == 0) {
+            info(getLocalizer().getString("info.NincsErtekeles", this));
+            table.setVisible(false);
+        }
+
+        Link ujertekeles = new Link("ujertekeles") {
+
+            @Override
+            public void onClick() {
+                setResponsePage(UjErtekeles.class);
+            }
+        };
+        if (!ertekelesManager.isErtekelesLeadhato(csoport)) {
+            ujertekeles.setVisible(false);
+        }
+        add(ujertekeles);
     }
 
     public void setErtekelesList() {
-        Csoport csoport = getCsoport();
+        csoport = getCsoport();
         ertekelesList.clear();
         ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
     }

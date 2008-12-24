@@ -33,6 +33,7 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
     UserManagerLocal userManager;
     
     public PontIgenylesLeadas(Ertekeles ert) {
+        setHeaderLabelText("Pontigénylés leadása");
         //TODO jogosultság?!
         final Long ertekelesId = ert.getId();
         final List<PontIgeny> igenylista = igenyeketElokeszit(ert);

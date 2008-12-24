@@ -11,10 +11,8 @@ import hu.sch.domain.Szemeszter;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
-import hu.sch.kp.web.pages.admin.EditErtekelesIdoszakPage;
-import hu.sch.kp.web.pages.admin.EditSemesterPage;
+import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
-import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek2;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.SelectGroup;
@@ -83,9 +81,11 @@ public class SecuredPageTemplate extends WebPage {
         //add(new BookmarkablePageLink("ertekelesek", Ertekelesek.class).setAutoEnable(true));
         //TODO: csak JETInek jelenjen meg a link
         add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
-        add(new BookmarkablePageLink("setsemester", EditSemesterPage.class).setAutoEnable(true));
+        //TODO: csak JETInek jelenjen meg
+        add(new BookmarkablePageLink("editsettings", EditSettings.class).setAutoEnable(true));
+        //add(new BookmarkablePageLink("setsemester", EditSemesterPage.class).setAutoEnable(true));
         //add(new BookmarkablePageLink("selectgroup", SelectGroup.class).setAutoEnable(true));
-        add(new BookmarkablePageLink("setidoszak", EditErtekelesIdoszakPage.class).setAutoEnable(true));
+        //add(new BookmarkablePageLink("setidoszak", EditErtekelesIdoszakPage.class).setAutoEnable(true));
         WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
         headerLabelContainer.add(new Label("headerLabel", new Model()));
