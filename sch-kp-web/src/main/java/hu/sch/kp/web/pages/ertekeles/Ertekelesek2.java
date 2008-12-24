@@ -81,8 +81,12 @@ public class Ertekelesek2 extends SecuredPageTemplate {
                         setHeaderLabelText(cs.getNev() + " csoport értékelései");
                         ((VirSession) getSession()).setCsoport(cs);
                         updateErtekelesList();
-                        ujertekeles.setVisible(!(ertekelesList.size() == 0));
-                        ujertekeles.setVisible(!ertekelesManager.isErtekelesLeadhato(csoport));
+                        if ((ertekelesList.size() == 0) || (!ertekelesManager.isErtekelesLeadhato(csoport))) {
+                            ujertekeles.setVisible(false);
+                        } else {
+                            ujertekeles.setVisible(true);
+                        }
+
                         break;
                     }
                 }
@@ -168,8 +172,11 @@ public class Ertekelesek2 extends SecuredPageTemplate {
 //            info(getLocalizer().getString("info.NincsErtekeles", this));
 //            ujertekeles.setVisible(false);
 //        }
-        ujertekeles.setVisible(!(ertekelesList.size() == 0));
-        ujertekeles.setVisible(!ertekelesManager.isErtekelesLeadhato(csoport));
+        if ((ertekelesList.size() == 0) || (!ertekelesManager.isErtekelesLeadhato(csoport))) {
+            ujertekeles.setVisible(false);
+        } else {
+            ujertekeles.setVisible(true);
+        }
     }
 
     public void updateErtekelesList() {
