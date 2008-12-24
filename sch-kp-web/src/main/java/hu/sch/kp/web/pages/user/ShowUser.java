@@ -51,12 +51,12 @@ public class ShowUser extends SecuredPageTemplate {
         setModel(new CompoundPropertyModel(user));
         setHeaderLabelText(user.getNev() + " felhasználó lapja");
 
-        add(new BookmarkablePageLink(
+       /* add(new BookmarkablePageLink(
                 "historylink", UserHistory.class,
                 new PageParameters("id=" + id.toString())));
 
         add(new ExternalLink("profilelink",
-                "https://idp.sch.bme.hu/profile/show/virid/" + id.toString()));
+                "https://idp.sch.bme.hu/profile/show/virid/" + id.toString()));*/
         user.sortCsoporttagsagok();
         ListView csoptagsagok = new ListView("csoptagsag", user.getCsoporttagsagok()) {
 
@@ -69,7 +69,7 @@ public class ShowUser extends SecuredPageTemplate {
                         new PageParameters("id=" + cs.getCsoport().getId().toString()));
                 csoplink.add(new Label("csoport.nev"));
                 item.add(csoplink);
-                item.add(new Label("jogok"));
+                item.add(new Label("jogok",cs.getJogokString()));
                 item.add(DateLabel.forDatePattern("kezdet", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("veg", "yyyy.MM.dd."));
             }
