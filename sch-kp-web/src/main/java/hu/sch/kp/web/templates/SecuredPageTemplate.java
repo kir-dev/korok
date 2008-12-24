@@ -91,7 +91,7 @@ public class SecuredPageTemplate extends WebPage {
         headerLabelContainer.add(new Label("headerLabel", new Model()));
         headerLabelContainer.setVisible(false);
 
-        add(new FeedbackPanel("pagemessages"));
+        //add(new FeedbackPanel("pagemessages"));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         

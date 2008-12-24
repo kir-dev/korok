@@ -5,7 +5,7 @@
 a {
 	text-decoration: none;
 	font-weight: bold;
-	font-size: 13px;
+	font-size: 12px;
 	color: #1E4565;
 	border-bottom: 1px dotted #1E4565;
 }
@@ -198,7 +198,7 @@ select.wide { width: 355px; }
   margin-left: 60px;
 	margin-bottom: 15px;
 	width: 440px;
-	font-size: 13px;
+	font-size: 12px;
 }
 
 .listtitle {
@@ -269,18 +269,18 @@ select.wide { width: 355px; }
 }
 
 /* Hibaüzenethez tartozó cuccok */
-#feedbackPanel ul li {
+#pagemessages ul li {
 	list-style: none;
 	background: #D9EBF9 url('../images/bckgNotice.gif') top left repeat-x;
 }
-#feedbackPanel ul li .feedbackPanelERROR, #feedbackPanel ul li .feedbackPanelINFO {
+#pagemessages ul li .feedbackPanelERROR, #pagemessages ul li .feedbackPanelINFO {
 	display: block;
-	font-size: 13px;
+	font-size: 12px;
 	padding: 6px 0 6px 36px;
 }
-#feedbackPanel ul li .feedbackPanelERROR { background: url('../images/iconError.gif') top left no-repeat; }
-#feedbackPanel ul li .feedbackPanelINFO { background: url('../images/iconInfo.gif') top left no-repeat; }
-#feedbackPanel ul {
+#pagemessages ul li .feedbackPanelERROR { background: url('../images/iconError.gif') top left no-repeat; }
+#pagemessages ul li .feedbackPanelINFO { background: url('../images/iconInfo.gif') top left no-repeat; }
+#pagemessages ul {
 	border: 1px solid #CBE5F7;
 	width: 480px;
 	margin-top: 15px;
@@ -316,12 +316,16 @@ select.wide { width: 355px; }
 
 table {
 	border-spacing: 0;
+        width: 840px;
 }
 #data {
-	margin: 10px 30px;
+    margin: 0 30px;
+    padding-bottom: 200px;
 }
 h2 {
 	margin-top: 12px;
+        /*margin-left: 30px;*/
+        margin-bottom: 3px;
 	font-size: 25px;
 }
 .subdata {
@@ -335,7 +339,9 @@ td.label {
 	width: 450px;
 }
 table.withheader th, table.withheader td {
-	padding: 5px;
+    border-bottom:1px solid #9DC5D6;
+    font-size: 12px;
+	padding: 5px 0 4px 15px;
 }
 th {
 	height: 26px;

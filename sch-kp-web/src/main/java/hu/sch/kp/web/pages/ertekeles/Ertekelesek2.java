@@ -10,7 +10,6 @@ import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
-import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.pontigenyles.PontIgenylesLeadas;
@@ -28,6 +27,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
@@ -46,6 +46,8 @@ public class Ertekelesek2 extends SecuredPageTemplate {
     List<Ertekeles> ertekelesList = new ArrayList<Ertekeles>();
     Long id;
     Csoport csoport;
+    Link ujertekeles;
+    ListView ertekelesListView;
 
     public Ertekelesek2() {
         setHeaderLabelText("Csoportválasztás");
@@ -56,6 +58,7 @@ public class Ertekelesek2 extends SecuredPageTemplate {
             setResponsePage(Index.class);
             return;
         }
+        add(new FeedbackPanel("pagemessages"));
 
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
         user.sortCsoporttagsagok();
@@ -69,7 +72,7 @@ public class Ertekelesek2 extends SecuredPageTemplate {
         Form csoportForm = new Form("csoportform") {
 
             @Override
-            protected void onSubmit() {
+            public void onSubmit() {
                 Iterator iterator = cstag.iterator();
                 Csoport cs = null;
                 while (iterator.hasNext()) {
@@ -77,7 +80,9 @@ public class Ertekelesek2 extends SecuredPageTemplate {
                     if (cs.getNev().equals(selected)) {
                         setHeaderLabelText(cs.getNev() + " csoport értékelései");
                         ((VirSession) getSession()).setCsoport(cs);
-                        setErtekelesList();
+                        updateErtekelesList();
+                        ujertekeles.setVisible(!(ertekelesList.size() == 0));
+                        ujertekeles.setVisible(!ertekelesManager.isErtekelesLeadhato(csoport));
                         break;
                     }
                 }
@@ -96,7 +101,7 @@ public class Ertekelesek2 extends SecuredPageTemplate {
         add(csoportForm);
 
         WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
-        final ListView ertekelesListView = new ListView("ertekeles", ertekelesList) {
+        ertekelesListView = new ListView("ertekeles", ertekelesList) {
 
             @Override
             protected void populateItem(ListItem item) {
@@ -146,33 +151,33 @@ public class Ertekelesek2 extends SecuredPageTemplate {
                 item.add(DateLabel.forDatePattern("utolsoElbiralas", "yyyy.MM.dd. kk:mm"));
             }
         };
-        ertekelesListView.setOutputMarkupId(true);
         table.add(ertekelesListView);
         add(table);
 
-        setErtekelesList();
-        if (ertekelesList.size() == 0) {
-            info(getLocalizer().getString("info.NincsErtekeles", this));
-            table.setVisible(false);
-        }
-
-        Link ujertekeles = new Link("ujertekeles") {
+        ujertekeles = new Link("ujertekeles") {
 
             @Override
             public void onClick() {
                 setResponsePage(UjErtekeles.class);
             }
         };
-        if (!ertekelesManager.isErtekelesLeadhato(csoport)) {
-            ujertekeles.setVisible(false);
-        }
         add(ujertekeles);
+
+//        updateErtekelesList();
+//        if (ertekelesList.size() == 0) {
+//            info(getLocalizer().getString("info.NincsErtekeles", this));
+//            ujertekeles.setVisible(false);
+//        }
+        ujertekeles.setVisible(!(ertekelesList.size() == 0));
+        ujertekeles.setVisible(!ertekelesManager.isErtekelesLeadhato(csoport));
     }
 
-    public void setErtekelesList() {
-        csoport = getCsoport();
-        ertekelesList.clear();
-        ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
+    public void updateErtekelesList() {
+        csoport = ((VirSession) getSession()).getCsoport();
+        if (csoport != null) {
+            ertekelesList.clear();
+            ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
+        }
     }
 }
 
