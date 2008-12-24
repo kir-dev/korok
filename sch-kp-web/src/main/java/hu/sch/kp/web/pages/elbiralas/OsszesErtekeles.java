@@ -24,6 +24,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -50,6 +51,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
 
     public OsszesErtekeles() {
         //TODO: csak JETI-nek menjen az oldal
+        add(new FeedbackPanel("pagemessages"));
         add(new Label("szemeszter", new PropertyModel(this, "szemeszter")));
         final SortableDataProvider dp = new SortableErtekelesStatisztikaDataProvider(ertekelesManager, getSzemeszter());
         Form form = new Form("elbiralasform") {
