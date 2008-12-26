@@ -33,7 +33,7 @@ public class SortableErtekelesStatisztikaDataProvider extends SortableDataProvid
     
     public Iterator iterator(int first, int count) {
         // cache-elt példány
-        statList = null;
+        //statList = null;
         return getStatList().iterator();
     }
 

@@ -13,7 +13,7 @@ import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
 import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
-import hu.sch.kp.web.pages.ertekeles.Ertekelesek2;
+import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.SelectGroup;
 import hu.sch.kp.web.pages.index.SelectUser;
@@ -95,7 +95,7 @@ public class SecuredPageTemplate extends WebPage {
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         
-        add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek2.class));
+        add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class));
     }
 
     protected Felhasznalo loadFelhasznalo() {

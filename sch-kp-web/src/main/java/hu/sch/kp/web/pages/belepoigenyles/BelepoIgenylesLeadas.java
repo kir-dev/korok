@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -48,6 +48,7 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 setResponsePage(new BelepoIgenylesIndoklas(ert, igenylista));
+                return;
             }
         };
         IDataProvider provider = new ListDataProviderCompoundPropertyModelImpl(igenylista);

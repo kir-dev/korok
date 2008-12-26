@@ -1,6 +1,7 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ * backup 2008-12-25
  */
 package hu.sch.kp.web.pages.elbiralas;
 
@@ -12,6 +13,7 @@ import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.components.ErtekelesStatuszValaszto;
 import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLoc
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -53,7 +56,8 @@ public class OsszesErtekeles extends SecuredPageTemplate {
         //TODO: csak JETI-nek menjen az oldal
         add(new FeedbackPanel("pagemessages"));
         add(new Label("szemeszter", new PropertyModel(this, "szemeszter")));
-        final SortableDataProvider dp = new SortableErtekelesStatisztikaDataProvider(ertekelesManager, getSzemeszter());
+        SortableDataProvider dp = new SortableErtekelesStatisztikaDataProvider(ertekelesManager, getSzemeszter());
+        
         Form form = new Form("elbiralasform") {
 
             @Override
@@ -106,23 +110,20 @@ public class OsszesErtekeles extends SecuredPageTemplate {
 
             @Override
             protected void populateItem(Item item) {
-                final Ertekeles ert = ((ErtekelesStatisztika) item.getModelObject()).getErtekeles();
+                Ertekeles ert = ((ErtekelesStatisztika) item.getModelObject()).getErtekeles();
                 ElbiraltErtekeles ee = null;
                 if (!getElbiralasAlatt().containsKey(ert.getId())) {
-                    ee = new ElbiraltErtekeles(ert,
-                            ErtekelesStatusz.valueOf(ert.getPontStatusz().toString()),
-                            ErtekelesStatusz.valueOf(ert.getBelepoStatusz().toString()));
+                    ee = new ElbiraltErtekeles(ert, ert.getPontStatusz(), ert.getBelepoStatusz());
                     getElbiralasAlatt().put(ert.getId(), ee);
                 } else {
                     ee = getElbiralasAlatt().get(ert.getId());
                 }
-                IModel newModel = new CompoundPropertyModel(ee);
-                
+
                 Link ertekeleslink = new Link("ertekeleslink") {
 
                     @Override
                     public void onClick() {
-                        setResponsePage(new ErtekelesReszletek(ert, getPage()));
+                        //setResponsePage(new ErtekelesReszletek(ert, getPage()));
                     }
                 };
                 item.add(ertekeleslink);
@@ -134,8 +135,10 @@ public class OsszesErtekeles extends SecuredPageTemplate {
 
                 Component pontStatusz = new ErtekelesStatuszValaszto("pontStatusz");
                 Component belepoStatusz = new ErtekelesStatuszValaszto("belepoStatusz");
-                pontStatusz.setModel(newModel);
-                belepoStatusz.setModel(newModel);
+                
+                //IModel newModel = new CompoundPropertyModel(ee);
+                pontStatusz.setModel(new PropertyModel(ee, "pontStatusz"));
+                belepoStatusz.setModel(new PropertyModel(ee, "belepoStatusz"));
                 item.add(pontStatusz);
                 item.add(belepoStatusz);
             }

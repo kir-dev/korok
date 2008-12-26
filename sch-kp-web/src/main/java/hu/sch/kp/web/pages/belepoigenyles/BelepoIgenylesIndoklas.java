@@ -34,11 +34,13 @@ public class BelepoIgenylesIndoklas extends SecuredPageTemplate {
 
     public BelepoIgenylesIndoklas(final Ertekeles ert, final List<BelepoIgeny> igenyek) {
         List<BelepoIgeny> indoklando = kellIndoklas(igenyek);
+        indoklando.size();
+        
         if (indoklando.size() == 0) {
+//            setResponsePage(new Ertekelesek());
             ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek);
-            getSession().info("Belépőigények elmentve");
-            setResponsePage(Ertekelesek.class);
-            return;
+//            getSession().info("Belépőigények elmentve");
+//            return;
         }
 
         Form indoklasform = new Form("indoklasform") {

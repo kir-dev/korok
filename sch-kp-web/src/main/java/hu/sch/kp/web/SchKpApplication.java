@@ -18,11 +18,8 @@ import hu.sch.kp.web.pages.admin.EditSemesterPage;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
-import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
-import hu.sch.kp.web.pages.ertekeles.Ertekelesek2;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
-import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
 import org.apache.wicket.IConverterLocator;
@@ -57,7 +54,7 @@ public class SchKpApplication extends WebApplication {
         mount("/admin", PackageName.forClass(EditSemesterPage.class));
         mount("/elbiralas", PackageName.forClass(OsszesErtekeles.class));
 
-        mountBookmarkablePage("/ertekeles", Ertekelesek2.class);
+        mountBookmarkablePage("/ertekeles", Ertekelesek.class);
 /*        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
         mountBookmarkablePage("/group", ShowGroup.class);
         mountBookmarkablePage("/user123", ShowUser.class);

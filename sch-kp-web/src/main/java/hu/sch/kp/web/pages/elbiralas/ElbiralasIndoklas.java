@@ -6,7 +6,6 @@ package hu.sch.kp.web.pages.elbiralas;
 
 import hu.sch.domain.ElbiraltErtekeles;
 import hu.sch.domain.ErtekelesStatusz;
-import hu.sch.domain.PontIgeny;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.target.component.listener.BehaviorRequestTarget;
 
 /**
  *
