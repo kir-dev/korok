@@ -8,6 +8,7 @@ import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
+import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
@@ -143,7 +144,7 @@ public class Ertekelesek extends SecuredPageTemplate {
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
         user.sortCsoporttagsagok();
 
-        final List<Csoporttagsag> cstag = user.getCsoporttagsagok();
+        final List<Csoporttagsag> cstag = user.getCsoporttagsagokAholSzerepbenVagyok(TagsagTipus.KORVEZETO);
         Iterator iterator = cstag.iterator();
         final ArrayList<String> csoportok = new ArrayList<String>();
         while (iterator.hasNext()) {

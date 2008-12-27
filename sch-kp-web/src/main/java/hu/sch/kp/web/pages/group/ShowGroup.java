@@ -55,7 +55,7 @@ public class ShowGroup extends SecuredPageTemplate {
                 Csoporttagsag cs = (Csoporttagsag) item.getModelObject();
                 item.setModel(new CompoundPropertyModel(cs));
                 item.add(new FelhasznaloLink("felhlink", cs.getFelhasznalo()));
-                item.add(new Label("jogok"));
+                item.add(new Label("jogok", cs.getJogokString()));
                 item.add(DateLabel.forDatePattern("kezdet", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("veg", "yyyy.MM.dd."));
             }

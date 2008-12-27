@@ -23,19 +23,19 @@ public interface UserManagerLocal {
     Felhasznalo saveOrAddUser(Felhasznalo user) throws UserAlreadyExistsException;
 
     Felhasznalo findUserById(Long userId);
-    
+
     Felhasznalo findUserWithCsoporttagsagokById(Long userId);
 
     void addUserToGroup(Felhasznalo user, Csoport group, Date membership_start, Date membership_end);
 
     List<Csoport> getAllGroups();
-    
+
     Csoport getGroupHierarchy();
 
     Csoport findGroupByName(String name);
-    
+
     Csoport findGroupById(Long id);
-    
+
     Csoport findGroupWithCsoporttagsagokById(Long id);
 
     Csoport saveOrAddGroup(Csoport group) throws GroupAlreadyExistsException;
@@ -43,10 +43,12 @@ public interface UserManagerLocal {
     void modifyMembership(Felhasznalo user, Csoport group, Date start, Date end);
 
     void deleteMembership(Felhasznalo user, Csoport group);
-    
+
     List<Felhasznalo> getCsoporttagok(Long csoportId);
-    
+
+    List<Felhasznalo> getCsoporttagokWithoutOregtagok(Long csoportId);
+
     List<BelepoIgeny> getBelepoIgenyekForUser(Felhasznalo felhasznalo);
-    
+
     List<PontIgeny> getPontIgenyekForUser(Felhasznalo felhasznalo);
 }

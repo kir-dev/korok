@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.kp.web.pages.pontigenyles;
 
 import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
@@ -27,30 +26,33 @@ import org.apache.wicket.model.CompoundPropertyModel;
  * @author hege
  */
 public class PontIgenylesLeadas extends SecuredPageTemplate {
-    @EJB(name="ErtekelesManagerBean")
+
+    @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
-    @EJB(name="UserManagerBean")
+    @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
-    
+
     public PontIgenylesLeadas(Ertekeles ert) {
         setHeaderLabelText("Pontigénylés leadása");
         //TODO jogosultság?!
         final Long ertekelesId = ert.getId();
         final List<PontIgeny> igenylista = igenyeketElokeszit(ert);
-        
+
         setModel(new CompoundPropertyModel(ert));
         add(new Label("csoport.nev"));
         add(new Label("szemeszter"));
-        
-        Form igform = new Form("igenyekform"){
+
+        Form igform = new Form("igenyekform") {
+
             @Override
             protected void onSubmit() {
                 ertekelesManager.pontIgenyekLeadasa(ertekelesId, igenylista);
             }
         };
-        
+
         IDataProvider provider = new ListDataProviderCompoundPropertyModelImpl(igenylista);
         DataView dview = new DataView("igenyek", provider) {
+
             @Override
             protected void populateItem(Item item) {
                 item.add(new Label("felhasznalo.nev"));
@@ -58,15 +60,15 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
                 item.add(new TextField("pont"));
             }
         };
-        
+
         igform.add(dview);
         add(igform);
     }
-    
+
     private List<PontIgeny> igenyeketElokeszit(Ertekeles ert) {
-        List<Felhasznalo> csoporttagok = userManager.getCsoporttagok(ert.getCsoport().getId());
+        List<Felhasznalo> csoporttagok = userManager.getCsoporttagokWithoutOregtagok(ert.getCsoport().getId());
         List<PontIgeny> igenyek = ertekelesManager.findPontIgenyekForErtekeles(ert.getId());
-        
+
         //tagok és igények összefésülése
         if (igenyek.size() == 0) {
             for (Felhasznalo f : csoporttagok) {
@@ -79,7 +81,7 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
                 throw new UnsupportedOperationException("PontIgény - Csoporttag összefésülés még nincs implementálva");
             }
         }
-        
+
         return igenyek;
     }
 }

@@ -29,6 +29,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "grp_members")
 public class Csoporttagsag implements Serializable {
+
     private static final long serialVersionUID = 1L;
     public static final String find = "findCsoporttagsag";
     private CsoporttagsagPK id;
@@ -46,9 +47,9 @@ public class Csoporttagsag implements Serializable {
      * Jogok tárolására bitmaszk
      */
     private Long jogok;
-    
+
     @ManyToOne(optional = false)
-    @JoinColumn(name = "grp_id",insertable=false,updatable=false)
+    @JoinColumn(name = "grp_id", insertable = false, updatable = false)
     public Csoport getCsoport() {
         return csoport;
     }
@@ -58,7 +59,7 @@ public class Csoporttagsag implements Serializable {
     }
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "usr_id",insertable=false,updatable=false)
+    @JoinColumn(name = "usr_id", insertable = false, updatable = false)
     public Felhasznalo getFelhasznalo() {
         return felhasznalo;
     }
@@ -100,46 +101,30 @@ public class Csoporttagsag implements Serializable {
         this.veg = veg;
     }
 
-    @Column(name="member_rights",nullable=false,columnDefinition="INTEGER")
+    @Column(name = "member_rights", nullable = false, columnDefinition = "INTEGER")
     public Long getJogok() {
         return jogok;
     }
 
     @Transient
     public String getJogokString() {
-        Long jogok1 = getJogok();
-        String[] names = new String[16];
-        names[0] = "körvezető";
-        //names[1] = "öregtag";
-        names[2] = "gazdaságis";
-        //names[3] = "ismeretlen";
-        //names[4] = "ismeretlen";
-        //names[15] = "jelentkező";
-        String ret = new String();
-        if (jogok1 == 0) {
-            ret = "tag";
-            return ret;
+        if (veg != null) {
+            return "öregtag";
         }
-        for (int i = 0;i<16;i++)
-            if ((jogok1 & (1 << i)) != 0)
-                ret += (ret.length() != 0) ? "," + names[i] : names[i];
-        //ret += jogok1.toString();
-        return ret;
+        return TagsagTipus.getTagsagTipusByJogok(jogok);
     }
 
-    @Transient
-    public boolean isKorvezeto() {
-        Long jogok1 = getJogok();
-        if ((jogok1 & 1) != 0)
-            return true;
-        else
-            return false;
-    }
-    
+//    @Transient
+//    public boolean isKorvezeto() {
+//        Long jogok1 = getJogok();
+//        if ((jogok1 & 1) != 0) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
     public void setJogok(Long jogok) {
         this.jogok = jogok;
     }
-    
-   
 }
 

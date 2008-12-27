@@ -32,7 +32,7 @@ public class UserManagerBean implements UserManagerLocal {
         throw new UnsupportedOperationException();
     }
 
-    public Felhasznalo saveOrAddUser(Felhasznalo user) throws 
+    public Felhasznalo saveOrAddUser(Felhasznalo user) throws
             UserAlreadyExistsException {
         if (user.getId() != null) {
             em.persist(user);
@@ -87,12 +87,12 @@ public class UserManagerBean implements UserManagerLocal {
         }*/
         throw new UnsupportedOperationException();
     }
-    
+
     public Csoport findGroupById(Long id) {
         return em.find(Csoport.class, id);
     }
 
-    public Csoport saveOrAddGroup(Csoport group) throws 
+    public Csoport saveOrAddGroup(Csoport group) throws
             GroupAlreadyExistsException {
         /*Csoport oldgroup = findGroupByName(group.getNev());
         if (oldgroup != null && oldgroup.getId() != group.getId()) {
@@ -120,6 +120,20 @@ public class UserManagerBean implements UserManagerLocal {
         q.executeUpdate();
         em.flush();
         em.clear(); //???*/
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public List<Felhasznalo> getCsoporttagokWithoutOregtagok(Long csoportId) {
+        //Csoport cs = em.find(Csoport.class, csoportId);
+        Query q =
+                em.createQuery("SELECT cst.felhasznalo FROM Csoporttagsag cst JOIN " +
+                "cst.felhasznalo " +
+                "WHERE cst.csoport.id=:csoportId AND cst.veg=NULL " +
+                "ORDER BY cst.felhasznalo.vezeteknev ASC, cst.felhasznalo.keresztnev ASC");
+
+        q.setParameter("csoportId", csoportId);
+
+        return q.getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -160,7 +174,7 @@ public class UserManagerBean implements UserManagerLocal {
         Csoport rootCsoport = new Csoport();
         List<Csoport> rootCsoportok = new LinkedList<Csoport>();
         rootCsoport.setAlcsoportok(rootCsoportok);
-        
+
         for (Csoport cs : csoportok) {
             if (cs.getSzulo() != null) {
                 if (cs.getSzulo().getAlcsoportok() == null) {
@@ -171,21 +185,21 @@ public class UserManagerBean implements UserManagerLocal {
                 rootCsoportok.add(cs);
             }
         }
-        
+
         return rootCsoport;
     }
 
     public Felhasznalo findUserWithCsoporttagsagokById(Long userId) {
         Query q = em.createNamedQuery("findUserWithCsoporttagsagok");
         q.setParameter("id", userId);
-        
-        return (Felhasznalo)q.getSingleResult();
+
+        return (Felhasznalo) q.getSingleResult();
     }
 
     public Csoport findGroupWithCsoporttagsagokById(Long id) {
         Query q = em.createNamedQuery("findCsoportWithCsoporttagsagok");
         q.setParameter("id", id);
-        
-        return (Csoport)q.getSingleResult();
+
+        return (Csoport) q.getSingleResult();
     }
 }

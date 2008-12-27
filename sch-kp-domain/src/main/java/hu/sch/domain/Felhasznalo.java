@@ -154,6 +154,10 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
         return csoporttagsagok;
     }
 
+    public List<Csoporttagsag> getCsoporttagsagokAholSzerepbenVagyok(TagsagTipus type){
+        return TagsagTipus.getCsoportokWhereSzerepbenVagyok(csoporttagsagok, type);
+    }
+
     public void setCsoporttagsagok(List<Csoporttagsag> csoporttagsagok) {
         this.csoporttagsagok = csoporttagsagok;
     }
