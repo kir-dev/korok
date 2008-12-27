@@ -4,10 +4,6 @@
  */
 package hu.sch.domain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  *
  * @author major
@@ -65,7 +61,7 @@ public enum TagsagTipus {
     };
     private final int value;
     private static final String[] enumString;
-
+    
 
     static {
         enumString = new String[16];
@@ -108,17 +104,5 @@ public enum TagsagTipus {
             }
         }
         return false;
-    }
-
-    static List<Csoporttagsag> getCsoportokWhereSzerepbenVagyok(List<Csoporttagsag> cstagsag, TagsagTipus type) {
-        List ret = new ArrayList<Csoporttagsag>();
-        Iterator iterator = cstagsag.iterator();
-        while (iterator.hasNext()) {
-            Csoporttagsag tagsag = (Csoporttagsag) iterator.next();
-            if (hasJogCsoportban(tagsag, type)) {
-                ret.add(tagsag);
-            }
-        }
-        return ret;
     }
 }

@@ -5,11 +5,13 @@
 
 package hu.sch.domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author hege
  */
-public class ErtekelesStatisztika {
+public class ErtekelesStatisztika implements Serializable{
     protected Ertekeles ertekeles;
     protected Double atlagPont;
     protected Long kiosztottKDO;

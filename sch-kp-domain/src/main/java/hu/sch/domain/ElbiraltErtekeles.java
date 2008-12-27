@@ -5,11 +5,13 @@
 
 package hu.sch.domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author hege
  */
-public class ElbiraltErtekeles {
+public class ElbiraltErtekeles implements Serializable{
     private Ertekeles ertekeles;
     private ErtekelesStatusz pontStatusz;
     private ErtekelesStatusz belepoStatusz;
@@ -32,7 +34,7 @@ public class ElbiraltErtekeles {
     }
 
     public void setBelepoStatusz(ErtekelesStatusz belepoStatusz) {
-        System.out.println("setting belepostatusz... "+belepoStatusz);
+        System.out.println("Setting belepostatusz... " + belepoStatusz);
         
         this.belepoStatusz = belepoStatusz;
     }
@@ -58,13 +60,13 @@ public class ElbiraltErtekeles {
     }
 
     public void setPontStatusz(ErtekelesStatusz pontStatusz) {
-        System.out.println("setting pontstatusz... "+pontStatusz);
+        System.out.println("Setting pontstatusz... " + pontStatusz);
         this.pontStatusz = pontStatusz;
     }
-
+    
     @Override
     public String toString() {
-        return "Elbírált értékelés a "+getErtekeles().getId()+
+        return "Elbírált értékelés a " +getErtekeles().getId()+
                 " értékeléshez. Pontigény: "+getPontStatusz()+
                 "/"+getErtekeles().getPontStatusz() +
                 ", Belépőigény: "+getBelepoStatusz()+

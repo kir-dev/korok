@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -154,8 +155,16 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
         return csoporttagsagok;
     }
 
-    public List<Csoporttagsag> getCsoporttagsagokAholSzerepbenVagyok(TagsagTipus type){
-        return TagsagTipus.getCsoportokWhereSzerepbenVagyok(csoporttagsagok, type);
+    public List<Csoporttagsag> getCsoporttagsagokAholSzerepbenVagyok(TagsagTipus type) {
+        List ret = new ArrayList<Csoporttagsag>();
+        Iterator iterator = csoporttagsagok.iterator();
+        while (iterator.hasNext()) {
+            Csoporttagsag tagsag = (Csoporttagsag) iterator.next();
+            if (TagsagTipus.hasJogCsoportban(tagsag, type)) {
+                ret.add(tagsag);
+            }
+        }
+        return ret;
     }
 
     public void setCsoporttagsagok(List<Csoporttagsag> csoporttagsagok) {

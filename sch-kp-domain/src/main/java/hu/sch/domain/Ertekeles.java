@@ -218,5 +218,5 @@ public class Ertekeles implements Serializable {
         this.pontAtlag = pontAtlag;
     }
     
-    
+   
 }
