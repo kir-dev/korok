@@ -13,7 +13,6 @@ import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.components.ErtekelesStatuszValaszto;
 import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,14 +23,11 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLoc
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 
 /**
@@ -57,15 +53,20 @@ public class OsszesErtekeles extends SecuredPageTemplate {
         add(new FeedbackPanel("pagemessages"));
         add(new Label("szemeszter", new PropertyModel(this, "szemeszter")));
         SortableDataProvider dp = new SortableErtekelesStatisztikaDataProvider(ertekelesManager, getSzemeszter());
-        
+
         Form form = new Form("elbiralasform") {
 
             @Override
             protected void onSubmit() {
                 List<ElbiraltErtekeles> list = new LinkedList<ElbiraltErtekeles>();
 
-                for (ElbiraltErtekeles e : getElbiralasAlatt().values()) {
-                    if (e.isInkonzisztens()) {
+                for (ElbiraltErtekeles elbiraltertekeles : getElbiralasAlatt().values()) {
+                    // Ha valtozott valamelyik belepokerelemhez vagy pontkerelemhez tartozo legordulo,
+                    if ((elbiraltertekeles.getPontStatusz() != elbiraltertekeles.getErtekeles().getPontStatusz()) ||
+                        (elbiraltertekeles.getBelepoStatusz() != elbiraltertekeles.getErtekeles().getBelepoStatusz())) {
+                        list.add(elbiraltertekeles);
+                    }
+                    /*if (e.isInkonzisztens()) {
                         error("A " + e.getErtekeles().getCsoport().getNev() +
                                 " csoport értékelésének elbírálása hibás. A pont- és belépőkérelmeket is el kell bírálni!");
                         System.out.println("Inkonzisztens: " + e);
@@ -74,7 +75,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                         list.add(e);
                     } else {
                         System.out.println("Nem elbiralt: " + e);
-                    }
+                    }*/
                 }
                 /*
                 Iterator it = dp.iterator(1, dp.size());
@@ -110,7 +111,8 @@ public class OsszesErtekeles extends SecuredPageTemplate {
 
             @Override
             protected void populateItem(Item item) {
-                Ertekeles ert = ((ErtekelesStatisztika) item.getModelObject()).getErtekeles();
+                final Ertekeles ert = ((ErtekelesStatisztika) item.getModelObject()).getErtekeles();
+                
                 ElbiraltErtekeles ee = null;
                 if (!getElbiralasAlatt().containsKey(ert.getId())) {
                     ee = new ElbiraltErtekeles(ert, ert.getPontStatusz(), ert.getBelepoStatusz());
@@ -123,7 +125,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
 
                     @Override
                     public void onClick() {
-                        //setResponsePage(new ErtekelesReszletek(ert, getPage()));
+                        setResponsePage(new ErtekelesReszletek(ert, getPage()));
                     }
                 };
                 item.add(ertekeleslink);
@@ -135,7 +137,13 @@ public class OsszesErtekeles extends SecuredPageTemplate {
 
                 Component pontStatusz = new ErtekelesStatuszValaszto("pontStatusz");
                 Component belepoStatusz = new ErtekelesStatuszValaszto("belepoStatusz");
-                
+                pontStatusz.setVisible(!ert.getPontStatusz().equals(ErtekelesStatusz.NINCS));
+                belepoStatusz.setVisible(!ert.getBelepoStatusz().equals(ErtekelesStatusz.NINCS));
+                System.out.println("abba: " + ert.getPontStatusz() + " " + ert.getBelepoStatusz());
+                // Ha pontkerelem nincs leadva, akkor nem jelenitjuk meg.
+                System.out.println("aaa: " + ert.getPontStatusz());
+                // Ha belepokerelem nincs leadva, akkor nem jelenitjuk meg.
+                System.out.println("bbb: " + ert.getBelepoStatusz());
                 //IModel newModel = new CompoundPropertyModel(ee);
                 pontStatusz.setModel(new PropertyModel(ee, "pontStatusz"));
                 belepoStatusz.setModel(new PropertyModel(ee, "belepoStatusz"));
