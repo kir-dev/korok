@@ -153,12 +153,16 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
             e.setBelepoStatusz(ErtekelesStatusz.ELUTASITVA);
         }
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void ErtekeleseketElbiral(Collection<ElbiraltErtekeles> elbiralas, Felhasznalo felhasznalo) {
         for (ElbiraltErtekeles ee : elbiralas) {
-            PontIgenyElbiral(ee.getErtekeles(), felhasznalo, ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA));
-            BelepoIgenyElbiral(ee.getErtekeles(), felhasznalo, ee.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA));
+            if (ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA) || ee.getPontStatusz().equals(ErtekelesStatusz.ELUTASITVA)) {
+                PontIgenyElbiral(ee.getErtekeles(), felhasznalo, ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA));
+            }
+            if (ee.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA) || ee.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA)) {
+                BelepoIgenyElbiral(ee.getErtekeles(), felhasznalo, ee.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA));
+            }
             if (ee.getIndoklas() != null) {
                 Uzen(ee.getErtekeles().getId(), felhasznalo, ee.getIndoklas());
             }
