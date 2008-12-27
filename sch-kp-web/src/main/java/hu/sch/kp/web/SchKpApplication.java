@@ -14,6 +14,7 @@ import hu.sch.kp.web.util.BelepoTipusConverter;
 import hu.sch.domain.BelepoTipus;
 import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.domain.PontIgeny;
+import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.pages.admin.EditSemesterPage;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
 import hu.sch.kp.web.pages.user.ShowUser;
@@ -22,6 +23,7 @@ import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
+import hu.sch.kp.web.util.TagsagTipusConverter;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
@@ -74,6 +76,7 @@ public class SchKpApplication extends WebApplication {
         ConverterLocator locator = new ConverterLocator();
         locator.set(BelepoTipus.class, new BelepoTipusConverter());
         locator.set(ErtekelesStatusz.class, new ErtekelesStatuszConverter());
+        locator.set(TagsagTipus.class, new TagsagTipusConverter());
         
         return locator;
     }

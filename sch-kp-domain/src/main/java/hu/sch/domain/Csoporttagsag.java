@@ -107,9 +107,11 @@ public class Csoporttagsag implements Serializable {
     }
 
     @Transient
-    public String getJogokString() {
+    public TagsagTipus[] getJogokString() {
         if (veg != null) {
-            return "öregtag";
+            TagsagTipus[] ret = new TagsagTipus[1];
+            ret[0] = TagsagTipus.OREGTAG;
+            return ret;
         }
         return TagsagTipus.getTagsagTipusByJogok(jogok);
     }

@@ -6,6 +6,7 @@ package hu.sch.kp.web.pages.group;
 
 import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
+import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.components.FelhasznaloLink;
 import hu.sch.kp.web.pages.index.Index;
@@ -55,7 +56,7 @@ public class ShowGroup extends SecuredPageTemplate {
                 Csoporttagsag cs = (Csoporttagsag) item.getModelObject();
                 item.setModel(new CompoundPropertyModel(cs));
                 item.add(new FelhasznaloLink("felhlink", cs.getFelhasznalo()));
-                item.add(new Label("jogok", cs.getJogokString()));
+                item.add(new Label("jogok", getConverter(TagsagTipus.class).convertToString(cs.getJogokString(), getLocale())));
                 item.add(DateLabel.forDatePattern("kezdet", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("veg", "yyyy.MM.dd."));
             }
