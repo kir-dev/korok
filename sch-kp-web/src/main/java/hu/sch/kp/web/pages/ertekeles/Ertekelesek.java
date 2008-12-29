@@ -11,6 +11,7 @@ import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.domain.jms.CommunicationHandlerKP;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.pontigenyles.PontIgenylesLeadas;
@@ -156,6 +157,8 @@ public class Ertekelesek extends SecuredPageTemplate {
 
             @Override
             public void onSubmit() {
+                CommunicationHandlerKP ch = CommunicationHandlerKP.getInstance();
+                ch.sendMessage("valami a profilnak");
                 Iterator iterator = cstag.iterator();
                 Csoport cs = null;
                 while (iterator.hasNext()) {
