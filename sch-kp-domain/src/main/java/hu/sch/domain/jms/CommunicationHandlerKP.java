@@ -22,12 +22,14 @@ import javax.naming.InitialContext;
  */
 public class CommunicationHandlerKP {
 
-    private static String queueName = null;
+    private static String senderQueueName = null;
+    private static String receiverQueueName = null;
     private static Context jndiContext = null;
     private static QueueConnectionFactory queueConnectionFactory = null;
     private static QueueConnection queueConnection = null;
     private static QueueSession queueSession = null;
-    private static Queue queue = null;
+    private static Queue senderQueue = null;
+    private static Queue receiverQueue = null;
     private static QueueSender queueSender = null;
     private static QueueReceiver queueReceiver = null;
     private static ReceiverListenerKP receiverListener = null;
@@ -41,17 +43,18 @@ public class CommunicationHandlerKP {
         }
         try {
             queueConnectionFactory = (QueueConnectionFactory) jndiContext.lookup("schConnectionFactory");
-            queue = (Queue) jndiContext.lookup("schQueue");
+            senderQueue = (Queue) jndiContext.lookup("profileQueue");
+            receiverQueue = (Queue) jndiContext.lookup("schkpQueue");
         } catch (Exception e) {
             System.out.println("nem sikerült a névfeloldás");
             System.out.println(e.getMessage());
         }
         try {
             queueConnection = queueConnectionFactory.createQueueConnection();
-            queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-            queueSender = queueSession.createSender(queue);
+            queueSession = queueConnection.createQueueSession(false, Session.CLIENT_ACKNOWLEDGE);
+            queueSender = queueSession.createSender(senderQueue);
+            queueReceiver = queueSession.createReceiver(receiverQueue);
             receiverListener = new ReceiverListenerKP();
-            queueReceiver = queueSession.createReceiver(queue);
             queueReceiver.setMessageListener(receiverListener);
             queueConnection.start();
         } catch (Exception e) {
@@ -83,7 +86,7 @@ public class CommunicationHandlerKP {
             textMessage.setText(message);
             System.out.println("Sending message: " + textMessage.getText());
             queueSender.send(textMessage);
-            //queueSender.send(queueSession.createMessage());
+        //queueSender.send(queueSession.createMessage());
         } catch (JMSException e) {
             System.out.println(e.getMessage());
             closeConnection();

@@ -19,6 +19,7 @@ public class ReceiverListenerKP implements MessageListener {
             try {
                 TextMessage message = (TextMessage) receivedMessage;
                 System.out.println("KP kapott egy üzit " + message.getText());
+                receivedMessage.acknowledge();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
