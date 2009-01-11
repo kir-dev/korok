@@ -53,19 +53,19 @@
             
             <span wicket:id="pagemessages" id="pagemessages"></span>
             
-            <div id="data">
-                <form wicket:id="csoportform">
-                    <select wicket:id="groups">
+            <div id="ertekelesCont">
+                <form wicket:id="csoportform" style="margin-top: 15px;">
+                    <select wicket:id="groups" style="width: 250px;">
                         <option>site 1</option>
                         <option>site 2</option>
                     </select>
                     <input type="submit" value="OK"/>
                 </form>
-                <table wicket:id="ertekelesektabla" class="withheader" style="z-index:1; position:relative;">
+                <table wicket:id="ertekelesektabla" class="withheader" style="z-index:1; position:relative; margin-top: 5px; margin-bottom: 10px;">
                     <tr class="headers">
-                        <th><wicket:message key="szemeszter"/></th>
-                        <th><wicket:message key="pontStatusz"/></th>
-                        <th><wicket:message key="belepoStatusz"/></th>
+                        <th style="width: 170px;"><wicket:message key="szemeszter"/></th>
+                        <th style="width: 130px;"><wicket:message key="pontStatusz"/></th>
+                        <th style="width: 130px;"><wicket:message key="belepoStatusz"/></th>
                         <th><wicket:message key="utolsoModositas"/></th>
                         <th><wicket:message key="utolsoElbiralas"/></th>
                         <th>&nbsp;</th>

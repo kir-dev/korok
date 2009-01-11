@@ -22,7 +22,7 @@ body {
 	position: relative;
 	margin: 0 auto;
 	width: 900px;
-	background: #F6FAFD url('../images/bckgContent.gif') 0px 156px repeat-x;
+	background: #F6FAFD url('../images/bckgContent.gif') 0px 134px repeat-x;
 	min-height: 100%;
 }
 #header {
@@ -286,7 +286,7 @@ select.wide { width: 355px; }
 	margin-top: 15px;
 	position: relative;
 	right: -200px;
-	margin-bottom: -18px;
+	/*margin-bottom: -18px;*/
 }
 /* NAVBAR-hoz tartozó cuccok - VÁLTOZTAK! */
 #navbar {
@@ -318,9 +318,33 @@ table {
 	border-spacing: 0;
         width: 840px;
 }
-#data {
+#showUserCont {
     margin: 0 30px;
     padding-bottom: 200px;
+}
+#ertekelesCont {
+    margin: 0 30px;
+    padding-bottom: 200px;
+}
+#ujErtekelesCont {
+    margin: 0 30px;
+    padding-bottom: 200px;
+    margin-top: 13px;
+}
+#pontIgenylesLeadasCont {
+    margin: 0 30px;
+    padding-bottom: 200px;
+    margin-top: 10px;
+}
+#belepoIgenylesLeadasCont {
+    margin: 0 30px;
+    padding-bottom: 200px;
+    margin-top: 10px;
+}
+#belepoIgenylesIndoklasCont {
+    margin: 0 30px;
+    padding-bottom: 200px;
+    margin-top: 10px;
 }
 h2 {
 	margin-top: 12px;
@@ -341,7 +365,8 @@ td.label {
 table.withheader th, table.withheader td {
     border-bottom:1px solid #9DC5D6;
     font-size: 12px;
-	padding: 5px 0 4px 15px;
+	padding: 5px 0 4px 10px;
+        empty-cells: show;
 }
 th {
 	height: 26px;

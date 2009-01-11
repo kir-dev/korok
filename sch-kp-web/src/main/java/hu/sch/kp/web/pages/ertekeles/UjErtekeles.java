@@ -9,6 +9,7 @@ import hu.sch.kp.web.templates.SecuredPageTemplate;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 
 /**
@@ -16,9 +17,9 @@ import org.apache.wicket.model.PropertyModel;
  * @author hege
  */
 public class UjErtekeles extends SecuredPageTemplate {
-    @EJB(name="ErtekelesManagerBean")
+
+    @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
-    
     String ertekeles = "";
 
     public UjErtekeles() {
@@ -26,6 +27,7 @@ public class UjErtekeles extends SecuredPageTemplate {
             getSession().info(getLocalizer().getString("err.UjErtekelesNemAdhatoLe", this));
             setResponsePage(Ertekelesek.class);
         }
+        add(new FeedbackPanel("pagemessages"));
         Form ertekelesform = new Form("ujertekelesform") {
 
             @Override
@@ -36,9 +38,9 @@ public class UjErtekeles extends SecuredPageTemplate {
             }
         };
 
-        TextArea szovegesErt = new TextArea("szovegesErtekeles",new PropertyModel(this, "ertekeles"));
+        TextArea szovegesErt = new TextArea("szovegesErtekeles", new PropertyModel(this, "ertekeles"));
         szovegesErt.setRequired(true);
-        
+
         ertekelesform.add(szovegesErt);
         add(ertekelesform);
     }
@@ -50,6 +52,4 @@ public class UjErtekeles extends SecuredPageTemplate {
     public void setErtekeles(String ertekeles) {
         this.ertekeles = ertekeles;
     }
-
-    
 }

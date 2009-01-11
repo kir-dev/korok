@@ -10,6 +10,7 @@ import hu.sch.domain.Ertekeles;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
+import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
 import java.util.ArrayList;
@@ -35,24 +36,28 @@ public class BelepoIgenylesIndoklas extends SecuredPageTemplate {
     public BelepoIgenylesIndoklas(final Ertekeles ert, final List<BelepoIgeny> igenyek) {
         List<BelepoIgeny> indoklando = kellIndoklas(igenyek);
         indoklando.size();
-        
-        if (indoklando.size() == 0) {
+
+        // Az indolkando.size() mar a BelepoIgenylesLeadas.java oldalon ellenorizve lett.
+//        if (indoklando.size() == 0) {
 //            setResponsePage(new Ertekelesek());
-            ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek);
+        ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek);
 //            getSession().info("Belépőigények elmentve");
 //            return;
-        }
+//        }
 
         Form indoklasform = new Form("indoklasform") {
+
             @Override
             protected void onSubmit() {
                 ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek);
-                getSession().info("Belépőigények elmentve");
+                ((VirSession) getSession()).info(getLocalizer().getString("info.BelepoIgenylesMentve", this));
+            //getSession().info("Belépőigények elmentve");
                 setResponsePage(Ertekelesek.class);
             }
         };
 
         DataView dview = new DataView("indoklas", new ListDataProviderCompoundPropertyModelImpl(indoklando)) {
+
             @Override
             protected void populateItem(Item item) {
                 item.add(new Label("felhasznalo.nev"));

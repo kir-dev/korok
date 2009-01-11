@@ -61,21 +61,23 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                 List<ElbiraltErtekeles> list = new LinkedList<ElbiraltErtekeles>();
 
                 for (ElbiraltErtekeles elbiraltertekeles : getElbiralasAlatt().values()) {
+                    //if ((elbiraltertekeles.getPontStatusz().equals(ErtekelesStatusz.ELBIRALATLAN) && (elbiraltertekele)
+
                     // Ha valtozott valamelyik belepokerelemhez vagy pontkerelemhez tartozo legordulo,
                     if ((elbiraltertekeles.getPontStatusz() != elbiraltertekeles.getErtekeles().getPontStatusz()) ||
-                        (elbiraltertekeles.getBelepoStatusz() != elbiraltertekeles.getErtekeles().getBelepoStatusz())) {
+                            (elbiraltertekeles.getBelepoStatusz() != elbiraltertekeles.getErtekeles().getBelepoStatusz())) {
                         list.add(elbiraltertekeles);
                     }
-                    /*if (e.isInkonzisztens()) {
-                        error("A " + e.getErtekeles().getCsoport().getNev() +
-                                " csoport értékelésének elbírálása hibás. A pont- és belépőkérelmeket is el kell bírálni!");
-                        System.out.println("Inkonzisztens: " + e);
-                    } else if (e.isElbiralt()) {
-                        System.out.println("Elbiralt: " + e);
-                        list.add(e);
-                    } else {
-                        System.out.println("Nem elbiralt: " + e);
-                    }*/
+                /*if (e.isInkonzisztens()) {
+                error("A " + e.getErtekeles().getCsoport().getNev() +
+                " csoport értékelésének elbírálása hibás. A pont- és belépőkérelmeket is el kell bírálni!");
+                System.out.println("Inkonzisztens: " + e);
+                } else if (e.isElbiralt()) {
+                System.out.println("Elbiralt: " + e);
+                list.add(e);
+                } else {
+                System.out.println("Nem elbiralt: " + e);
+                }*/
                 }
                 /*
                 Iterator it = dp.iterator(1, dp.size());
@@ -112,7 +114,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
             @Override
             protected void populateItem(Item item) {
                 final Ertekeles ert = ((ErtekelesStatisztika) item.getModelObject()).getErtekeles();
-                
+
                 ElbiraltErtekeles ee = null;
                 if (!getElbiralasAlatt().containsKey(ert.getId())) {
                     ee = new ElbiraltErtekeles(ert, ert.getPontStatusz(), ert.getBelepoStatusz());
@@ -139,11 +141,9 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                 Component belepoStatusz = new ErtekelesStatuszValaszto("belepoStatusz");
                 pontStatusz.setVisible(!ert.getPontStatusz().equals(ErtekelesStatusz.NINCS));
                 belepoStatusz.setVisible(!ert.getBelepoStatusz().equals(ErtekelesStatusz.NINCS));
-                System.out.println("abba: " + ert.getPontStatusz() + " " + ert.getBelepoStatusz());
-                // Ha pontkerelem nincs leadva, akkor nem jelenitjuk meg.
-                System.out.println("aaa: " + ert.getPontStatusz());
-                // Ha belepokerelem nincs leadva, akkor nem jelenitjuk meg.
-                System.out.println("bbb: " + ert.getBelepoStatusz());
+                //System.out.println("abba: " + ert.getPontStatusz() + " " + ert.getBelepoStatusz());
+                //System.out.println("aaa: " + ert.getPontStatusz());
+                //System.out.println("bbb: " + ert.getBelepoStatusz());
                 //IModel newModel = new CompoundPropertyModel(ee);
                 pontStatusz.setModel(new PropertyModel(ee, "pontStatusz"));
                 belepoStatusz.setModel(new PropertyModel(ee, "belepoStatusz"));

@@ -10,6 +10,8 @@ import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.PontIgeny;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
+import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
@@ -47,6 +49,8 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 ertekelesManager.pontIgenyekLeadasa(ertekelesId, igenylista);
+                ((VirSession) getSession()).info(getLocalizer().getString("info.PontIgenylesMentve", this));
+                setResponsePage(Ertekelesek.class);
             }
         };
 

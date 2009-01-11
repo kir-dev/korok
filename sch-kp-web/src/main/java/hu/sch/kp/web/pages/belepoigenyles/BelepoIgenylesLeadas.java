@@ -11,6 +11,8 @@ import hu.sch.domain.Felhasznalo;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.components.BelepoTipusValaszto;
+import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
+import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
 import java.util.List;
@@ -18,7 +20,6 @@ import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -47,8 +48,16 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                setResponsePage(new BelepoIgenylesIndoklas(ert, igenylista));
-                return;
+                // Van-e olyan, amit indokolni kell
+                for (BelepoIgeny belepoIgeny : igenylista) {
+                    if (belepoIgeny.getBelepotipus() == BelepoTipus.AB || belepoIgeny.getBelepotipus() == BelepoTipus.KB) {
+                        setResponsePage(new BelepoIgenylesIndoklas(ert, igenylista));
+                        return;
+                    }
+                }
+                ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenylista);
+                ((VirSession) getSession()).info(getLocalizer().getString("info.BelepoIgenylesMentve", getParent()));
+                setResponsePage(Ertekelesek.class);
             }
         };
         IDataProvider provider = new ListDataProviderCompoundPropertyModelImpl(igenylista);

@@ -11,17 +11,19 @@
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
-            <wicket:message key="ujertekeles_beszamolo"/>
-            <form wicket:id="ujertekelesform">
-                <label>
-                    <wicket:message key="ertekeles.szovegesertekeles"/>
-                    <textarea wicket:id="szovegesErtekeles">
-                    bla bla
-                    </textarea>
-                </label>
-                <br/>
-                <input type="submit" value="OK"/>
-            </form>
+            <span wicket:id="pagemessages" id="pagemessages"></span>
+            <div id="ujErtekelesCont">
+                <wicket:message key="ujertekeles_beszamolo"/>
+                <form wicket:id="ujertekelesform">
+                    <label style="width: 500px; float: none;">
+                        <wicket:message key="ertekeles.szovegesertekeles"/>
+                        <textarea wicket:id="szovegesErtekeles" style="width: 500px; height: 200px;">
+                            bla bla
+                        </textarea>
+                    </label>
+                    <input style="margin-top: 5px;" type="submit" value="OK"/>
+                </form>
+            </div>
         </wicket:extend>
     </body>
 </html>

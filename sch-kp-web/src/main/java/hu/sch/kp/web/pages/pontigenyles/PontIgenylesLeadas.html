@@ -11,27 +11,29 @@
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
-            Csoport: <span wicket:id="csoport.nev"></span><br/>
-            Szemeszter: <span wicket:id="szemeszter"></span><br/><br/>
-            <form wicket:id="igenyekform">
-                <div id="data">
-                    <div class="subdata">
-                        <table class="withheader">
-                            <tr class ="headers">
-                                <th>Név</th>
-                                <th>Becenév</th>
-                                <th>Pont</th>
-                            </tr>
-                            <tr wicket:id="igenyek">
-                                <td><span wicket:id="felhasznalo.nev"/></td>
-                                <td><span wicket:id="felhasznalo.becenev"/></td>
-                                <td><input wicket:id="pont"/></td>
-                            </tr>
-                        </table>
-                        <input type="submit" value="OK"/>
+            <div id="pontIgenylesLeadasCont">
+                Csoport: <span wicket:id="csoport.nev"></span><br/>
+                Szemeszter: <span wicket:id="szemeszter"></span><br/><br/>
+                <form wicket:id="igenyekform">
+                    <div id="data">
+                        <div class="subdata" style="margin: 0;">
+                            <table class="withheader" style="margin-bottom: 7px;"">
+                                <tr class="headers">
+                                    <th>Név</th>
+                                    <th>Becenév</th>
+                                    <th>Pont</th>
+                                </tr>
+                                <tr wicket:id="igenyek">
+                                    <td><span wicket:id="felhasznalo.nev"/></td>
+                                    <td><span wicket:id="felhasznalo.becenev"/></td>
+                                    <td style="padding-top: 3px; padding-bottom: 3px;"><input style="width: 60px;" wicket:id="pont"/></td>
+                                </tr>
+                            </table>
+                            <input type="submit" value="OK"/>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </wicket:extend>
     </body>
 </html>
