@@ -8,6 +8,7 @@ import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.Szemeszter;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
+import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.Arrays;
@@ -36,8 +37,12 @@ public class EditSettings extends SecuredPageTemplate {
 
     public EditSettings() {
         super();
+        if (!isCurrentUserAdmin() && !isCurrentUserJETI()) {
+            info("Nincs jogod a megadott művelethez");
+            setResponsePage(GroupHierarchy.class);
+            return;
+        }
         setHeaderLabelText("Beállítások");
-        //TODO: JETI vizsgálat
         try {
             szemeszter = systemManager.getSzemeszter();
         } catch (NoSuchAttributeException e) {

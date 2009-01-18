@@ -31,9 +31,9 @@ public class ShowGroup extends SecuredPageTemplate {
     UserManagerLocal userManager;
 
     public ShowGroup(PageParameters parameters) {
-        setHeaderLabelText("Csoport adatlap");
         Object p = parameters.get("id");
         Long id = null;
+
         try {
             id = Long.parseLong(p.toString());
         } catch (NumberFormatException e) {
@@ -41,6 +41,13 @@ public class ShowGroup extends SecuredPageTemplate {
         }
 
         Csoport cs = userManager.findGroupWithCsoporttagsagokById(id);
+        if (cs == null) {
+            info("Nem vagy körtag");
+            setResponsePage(GroupHierarchy.class);
+            return;
+        }
+        setHeaderLabelText(cs.getNev() + " adatlapja");
+
         setModel(new CompoundPropertyModel(cs));
         add(new Label("nev"));
         add(new Label("alapitasEve"));

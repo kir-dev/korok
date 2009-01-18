@@ -12,6 +12,7 @@ import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.components.ErtekelesStatuszValaszto;
 import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
+import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -49,7 +50,12 @@ public class OsszesErtekeles extends SecuredPageTemplate {
     }
 
     public OsszesErtekeles() {
-        //TODO: csak JETI-nek menjen az oldal
+        if (!isCurrentUserJETI()) {
+            info("Nincs jogod a megadott művelethez");
+            setResponsePage(GroupHierarchy.class);
+            return;
+        }
+        setHeaderLabelText("Leadott értékelések elbírálása");
         add(new FeedbackPanel("pagemessages"));
         add(new Label("szemeszter", new PropertyModel(this, "szemeszter")));
         SortableDataProvider dp = new SortableErtekelesStatisztikaDataProvider(ertekelesManager, getSzemeszter());

@@ -10,21 +10,17 @@ and open the template in the editor.
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
-            <form wicket:id="beallitasform">
-                <label>
-                    <wicket:message key="ertekelesidoszak"/>
-                    <select wicket:id="ertekelesidoszak">
-                    </select>
-                </label>
-                <br/>
-                <label><wicket:message key="szemeszter.evek"/>:
-                    <input wicket:id="elsoEv"/>/<input wicket:id="masodikEv"/>.
-                </label>
-                <br/>
-                <label><wicket:message key="szemeszter.osziFelev"/>:
-                    <input type="checkbox" wicket:id="osziFelev"/>
-                </label>
-                <br/>
+            <form wicket:id="beallitasform" style="margin-top: 15px; margin-left: 15px;">
+                <wicket:message key="ertekelesidoszak"/>:
+                <select wicket:id="ertekelesidoszak" align="left" style="width: 220px;"></select>
+                <br/><br/>
+                <wicket:message key="szemeszter.evek"/>:
+                <input wicket:id="elsoEv" style="width: 50px;"/> /
+                <input wicket:id="masodikEv" style="width: 50px;"/>.
+                <br/><br/>
+                <wicket:message key="szemeszter.osziFelev"/>:
+                <input type="checkbox" wicket:id="osziFelev"/>
+                <br/><br/>
                 <input type="submit" value="OK"/>
             </form>
         </wicket:extend>

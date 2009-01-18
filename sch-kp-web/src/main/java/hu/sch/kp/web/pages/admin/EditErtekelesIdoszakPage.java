@@ -30,6 +30,7 @@ public class EditErtekelesIdoszakPage extends SecuredPageTemplate {
             protected void onSubmit() {
                 systemManager.setErtekelesIdoszak(getErtekelesIdoszak());
                 setResponsePage(Index.class);
+                return;
             }
         };
         DropDownChoice ddc1 = new DropDownChoice("ertekelesidoszak",

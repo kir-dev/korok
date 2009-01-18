@@ -12,6 +12,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.IModel;
@@ -28,6 +29,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
 
     public GroupHierarchy() {
         setHeaderLabelText("Csoportok listája");
+        add(new FeedbackPanel("pagemessages"));
         TreeModel model = new DefaultTreeModel(
                 new CsoportTreeNode(userManager.getGroupHierarchy()));
         LinkTree tree = new LinkTree("hierarchyTree", model) {
