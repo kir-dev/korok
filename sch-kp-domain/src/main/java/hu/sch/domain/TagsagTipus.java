@@ -5,6 +5,8 @@
 package hu.sch.domain;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -50,5 +52,19 @@ public enum TagsagTipus {
             return true;
         }
         return false;
+    }
+
+    static boolean hasJogValamelyikCsoportban(List<Csoporttagsag> cstagsagok, TagsagTipus type) {
+        try {
+            Iterator iterator = cstagsagok.iterator();
+            while (iterator.hasNext()) {
+                if (hasJogCsoportban((Csoporttagsag) iterator.next(), type)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

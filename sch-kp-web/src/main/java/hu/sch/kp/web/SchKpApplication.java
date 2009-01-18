@@ -6,7 +6,6 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package hu.sch.kp.web;
 
 import hu.sch.domain.BelepoIgeny;
@@ -16,11 +15,14 @@ import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.domain.PontIgeny;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.pages.admin.EditSemesterPage;
+import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
+import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
+import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
 import hu.sch.kp.web.util.TagsagTipusConverter;
@@ -42,27 +44,27 @@ public class SchKpApplication extends WebApplication {
     public Class getHomePage() {
         return GroupHierarchy.class;
     }
-    
+
     @Override
     protected void init() {
         addComponentInstantiationListener(new JavaEEComponentInjector(this));
-        
+
 //        mount("/index", PackageName.forClass(Index.class));
         mount("/felhasznalo", PackageName.forClass(ShowUser.class));
         mount("/csoport", PackageName.forClass(ShowGroup.class));
 //        mount("/ertekeles", PackageName.forClass(Ertekelesek.class));
         mount("/pontigenyles", PackageName.forClass(PontIgeny.class));
         mount("/belepoigenyles", PackageName.forClass(BelepoIgeny.class));
-        mount("/admin", PackageName.forClass(EditSemesterPage.class));
-        mount("/elbiralas", PackageName.forClass(OsszesErtekeles.class));
-
-        mountBookmarkablePage("/ertekeles", Ertekelesek.class);
-/*        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
+        //mount("/admin", PackageName.forClass(EditSemesterPage.class));
+        //mount("/elbiralas", PackageName.forClass(OsszesErtekeles.class));
+        //mountBookmarkablePage("/EditSettings", EditSettings.class);
+        //mountBookmarkablePage("/ertekeles", Ertekelesek.class);
+        /*        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
         mountBookmarkablePage("/group", ShowGroup.class);
-        mountBookmarkablePage("/user123", ShowUser.class);
+        mountBookmarkablePage("/user123", ShowUser.class);*/
         mountBookmarkablePage("/grouphistory", ErtekelesReszletek.class);
-        mountBookmarkablePage("/userhistory", UserHistory.class);*/
-        
+        mountBookmarkablePage("/userhistory", UserHistory.class);
+
         getMarkupSettings().setStripWicketTags(true);
     }
 
@@ -77,7 +79,7 @@ public class SchKpApplication extends WebApplication {
         locator.set(BelepoTipus.class, new BelepoTipusConverter());
         locator.set(ErtekelesStatusz.class, new ErtekelesStatuszConverter());
         locator.set(TagsagTipus.class, new TagsagTipusConverter());
-        
+
         return locator;
     }
 }

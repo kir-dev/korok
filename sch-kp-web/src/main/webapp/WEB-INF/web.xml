@@ -33,5 +33,10 @@
             30
         </session-timeout>
     </session-config>
-        
+    <security-role>
+        <role-name>ADMIN</role-name>
+    </security-role>
+    <security-role>
+        <role-name>JETI</role-name>
+    </security-role>
 </web-app>

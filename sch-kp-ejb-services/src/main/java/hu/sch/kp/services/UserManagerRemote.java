@@ -4,7 +4,6 @@
  */
 package hu.sch.kp.services;
 
-import hu.sch.domain.*;
 import hu.sch.kp.services.exceptions.GroupAlreadyExistsException;
 import java.rmi.RemoteException;
 import javax.ejb.Remote;
@@ -25,9 +24,9 @@ public interface UserManagerRemote {
      * @return VIR-ID
      * @throws java.rmi.RemoteException
      */
-    Long createUser(String firstName, String lastName, String nickName) 
+    Long createUser(String firstName, String lastName, String nickName)
             throws RemoteException;
-    
+
     /**
      * Egy felhasználó nevét írja be adatbázisba.
      * 
@@ -49,7 +48,7 @@ public interface UserManagerRemote {
      */
     void createActiveMembership(Long userId, Long groupId)
             throws RemoteException;
-    
+
     /**
      * Egy csoport öregtagjává teszi a usert.
      * 
@@ -69,6 +68,6 @@ public interface UserManagerRemote {
      * @throws hu.sch.kp.services.exceptions.GroupAlreadyExistsException
      * @throws java.rmi.RemoteException
      */
-    Long createGroup(String groupName, Long parentGroupId) throws GroupAlreadyExistsException, 
+    Long createGroup(String groupName, Long parentGroupId) throws GroupAlreadyExistsException,
             RemoteException;
 }

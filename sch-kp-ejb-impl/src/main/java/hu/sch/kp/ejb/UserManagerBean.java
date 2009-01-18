@@ -46,7 +46,6 @@ public class UserManagerBean implements UserManagerLocal {
     public Felhasznalo findUserById(Long userId) {
         try {
             return em.find(Felhasznalo.class, userId);
-
         } catch (NoResultException e) {
             return null;
         }
@@ -192,14 +191,22 @@ public class UserManagerBean implements UserManagerLocal {
     public Felhasznalo findUserWithCsoporttagsagokById(Long userId) {
         Query q = em.createNamedQuery("findUserWithCsoporttagsagok");
         q.setParameter("id", userId);
-
-        return (Felhasznalo) q.getSingleResult();
+        try {
+            Felhasznalo user = (Felhasznalo) q.getSingleResult();
+            return user;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public Csoport findGroupWithCsoporttagsagokById(Long id) {
         Query q = em.createNamedQuery("findCsoportWithCsoporttagsagok");
         q.setParameter("id", id);
-
-        return (Csoport) q.getSingleResult();
+        try {
+            Csoport group = (Csoport) q.getSingleResult();
+            return group;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

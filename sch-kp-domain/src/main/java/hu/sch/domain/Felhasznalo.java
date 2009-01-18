@@ -167,6 +167,10 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
         return ret;
     }
 
+    public boolean getHasJogValamelyikCsoportban(TagsagTipus type) {
+        return TagsagTipus.hasJogValamelyikCsoportban(getCsoporttagsagok(), type);
+    }
+
     public void setCsoporttagsagok(List<Csoporttagsag> csoporttagsagok) {
         this.csoporttagsagok = csoporttagsagok;
     }

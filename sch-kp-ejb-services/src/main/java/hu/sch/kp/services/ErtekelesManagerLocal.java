@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.kp.services;
 
 import hu.sch.domain.BelepoIgeny;
@@ -31,7 +30,7 @@ public interface ErtekelesManagerLocal {
      * @param ertekeles
      */
     void createErtekeles(Ertekeles ertekeles);
-        
+
     /**
      * Egy teljes értékelést visszakeres, üzenetekkel együtt
      * 
@@ -55,7 +54,7 @@ public interface ErtekelesManagerLocal {
      * @return
      */
     List<Ertekeles> findErtekeles(Csoport csoport);
-    
+
     /**
      * Az adott szemeszterben elbírálatlan értékelések megkeresése.
      * Elbírálatlan az értékelés, amiben vagy a pontigénylés vagy a 
@@ -64,9 +63,9 @@ public interface ErtekelesManagerLocal {
      * @param szemeszter
      * @return
      */
-    public List<ErtekelesStatisztika> findElbiralatlanErtekelesStatisztika();
-    
-    public List<ElfogadottBelepo> findElfogadottBelepoIgenyekForSzemeszter(Szemeszter szemeszter);
+    List<ErtekelesStatisztika> findElbiralatlanErtekelesStatisztika();
+
+    List<ElfogadottBelepo> findElfogadottBelepoIgenyekForSzemeszter(Szemeszter szemeszter);
 
     void ErtekeleseketElbiral(Collection<ElbiraltErtekeles> elbiralas, Felhasznalo felhasznalo);
 
@@ -114,7 +113,7 @@ public interface ErtekelesManagerLocal {
      * @param igenyek
      */
     void pontIgenyekLeadasa(Long ertekelesId, List<PontIgeny> igenyek);
-    
+
     /**
      * Új belépőigényeket ment egy értékeléshez
      * Amennyiben a belépőigények már léteztek, egyesével felülírja őket.
@@ -131,7 +130,7 @@ public interface ErtekelesManagerLocal {
      * @return
      */
     Ertekeles findErtekelesById(Long ertekelesId);
-    
+
     /**
      * Adott értékeléshez kapcsolódó belépőigényeket adja vissza
      * 
@@ -139,7 +138,7 @@ public interface ErtekelesManagerLocal {
      * @return
      */
     List<BelepoIgeny> findBelepoIgenyekForErtekeles(Long ertekelesId);
-    
+
     /**
      * Adott értékeléshez kapcsolódó pontigényeket adja vissza
      * 
@@ -158,7 +157,6 @@ public interface ErtekelesManagerLocal {
     List<ErtekelesStatisztika> getStatisztikaForErtekelesek(List<Long> ertekelesId);
 
     List<ErtekelesStatisztika> findErtekelesStatisztikaForSzemeszter(Szemeszter szemeszter, String sortColumn);
-    
+
     List<ErtekelesStatisztika> findErtekelesStatisztikaForSzemeszter(Szemeszter szemeszter);
-    
 }

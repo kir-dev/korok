@@ -8,6 +8,7 @@ import hu.sch.domain.Csoport;
 import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.Szemeszter;
+import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
@@ -29,7 +30,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -77,25 +77,31 @@ public class SecuredPageTemplate extends WebPage {
 
 
         //((VirSession)getSession()).getUser().
-        //TODO: Korvezetonek jelenjen csak meg a link
-        //add(new BookmarkablePageLink("ertekelesek", Ertekelesek.class).setAutoEnable(true));
-        //TODO: csak JETInek jelenjen meg a link
-        add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
-        //TODO: csak JETInek jelenjen meg
-        add(new BookmarkablePageLink("editsettings", EditSettings.class).setAutoEnable(true));
+
         //add(new BookmarkablePageLink("setsemester", EditSemesterPage.class).setAutoEnable(true));
         //add(new BookmarkablePageLink("selectgroup", SelectGroup.class).setAutoEnable(true));
         //add(new BookmarkablePageLink("setidoszak", EditErtekelesIdoszakPage.class).setAutoEnable(true));
+
         WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
         headerLabelContainer.add(new Label("headerLabel", new Model()));
-        headerLabelContainer.setVisible(false);
 
         //add(new FeedbackPanel("pagemessages"));
-        add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
-        
-        add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class));
+        add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
+        //if (getSession().getUser().getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
+        if (false) {
+            add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(true));
+        } else {
+            add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(false));
+        }
+        if (isCurrentUserJETI() || isCurrentUserAdmin()) {
+            add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
+            add(new BookmarkablePageLink("editsettings", EditSettings.class));
+        } else {
+            add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(false));
+            add(new BookmarkablePageLink("editsettings", EditSettings.class).setVisible(false));
+        }
     }
 
     protected Felhasznalo loadFelhasznalo() {
@@ -107,13 +113,12 @@ public class SecuredPageTemplate extends WebPage {
             Matcher m = Pattern.compile("^.*:([0-9]+)$").matcher(virid);
             if (m.matches()) {
                 Long virID = Long.parseLong(m.group(1));
-                Felhasznalo user = userManager.findUserById(virID);
+                Felhasznalo user = userManager.findUserWithCsoporttagsagokById(virID);
                 getSession().setUser(user);
 
                 return user;
             }
         }
-
         return null;
     }
 
@@ -146,6 +151,16 @@ public class SecuredPageTemplate extends WebPage {
 
     public Felhasznalo getFelhasznalo() {
         return getSession().getUser();
+    }
+
+    public boolean isCurrentUserAdmin() {
+//        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
+        return false;
+    }
+
+    public boolean isCurrentUserJETI() {
+//        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("JETI");
+        return false;
     }
 
     public void setHeaderLabelText(String text) {

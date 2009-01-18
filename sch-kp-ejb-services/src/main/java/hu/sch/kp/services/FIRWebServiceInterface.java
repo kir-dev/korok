@@ -15,5 +15,5 @@ import javax.ejb.Local;
  */
 @Local
 public interface FIRWebServiceInterface {
-    public List<ElfogadottBelepo> getElfogadottBelepokForSzemeszter(String szemeszter);
+    List<ElfogadottBelepo> getElfogadottBelepokForSzemeszter(String szemeszter);
 }

@@ -11,8 +11,8 @@ import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
-import hu.sch.domain.jms.CommunicationHandlerKP;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
+import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.pontigenyles.PontIgenylesLeadas;
 import hu.sch.kp.web.session.VirSession;
@@ -143,6 +143,18 @@ public class Ertekelesek extends SecuredPageTemplate {
         add(new FeedbackPanel("pagemessages"));
 
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
+        if (user == null) {
+            //Ez egy soha sorra nem kerulo feltetel, mivel csak korvezetonek jelenhet meg
+            //az opcio, igy legalabb tuti nem szall el
+            info("Nem vagy körtag, mégis értékelést szeretnél leadni? Nono...");
+            setResponsePage(GroupHierarchy.class);
+            return;
+        }
+        if (!user.getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
+            info("Nem vagy sehol sem körvezető, mit csinálsz itt?");
+            setResponsePage(GroupHierarchy.class);
+            return;
+        }
         user.sortCsoporttagsagok();
 
         final List<Csoporttagsag> cstag = user.getCsoporttagsagokAholSzerepbenVagyok(TagsagTipus.KORVEZETO);
@@ -157,8 +169,8 @@ public class Ertekelesek extends SecuredPageTemplate {
 
             @Override
             public void onSubmit() {
-                CommunicationHandlerKP ch = CommunicationHandlerKP.getInstance();
-                ch.sendMessage("profil neked megy");
+                //CommunicationHandlerKP ch = CommunicationHandlerKP.getInstance();
+                //ch.sendMessage("profil neked megy");
                 Iterator iterator = cstag.iterator();
                 Csoport cs = null;
                 while (iterator.hasNext()) {

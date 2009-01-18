@@ -4,8 +4,11 @@
  */
 package hu.sch.kp.services;
 
+import hu.sch.domain.BelepoIgeny;
+import hu.sch.domain.Csoport;
+import hu.sch.domain.Felhasznalo;
+import hu.sch.domain.PontIgeny;
 import javax.ejb.Local;
-import hu.sch.domain.*;
 import hu.sch.kp.services.exceptions.GroupAlreadyExistsException;
 import hu.sch.kp.services.exceptions.UserAlreadyExistsException;
 import java.util.Date;
@@ -26,7 +29,7 @@ public interface UserManagerLocal {
 
     Felhasznalo findUserWithCsoporttagsagokById(Long userId);
 
-    void addUserToGroup(Felhasznalo user, Csoport group, Date membership_start, Date membership_end);
+    void addUserToGroup(Felhasznalo user, Csoport group, Date membershipStart, Date membershipEnd);
 
     List<Csoport> getAllGroups();
 

@@ -8,6 +8,7 @@ import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.session.VirSession;
@@ -45,6 +46,12 @@ public class ShowUser extends SecuredPageTemplate {
         }
 
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
+        if (user == null) {
+            info("Egy körben sem vagy tag");
+            setResponsePage(GroupHierarchy.class);
+            return;
+        }
+        System.out.println(user.toString());
         setModel(new CompoundPropertyModel(user));
         setHeaderLabelText(user.getNev() + " felhasználó lapja");
 
