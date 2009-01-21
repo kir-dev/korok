@@ -39,10 +39,10 @@ public class SelectUser extends WebPage {
             @Override
             protected void onSubmit() {
                 VirSession sess = (VirSession) getSession();
-                Felhasznalo user = userManager.findUserWithCsoporttagsagokById(getUid());
-                if (user == null) {
-                    user = userManager.findUserById(getUid());
-                }
+                //Felhasznalo user = userManager.findUserWithCsoporttagsagokById(getUid());
+//                if (user == null) {
+                    Felhasznalo user = userManager.findUserById(getUid());
+//                }
                 if (user != null) {
                     debug("Found user: " + user);
                     sess.setUser(user);
@@ -53,7 +53,9 @@ public class SelectUser extends WebPage {
                         return;
                     }
                 } else {
-                    error(getLocalizer().getString("err.NoSuchUser", this));
+                    //TODO: LDAP-ban levo virid-val nem rendelkezo kolleganak generalni
+                    //kell id-t, es az LDAP-ba is be kell irni
+                    error(getLocalizer().getString("err.NoDBUser", this));
                 }
             }
         };

@@ -8,7 +8,6 @@ import hu.sch.domain.Csoport;
 import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.Szemeszter;
-import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
@@ -73,7 +72,8 @@ public class SecuredPageTemplate extends WebPage {
         }
         //add(new Label("actualsemester", szmodel));
 
-        //add(new Label("actualidoszak", new StringResourceModel("ertekelesidoszak." + getIdoszak().toString(), this, null)));
+        //add(new Label("actualidoszak",
+        //              new StringResourceModel("ertekelesidoszak." + getIdoszak().toString(), this, null)));
 
 
         //((VirSession)getSession()).getUser().
@@ -90,11 +90,11 @@ public class SecuredPageTemplate extends WebPage {
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
         //if (getSession().getUser().getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
-        if (false) {
+        //if (false) {
             add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(true));
-        } else {
-            add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(false));
-        }
+        //} else {
+        //    add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(false));
+        //}
         if (isCurrentUserJETI() || isCurrentUserAdmin()) {
             add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
             add(new BookmarkablePageLink("editsettings", EditSettings.class));

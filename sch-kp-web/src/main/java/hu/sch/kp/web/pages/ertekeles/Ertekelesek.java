@@ -272,7 +272,9 @@ public class Ertekelesek extends SecuredPageTemplate {
         if ((ertekelesList.size() == 0) || (!ertekelesManager.isErtekelesLeadhato(csoport))) {
             ujertekeles.setVisible(false);
         } else {
-            ujertekeles.setVisible(true);
+            if (user.getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
+                ujertekeles.setVisible(true);
+            }
         }
     }
 

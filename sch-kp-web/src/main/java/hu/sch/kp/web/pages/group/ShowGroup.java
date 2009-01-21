@@ -46,8 +46,11 @@ public class ShowGroup extends SecuredPageTemplate {
             setResponsePage(GroupHierarchy.class);
             return;
         }
-        setHeaderLabelText(cs.getNev() + " adatlapja");
-
+        if (cs.getNev().contains("Informatikus-hallgatók")) {
+            setHeaderLabelText("MAVE adatlapja");
+        } else {
+            setHeaderLabelText(cs.getNev() + " adatlapja");
+        }
         setModel(new CompoundPropertyModel(cs));
         add(new Label("nev"));
         add(new Label("alapitasEve"));
@@ -63,7 +66,9 @@ public class ShowGroup extends SecuredPageTemplate {
                 Csoporttagsag cs = (Csoporttagsag) item.getModelObject();
                 item.setModel(new CompoundPropertyModel(cs));
                 item.add(new FelhasznaloLink("felhlink", cs.getFelhasznalo()));
-                item.add(new Label("jogok", getConverter(TagsagTipus.class).convertToString(cs.getJogokString(), getLocale())));
+                item.add(new Label("becenev", cs.getFelhasznalo().getBecenev()));
+                item.add(new Label("jogok",
+                                   getConverter(TagsagTipus.class).convertToString(cs.getJogokString(), getLocale())));
                 item.add(DateLabel.forDatePattern("kezdet", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("veg", "yyyy.MM.dd."));
             }
