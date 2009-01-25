@@ -31,13 +31,13 @@ public class VirSession extends WebSession {
 
     public VirSession(Request request) {
         super(request);
-        /*WebRequest wr = (WebRequest) request;
-        HttpServletRequest hsr = wr.getHttpServletRequest();
-        String firstname = (String) ((Set) hsr.getAttribute("firstname")).iterator().next();
-        String lastname = (String) ((Set) hsr.getAttribute("lastname")).iterator().next();
+    /*WebRequest wr = (WebRequest) request;
+    HttpServletRequest hsr = wr.getHttpServletRequest();
+    String firstname = (String) ((Set) hsr.getAttribute("firstname")).iterator().next();
+    String lastname = (String) ((Set) hsr.getAttribute("lastname")).iterator().next();
 
-        UserManagerLocal um = getUserManager();*/
-        
+    UserManagerLocal um = getUserManager();*/
+
     }
 
     public Csoport getCsoport() {

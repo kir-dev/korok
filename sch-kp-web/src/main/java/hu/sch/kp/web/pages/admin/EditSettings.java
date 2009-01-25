@@ -20,6 +20,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.NumberValidator;
@@ -43,6 +44,7 @@ public class EditSettings extends SecuredPageTemplate {
             return;
         }
         setHeaderLabelText("Beállítások");
+        add(new FeedbackPanel("pagemessages"));
         try {
             szemeszter = systemManager.getSzemeszter();
         } catch (NoSuchAttributeException e) {
@@ -56,9 +58,14 @@ public class EditSettings extends SecuredPageTemplate {
 
             @Override
             public void onSubmit() {
-                systemManager.setSzemeszter(getSzemeszter());
-                systemManager.setErtekelesIdoszak(getErtekelesIdoszak());
-                setResponsePage(Index.class);
+                try {
+                    systemManager.setSzemeszter(getSzemeszter());
+                    systemManager.setErtekelesIdoszak(getErtekelesIdoszak());
+                    info(getLocalizer().getString("info.BeallitasokMentve", this));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    error(getLocalizer().getString("err.BeallitasokFailed", this));
+                }
             }
         };
         beallitasForm.setModel(new CompoundPropertyModel(szemeszter));

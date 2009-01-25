@@ -18,12 +18,14 @@ import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.SelectGroup;
 import hu.sch.kp.web.pages.index.SelectUser;
 import hu.sch.kp.web.pages.user.ShowUser;
+import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.session.VirSession;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
@@ -85,13 +87,14 @@ public class SecuredPageTemplate extends WebPage {
         WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
         headerLabelContainer.add(new Label("headerLabel", new Model()));
+//        headerLabelContainer.add(new BookmarkablePageLink("detailView", ShowUser.class)).setVisible(false);
 
         //add(new FeedbackPanel("pagemessages"));
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
         //if (getSession().getUser().getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
         //if (false) {
-            add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(true));
+        add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(true));
         //} else {
         //    add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(false));
         //}
@@ -162,6 +165,27 @@ public class SecuredPageTemplate extends WebPage {
 //        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("JETI");
         return false;
     }
+
+//    public void setHeaderDetailViewLink(Class pageClass, String param) {
+//        get("headerLabelContainer").setVisible(true);
+//        if (param != null) {
+//            ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setModel(new Model(UserHistory.class));
+////            ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setModel(
+////                    new Model(new Model(pageClass)));
+//        } else {
+//            ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setModel(new Model(UserHistory.class));
+//        //new Model(new BookmarkablePageLink("detailView", pageClass)));
+//        //new Model(new BookmarkablePageLink("detailView", pageClass)));
+//        }
+//        ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setVisible(true);
+//        System.out.println(((WebMarkupContainer) get("headerLabelContainer")).get("detailView").getModelObject());
+//        System.out.println("-----");
+//        System.out.println(((WebMarkupContainer) get("headerLabelContainer")).get("detailView"));
+//    }
+//
+//    public void disableLink() {
+//        ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setVisible(false);
+//    }
 
     public void setHeaderLabelText(String text) {
         get("headerLabelContainer").setVisible(true);
