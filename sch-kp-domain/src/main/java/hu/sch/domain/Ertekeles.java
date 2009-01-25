@@ -33,22 +33,22 @@ import javax.persistence.Transient;
  * @author hege
  */
 @Entity
-@Table(name="ertekelesek")
+@Table(name = "ertekelesek")
 @NamedQueries({
-@NamedQuery(name = "findErtekelesBySzemeszterAndCsoport", 
+    @NamedQuery(name = "findErtekelesBySzemeszterAndCsoport",
     query = "SELECT e FROM Ertekeles e WHERE e.szemeszter=:szemeszter " +
     "AND e.csoport=:csoport"),
-@NamedQuery(name = "findErtekelesByIdUzenetJoined",
+    @NamedQuery(name = "findErtekelesByIdUzenetJoined",
     query = "SELECT e FROM Ertekeles e LEFT JOIN FETCH e.uzenetek " +
     "WHERE e.id=:id"),
-@NamedQuery(name = "findErtekelesByCsoport",
+    @NamedQuery(name = "findErtekelesByCsoport",
     query = "SELECT e FROM Ertekeles e WHERE e.csoport=:csoport")
 })
 public class Ertekeles implements Serializable {
+
     public static final String findByIdUzenetJoined = "findErtekelesByIdUzenetJoined";
     public static final String findBySzemeszterAndCsoport = "findErtekelesBySzemeszterAndCsoport";
     public static final String findByCsoport = "findErtekelesByCsoport";
-    
     protected Long id;
     protected Csoport csoport;
     protected Felhasznalo felado;
@@ -85,7 +85,7 @@ public class Ertekeles implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(optional=true)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "felado_usr_id")
     public Felhasznalo getFelado() {
         return felado;
@@ -105,7 +105,7 @@ public class Ertekeles implements Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="utolso_elbiralas")
+    @Column(name = "utolso_elbiralas")
     public Date getUtolsoElbiralas() {
         return utolsoElbiralas;
     }
@@ -115,7 +115,7 @@ public class Ertekeles implements Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="feladas")
+    @Column(name = "feladas")
     public Date getFeladas() {
         return feladas;
     }
@@ -125,7 +125,7 @@ public class Ertekeles implements Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="utolso_modositas")
+    @Column(name = "utolso_modositas")
     public Date getUtolsoModositas() {
         return utolsoModositas;
     }
@@ -135,7 +135,7 @@ public class Ertekeles implements Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="belepoigeny_statusz")
+    @Column(name = "belepoigeny_statusz")
     public ErtekelesStatusz getBelepoStatusz() {
         return belepoStatusz;
     }
@@ -145,7 +145,7 @@ public class Ertekeles implements Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="pontigeny_statusz")
+    @Column(name = "pontigeny_statusz")
     public ErtekelesStatusz getPontStatusz() {
         return pontStatusz;
     }
@@ -172,8 +172,8 @@ public class Ertekeles implements Serializable {
         this.pontIgenyek = pontIgenyek;
     }
 
-    @Column(name="szoveges_ertekeles", columnDefinition = "text", length = 4096, nullable = false)
-    @Basic(fetch=FetchType.LAZY)
+    @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096, nullable = false)
+    @Basic(fetch = FetchType.LAZY)
     public String getSzovegesErtekeles() {
         return szovegesErtekeles;
     }
@@ -190,8 +190,8 @@ public class Ertekeles implements Serializable {
         setBelepoStatusz(ErtekelesStatusz.NINCS);
     }
 
-    @ManyToOne(optional=true)
-    @JoinColumn(name="elbiralo_usr_id")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "elbiralo_usr_id")
     public Felhasznalo getElbiralo() {
         return elbiralo;
     }
@@ -200,7 +200,7 @@ public class Ertekeles implements Serializable {
         this.elbiralo = elbiralo;
     }
 
-    @OneToMany(mappedBy="ertekeles", fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "ertekeles", fetch = FetchType.LAZY)
     public List<ErtekelesUzenet> getUzenetek() {
         return uzenetek;
     }
@@ -217,6 +217,4 @@ public class Ertekeles implements Serializable {
     public void setPontAtlag(Float pontAtlag) {
         this.pontAtlag = pontAtlag;
     }
-    
-   
 }

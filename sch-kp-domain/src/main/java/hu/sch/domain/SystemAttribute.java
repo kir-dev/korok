@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -18,19 +17,18 @@ import javax.persistence.Table;
  * @author hege
  */
 @Entity
-@Table(name="system_attrs")
-@NamedQuery(
-    name="findSystemAttributeByAttributeName", 
-    query="SELECT a FROM SystemAttribute a WHERE a.attributeName=:attributeName")
+@Table(name = "system_attrs")
+@NamedQuery(name = "findSystemAttributeByAttributeName",
+query = "SELECT a FROM SystemAttribute a WHERE a.attributeName=:attributeName")
 public class SystemAttribute implements Serializable {
+
     public static final String findByAttributeName = "findSystemAttributeByAttributeName";
-    
     @Id
     @GeneratedValue
     Long attributeId;
-    @Column(nullable=false)
+    @Column(nullable = false)
     String attributeName;
-    @Column(nullable=false)
+    @Column(nullable = false)
     String attributeValue;
 
     public Long getAttributeId() {
@@ -56,6 +54,4 @@ public class SystemAttribute implements Serializable {
     public void setAttributeValue(String attributeValue) {
         this.attributeValue = attributeValue;
     }
-    
-    
 }

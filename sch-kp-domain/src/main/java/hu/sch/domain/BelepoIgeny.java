@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -23,8 +22,9 @@ import javax.persistence.Table;
  * @author hege
  */
 @Entity
-@Table(name="belepoigenyles")
+@Table(name = "belepoigenyles")
 public class BelepoIgeny implements Serializable {
+
     protected Long id;
     protected Ertekeles ertekeles;
     protected String szovegesErtekeles;
@@ -39,10 +39,8 @@ public class BelepoIgeny implements Serializable {
         this.felhasznalo = felhasznalo;
     }
 
-    
-    
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -52,7 +50,7 @@ public class BelepoIgeny implements Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="belepo_tipus")
+    @Column(name = "belepo_tipus")
     public BelepoTipus getBelepotipus() {
         return belepotipus;
     }
@@ -60,9 +58,9 @@ public class BelepoIgeny implements Serializable {
     public void setBelepotipus(BelepoTipus belepotipus) {
         this.belepotipus = belepotipus;
     }
-    
+
     @ManyToOne
-    @JoinColumn(name="ertekeles_id", nullable=false)
+    @JoinColumn(name = "ertekeles_id", nullable = false)
     public Ertekeles getErtekeles() {
         return ertekeles;
     }
@@ -72,7 +70,7 @@ public class BelepoIgeny implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name="usr_id")
+    @JoinColumn(name = "usr_id")
     public Felhasznalo getFelhasznalo() {
         return felhasznalo;
     }
@@ -81,7 +79,7 @@ public class BelepoIgeny implements Serializable {
         this.felhasznalo = felhasznalo;
     }
 
-    @Column(name="szoveges_ertekeles", columnDefinition="text", length=4096)
+    @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096)
     public String getSzovegesErtekeles() {
         return szovegesErtekeles;
     }

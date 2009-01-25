@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.domain;
 
 /**
@@ -10,7 +9,8 @@ package hu.sch.domain;
  * @author hege
  */
 public enum CsoportStatusz {
-    akt,old;
+
+    akt, old;
 
     @Override
     public String toString() {

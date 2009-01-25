@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -11,7 +10,8 @@ import java.io.Serializable;
  *
  * @author hege
  */
-public class ElbiraltErtekeles implements Serializable{
+public class ElbiraltErtekeles implements Serializable {
+
     private Ertekeles ertekeles;
     private ErtekelesStatusz pontStatusz;
     private ErtekelesStatusz belepoStatusz;
@@ -22,7 +22,7 @@ public class ElbiraltErtekeles implements Serializable{
         setPontStatusz(pontStatusz);
         setBelepoStatusz(belepoStatusz);
     }
-    
+
     public ElbiraltErtekeles(Ertekeles ertekeles) {
         setErtekeles(ertekeles);
         setPontStatusz(ertekeles.getPontStatusz());
@@ -35,7 +35,7 @@ public class ElbiraltErtekeles implements Serializable{
 
     public void setBelepoStatusz(ErtekelesStatusz belepoStatusz) {
         System.out.println("Setting belepostatusz... " + belepoStatusz);
-        
+
         this.belepoStatusz = belepoStatusz;
     }
 
@@ -63,26 +63,26 @@ public class ElbiraltErtekeles implements Serializable{
         System.out.println("Setting pontstatusz... " + pontStatusz);
         this.pontStatusz = pontStatusz;
     }
-    
+
     @Override
     public String toString() {
-        return "Elbírált értékelés a " +getErtekeles().getId()+
-                " értékeléshez. Pontigény: "+getPontStatusz()+
-                "/"+getErtekeles().getPontStatusz() +
-                ", Belépőigény: "+getBelepoStatusz()+
-                "/"+getErtekeles().getBelepoStatusz();
+        return "Elbírált értékelés a " + getErtekeles().getId() +
+                " értékeléshez. Pontigény: " + getPontStatusz() +
+                "/" + getErtekeles().getPontStatusz() +
+                ", Belépőigény: " + getBelepoStatusz() +
+                "/" + getErtekeles().getBelepoStatusz();
     }
-    
+
     public boolean isElbiralt() {
         return !(getPontStatusz().equals(ErtekelesStatusz.ELBIRALATLAN) ||
                 getBelepoStatusz().equals(ErtekelesStatusz.ELBIRALATLAN));
     }
-    
+
     public boolean isElbiralatlan() {
         return getPontStatusz().equals(ErtekelesStatusz.ELBIRALATLAN) &&
                 getBelepoStatusz().equals(ErtekelesStatusz.ELBIRALATLAN);
     }
-    
+
     public boolean isInkonzisztens() {
         return !isElbiralatlan() && !isElbiralt();
     }

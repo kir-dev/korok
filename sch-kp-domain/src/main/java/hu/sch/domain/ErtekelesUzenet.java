@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -26,8 +25,9 @@ import javax.persistence.TemporalType;
  * @author hege
  */
 @Entity
-@Table(name="ertekeles_uzenet")
+@Table(name = "ertekeles_uzenet")
 public class ErtekelesUzenet implements Serializable {
+
     protected Long id;
     protected Ertekeles ertekeles;
     protected Felhasznalo felado;
@@ -35,7 +35,7 @@ public class ErtekelesUzenet implements Serializable {
     protected String uzenet;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="feladas_ido")
+    @Column(name = "feladas_ido")
     public Date getDatum() {
         return datum;
     }
@@ -45,7 +45,7 @@ public class ErtekelesUzenet implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name="ertekeles_id")
+    @JoinColumn(name = "ertekeles_id")
     public Ertekeles getErtekeles() {
         return ertekeles;
     }
@@ -55,7 +55,7 @@ public class ErtekelesUzenet implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name="felado_usr_id")
+    @JoinColumn(name = "felado_usr_id")
     public Felhasznalo getFelado() {
         return felado;
     }
@@ -65,7 +65,7 @@ public class ErtekelesUzenet implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -74,7 +74,7 @@ public class ErtekelesUzenet implements Serializable {
         this.id = id;
     }
 
-    @Column(name="uzenet", columnDefinition="text", length=4096)
+    @Column(name = "uzenet", columnDefinition = "text", length = 4096)
     public String getUzenet() {
         return uzenet;
     }
@@ -82,7 +82,7 @@ public class ErtekelesUzenet implements Serializable {
     public void setUzenet(String uzenet) {
         this.uzenet = uzenet;
     }
-    
+
     @PrePersist
     public void setDefaultValues() {
         setDatum(new Date());

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -11,7 +10,8 @@ import java.io.Serializable;
  *
  * @author hege
  */
-public class ErtekelesStatisztika implements Serializable{
+public class ErtekelesStatisztika implements Serializable {
+
     protected Ertekeles ertekeles;
     protected Double atlagPont;
     protected Long kiosztottKDO;
@@ -25,7 +25,7 @@ public class ErtekelesStatisztika implements Serializable{
         this.kiosztottKB = kiosztottKB;
         this.kiosztottAB = kiosztottAB;
     }
-    
+
     public Double getAtlagPont() {
         return atlagPont;
     }
@@ -65,6 +65,4 @@ public class ErtekelesStatisztika implements Serializable{
     public void setKiosztottKB(Long kiosztottKB) {
         this.kiosztottKB = kiosztottKB;
     }
-    
-    
 }

@@ -250,19 +250,19 @@ public class Csoport implements Serializable, Comparable<Csoport> {
             csoporttagok.add(cst.getFelhasznalo());
         }
     }
-    
+
     public void sortCsoporttagsagok() {
         if (this.getCsoporttagsagok() != null) {
-            Collections.sort(this.getCsoporttagsagok(), 
+            Collections.sort(this.getCsoporttagsagok(),
                     new Comparator<Csoporttagsag>() {
 
-                public int compare(Csoporttagsag o1, Csoporttagsag o2) {
-                    if (o1.getVeg() == null ^ o2.getVeg() == null) {
-                        return o1.getVeg() == null ? -1 : 1;
-                    }
-                    return o1.getFelhasznalo().compareTo(o2.getFelhasznalo());
-                }
-            });
+                        public int compare(Csoporttagsag o1, Csoporttagsag o2) {
+                            if (o1.getVeg() == null ^ o2.getVeg() == null) {
+                                return o1.getVeg() == null ? -1 : 1;
+                            }
+                            return o1.getFelhasznalo().compareTo(o2.getFelhasznalo());
+                        }
+                    });
         }
     }
 

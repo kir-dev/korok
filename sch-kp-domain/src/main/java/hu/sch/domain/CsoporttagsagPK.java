@@ -20,12 +20,12 @@ public class CsoporttagsagPK implements Serializable {
 
     public CsoporttagsagPK() {
     }
-    
+
     public CsoporttagsagPK(Long felhasznaloID, Long csoportID) {
         this.felhasznaloID = felhasznaloID;
         this.csoportID = csoportID;
-    }    
-    
+    }
+
     @Column(name = "grp_id", nullable = false)
     public Long getCsoportID() {
         return csoportID;

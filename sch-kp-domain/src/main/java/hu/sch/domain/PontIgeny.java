@@ -19,22 +19,24 @@ import javax.persistence.Table;
  * @author hege
  */
 @Entity
-@Table(name="pontigenyles")
+@Table(name = "pontigenyles")
 public class PontIgeny implements Serializable {
+
     protected Long id;
     protected Ertekeles ertekeles;
     protected Integer pont;
     protected Felhasznalo felhasznalo;
 
-    public PontIgeny() {}
+    public PontIgeny() {
+    }
 
     public PontIgeny(Felhasznalo felhasznalo, Integer pont) {
         this.pont = pont;
         this.felhasznalo = felhasznalo;
     }
-    
+
     @ManyToOne
-    @JoinColumn(name="ertekeles_id", nullable=false)
+    @JoinColumn(name = "ertekeles_id", nullable = false)
     public Ertekeles getErtekeles() {
         return ertekeles;
     }
@@ -44,7 +46,7 @@ public class PontIgeny implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -53,7 +55,7 @@ public class PontIgeny implements Serializable {
         this.id = id;
     }
 
-    @Column(name="pont")
+    @Column(name = "pont")
     public Integer getPont() {
         return pont;
     }
@@ -63,7 +65,7 @@ public class PontIgeny implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name="usr_id")
+    @JoinColumn(name = "usr_id")
     public Felhasznalo getFelhasznalo() {
         return felhasznalo;
     }
@@ -71,6 +73,4 @@ public class PontIgeny implements Serializable {
     public void setFelhasznalo(Felhasznalo felhasznalo) {
         this.felhasznalo = felhasznalo;
     }
-    
-    
 }
