@@ -167,6 +167,17 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
         return ret;
     }
 
+    public boolean getHasJogCsoportban(Csoport csoport, TagsagTipus type) {
+        Iterator iterator = getCsoporttagsagok().iterator();
+        while (iterator.hasNext()) {
+            Csoporttagsag tagsag = (Csoporttagsag) iterator.next();
+            if (tagsag.getCsoport().getNev().equals(csoport.getNev()) && TagsagTipus.hasJogCsoportban(tagsag, type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean getHasJogValamelyikCsoportban(TagsagTipus type) {
         return TagsagTipus.hasJogValamelyikCsoportban(getCsoporttagsagok(), type);
     }

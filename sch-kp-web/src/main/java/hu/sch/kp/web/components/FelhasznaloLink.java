@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.kp.web.components;
 
 import hu.sch.domain.Felhasznalo;
@@ -24,13 +23,12 @@ public class FelhasznaloLink extends Panel {
         super(id, new CompoundPropertyModel(felhasznalo));
         init();
     }
-    
+
     private void init() {
-        final Felhasznalo felh = (Felhasznalo)getModelObject();
-        Link fl = new BookmarkablePageLink("felhLink",ShowUser.class,new PageParameters("id="+felh.getId()));
+        final Felhasznalo felh = (Felhasznalo) getModelObject();
+        Link fl = new BookmarkablePageLink("felhLink", ShowUser.class, new PageParameters("id=" + felh.getId()));
         fl.setModel(getModel());
         fl.add(new Label("nev"));
         add(fl);
     }
-    
 }

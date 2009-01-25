@@ -15,6 +15,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -28,8 +29,11 @@ public class UserHistory extends SecuredPageTemplate {
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
     Long id;
+    private boolean own_profile = false;
 
     public UserHistory() {
+        own_profile = true;
+        initComponents();
     }
 
     public UserHistory(PageParameters parameters) {
@@ -38,7 +42,6 @@ public class UserHistory extends SecuredPageTemplate {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-
         initComponents();
     }
 
@@ -53,6 +56,12 @@ public class UserHistory extends SecuredPageTemplate {
 
         Felhasznalo user = userManager.findUserById(id);
         setHeaderLabelText(user.getNev() + " részletes közösségi története");
+        if (own_profile) {
+            add(new BookmarkablePageLink("simpleView", ShowUser.class));
+        } else {
+            add(new BookmarkablePageLink("simpleView", ShowUser.class,
+                    new PageParameters("id=" + user.getId().toString())));
+        }
         setModel(new CompoundPropertyModel(user));
 
         List<PontIgeny> pontIgenyek = userManager.getPontIgenyekForUser(user);

@@ -16,6 +16,7 @@ import hu.sch.kp.web.templates.SecuredPageTemplate;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -31,8 +32,10 @@ public class ShowUser extends SecuredPageTemplate {
     @EJB(name = "ejb/UserManagerLocal")
     UserManagerLocal userManager;
     Long id;
+    private boolean own_profile = false;
 
     public ShowUser() {
+        own_profile = true;
         initComponents();
     }
 
@@ -51,9 +54,14 @@ public class ShowUser extends SecuredPageTemplate {
             setResponsePage(GroupHierarchy.class);
             return;
         }
-        System.out.println(user.toString());
         setModel(new CompoundPropertyModel(user));
         setHeaderLabelText(user.getNev() + " felhasználó lapja");
+        if (own_profile) {
+            add(new BookmarkablePageLink("detailView", UserHistory.class));
+        } else {
+            add(new BookmarkablePageLink("detailView", UserHistory.class,
+                    new PageParameters("id=" + user.getId().toString())));
+        }
 
         /* add(new BookmarkablePageLink(
         "historylink", UserHistory.class,
@@ -87,7 +95,6 @@ public class ShowUser extends SecuredPageTemplate {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-
         initComponents();
     }
 }
