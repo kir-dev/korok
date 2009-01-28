@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 /**
@@ -52,6 +53,7 @@ public class ShowGroup extends SecuredPageTemplate {
             setResponsePage(GroupHierarchy.class);
             return;
         }
+        add(new FeedbackPanel("pagemessages"));
         if (cs.getNev().contains("Informatikus-hallgatók")) {
             setHeaderLabelText("MAVE adatlapja");
         } else {

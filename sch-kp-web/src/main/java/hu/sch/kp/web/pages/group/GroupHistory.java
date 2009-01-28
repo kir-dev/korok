@@ -144,6 +144,7 @@ public class GroupHistory extends SecuredPageTemplate {
                 felhasznaloLink.add(new Label("felhNev", new PropertyModel(b, "felhasznalo.nev")));
                 item.add(felhasznaloLink);
                 item.add(new Label("belepotipus"));
+                item.add(new Label("szovegesErtekeles"));
             }
         };
         belepoTable.add(belepoListView);

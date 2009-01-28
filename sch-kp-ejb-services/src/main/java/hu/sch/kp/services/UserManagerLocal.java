@@ -54,4 +54,6 @@ public interface UserManagerLocal {
     List<BelepoIgeny> getBelepoIgenyekForUser(Felhasznalo felhasznalo);
 
     List<PontIgeny> getPontIgenyekForUser(Felhasznalo felhasznalo);
+
+    boolean groupInfoUpdate(Csoport cs);
 }

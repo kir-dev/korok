@@ -209,4 +209,18 @@ public class UserManagerBean implements UserManagerLocal {
             return null;
         }
     }
+
+    public boolean groupInfoUpdate(Csoport cs) {
+        try {
+            Csoport csoport = em.find(Csoport.class, cs.getId());
+            csoport.setAlapitasEve(cs.getAlapitasEve());
+            csoport.setNev(cs.getNev());
+            csoport.setWebpage(cs.getWebpage());
+            csoport.setLeiras(cs.getLeiras());
+            csoport.setLevelezoLista(cs.getLevelezoLista());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

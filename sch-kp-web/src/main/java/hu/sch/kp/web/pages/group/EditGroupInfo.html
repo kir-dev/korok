@@ -10,10 +10,36 @@ and open the template in the editor.
     </head>
     <body>
         <wicket:extend>
-            <form wicket:id="editInfoForm">
-                <p>valami</p>
-                <input type="submit" value="OK"/>
-            </form>
+            <span wicket:id="pagemessages" id="pagemessages" style="display: block; margin-bottom: 20px;"></span>
+            <div id="admincont">
+                <form wicket:id="editInfoForm">
+                    <table>
+                        <tr>
+                            <td><label wicket:id="nevLabel">Név *</label></td>
+                            <td><input class="textinput" wicket:id="nev"/></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="alapevLabel">Alapítás éve</label></td>
+                            <td><input class="textinput" wicket:id="alapitasEve"/></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="webpageLabel">Weboldal</label></td>
+                            <td><input class="textinput" wicket:id="webpage"/></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="levlistaLabel">Levelezőlista</label></td>
+                            <td><input class="textinput" wicket:id="levelezoLista"/></td>
+                        </tr>
+                        <tr>
+                            <td><label wicket:id="descrLabel">Levelezőlista</label></td>
+                            <td><textarea wicket:id="leiras" style="width: 355px; height: 200px; z-index: 1; position: relative;">
+                            bla bla
+                            </textarea></td>
+                        </tr>
+                    </table>
+                    <span id="btns"><input class="btn"type="submit" value="Mentés"/></span>
+                </form>
+            </div>
         </wicket:extend>
     </body>
 </html>

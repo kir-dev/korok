@@ -158,12 +158,12 @@ public class SecuredPageTemplate extends WebPage {
 
     public boolean isCurrentUserAdmin() {
 //        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
-        return false;
+        return true;
     }
 
     public boolean isCurrentUserJETI() {
 //        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("JETI");
-        return false;
+        return true;
     }
 
 //    public void setHeaderDetailViewLink(Class pageClass, String param) {
