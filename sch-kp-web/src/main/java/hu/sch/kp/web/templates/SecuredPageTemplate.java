@@ -8,6 +8,7 @@ import hu.sch.domain.Csoport;
 import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.Szemeszter;
+import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
@@ -18,14 +19,12 @@ import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.SelectGroup;
 import hu.sch.kp.web.pages.index.SelectUser;
 import hu.sch.kp.web.pages.user.ShowUser;
-import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.session.VirSession;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
@@ -93,11 +92,11 @@ public class SecuredPageTemplate extends WebPage {
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
         //if (getSession().getUser().getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
-        //if (false) {
-        add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(true));
-        //} else {
-        //    add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(false));
-        //}
+        if (false) {
+            add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(true));
+        } else {
+            add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(false));
+        }
         if (isCurrentUserJETI() || isCurrentUserAdmin()) {
             add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
             add(new BookmarkablePageLink("editsettings", EditSettings.class));
@@ -158,14 +157,23 @@ public class SecuredPageTemplate extends WebPage {
 
     public boolean isCurrentUserAdmin() {
 //        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
-        return true;
+        return false;
     }
 
     public boolean isCurrentUserJETI() {
 //        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("JETI");
-        return true;
+        return false;
     }
 
+    public boolean hasUserRoleInGroup(Csoport group, TagsagTipus type) {
+        //return getFelhasznalo().getHasJogCsoportban(group, type);
+        return false;
+    }
+
+    public boolean hasUserRoleInSomeGroup(TagsagTipus type) {
+        //    return getFelhasznalo().getHasJogValamelyikCsoportban(type);
+        return false;
+    }
 //    public void setHeaderDetailViewLink(Class pageClass, String param) {
 //        get("headerLabelContainer").setVisible(true);
 //        if (param != null) {

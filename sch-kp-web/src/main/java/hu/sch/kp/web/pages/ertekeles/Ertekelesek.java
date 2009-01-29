@@ -150,7 +150,7 @@ public class Ertekelesek extends SecuredPageTemplate {
             setResponsePage(GroupHierarchy.class);
             return;
         }
-        if (!user.getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
+        if (hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO)) {
             info("Nem vagy sehol sem körvezető, mit csinálsz itt?");
             setResponsePage(GroupHierarchy.class);
             return;
@@ -272,7 +272,7 @@ public class Ertekelesek extends SecuredPageTemplate {
         if ((ertekelesList.size() == 0) || (!ertekelesManager.isErtekelesLeadhato(csoport))) {
             ujertekeles.setVisible(false);
         } else {
-            if (user.getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
+            if (hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO)) {
                 ujertekeles.setVisible(true);
             }
         }

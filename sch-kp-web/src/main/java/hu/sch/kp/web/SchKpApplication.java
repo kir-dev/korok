@@ -8,18 +8,15 @@
  */
 package hu.sch.kp.web;
 
-import hu.sch.domain.BelepoIgeny;
 import hu.sch.kp.web.util.BelepoTipusConverter;
 import hu.sch.domain.BelepoTipus;
 import hu.sch.domain.ErtekelesStatusz;
-import hu.sch.domain.PontIgeny;
 import hu.sch.domain.TagsagTipus;
-import hu.sch.kp.web.pages.admin.EditSettings;
-import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
-import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
+import hu.sch.kp.web.pages.group.EditGroupInfo;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
+import hu.sch.kp.web.pages.group.GroupHistory;
 import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
@@ -50,17 +47,19 @@ public class SchKpApplication extends WebApplication {
 //        mount("/index", PackageName.forClass(Index.class));
         mount("/User", PackageName.forClass(ShowUser.class));
         mount("/Group", PackageName.forClass(ShowGroup.class));
-        mount("/Valuation", PackageName.forClass(Ertekelesek.class));
-        mount("/PointRequests", PackageName.forClass(PontIgeny.class));
-        mount("/AccessRequests", PackageName.forClass(BelepoIgeny.class));
+//        mount("/Valuation", PackageName.forClass(Ertekelesek.class));
+//        mount("/PointRequests", PackageName.forClass(PontIgeny.class));
+//        mount("/AccessRequests", PackageName.forClass(BelepoIgeny.class));
         //mount("/admin", PackageName.forClass(EditSemesterPage.class));
-        mount("/Consider", PackageName.forClass(OsszesErtekeles.class));
-        mountBookmarkablePage("/EditSettings", EditSettings.class);
+//        mount("/Consider", PackageName.forClass(OsszesErtekeles.class));
+//        mountBookmarkablePage("/EditSettings", EditSettings.class);
         //mountBookmarkablePage("/Valuation", Ertekelesek.class);
         /*        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
         mountBookmarkablePage("/group", ShowGroup.class);
         mountBookmarkablePage("/user123", ShowUser.class);*/
         mountBookmarkablePage("/UserHistory", UserHistory.class);
+        mountBookmarkablePage("/GroupHistory", GroupHistory.class);
+        mountBookmarkablePage("/EditGroupInfo", EditGroupInfo.class);
 
         getMarkupSettings().setStripWicketTags(true);
     }

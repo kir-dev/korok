@@ -61,7 +61,7 @@ public class ShowGroup extends SecuredPageTemplate {
         }
         add(new BookmarkablePageLink("detailView", GroupHistory.class,
                 new PageParameters("id=" + cs.getId().toString())));
-        if (user != null && user.getHasJogCsoportban(cs, TagsagTipus.KORVEZETO)) {
+        if (user != null && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO)) {
             add(new BookmarkablePageLink("editPage", EditGroupInfo.class,
                     new PageParameters("id=" + cs.getId().toString())).setVisible(true));
         } else {

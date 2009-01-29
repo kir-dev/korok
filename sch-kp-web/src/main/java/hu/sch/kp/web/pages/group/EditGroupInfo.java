@@ -49,7 +49,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
 
         csoport = userManager.findGroupById(id);
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(((VirSession) getSession()).getUser().getId());
-        if (user == null || !user.getHasJogCsoportban(csoport, TagsagTipus.KORVEZETO)) {
+        if (true || user == null || hasUserRoleInGroup(csoport, TagsagTipus.KORVEZETO)) {
             ((VirSession) getSession()).error(getLocalizer().getString("err.NincsJog", this));
             setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
             return;
