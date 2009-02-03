@@ -150,7 +150,7 @@ public class Ertekelesek extends SecuredPageTemplate {
             setResponsePage(GroupHierarchy.class);
             return;
         }
-        if (hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO)) {
+        if (!hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO)) {
             info("Nem vagy sehol sem körvezető, mit csinálsz itt?");
             setResponsePage(GroupHierarchy.class);
             return;

@@ -46,8 +46,8 @@ public class SchKpApplication extends WebApplication {
         addComponentInstantiationListener(new JavaEEComponentInjector(this));
 
 //        mount("/index", PackageName.forClass(Index.class));
-        mount("/user", PackageName.forClass(ShowUser.class));
-        mount("/group", PackageName.forClass(ShowGroup.class));
+//        mount("/user", PackageName.forClass(ShowUser.class));
+//        mount("/group", PackageName.forClass(ShowGroup.class));
 //        mount("/Valuation", PackageName.forClass(Ertekelesek.class));
 //        mount("/PointRequests", PackageName.forClass(PontIgeny.class));
 //        mount("/AccessRequests", PackageName.forClass(BelepoIgeny.class));
@@ -62,6 +62,8 @@ public class SchKpApplication extends WebApplication {
         mountBookmarkablePage("/userhistory", UserHistory.class);
         mountBookmarkablePage("/grouphistory", GroupHistory.class);
         mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
+        mountBookmarkablePage("/showuser", ShowUser.class);
+        mountBookmarkablePage("/showgroup", ShowGroup.class);
 
         getMarkupSettings().setStripWicketTags(true);
     }

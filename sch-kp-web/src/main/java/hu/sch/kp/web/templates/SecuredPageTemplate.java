@@ -93,7 +93,7 @@ public class SecuredPageTemplate extends WebPage {
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
         //if (getSession().getUser().getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
-        if (false) {
+        if (hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO)) {
             add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(true));
         } else {
             add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(false));
@@ -158,7 +158,7 @@ public class SecuredPageTemplate extends WebPage {
     }
 
     protected String getUid() {
-        return  ((WebRequest)getRequest()).getHttpServletRequest().getRemoteUser();
+        return ((WebRequest) getRequest()).getHttpServletRequest().getRemoteUser();
 //        return null;
     }
 

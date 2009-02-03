@@ -9,7 +9,6 @@ import hu.sch.domain.Szemeszter;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
-import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.Arrays;
 import javax.ejb.EJB;
