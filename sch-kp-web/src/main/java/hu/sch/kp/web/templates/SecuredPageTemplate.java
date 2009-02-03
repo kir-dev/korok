@@ -18,6 +18,7 @@ import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.SelectGroup;
 import hu.sch.kp.web.pages.index.SelectUser;
+import hu.sch.kp.web.pages.logout.Logout;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.session.VirSession;
 import java.util.Set;
@@ -104,6 +105,7 @@ public class SecuredPageTemplate extends WebPage {
             add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(false));
             add(new BookmarkablePageLink("editsettings", EditSettings.class).setVisible(false));
         }
+        add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 
     protected Felhasznalo loadFelhasznalo() {
@@ -153,6 +155,11 @@ public class SecuredPageTemplate extends WebPage {
 
     public Felhasznalo getFelhasznalo() {
         return getSession().getUser();
+    }
+
+    protected String getUid() {
+        return  ((WebRequest)getRequest()).getHttpServletRequest().getRemoteUser();
+//        return null;
     }
 
     public boolean isCurrentUserAdmin() {

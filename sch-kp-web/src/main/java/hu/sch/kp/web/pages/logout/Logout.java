@@ -1,0 +1,25 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package hu.sch.kp.web.pages.logout;
+
+import hu.sch.kp.web.templates.SecuredPageTemplate;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+
+/**
+ *
+ * @author major
+ */
+public class Logout extends SecuredPageTemplate {
+
+    public Logout() {
+        setHeaderLabelText("Kijelentkezés");
+        add(new FeedbackPanel("pagemessages"));
+        if (getUid() == null) {
+            info("Sikeres kijelentkezés. :)");
+        } else {
+            error("Sikertelen kijelentkezés. :(");
+        }
+    }
+}
