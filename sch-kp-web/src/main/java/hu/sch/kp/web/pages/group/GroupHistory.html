@@ -17,50 +17,9 @@ and open the template in the editor.
                         <option>site 1</option>
                         <option>site 2</option>
                     </select>
-                    <input type="submit" value="OK"/>
+                    <input class="btn" type="submit" value="Küldés"/>
                 </form>
-                <h2>Leadott pontkérelmek</h2>
-                <div class="subdata">
-                    <table wicket:id="pontTabla" class="withheader" style="z-index:1; position:relative; margin-top: 5px; margin-bottom: 10px;">
-                        <tr class="headers">
-                            <th style="width: 170px;">Név</th>
-                            <th style="width: 130px;">Pontszám</th>
-                        </tr>
-                        <tr wicket:id="pontok">
-                            <td>
-                                <a wicket:id="felhLink">
-                                    <span wicket:id="felhNev"></span>
-                                </a>
-                            </td>
-                            <td>
-                                <span wicket:id="pontszam"></span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <h2>Leadott belépőkérelmek</h2>
-                <div class="subdata">
-                    <table wicket:id="belepoTabla" class="withheader" style="z-index:1; position:relative; margin-top: 5px; margin-bottom: 10px;">
-                        <tr class="headers">
-                            <th style="width: 170px;">Név</th>
-                            <th style="width: 130px;">Belépő típusa</th>
-                            <th>Szöveges indoklás</th>
-                        </tr>
-                        <tr wicket:id="belepok">
-                            <td>
-                                <a wicket:id="felhLink">
-                                    <span wicket:id="felhNev"></span>
-                                </a>
-                            </td>
-                            <td>
-                                <span wicket:id="belepotipus"></span>
-                            </td>
-                            <td>
-                                <span wicket:id="szovegesErtekeles"></span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <span wicket:id="ertekelesinfo"></span>
             </div>
         </wicket:extend>
     </body>
