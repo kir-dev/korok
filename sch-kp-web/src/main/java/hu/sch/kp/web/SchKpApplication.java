@@ -17,6 +17,7 @@ import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.GroupHistory;
+import hu.sch.kp.web.pages.logout.Logout;
 import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
@@ -45,8 +46,8 @@ public class SchKpApplication extends WebApplication {
         addComponentInstantiationListener(new JavaEEComponentInjector(this));
 
 //        mount("/index", PackageName.forClass(Index.class));
-        mount("/User", PackageName.forClass(ShowUser.class));
-        mount("/Group", PackageName.forClass(ShowGroup.class));
+        mount("/user", PackageName.forClass(ShowUser.class));
+        mount("/group", PackageName.forClass(ShowGroup.class));
 //        mount("/Valuation", PackageName.forClass(Ertekelesek.class));
 //        mount("/PointRequests", PackageName.forClass(PontIgeny.class));
 //        mount("/AccessRequests", PackageName.forClass(BelepoIgeny.class));
@@ -57,9 +58,10 @@ public class SchKpApplication extends WebApplication {
         /*        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
         mountBookmarkablePage("/group", ShowGroup.class);
         mountBookmarkablePage("/user123", ShowUser.class);*/
-        mountBookmarkablePage("/UserHistory", UserHistory.class);
-        mountBookmarkablePage("/GroupHistory", GroupHistory.class);
-        mountBookmarkablePage("/EditGroupInfo", EditGroupInfo.class);
+        mountBookmarkablePage("/logout", Logout.class);
+        mountBookmarkablePage("/userhistory", UserHistory.class);
+        mountBookmarkablePage("/grouphistory", GroupHistory.class);
+        mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
 
         getMarkupSettings().setStripWicketTags(true);
     }
