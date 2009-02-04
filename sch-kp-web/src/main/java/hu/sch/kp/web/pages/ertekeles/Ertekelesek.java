@@ -169,8 +169,6 @@ public class Ertekelesek extends SecuredPageTemplate {
 
             @Override
             public void onSubmit() {
-                //CommunicationHandlerKP ch = CommunicationHandlerKP.getInstance();
-                //ch.sendMessage("profil neked megy");
                 Iterator iterator = cstag.iterator();
                 Csoport cs = null;
                 while (iterator.hasNext()) {
