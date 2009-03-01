@@ -16,6 +16,20 @@
                     <configLocation>resources/checkstyle.xml</configLocation>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <repositories>
@@ -46,4 +60,3 @@
     <module>sch-kp-ear</module>
   </modules>
 </project>
-
