@@ -1,29 +1,64 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:wicket="http://wicket.apache.org/">
     <head>
+        <link rel="stylesheet" type="text/css" href="css/style-navbar3.css"/>
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1250" />
         <link rel="stylesheet" href="css/style.css" type="text/css"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>VIR Körök</title>
-        <!--<style>
-            .kotelezo {
-                border-color: red;
-            }
-        </style>-->
     </head>
     <body>
-        <div id="container">
-            <ul id="navbar">
-                <li><a href="http://idp.sch.bme.hu"><img src="images/navbar/profilIcon.gif" alt="Profil logó" /> Profil</a></li>
-                <li><a href="http://news.sch.bme.hu"><img src="images/navbar/newsIcon.gif" alt="News logó" /> News</a></li>
-                <li><span> Körök</span></li>
-                <li class="login"><a wicket:id="logoutPageLink"><img src="images/navbar/lockIcon.gif" alt="Kijelentkezés ikon" /> Kijelentkezés</a></li>
+        <div id="navbar3" class="bluetheme">
+            <ul id="navbar3-menu" style="width: 900px;">
+                <li>
+                    <a href="https://idp.sch.bme.hu/profile/" style="background-image: url('images/navbar3/profil-logo.png');">profil</a>
+                </li>
+                <li>
+                    <a href="http://news.sch.bme.hu/" style="background-image: url('images/navbar3/news-logo.png');">news</a>
+
+                </li>
+                <li class="actual">
+                    <span style="background-image: url('images/navbar3/korok-logo.png');">körök</span>
+                </li>
+                <li>
+                    <ul style="width: 115px;">
+                        <li><a href="https://wiki.sch.bme.hu/bin/kirloginform?path=/Main/WebHome/" class="lock"></a><a href="https://wiki.sch.bme.hu/">wiki</a></li>
+                        <li><a href="http://info.sch.bme.hu/sso-login.php?return=http://info.sch.bme.hu/" class="lock"></a><a href="http://info.sch.bme.hu/">infosite</a></li>
+                        <li><a href="http://villany.sch.bme.hu/sso-login.php?return=http://villany.sch.bme.hu/" class="lock"></a><a href="http://villany.sch.bme.hu/">villanysite</a></li>
+                        <li><a href="https://lists.sch.bme.hu/">levlisták</a></li>
+                        <li><a href="https://messenger.sch.bme.hu/">messenger</a></li>
+                    </ul>
+                    <span class="noicon">szolgáltatások</span>
+                </li>
+                <li>
+                    <ul style="width: 100px;">
+                        <li><a href="http://kir-dev.sch.bme.hu/wp-login.php" class="lock"></a><a href="http://kir-dev.sch.bme.hu/">kir-dev</a></li>
+                        <li><a href="https://konyvtar.sch.bme.hu/sso-login.php?return=http://konyvtar.sch.bme.hu/" class="lock"></a><a href="http://konyvtar.sch.bme.hu/">könyvtár</a></li>
+                        <li><a href="http://spot.sch.bme.hu/">spot</a></li>
+                        <li><a href="http://pizzasch.sch.bme.hu/">pizzásch</a></li>
+                    </ul>
+                    <span class="noicon">közösség</span>
+                </li>
+                <li>
+                    <ul style="width: 100px;">
+                        <li><a href="http://neptun.bme.hu/">neptun</a></li>
+                        <li><a href="http://www.kth.bme.hu/">kth</a></li>
+                        <li><a href="https://www.vik.bme.hu/">vik.bme</a></li>
+                    </ul>
+                    <span class="noicon">egyéb</span>
+                </li>
+                <li class="login">
+                    <a wicket:id="logoutPageLink" class="noicon">kijelentkezés</a>
+                </li>
             </ul>
+        </div>
+        <div id="container">
             <div id="header">
                 <img id="logo" src="images/logoKorok.gif" alt="VIR Körök logó" />
                 <img id="txtVirKorok" src="images/txtVirKorok.png" alt="VIR Körök" />
                 <ul class="horizontal" id="pagemenu">
                     <li><a wicket:id="showuserlink">Profilom</a></li>
+                    <!--li><a wicket:id="searchgrouplink">Keresés</a></li-->
                     <li><a wicket:id="grouphierarchylink">Egységek</a></li>
                     <li><a wicket:id="ertekeleseklink">Értékelések</a></li>
                     <li><a wicket:id="elbiralas">Elbírálás</a></li>
@@ -57,7 +92,7 @@
                     <span wicket:id="headerLabel"></span>
                 </div>
                 <!--div wicket:id="pagemessages" id="pagemessages"></div-->
-                <wicket:child></wicket:child>
+                    <wicket:child></wicket:child>
             </div>
 
             <!--div wicket:id="pagemessages" id="pagemessages"></div-->
