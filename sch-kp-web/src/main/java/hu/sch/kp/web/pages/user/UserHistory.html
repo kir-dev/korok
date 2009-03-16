@@ -5,31 +5,27 @@
 -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-    <head>
-        <title></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
     <body>
-        <wicket:extend xmlns:wicket="http://wicket.apache.org">
+        <wicket:extend>
             <a wicket:id="simpleView" style="float: right;">Egyszerű felhasználói nézet</a>
-            <div id="data">
-                <h2>Pontigények</h2>
-                <div class="subdata">
-                    <table id="pontigenyek" class="withheader">
-                        <tr class="headers">
-                            <th style="width: 110px;">Szemeszter</th>
-                            <th>Kör</th>
-                            <th style="width: 80px;">Igényelt pontszám</th>
-                        </tr>
-                        <tr wicket:id="pontigeny">
-                            <td><span wicket:id="ertekeles.szemeszter" /></td>
-                            <td><span wicket:id="ertekeles.csoport.nev" /></td>
-                            <td><span wicket:id="pont" /></td>
-                        </tr>
-                    </table>
-                </div>
-                <h2>Belépőigények</h2>
-                <table id="belepoigenyek" class="withheader" style="margin:5px 14px; width: 750px; z-index:1; position:relative;">
+            <h2>Pontigények</h2>
+            <div class="subdata">
+                <table id="pontigenyek" class="withheader">
+                    <tr class="headers">
+                        <th style="width: 110px;">Szemeszter</th>
+                        <th>Kör</th>
+                        <th style="width: 80px;">Igényelt pontszám</th>
+                    </tr>
+                    <tr wicket:id="pontigeny">
+                        <td><span wicket:id="ertekeles.szemeszter" /></td>
+                        <td><span wicket:id="ertekeles.csoport.nev" /></td>
+                        <td><span wicket:id="pont" /></td>
+                    </tr>
+                </table>
+            </div>
+            <h2>Belépőigények</h2>
+            <div class="subdata">
+                <table id="belepoigenyek" class="withheader">
                     <tr class="headers">
                         <th style="width: 110px;">Szemeszter</th>
                         <th style="width: 130px;">Kör</th>

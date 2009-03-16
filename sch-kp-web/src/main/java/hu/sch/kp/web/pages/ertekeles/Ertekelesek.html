@@ -53,13 +53,12 @@
             
             <span wicket:id="pagemessages" id="pagemessages"></span>
             
-            <div id="ertekelesCont">
                 <form wicket:id="csoportform" style="margin-top: 15px;">
                     <select wicket:id="groups" style="width: 250px;">
                         <option>site 1</option>
                         <option>site 2</option>
                     </select>
-                    <input type="submit" value="OK"/>
+                    <input class="btn" type="submit" value="OK"/>
                 </form>
                 <table wicket:id="ertekelesektabla" class="withheader" style="z-index:1; position:relative; margin-top: 5px; margin-bottom: 10px;">
                     <tr class="headers">
@@ -94,7 +93,6 @@
                     </tr>
                 </table>
                 <a wicket:id="ujertekeles"><wicket:message key="ujertekeles"></wicket:message></a><br/>
-            </div>            
         </wicket:extend>
     </body>
 </html>

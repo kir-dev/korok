@@ -27,7 +27,7 @@ import org.apache.wicket.model.PropertyModel;
 
 /**
  *
- * @author major
+ * @author aldaris
  */
 public class ErtekelesDetailPanel extends Panel {
 

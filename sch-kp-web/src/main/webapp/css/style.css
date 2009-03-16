@@ -26,8 +26,8 @@ body {
     min-height: 100%;
 }
 #header {
-    height: 110px;
-    background: url('../images/bckgHeader.gif') top center repeat-x;
+    height: 134px;
+    background: url('../images/bckgHeader.gif') bottom center repeat-x;
 }
 #logo {
     position: absolute;
@@ -112,7 +112,9 @@ ul.horizontal li {
 /* hogy az als??? emberfej ne m???sszon bele zavar???an a k???pbe... */
 #hitcont { padding-bottom: 280px; }
 #searchcont { padding-bottom: 180px; }
-#admincont { padding-top: 32px; padding-bottom: 100px; }
+#admincont { padding-top: 32px; }
+
+#admincont table td { vertical-align: top; }
 
 #admincont form table tr td img { border: 0px; }
 
@@ -143,7 +145,7 @@ ul.horizontal li {
     padding: 2px 0 0 0;
 }
 
-input.textinput{
+.textinput{
     height: 20px;
     width: 355px;
     background: #ffffff;
@@ -151,8 +153,12 @@ input.textinput{
     border: 1px solid #345F7D;
     vertical-align: top;
     padding: 2px 0 0 2px;
+    font: 13px verdana,arial,sans-serif;
 }
 input.textinput.limited { width: 90px; }
+textarea.textinput { 
+    height: 200px;
+}
 input.inputError{
     height: 20px;
     width: 355px;
@@ -225,7 +231,7 @@ select.wide { width: 355px; }
 
 #searchbox {
     position: relative;
-    padding: 100px 0 0 210px;
+    padding: 10px 0 30px 210px;
 }
 
 #searchresultbox {
@@ -291,7 +297,7 @@ select.wide { width: 355px; }
 /* NAVBAR-hoz tartoz?? cuccok - V??LTOZTAK! */
 #data {
     margin: 0 30px;
-    padding-bottom: 200px;
+    padding-bottom: 235px;
 }
 #navbar {
     list-style: none;
@@ -320,9 +326,8 @@ select.wide { width: 355px; }
 
 table {
     border-spacing: 0;
-    width: 840px;
 }
-#showUserCont {
+/*#showUserCont {
     margin: 0 30px;
     padding-bottom: 200px;
 }
@@ -349,7 +354,7 @@ table {
     margin: 0 30px;
     padding-bottom: 200px;
     margin-top: 10px;
-}
+}*/
 h2 {
     margin-top: 12px;
     /*margin-left: 30px;*/
@@ -363,8 +368,10 @@ td.label {
     font-weight: bold;
     width: 130px;
 }
-.subdata table {
-    width: 550px;
+
+table.withheader {
+    margin: 5px 0 10px 0;
+    width: 805px;
 }
 table.withheader th, table.withheader td {
     border-bottom:1px solid #9DC5D6;

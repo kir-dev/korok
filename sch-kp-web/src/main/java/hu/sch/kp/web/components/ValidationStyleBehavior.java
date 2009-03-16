@@ -11,7 +11,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 
 /**
  *
- * @author major
+ * @author aldaris
  */
 public class ValidationStyleBehavior extends AbstractBehavior {
 

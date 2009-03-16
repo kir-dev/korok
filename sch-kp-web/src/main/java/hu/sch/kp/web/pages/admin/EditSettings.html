@@ -12,17 +12,22 @@ and open the template in the editor.
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
             <span wicket:id="pagemessages" id="pagemessages" style="display: block; margin-bottom: 20px;"></span>
             <form wicket:id="beallitasform" style="margin-top: 15px; margin-left: 15px;">
-                <wicket:message key="ertekelesidoszak"/>:
-                <select wicket:id="ertekelesidoszak" align="left" style="width: 220px;"></select>
-                <br/><br/>
-                <wicket:message key="szemeszter.evek"/>:
-                <input wicket:id="elsoEv" style="width: 50px;"/> /
-                <input wicket:id="masodikEv" style="width: 50px;"/>.
-                <br/><br/>
-                <wicket:message key="szemeszter.osziFelev"/>:
-                <input type="checkbox" wicket:id="osziFelev"/>
-                <br/><br/>
-                <input type="submit" value="OK"/>
+                <p>
+                    <label><wicket:message key="ertekelesidoszak"/>:</label>
+                    <select wicket:id="ertekelesidoszak" align="left" style="width: 220px;"></select>
+                </p>
+                <p>
+                    <label><wicket:message key="szemeszter.evek"/>:</label>
+                    <input class="textinput" wicket:id="elsoEv" style="width: 45px;"/> /
+                    <input class="textinput" wicket:id="masodikEv" style="width: 45px;"/>.
+                </p>
+                <p>
+                    <label><wicket:message key="szemeszter.osziFelev"/>:</label>
+                    <input type="checkbox" wicket:id="osziFelev"/>
+                </p>
+                <span id="btns">
+                    <input type="submit" class="btn" value="OK"/>
+                </span>
             </form>
         </wicket:extend>
     </body>

@@ -9,7 +9,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
  *
- * @author major
+ * @author aldaris
  */
 public class Logout extends SecuredPageTemplate {
 

@@ -26,7 +26,7 @@ import org.apache.wicket.validation.validator.NumberValidator;
 
 /**
  *
- * @author major
+ * @author aldaris
  */
 public class EditSettings extends SecuredPageTemplate {
 

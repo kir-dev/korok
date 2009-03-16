@@ -11,7 +11,7 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 
 /**
  *
- * @author major
+ * @author aldaris
  */
 public class ValidationSimpleFormComponentLabel extends SimpleFormComponentLabel {
 

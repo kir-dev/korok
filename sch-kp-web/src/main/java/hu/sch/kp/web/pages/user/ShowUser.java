@@ -4,20 +4,24 @@
  */
 package hu.sch.kp.web.pages.user;
 
+import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.web.pages.error.InternalServerError;
+import hu.sch.kp.web.pages.error.PageExpiredError;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.ShowGroup;
-import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -39,13 +43,25 @@ public class ShowUser extends SecuredPageTemplate {
     }
 
     public void initComponents() {
-        if (id == null) {
-            id = ((VirSession) getSession()).getUser().getId();
+        try {
+            if (id == null) {
+                id = ((VirSession) getSession()).getUser().getId();
+            }
+        } catch (Exception e) {
+            id = null;
         }
         if (id == null) {
-            setResponsePage(Index.class);
+            info("Egy körben sem vagy tag");
+            setResponsePage(GroupHierarchy.class);
             return;
         }
+
+//        List<Csoport> csoports = userManager.findGroupByName("%KIR%");
+//        if (csoports != null) {
+//            for (Csoport csoport : csoports) {
+//                System.out.println(csoport.getNev());
+//            }
+//        }
 
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
         if (user == null) {
@@ -64,10 +80,10 @@ public class ShowUser extends SecuredPageTemplate {
 
         /* add(new BookmarkablePageLink(
         "historylink", UserHistory.class,
-        new PageParameters("id=" + id.toString())));
+        new PageParameters("id=" + id.toString())));*/
 
         add(new ExternalLink("profilelink",
-        "https://idp.sch.bme.hu/profile/show/virid/" + id.toString()));*/
+                "https://idp.sch.bme.hu/profile/show/virid/" + id.toString()));
         user.sortCsoporttagsagok();
         ListView csoptagsagok = new ListView("csoptagsag", user.getCsoporttagsagok()) {
 

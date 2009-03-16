@@ -14,9 +14,9 @@
             <span wicket:id="pagemessages" id="pagemessages"></span>
             <a wicket:id="detailView" style="float: right;">Részletes csoport nézet</a>
             <a wicket:id="editPage" class="btn"><img src="images/btnEdit.gif" alt="Adatlap szerkesztése" /></a>
-            <div id="data">
-                <h2>Csoport adatai</h2>
-                <table style="font: 12px arial; margin: 0 14px;">
+            <h2>Csoport adatai</h2>
+            <div class="subdata">
+                <table>
                     <tr>
                         <td class="label">Név</td><td wicket:id="nev"/>
                     </tr>
@@ -34,25 +34,25 @@
                         <td class="label">Bemutatkozás</td><td><span wicket:id="leiras" /></td>
                     </tr>
                 </table>
-                <h2>Csoport tagjai</h2>
-                <div class="subdata">
-                    <table class="withheader">
-                        <tr class="headers">
-                            <th style="width: 200px;">Felhasználó neve</th>
-                            <th>Becenév</th>
-                            <th>Betöltött poszt</th>
-                            <th style="width: 150px;">Tagság ideje</th>
-                        </tr>
-                        <tr wicket:id="csoptagsag">
-                            <td>
-                                <span wicket:id="felhlink" />
-                            </td>
-                            <td wicket:id="becenev" />
-                            <td wicket:id="jogok" />
-                            <td><span wicket:id="kezdet" /> - <span wicket:id="veg" /></td>
-                        </tr>
-                    </table>
-                </div>
+            </div>
+            <h2>Csoport tagjai</h2>
+            <div class="subdata">
+                <table class="withheader">
+                    <tr class="headers">
+                        <th style="width: 250px;">Felhasználó neve</th>
+                        <th>Becenév</th>
+                        <th style="width: 160px">Betöltött poszt</th>
+                        <th style="width: 180px">Tagság ideje</th>
+                    </tr>
+                    <tr wicket:id="csoptagsag">
+                        <td>
+                            <span wicket:id="felhlink" />
+                        </td>
+                        <td wicket:id="becenev" />
+                        <td wicket:id="jogok" />
+                        <td><span wicket:id="kezdet" /> - <span wicket:id="veg" /></td>
+                    </tr>
+                </table>
             </div>
         </wicket:extend>
     </body>

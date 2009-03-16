@@ -4,17 +4,15 @@ and open the template in the editor.
 -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-    <head>
-        <title></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
     <body>
         <wicket:panel>
             <h2>Leadott szöveges értékelés</h2>
-            <span wicket:id="felevesErtekeles">ert</span>
+            <div class="subdata">
+                <span wicket:id="felevesErtekeles">ert</span>
+            </div>
             <h2>Leadott pontkérelmek</h2>
             <div class="subdata">
-                <table wicket:id="pontTabla" class="withheader" style="z-index:1; position:relative; margin-top: 5px; margin-bottom: 10px;">
+                <table wicket:id="pontTabla" class="withheader">
                     <tr class="headers">
                         <th style="width: 170px;">Név</th>
                         <th style="width: 130px;">Pontszám</th>
@@ -33,7 +31,7 @@ and open the template in the editor.
             </div>
             <h2>Leadott belépőkérelmek</h2>
             <div class="subdata">
-                <table wicket:id="belepoTabla" class="withheader" style="z-index:1; position:relative; margin-top: 5px; margin-bottom: 10px;">
+                <table wicket:id="belepoTabla" class="withheader">
                     <tr class="headers">
                         <th style="width: 170px;">Név</th>
                         <th style="width: 130px;">Belépő típusa</th>

@@ -9,6 +9,7 @@ import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.Szemeszter;
 import hu.sch.domain.TagsagTipus;
+import hu.sch.kp.services.LdapPersonManagerLocal;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
@@ -33,8 +34,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 
 /**
@@ -47,6 +46,8 @@ public class SecuredPageTemplate extends WebPage {
     protected SystemManagerLocal systemManager;
     @EJB(name = "UserManagerBean")
     protected UserManagerLocal userManager;
+    @EJB(name = "LDAPPersonManagerBean")
+    protected LdapPersonManagerLocal ldapManager;
 
     public SecuredPageTemplate() {
         if (getSession().getUser() == null) {
@@ -56,22 +57,22 @@ public class SecuredPageTemplate extends WebPage {
         }
 
         //add(new Label("actualuser", new PropertyModel(getSession().getUser(), "nev")));
-
-        IModel agmodel = null;
-        if (getSession().getCsoport() != null) {
-            agmodel = new PropertyModel(getSession().getCsoport(), "nev");
-        } else {
-            agmodel = new StringResourceModel("msg.NoGroupSelected", this, null);
-        }
+//        ldapManager.initialization();
+//        IModel agmodel = null;
+//        if (getSession().getCsoport() != null) {
+//            agmodel = new PropertyModel(getSession().getCsoport(), "nev");
+//        } else {
+//            agmodel = new StringResourceModel("msg.NoGroupSelected", this, null);
+//        }
         //add(new Label("actualgroup", agmodel));
 
-        IModel szmodel = null;
-        Szemeszter szemeszter = getSzemeszter();
-        if (szemeszter != null) {
-            szmodel = new Model(szemeszter);
-        } else {
-            szmodel = new StringResourceModel("msg.NoSemester", this, null);
-        }
+//        IModel szmodel = null;
+//        Szemeszter szemeszter = getSzemeszter();
+//        if (szemeszter != null) {
+//            szmodel = new Model(szemeszter);
+//        } else {
+//            szmodel = new StringResourceModel("msg.NoSemester", this, null);
+//        }
         //add(new Label("actualsemester", szmodel));
 
         //add(new Label("actualidoszak",
@@ -115,12 +116,16 @@ public class SecuredPageTemplate extends WebPage {
         if (viridSet != null) {
             String virid = viridSet.iterator().next().toString();
             Matcher m = Pattern.compile("^.*:([0-9]+)$").matcher(virid);
-            if (m.matches()) {
-                Long virID = Long.parseLong(m.group(1));
-                Felhasznalo user = userManager.findUserWithCsoporttagsagokById(virID);
-                getSession().setUser(user);
+            try {
+                if (m.matches()) {
+                    Long virID = Long.parseLong(m.group(1));
+                    Felhasznalo user = userManager.findUserWithCsoporttagsagokById(virID);
+                    getSession().setUser(user);
 
-                return user;
+                    return user;
+                }
+            } catch (Exception e) {
+                return null;
             }
         }
         return null;

@@ -11,7 +11,7 @@ import org.apache.wicket.util.convert.IConverter;
 
 /**
  *
- * @author major
+ * @author aldaris
  */
 public class TagsagTipusConverter implements IConverter {
 
