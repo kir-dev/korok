@@ -12,6 +12,8 @@ import hu.sch.kp.web.util.BelepoTipusConverter;
 import hu.sch.domain.BelepoTipus;
 import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.domain.TagsagTipus;
+import hu.sch.kp.web.pages.error.InternalServerError;
+import hu.sch.kp.web.pages.error.PageExpiredError;
 import hu.sch.kp.web.pages.group.EditGroupInfo;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
@@ -64,8 +66,12 @@ public class SchKpApplication extends WebApplication {
         mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/showgroup", ShowGroup.class);
+        mount("/error", PackageName.forClass(InternalServerError.class));
 
+        getApplicationSettings().setInternalErrorPage(InternalServerError.class);
+        getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
         getMarkupSettings().setStripWicketTags(true);
+        getPageSettings().setAutomaticMultiWindowSupport(false);
     }
 
     @Override

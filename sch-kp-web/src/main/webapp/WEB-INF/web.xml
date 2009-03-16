@@ -28,6 +28,11 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error/NotFound</location>
+    </error-page>
+
     <session-config>
         <session-timeout>
             30
