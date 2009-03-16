@@ -33,9 +33,13 @@ public interface UserManagerLocal {
 
     List<Csoport> getAllGroups();
 
+    List<String> getEveryGroupName();
+
     Csoport getGroupHierarchy();
 
-    Csoport findGroupByName(String name);
+    List<Csoport> findGroupByName(String name);
+
+    Csoport getGroupByName(String name);
 
     Csoport findGroupById(Long id);
 

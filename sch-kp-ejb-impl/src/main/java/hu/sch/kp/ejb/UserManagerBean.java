@@ -75,16 +75,34 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
-    public Csoport findGroupByName(String name) {
-        /*Query q = em.createNamedQuery(Csoport.findByName);
-        q.setParameter("name", name);
-        
+    public List<String> getEveryGroupName() {
+        Query q =
+                em.createQuery("SELECT cs.nev FROM Csoport cs " +
+                "ORDER BY cs.nev");
+
+        return q.getResultList();
+    }
+
+    public List<Csoport> findGroupByName(String name) {
+        Query q =
+                em.createQuery("SELECT cs FROM Csoport cs " +
+                "WHERE cs.nev LIKE :kornev " +
+                "ORDER BY cs.nev");
+        q.setParameter("kornev", name);
+
+        return q.getResultList();
+    }
+
+    public Csoport getGroupByName(String name) {
+        Query q = em.createQuery("SELECT cs FROM Csoport cs " +
+                "WHERE cs.nev=:kornev");
+        q.setParameter("kornev", name);
         try {
-        return (Csoport) q.getSingleResult();
-        } catch (NoResultException e) {
-        return null;
-        }*/
-        throw new UnsupportedOperationException();
+            Csoport csoport = (Csoport) q.getSingleResult();
+            return csoport;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public Csoport findGroupById(Long id) {
