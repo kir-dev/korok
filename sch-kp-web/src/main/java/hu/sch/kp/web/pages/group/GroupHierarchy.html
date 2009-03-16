@@ -8,14 +8,37 @@
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <wicket:head>
+            <script type="text/javascript" src="js/focusOnFormFirstElm.js"></script>
+            <style>
+                div.wicket-aa {
+                    font-family: "Lucida Grande","Lucida Sans Unicode",Tahoma,Verdana;
+                    font-size: 12px;
+                    color: #000000;
+                    background-color: white;
+                    border-width: 1px;
+                    border-color: #cccccc;
+                    border-style: solid;
+                    padding: 2px;
+                    margin: 1px 0 0 0;
+                    text-align:left;
+                }
+                div.wicket-aa ul { list-style:none; padding: 2px; margin:0; }
+                div.wicket-aa ul li.selected { background-color: #008dd7; padding: 2px; margin:0; color: #FFFFFF; }
+            </style>
+        </wicket:head>
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
             <span wicket:id="pagemessages" id="pagemessages" style="display: block; margin-bottom: 20px;"></span>
-            <div id="data">
-            <div class="subdata">
-                <div wicket:id="hierarchyTree"/>
+                <div id="searchbox">
+                    <form wicket:id="form">
+                        <h3>Keresés:</h3> <span wicket:id="selectedValue"></span><br/>
+                        <input type="text" class="textinput" wicket:id="ac" size="30"/>
+                    </form>
                 </div>
+            <div class="subdata">
+            <div wicket:id="hierarchyTree"/>
             </div>
         </wicket:extend>
     </body>

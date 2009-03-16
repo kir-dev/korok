@@ -2,6 +2,7 @@ package hu.sch.kp.web.pages.group;
 
 import hu.sch.domain.Csoport;
 import hu.sch.kp.services.UserManagerLocal;
+import hu.sch.kp.web.components.SearchAutoCompleteTextField;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.io.Serializable;
 import java.util.Enumeration;
@@ -12,10 +13,14 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 /**
@@ -30,6 +35,36 @@ public class GroupHierarchy extends SecuredPageTemplate {
     public GroupHierarchy() {
         setHeaderLabelText("Csoportok listája");
         add(new FeedbackPanel("pagemessages"));
+        final String[] csoportok = userManager.getEveryGroupName().toArray(new String[0]);
+        Form form = new Form("form");
+        add(form);
+
+        SearchAutoCompleteTextField field = new SearchAutoCompleteTextField("ac", new Model(""), csoportok);
+
+        form.add(field);
+        final Label label = new Label("selectedValue", field.getModel());
+        label.setOutputMarkupId(true);
+        label.setVisible(false);
+        form.add(label);
+
+        field.add(new AjaxFormSubmitBehavior(form, "onchange") {
+
+            protected void onSubmit(AjaxRequestTarget target) {
+                try {
+                    target.addComponent(label);
+                    Long id = userManager.getGroupByName(label.getModelObjectAsString()).getId();
+                    setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target) {
+            }
+        });
+
         TreeModel model = new DefaultTreeModel(
                 new CsoportTreeNode(userManager.getGroupHierarchy()));
         LinkTree tree = new LinkTree("hierarchyTree", model) {
