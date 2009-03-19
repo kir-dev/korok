@@ -292,72 +292,16 @@ select.wide { width: 355px; }
     margin-top: 15px;
     position: relative;
     right: -200px;
-    /*margin-bottom: -18px;*/
 }
-/* NAVBAR-hoz tartoz?? cuccok - V??LTOZTAK! */
 #data {
     margin: 0 30px;
     padding-bottom: 235px;
 }
-#navbar {
-    list-style: none;
-    display: block;
-    height: 24px;
-    background: url('../images/navbar/bckg.gif') left top repeat-x;
-}
-#navbar li {
-    display: block;
-    float: left;
-}
-#navbar a, #navbar span {
-    color: #d5ebfb;
-    border: 0;
-    font-size: 15px;
-    font-weight: bold;
-    display: block;
-    height: 18px;
-    padding: 2px 12px 4px 12px;
-    position: relative;
-}
-#navbar img { border: 0; vertical-align: top; }
-#navbar a:hover { background: url('../images/navbar/bckgHover.gif') left top repeat-x; }
-#navbar span { pointer: cursor; }
-#navbar .login { float: right; }
-
 table {
     border-spacing: 0;
 }
-/*#showUserCont {
-    margin: 0 30px;
-    padding-bottom: 200px;
-}
-#ertekelesCont {
-    margin: 0 30px;
-    padding-bottom: 200px;
-}
-#ujErtekelesCont {
-    margin: 0 30px;
-    padding-bottom: 200px;
-    margin-top: 13px;
-}
-#pontIgenylesLeadasCont {
-    margin: 0 30px;
-    padding-bottom: 200px;
-    margin-top: 10px;
-}
-#belepoIgenylesLeadasCont {
-    margin: 0 30px;
-    padding-bottom: 200px;
-    margin-top: 10px;
-}
-#belepoIgenylesIndoklasCont {
-    margin: 0 30px;
-    padding-bottom: 200px;
-    margin-top: 10px;
-}*/
 h2 {
     margin-top: 12px;
-    /*margin-left: 30px;*/
     margin-bottom: 6px;
     font-size: 25px;
 }
@@ -393,3 +337,25 @@ a.btn {
     margin: 0 5px;
 }
 a.btn img { border: none; }
+/* Auto-complete searchbox */
+div.wicket-aa {
+    background-color: white;
+    border: 1px solid #cccccc;
+}
+div.wicket-aa ul { list-style: none; }
+div.wicket-aa li {
+    padding: 4px;
+    cursor: pointer;
+}
+div.wicket-aa li.selected {
+    background-color: #76ADC3;
+    padding-left: 6px;
+    color: #FFFFFF;
+}
+/* Fa-hierarchia */
+table.wicket-tree-content table.icon-panel a,
+table.wicket-tree-content table.icon-panel a:hover,
+table.wicket-tree-content table.icon-panel a:visited {
+    color: #1E4565 !important;
+    text-decoration: none !important;
+}
