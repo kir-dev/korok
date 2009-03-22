@@ -35,6 +35,8 @@ public class ShowGroup extends SecuredPageTemplate {
 
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
+//    @EJB(name = "LDAPPersonManagerBean")
+//    LdapPersonManagerLocal ldapManager;
 
     public ShowGroup(PageParameters parameters) {
         Object p = parameters.get("id");
@@ -67,7 +69,8 @@ public class ShowGroup extends SecuredPageTemplate {
         } else {
             add(new BookmarkablePageLink("editPage", ShowUser.class).setVisible(false));
         }
-
+        //List<LdapPerson> persons = ldapManager.searchsomething("19880304");
+        //System.out.println(persons.get(0).getFullName());
         setModel(new CompoundPropertyModel(cs));
         add(new Label("nev"));
         add(new Label("alapitasEve"));
