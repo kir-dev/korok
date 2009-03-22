@@ -78,7 +78,7 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
     }
 
     private List<BelepoIgeny> igenyeketElokeszit(Ertekeles ert) {
-        List<Felhasznalo> csoporttagok = userManager.getCsoporttagok(ert.getCsoport().getId());
+        List<Felhasznalo> csoporttagok = userManager.getCsoporttagokWithoutOregtagok(ert.getCsoport().getId());
         List<BelepoIgeny> igenyek = ertekelesManager.findBelepoIgenyekForErtekeles(ert.getId());
 
         //tagok és igények összefésülése
