@@ -14,7 +14,6 @@ import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.pages.error.InternalServerError;
 import hu.sch.kp.web.pages.error.PageExpiredError;
-import hu.sch.kp.web.pages.group.EditGroupInfo;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
@@ -63,7 +62,7 @@ public class SchKpApplication extends WebApplication {
         mountBookmarkablePage("/logout", Logout.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);
         mountBookmarkablePage("/grouphistory", GroupHistory.class);
-        mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
+//        mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/showgroup", ShowGroup.class);
         mount("/error", PackageName.forClass(InternalServerError.class));
