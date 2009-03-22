@@ -78,22 +78,13 @@ public class SecuredPageTemplate extends WebPage {
         //add(new Label("actualidoszak",
         //              new StringResourceModel("ertekelesidoszak." + getIdoszak().toString(), this, null)));
 
-
-        //((VirSession)getSession()).getUser().
-
-        //add(new BookmarkablePageLink("setsemester", EditSemesterPage.class).setAutoEnable(true));
-        //add(new BookmarkablePageLink("selectgroup", SelectGroup.class).setAutoEnable(true));
-        //add(new BookmarkablePageLink("setidoszak", EditErtekelesIdoszakPage.class).setAutoEnable(true));
-
         WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
         headerLabelContainer.add(new Label("headerLabel", new Model()));
 //        headerLabelContainer.add(new BookmarkablePageLink("detailView", ShowUser.class)).setVisible(false);
 
-        //add(new FeedbackPanel("pagemessages"));
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
-        //if (getSession().getUser().getHasJogValamelyikCsoportban(TagsagTipus.KORVEZETO)) {
         if (hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO)) {
             add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(true));
         } else {
