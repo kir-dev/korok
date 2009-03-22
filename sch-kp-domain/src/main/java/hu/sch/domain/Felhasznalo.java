@@ -9,11 +9,13 @@
 package hu.sch.domain;
 
 import java.io.Serializable;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,7 +25,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -216,6 +217,7 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
     }
 
     public int compareTo(Felhasznalo o) {
-        return getNev().compareTo(o.getNev());
+        Collator huCollator = Collator.getInstance(new Locale("hu"));
+        return huCollator.compare(getNev(), o.getNev());
     }
 }

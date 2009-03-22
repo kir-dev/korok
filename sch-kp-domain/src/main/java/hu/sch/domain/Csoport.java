@@ -9,10 +9,12 @@
 package hu.sch.domain;
 
 import java.io.Serializable;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,7 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -273,6 +274,7 @@ public class Csoport implements Serializable, Comparable<Csoport> {
     }
 
     public int compareTo(Csoport o) {
-        return getNev().compareTo(o.getNev());
+        Collator huCollator = Collator.getInstance(new Locale("hu"));
+        return huCollator.compare(getNev(), o.getNev());
     }
 }
