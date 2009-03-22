@@ -49,7 +49,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
 
         csoport = userManager.findGroupById(id);
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(((VirSession) getSession()).getUser().getId());
-        if (true || user == null || hasUserRoleInGroup(csoport, TagsagTipus.KORVEZETO)) {
+        if (true || user == null || !hasUserRoleInGroup(csoport, TagsagTipus.KORVEZETO)) {
             ((VirSession) getSession()).error(getLocalizer().getString("err.NincsJog", this));
             setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
             return;
@@ -78,7 +78,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
         editInfoForm.add(new ValidationSimpleFormComponentLabel("nevLabel", nevTF));
 
         TextField alapEvTF = new TextField("alapitasEve", Integer.class);
-        alapEvTF.add(new NumberValidator.RangeValidator(1981, Calendar.getInstance().get(java.util.Calendar.YEAR)));
+        alapEvTF.add(new NumberValidator.RangeValidator(1960, Calendar.getInstance().get(java.util.Calendar.YEAR)));
         alapEvTF.add(new ValidationStyleBehavior());
         editInfoForm.add(alapEvTF);
         alapEvTF.setLabel(new Model("Alapítás éve"));
@@ -103,12 +103,6 @@ public class EditGroupInfo extends SecuredPageTemplate {
         descriptionTA.setLabel(new Model("Bemutatkozás"));
         editInfoForm.add(new SimpleFormComponentLabel("descrLabel", descriptionTA));
 
-        //mailTF.add(new EmailAddressPatternValidator());
-        //mailTF.add(new ValidationStyleBehavior());
-        //add(mailTF);
-        //mailTF.setLabel(new Model("E-mail *"));
-        //add(new ValidationSimpleFormComponentLabel("mailLabel", mailTF));
-        //editInfoForm.add(new TextField("nev").add(LengthBetweenValidator.lengthBetween(2, 255)));
         add(editInfoForm);
     }
 }
