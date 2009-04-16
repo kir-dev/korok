@@ -8,13 +8,28 @@
     <body>
         <wicket:extend>
             <a wicket:id="simpleView" style="float: right;">Egyszerű felhasználói nézet</a>
-            <h2>Pontigények</h2>
+            <h2>Szemeszterenkénti közösségi pontok</h2>
+            <div class="subdata">
+                <table class="withheader">
+                    <tr class="headers">
+                        <th style="width: 140px;">Szemeszter</th>
+                        <th>Pontszám</th>
+                    </tr>
+
+                    <tr wicket:id="szemeszterPont">
+                    <td><span wicket:id="szemeszterPont.szemeszter" /></td>
+                    <td><span wicket:id="szemeszterPont.pont" /></td>
+                    </tr>
+                </table>
+            </div>
+
+            <h2>Részletes közösségi pontozás</h2>
             <div class="subdata">
                 <table id="pontigenyek" class="withheader">
                     <tr class="headers">
-                        <th style="width: 110px;">Szemeszter</th>
+                        <th style="width: 140px;">Szemeszter</th>
                         <th>Kör</th>
-                        <th style="width: 80px;">Igényelt pontszám</th>
+                        <th style="width: 80px;">Pontszám</th>
                     </tr>
                     <tr wicket:id="pontigeny">
                         <td><span wicket:id="ertekeles.szemeszter" /></td>
@@ -23,11 +38,11 @@
                     </tr>
                 </table>
             </div>
-            <h2>Belépőigények</h2>
+            <h2>Belépők</h2>
             <div class="subdata">
                 <table id="belepoigenyek" class="withheader">
                     <tr class="headers">
-                        <th style="width: 110px;">Szemeszter</th>
+                        <th style="width: 140px;">Szemeszter</th>
                         <th style="width: 130px;">Kör</th>
                         <th>Igényelt belépő</th>
                         <th style="width: 400px;">Szöveges indoklás</th>
