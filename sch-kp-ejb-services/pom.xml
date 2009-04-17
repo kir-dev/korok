@@ -8,7 +8,6 @@
   <groupId>hu.sch</groupId>
   <artifactId>sch-kp-ejb-services</artifactId>
   <name>SCH KP EJB3 service interfaces</name>
-  <version>1.0.1-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
     <build>
         <plugins>
