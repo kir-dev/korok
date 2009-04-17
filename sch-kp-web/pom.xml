@@ -4,7 +4,7 @@
     <parent>
         <artifactId>sch-kp</artifactId>
         <groupId>hu.sch</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
     <groupId>hu.sch</groupId>
     <artifactId>sch-kp-web</artifactId>
