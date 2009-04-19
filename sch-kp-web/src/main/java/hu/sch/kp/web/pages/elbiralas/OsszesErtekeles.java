@@ -12,6 +12,8 @@ import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.components.ErtekelesStatuszValaszto;
 import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
+import hu.sch.kp.web.pages.ertekeles.LeadottBelepoIgenyles;
+import hu.sch.kp.web.pages.ertekeles.LeadottPontIgenyles;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.HashMap;
@@ -138,11 +140,52 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                 };
                 item.add(ertekeleslink);
                 ertekeleslink.add(new Label("ertekeles.csoport.nev"));
-                item.add(new Label("atlagPont"));
-                item.add(new Label("kiosztottKDO"));
-                item.add(new Label("kiosztottKB"));
-                item.add(new Label("kiosztottAB"));
+                Link szinesKDOLink = new Link("szinesKDO") {
 
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new LeadottBelepoIgenyles(ert));
+                    }
+
+                };
+                szinesKDOLink.add(new Label("kiosztottKDO"));
+
+
+                Link szinesKBLink = new Link("szinesKB") {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new LeadottBelepoIgenyles(ert));
+                    }
+                };
+                szinesKBLink.add(new Label("kiosztottKB"));
+
+                Link szinesABLink = new Link("szinesAB") {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new LeadottBelepoIgenyles(ert));
+                    }
+                };
+
+                szinesABLink.add(new Label("kiosztottAB"));
+                Link pontozasLink = new Link("pontoklink") {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new LeadottPontIgenyles(ert));
+                    }
+
+                };
+
+
+                pontozasLink.add(new Label("atlagPont"));
+                
+                item.add(szinesKDOLink);
+                item.add(szinesKBLink);
+                item.add(szinesABLink);
+                
+                item.add(pontozasLink);
                 Component pontStatusz = new ErtekelesStatuszValaszto("pontStatusz");
                 Component belepoStatusz = new ErtekelesStatuszValaszto("belepoStatusz");
                 pontStatusz.setVisible(!ert.getPontStatusz().equals(ErtekelesStatusz.NINCS));

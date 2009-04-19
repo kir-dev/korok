@@ -7,12 +7,15 @@ package hu.sch.kp.web.pages.ertekeles;
 import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Ertekeles;
+import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
+
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.index.Index;
+
 import hu.sch.kp.web.pages.pontigenyles.PontIgenylesLeadas;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
@@ -227,7 +230,12 @@ public class Ertekelesek extends SecuredPageTemplate {
 
                     @Override
                     public void onClick() {
-                        setResponsePage(new PontIgenylesLeadas(e));
+                        if (e.getPontStatusz() == ErtekelesStatusz.ELFOGADVA) {
+                            setResponsePage(new LeadottPontIgenyles(e));
+                            return;
+                        } else {
+                            setResponsePage(new PontIgenylesLeadas(e));
+                        }
                     }
                 };
                 pontkerelemLink.add(new Label("pontStatusz"));
@@ -237,7 +245,13 @@ public class Ertekelesek extends SecuredPageTemplate {
 
                     @Override
                     public void onClick() {
-                        setResponsePage(new BelepoIgenylesLeadas((e)));
+                        if (e.getBelepoStatusz() == ErtekelesStatusz.ELFOGADVA) {
+                            setResponsePage(new LeadottBelepoIgenyles(e));
+                            return;
+                        } else {
+                            setResponsePage(new BelepoIgenylesLeadas((e)));
+                            return;
+                        }
                     }
                 };
                 item.add(belepokerelemLink);

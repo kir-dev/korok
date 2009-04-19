@@ -35,7 +35,7 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
         this(ertekeles, null);
     }
 
-    public ErtekelesReszletek(Ertekeles ertekeles, final Page prevPage) {
+    public ErtekelesReszletek(final Ertekeles ertekeles, final Page prevPage) {
         IModel model = new CompoundPropertyModel(ertekeles);
 
         setModel(model);
@@ -65,14 +65,14 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
 
             @Override
             public void onClick() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                setResponsePage(new LeadottBelepoIgenyles(ertekeles));
             }
         });
         add(new Link("pontkerelmeklink") {
 
             @Override
             public void onClick() {
-                throw new UnsupportedOperationException("Not supported yet.");
+                setResponsePage(new LeadottPontIgenyles(ertekeles));
             }
         });
 

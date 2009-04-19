@@ -1,0 +1,39 @@
+<!-- 
+    Document   : PontIgenylesLeadas
+    Created on : May 26, 2008, 10:47:11 PM
+    Author     : hege
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <wicket:extend xmlns:wicket="http://wicket.apache.org">
+            <div id="pontIgenylesLeadasCont">
+                Csoport: <span wicket:id="csoport.nev"></span><br/>
+                Szemeszter: <span wicket:id="szemeszter"></span><br/><br/>
+                <form wicket:id="igenyekform">
+                    <div id="data">
+                        <div class="subdata" style="margin: 0;">
+                            <table class="withheader" style="margin-bottom: 7px;">
+                                <tr class="headers">
+                                    <th>Név</th>
+                                    <th>Becenév</th>
+                                    <th>Pont</th>
+                                </tr>
+                                <tr wicket:id="igenyek">
+                                    <td><span wicket:id="felhasznalo.nev"/></td>
+                                    <td><span wicket:id="felhasznalo.becenev"/></td>
+                                    <td style="padding-top: 3px; padding-bottom: 3px;"><span wicket:id="pont"/></td>
+                                </tr>
+                            </table>
+                            
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </wicket:extend>
+    </body>
+</html>
