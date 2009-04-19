@@ -37,7 +37,8 @@ public class LeadottBelepoIgenyles extends SecuredPageTemplate {
     UserManagerLocal userManager;
 
     public LeadottBelepoIgenyles(final Ertekeles ert) {
-        //TODO jogosultság?!
+
+        setHeaderLabelText("Leadott belépőigénylések megtekintése");
         final List<BelepoIgeny> igenylista = igenyeketElokeszit(ert);
 
         setModel(new CompoundPropertyModel(ert));

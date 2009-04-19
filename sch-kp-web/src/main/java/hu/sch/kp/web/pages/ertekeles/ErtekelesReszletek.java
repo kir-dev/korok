@@ -36,6 +36,7 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
     }
 
     public ErtekelesReszletek(final Ertekeles ertekeles, final Page prevPage) {
+        setHeaderLabelText("Leadott értékelés - részletes nézet");
         IModel model = new CompoundPropertyModel(ertekeles);
 
         setModel(model);
