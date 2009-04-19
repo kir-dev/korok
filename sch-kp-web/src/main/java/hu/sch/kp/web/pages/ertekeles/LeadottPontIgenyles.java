@@ -35,6 +35,7 @@ public class LeadottPontIgenyles extends SecuredPageTemplate {
     UserManagerLocal userManager;
 
     public LeadottPontIgenyles(Ertekeles ert) {
+
         setHeaderLabelText("Leadott pontigénylések megtekintése");
         //TODO jogosultság?!
         final Long ertekelesId = ert.getId();
@@ -83,7 +84,7 @@ public class LeadottPontIgenyles extends SecuredPageTemplate {
                 for (Felhasznalo felh : csoporttagok) {
                     bentvan = false;
                     for (PontIgeny igeny : igenyek) {
-                        if (felh.getId() == igeny.getFelhasznalo().getId()) {
+                        if (felh.getId().equals( igeny.getFelhasznalo().getId())) {
                             bentvan = true;
                             break;
                         }
