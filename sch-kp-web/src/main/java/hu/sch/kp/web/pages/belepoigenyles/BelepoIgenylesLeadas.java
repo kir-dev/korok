@@ -87,10 +87,21 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
                 igenyek.add(new BelepoIgeny(f, BelepoTipus.KDO));
             }
         } else {
-            // TODO tényleges összefésülés
+
+            //tényleges összefésülés
+             boolean szerepel = false;
             if (igenyek.size() != csoporttagok.size()) {
-                // TODO összefésülés
-                throw new UnsupportedOperationException("BelépőIgény - Csoporttag összefésülés még nincs implementálva");
+                for(Felhasznalo csoporttag: csoporttagok) {
+                    szerepel = false;
+                    for (BelepoIgeny igeny : igenyek) {
+                        if (igeny.getFelhasznalo().getId().equals(csoporttag.getId())) {
+                            szerepel = true; break;
+                        }
+                    }
+                    if (!szerepel) {
+                        igenyek.add(new BelepoIgeny(csoporttag, BelepoTipus.KDO));
+                    }
+                }
             }
         }
 

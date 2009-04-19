@@ -121,7 +121,7 @@ public interface ErtekelesManagerLocal {
      * @param ertekelesId
      * @param igenyek
      */
-    void belepoIgenyekLeadasa(Long ertekelesId, List<BelepoIgeny> igenyek);
+    boolean belepoIgenyekLeadasa(Long ertekelesId, List<BelepoIgeny> igenyek);
 
     /**
      * Értékelést ad vissza ID alapján (de nem adja vissza az igényléseket és az üzeneteket)

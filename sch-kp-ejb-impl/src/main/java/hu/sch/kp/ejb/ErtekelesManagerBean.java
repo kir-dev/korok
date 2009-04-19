@@ -43,14 +43,10 @@ import javax.persistence.Query;
  */
 @Stateless
 public class ErtekelesManagerBean implements ErtekelesManagerLocal {
+
     private static final String defaultSortColumnForErtekelesLista = "csoportNev";
-    private static final Map<String,String> sortMapForErtekelesLista;
-    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ErtekelesStatisztika(e, "
-            + "(SELECT avg(p.pont) FROM PontIgeny p WHERE p.ertekeles = e AND p.pont > 0) as atlagpont, "
-            + "(SELECT count(*) as numKDO FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KDO\') as igenyeltkdo, "
-            + "(SELECT count(*) as numKB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KB\') as igenyeltkb, "
-            + "(SELECT count(*) as numAB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'AB\') as igenyeltab"
-            + ") FROM Ertekeles e ";
+    private static final Map<String, String> sortMapForErtekelesLista;
+    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ErtekelesStatisztika(e, " + "(SELECT avg(p.pont) FROM PontIgeny p WHERE p.ertekeles = e AND p.pont > 0) as atlagpont, " + "(SELECT count(*) as numKDO FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KDO\') as igenyeltkdo, " + "(SELECT count(*) as numKB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KB\') as igenyeltkb, " + "(SELECT count(*) as numAB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'AB\') as igenyeltab" + ") FROM Ertekeles e ";
     @PersistenceContext
     EntityManager em;
     @EJB
@@ -296,10 +292,17 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         ertekeles.setUtolsoModositas(new Date());
     }
 
-    public void belepoIgenyekLeadasa(Long ertekelesId, List<BelepoIgeny> igenyek) {
+    public boolean belepoIgenyekLeadasa(Long ertekelesId, List<BelepoIgeny> igenyek) {
         Ertekeles ertekeles = findErtekelesById(ertekelesId);
         if (ertekeles.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA)) {
             throw new RuntimeException("Elfogadott értékelésen nem változtathat");
+        }
+        for (BelepoIgeny igeny : igenyek) {
+            if ((igeny.getBelepotipus().equals(BelepoTipus.AB) ||
+                    igeny.getBelepotipus().equals(BelepoTipus.KB)) &&
+                    (igeny.getSzovegesErtekeles() == null)) {
+                return false;
+            }
         }
         for (BelepoIgeny igeny : igenyek) {
             if (igeny.getErtekeles() == null) { //új
@@ -316,6 +319,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         }
         ertekeles.setBelepoStatusz(ErtekelesStatusz.ELBIRALATLAN);
         ertekeles.setUtolsoModositas(new Date());
+        return true;
     }
 
     public Ertekeles findErtekelesById(Long ertekelesId) {

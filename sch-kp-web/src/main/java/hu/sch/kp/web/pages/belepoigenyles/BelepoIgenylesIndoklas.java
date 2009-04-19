@@ -19,6 +19,7 @@ import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 
@@ -35,24 +36,25 @@ public class BelepoIgenylesIndoklas extends SecuredPageTemplate {
 
     public BelepoIgenylesIndoklas(final Ertekeles ert, final List<BelepoIgeny> igenyek) {
         List<BelepoIgeny> indoklando = kellIndoklas(igenyek);
-        indoklando.size();
-
-        // Az indolkando.size() mar a BelepoIgenylesLeadas.java oldalon ellenorizve lett.
-//        if (indoklando.size() == 0) {
-//            setResponsePage(new Ertekelesek());
-        ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek);
-//            getSession().info("Belépőigények elmentve");
-//            return;
-//        }
-
+        add(new FeedbackPanel("pagemessages"));
+        setHeaderLabelText("Színes belépők indoklása");
         Form indoklasform = new Form("indoklasform") {
 
             @Override
             protected void onSubmit() {
-                ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek);
-                ((VirSession) getSession()).info(getLocalizer().getString("info.BelepoIgenylesMentve", this));
-            //getSession().info("Belépőigények elmentve");
-                setResponsePage(Ertekelesek.class);
+
+                if (ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek)) {
+                    ((VirSession) getSession()).info(getLocalizer().getString("info.BelepoIgenylesMentve", this));
+                    //getSession().info("Belépőigények elmentve");
+                    setResponsePage(Ertekelesek.class);
+                    return;
+                } else {
+                    getSession().info(getLocalizer().getString("info.BelepoIgenylesNincsIndoklas", this));
+                    setResponsePage(new BelepoIgenylesIndoklas(ert, igenyek));
+                    return;
+                }
+
+
             }
         };
 
@@ -64,7 +66,7 @@ public class BelepoIgenylesIndoklas extends SecuredPageTemplate {
                 item.add(new Label("felhasznalo.becenev"));
                 item.add(new Label("belepotipus"));
                 TextArea textArea = new TextArea("szovegesErtekeles");
-                textArea.setRequired(true);
+                
                 item.add(textArea);
             }
         };
