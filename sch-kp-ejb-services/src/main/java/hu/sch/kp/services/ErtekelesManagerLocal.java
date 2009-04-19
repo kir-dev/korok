@@ -67,7 +67,7 @@ public interface ErtekelesManagerLocal {
 
     List<ElfogadottBelepo> findElfogadottBelepoIgenyekForSzemeszter(Szemeszter szemeszter);
 
-    void ErtekeleseketElbiral(Collection<ElbiraltErtekeles> elbiralas, Felhasznalo felhasznalo);
+    boolean ErtekeleseketElbiral(Collection<ElbiraltErtekeles> elbiralas, Felhasznalo felhasznalo);
 
     /**
      * Új üzenet fűzése egy értékeléshez

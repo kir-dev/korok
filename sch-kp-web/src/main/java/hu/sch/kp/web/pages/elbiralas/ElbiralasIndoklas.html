@@ -11,16 +11,17 @@
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
-            Minden elutasított igénylést kötelezően meg kell indokolni (piros keret).
+            <span wicket:id="pagemessages" id="pagemessages"></span>
+            <br />Minden elutasított igénylést kötelezően meg kell indokolni (piros keret).
             Az elfogadott igénylésekhez is írható indoklás.<br/>
-            <b>A mentés csak az indoklások kitöltése után történik meg.</b>
+            <b>A mentés csak az indoklások kitöltése után történik meg.</b><br />
             <form wicket:id="elbiralasindoklasform">
                 <ul>
                     <li wicket:id="elbiraltErtekeles">
                         Csoport: <span wicket:id="ertekeles.csoport.nev"></span><br/>
                         Belépőkérelem: <span wicket:id="belepoStatusz"></span><br/>
                         Pontkérelem: <span wicket:id="pontStatusz"></span><br/>
-                        <textarea wicket:id="indoklas" class=""></textarea>
+                        <textarea wicket:id="indoklas" class="" cols="60" rows="10"></textarea>
                     </li>
                 </ul>
                 <input type="submit" value="OK"/>

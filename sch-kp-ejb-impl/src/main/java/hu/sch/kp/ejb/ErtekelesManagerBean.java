@@ -45,13 +45,12 @@ import javax.persistence.Query;
 public class ErtekelesManagerBean implements ErtekelesManagerLocal {
     private static final String defaultSortColumnForErtekelesLista = "csoportNev";
     private static final Map<String,String> sortMapForErtekelesLista;
-    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ErtekelesStatisztika(e, " 
-            + "(SELECT avg(p.pont) FROM PontIgeny p WHERE p.ertekeles = e AND p.pont > 0) as atlagpont, " 
+    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ErtekelesStatisztika(e, "
+            + "(SELECT avg(p.pont) FROM PontIgeny p WHERE p.ertekeles = e AND p.pont > 0) as atlagpont, "
             + "(SELECT count(*) as numKDO FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KDO\') as igenyeltkdo, "
             + "(SELECT count(*) as numKB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KB\') as igenyeltkb, "
-            + "(SELECT count(*) as numAB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'AB\') as igenyeltab" 
+            + "(SELECT count(*) as numAB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'AB\') as igenyeltab"
             + ") FROM Ertekeles e ";
-    
     @PersistenceContext
     EntityManager em;
     @EJB
@@ -59,11 +58,12 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
     @EJB
     SystemManagerLocal systemManager;
 
+
     static {
         /* Hibernate BUG:
          * http://opensource.atlassian.com/projects/hibernate/browse/HHH-1902
          */
-        sortMapForErtekelesLista = new HashMap<String,String>();
+        sortMapForErtekelesLista = new HashMap<String, String>();
         sortMapForErtekelesLista.put("csoportNev", "e.csoport.nev ASC");
         sortMapForErtekelesLista.put("atlagPont", "col_1_0_ DESC");
         sortMapForErtekelesLista.put("kiosztottKDO", "col_2_0_ DESC");
@@ -72,7 +72,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         sortMapForErtekelesLista.put("pontStatusz", "e.pontStatusz DESC");
         sortMapForErtekelesLista.put("belepoStatusz", "e.belepoStatusz DESC");
     }
-    
+
     public void createErtekeles(Ertekeles ertekeles) {
         em.persist(ertekeles);
         em.flush();
@@ -96,23 +96,23 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         ids = ids.substring(1, ids.length() - 1);
         Query q = em.createQuery(statisztikaQuery + "WHERE e.id in (" + ids + ")");
 
-        return (List<ErtekelesStatisztika>)q.getResultList();
+        return (List<ErtekelesStatisztika>) q.getResultList();
     }
 
     public List<ErtekelesStatisztika> findErtekelesStatisztikaForSzemeszter(Szemeszter szemeszter) {
-        return findErtekelesStatisztikaForSzemeszter(szemeszter,defaultSortColumnForErtekelesLista);
+        return findErtekelesStatisztikaForSzemeszter(szemeszter, defaultSortColumnForErtekelesLista);
     }
-    
+
     @SuppressWarnings({"unchecked"})
     public List<ErtekelesStatisztika> findErtekelesStatisztikaForSzemeszter(Szemeszter szemeszter, String sortColumn) {
         String sc = sortMapForErtekelesLista.get(sortColumn);
         if (sc == null) {
             throw new RuntimeException("Az eredményt nem lehet a megadott attribútum alapján rendezni");
         }
-        Query q = em.createQuery(statisztikaQuery+ "WHERE e.szemeszter=:szemeszter ORDER BY "+sc);
+        Query q = em.createQuery(statisztikaQuery + "WHERE e.szemeszter=:szemeszter ORDER BY " + sc);
         q.setParameter("szemeszter", systemManager.getSzemeszter());
-        
-        return (List<ErtekelesStatisztika>)q.getResultList();
+
+        return (List<ErtekelesStatisztika>) q.getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -153,10 +153,17 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
             e.setBelepoStatusz(ErtekelesStatusz.ELUTASITVA);
         }
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void ErtekeleseketElbiral(Collection<ElbiraltErtekeles> elbiralas, Felhasznalo felhasznalo) {
+    public boolean ErtekeleseketElbiral(Collection<ElbiraltErtekeles> elbiralas, Felhasznalo felhasznalo) {
         for (ElbiraltErtekeles ee : elbiralas) {
+
+            if ((ee.getPontStatusz().equals(ErtekelesStatusz.ELUTASITVA) ||
+                    ee.getBelepoStatusz().equals(ErtekelesStatusz.ELUTASITVA)) &&
+                    ee.getIndoklas() == null) {
+                return false;
+            }
+
             if (ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA) || ee.getPontStatusz().equals(ErtekelesStatusz.ELUTASITVA)) {
                 PontIgenyElbiral(ee.getErtekeles(), felhasznalo, ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA));
             }
@@ -167,6 +174,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
                 Uzen(ee.getErtekeles().getId(), felhasznalo, ee.getIndoklas());
             }
         }
+        return true;
     }
 
     public void Uzen(Long ertekelesId, Felhasznalo uzeno, String uzenetStr) {
@@ -338,10 +346,10 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         Query q = em.createQuery("SELECT new hu.sch.domain.ElfogadottBelepo(i.felhasznalo.neptunkod," +
                 "i.belepotipus) FROM BelepoIgeny i " +
                 "WHERE i.ertekeles.szemeszter = :szemeszter AND i.ertekeles.belepoStatusz=:statusz");
-        
+
         q.setParameter("statusz", ErtekelesStatusz.ELBIRALATLAN);
         q.setParameter("szemeszter", szemeszter);
-        
+
         return q.getResultList();
     }
 }

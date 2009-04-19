@@ -146,7 +146,8 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                 Component pontStatusz = new ErtekelesStatuszValaszto("pontStatusz");
                 Component belepoStatusz = new ErtekelesStatuszValaszto("belepoStatusz");
                 pontStatusz.setVisible(!ert.getPontStatusz().equals(ErtekelesStatusz.NINCS));
-                belepoStatusz.setVisible(!ert.getBelepoStatusz().equals(ErtekelesStatusz.NINCS));
+                if (belepoStatusz != null && ert != null && ert.getBelepoStatusz() != null) {
+                belepoStatusz.setVisible(!ert.getBelepoStatusz().equals(ErtekelesStatusz.NINCS));}
                 //System.out.println("abba: " + ert.getPontStatusz() + " " + ert.getBelepoStatusz());
                 //System.out.println("aaa: " + ert.getPontStatusz());
                 //System.out.println("bbb: " + ert.getBelepoStatusz());
