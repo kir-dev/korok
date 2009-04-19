@@ -9,6 +9,7 @@ import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Szemeszter;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
 import hu.sch.kp.services.SystemManagerLocal;
+import javax.annotation.security.DeclareRoles;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -20,6 +21,7 @@ import javax.persistence.Query;
  * @author hege
  */
 @Stateless
+@DeclareRoles({"ADMIN", "JETI"})
 public class SystemManagerBean implements SystemManagerLocal {
 
     @PersistenceContext

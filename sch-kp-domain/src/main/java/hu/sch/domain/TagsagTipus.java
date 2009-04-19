@@ -5,8 +5,6 @@
 package hu.sch.domain;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *
@@ -46,25 +44,15 @@ public enum TagsagTipus {
         return retList.toArray(ret);
     }
 
-    static boolean hasJogCsoportban(Csoporttagsag cstagsag, TagsagTipus type) {
-        Long jogok = cstagsag.getJogok();
-        if ((jogok & (1 << type.value - 1)) != 0) {
-            return true;
+    public static TagsagTipus fromEntitlement(String entitlement) {
+        if (entitlement.equalsIgnoreCase("tag")) {
+            return TAG;
+        } else if (entitlement.equalsIgnoreCase("korvezeto")) {
+            return KORVEZETO;
+        } else if (entitlement.equalsIgnoreCase("gazdasagis")) {
+            return GAZDASAGIS;
         }
-        return false;
-    }
 
-    static boolean hasJogValamelyikCsoportban(List<Csoporttagsag> cstagsagok, TagsagTipus type) {
-        try {
-            Iterator iterator = cstagsagok.iterator();
-            while (iterator.hasNext()) {
-                if (hasJogCsoportban((Csoporttagsag) iterator.next(), type)) {
-                    return true;
-                }
-            }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
+        return null;
     }
 }

@@ -13,7 +13,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import javax.persistence.Column;
@@ -154,33 +153,6 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
     @OneToMany(mappedBy = "felhasznalo", fetch = FetchType.LAZY)
     public List<Csoporttagsag> getCsoporttagsagok() {
         return csoporttagsagok;
-    }
-
-    public List<Csoporttagsag> getCsoporttagsagokAholSzerepbenVagyok(TagsagTipus type) {
-        List ret = new ArrayList<Csoporttagsag>();
-        Iterator iterator = csoporttagsagok.iterator();
-        while (iterator.hasNext()) {
-            Csoporttagsag tagsag = (Csoporttagsag) iterator.next();
-            if (TagsagTipus.hasJogCsoportban(tagsag, type)) {
-                ret.add(tagsag);
-            }
-        }
-        return ret;
-    }
-
-    public boolean getHasJogCsoportban(Csoport csoport, TagsagTipus type) {
-        Iterator iterator = getCsoporttagsagok().iterator();
-        while (iterator.hasNext()) {
-            Csoporttagsag tagsag = (Csoporttagsag) iterator.next();
-            if (tagsag.getCsoport().getNev().equals(csoport.getNev()) && TagsagTipus.hasJogCsoportban(tagsag, type)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean getHasJogValamelyikCsoportban(TagsagTipus type) {
-        return TagsagTipus.hasJogValamelyikCsoportban(getCsoporttagsagok(), type);
     }
 
     public void setCsoporttagsagok(List<Csoporttagsag> csoporttagsagok) {
