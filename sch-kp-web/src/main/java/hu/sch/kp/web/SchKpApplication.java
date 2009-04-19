@@ -20,6 +20,7 @@ import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.GroupHistory;
 import hu.sch.kp.web.pages.logout.Logout;
 import hu.sch.kp.web.pages.user.UserHistory;
+import hu.sch.kp.web.authz.UserAuthorization;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
 import hu.sch.kp.web.util.TagsagTipusConverter;
@@ -37,6 +38,9 @@ import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
  * @author hege
  */
 public class SchKpApplication extends WebApplication {
+
+    private static final String AUTHZ_COMPONENT_PARAM = "authorizationComponent";
+    private UserAuthorization authorizationComponent;
 
     public Class getHomePage() {
         return GroupHierarchy.class;
@@ -71,6 +75,16 @@ public class SchKpApplication extends WebApplication {
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
         getMarkupSettings().setStripWicketTags(true);
         getPageSettings().setAutomaticMultiWindowSupport(false);
+        
+        String classname = getInitParameter(AUTHZ_COMPONENT_PARAM);
+        try {
+            authorizationComponent = Class.forName(classname).
+                    asSubclass(UserAuthorization.class).newInstance();
+            authorizationComponent.init(this);
+        } catch (Exception ex) {
+            throw new IllegalStateException("Cannot instantiate authorization component" +
+                    classname, ex);
+        }
     }
 
     @Override
@@ -86,5 +100,9 @@ public class SchKpApplication extends WebApplication {
         locator.set(TagsagTipus.class, new TagsagTipusConverter());
 
         return locator;
+    }
+
+    public UserAuthorization getAuthorizationComponent() {
+        return authorizationComponent;
     }
 }

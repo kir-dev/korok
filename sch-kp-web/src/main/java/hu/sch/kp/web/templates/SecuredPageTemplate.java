@@ -13,20 +13,17 @@ import hu.sch.kp.services.LdapPersonManagerLocal;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
+import hu.sch.kp.web.SchKpApplication;
+import hu.sch.kp.web.authz.UserAuthorization;
 import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.SelectGroup;
-import hu.sch.kp.web.pages.index.SelectUser;
 import hu.sch.kp.web.pages.logout.Logout;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.session.VirSession;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.ejb.EJB;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
@@ -34,7 +31,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebRequest;
 
 /**
  *
@@ -50,35 +46,10 @@ public class SecuredPageTemplate extends WebPage {
     protected LdapPersonManagerLocal ldapManager;
 
     public SecuredPageTemplate() {
-        if (getSession().getUser() == null) {
-            if (loadFelhasznalo() == null) {
-                throw new RestartResponseAtInterceptPageException(SelectUser.class);
-            }
-        }
+        loadFelhasznalo();
 
-        //add(new Label("actualuser", new PropertyModel(getSession().getUser(), "nev")));
-//        ldapManager.initialization();
-//        IModel agmodel = null;
-//        if (getSession().getCsoport() != null) {
-//            agmodel = new PropertyModel(getSession().getCsoport(), "nev");
-//        } else {
-//            agmodel = new StringResourceModel("msg.NoGroupSelected", this, null);
-//        }
-        //add(new Label("actualgroup", agmodel));
-
-//        IModel szmodel = null;
-//        Szemeszter szemeszter = getSzemeszter();
-//        if (szemeszter != null) {
-//            szmodel = new Model(szemeszter);
-//        } else {
-//            szmodel = new StringResourceModel("msg.NoSemester", this, null);
-//        }
-        //add(new Label("actualsemester", szmodel));
-
-        //add(new Label("actualidoszak",
-        //              new StringResourceModel("ertekelesidoszak." + getIdoszak().toString(), this, null)));
-
-        WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
+        WebMarkupContainer headerLabelContainer =
+                new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
         headerLabelContainer.add(new Label("headerLabel", new Model()));
 //        headerLabelContainer.add(new BookmarkablePageLink("detailView", ShowUser.class)).setVisible(false);
@@ -101,23 +72,13 @@ public class SecuredPageTemplate extends WebPage {
     }
 
     protected Felhasznalo loadFelhasznalo() {
-        HttpServletRequest req =
-                ((WebRequest) getRequest()).getHttpServletRequest();
-        Set viridSet = (Set) req.getAttribute("virid");
-        if (viridSet != null) {
-            String virid = viridSet.iterator().next().toString();
-            Matcher m = Pattern.compile("^.*:([0-9]+)$").matcher(virid);
-            try {
-                if (m.matches()) {
-                    Long virID = Long.parseLong(m.group(1));
-                    Felhasznalo user = userManager.findUserWithCsoporttagsagokById(virID);
-                    getSession().setUser(user);
+        Long virID = getAuthorizationComponent().getUserid(getRequest());
+        if (virID != null) {
+            Felhasznalo user =
+                    userManager.findUserWithCsoporttagsagokById(virID);
+            getSession().setUser(user);
 
-                    return user;
-                }
-            } catch (Exception e) {
-                return null;
-            }
+            return user;
         }
         return null;
     }
@@ -153,50 +114,21 @@ public class SecuredPageTemplate extends WebPage {
         return getSession().getUser();
     }
 
-    protected String getUid() {
-        return ((WebRequest) getRequest()).getHttpServletRequest().getRemoteUser();
-//        return null;
-    }
-
     public boolean isCurrentUserAdmin() {
-//        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
-        return false;
+        return getAuthorizationComponent().hasAbstractRole(getRequest(), "ADMIN");
     }
 
     public boolean isCurrentUserJETI() {
-//        return ((WebRequest)getRequest()).getHttpServletRequest().isUserInRole("JETI");
-        return false;
+        return getAuthorizationComponent().hasAbstractRole(getRequest(), "JETI");
     }
 
     public boolean hasUserRoleInGroup(Csoport group, TagsagTipus type) {
-        //return getFelhasznalo().getHasJogCsoportban(group, type);
-        return false;
+        return getAuthorizationComponent().hasRoleInGroup(getRequest(), group, type);
     }
 
     public boolean hasUserRoleInSomeGroup(TagsagTipus type) {
-        //    return getFelhasznalo().getHasJogValamelyikCsoportban(type);
-        return false;
+        return getAuthorizationComponent().hasRoleInSomeGroup(getRequest(), type);
     }
-//    public void setHeaderDetailViewLink(Class pageClass, String param) {
-//        get("headerLabelContainer").setVisible(true);
-//        if (param != null) {
-//            ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setModel(new Model(UserHistory.class));
-////            ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setModel(
-////                    new Model(new Model(pageClass)));
-//        } else {
-//            ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setModel(new Model(UserHistory.class));
-//        //new Model(new BookmarkablePageLink("detailView", pageClass)));
-//        //new Model(new BookmarkablePageLink("detailView", pageClass)));
-//        }
-//        ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setVisible(true);
-//        System.out.println(((WebMarkupContainer) get("headerLabelContainer")).get("detailView").getModelObject());
-//        System.out.println("-----");
-//        System.out.println(((WebMarkupContainer) get("headerLabelContainer")).get("detailView"));
-//    }
-//
-//    public void disableLink() {
-//        ((WebMarkupContainer) get("headerLabelContainer")).get("detailView").setVisible(false);
-//    }
 
     public void setHeaderLabelText(String text) {
         get("headerLabelContainer").setVisible(true);
@@ -206,5 +138,9 @@ public class SecuredPageTemplate extends WebPage {
     public void setHeaderLabelModel(IModel model) {
         get("headerLabelContainer").setVisible(true);
         ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setModel(model);
+    }
+
+    protected UserAuthorization getAuthorizationComponent() {
+        return ((SchKpApplication) getApplication()).getAuthorizationComponent();
     }
 }

@@ -20,6 +20,10 @@
             <param-name>applicationClassName</param-name>
             <param-value>hu.sch.kp.web.SchKpApplication</param-value>
         </init-param>
+        <init-param>
+            <param-name>authorizationComponent</param-name>
+            <param-value>hu.sch.kp.web.authz.DummyAuthorization</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     

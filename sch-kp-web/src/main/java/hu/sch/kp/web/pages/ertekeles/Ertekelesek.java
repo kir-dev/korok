@@ -157,11 +157,13 @@ public class Ertekelesek extends SecuredPageTemplate {
         }
         user.sortCsoporttagsagok();
 
-        final List<Csoporttagsag> cstag = user.getCsoporttagsagokAholSzerepbenVagyok(TagsagTipus.KORVEZETO);
-        Iterator iterator = cstag.iterator();
+        final List<Csoporttagsag> cstag = user.getCsoporttagsagok();
         final ArrayList<String> csoportok = new ArrayList<String>();
-        while (iterator.hasNext()) {
-            csoportok.add(((Csoporttagsag) iterator.next()).getCsoport().getNev());
+        //TODO simplify this
+        for (Csoporttagsag t : cstag) {
+            if (hasUserRoleInGroup(t.getCsoport(), TagsagTipus.KORVEZETO)) {
+                csoportok.add(t.getCsoport().getNev());
+            }
         }
         // Ha mar korabban volt csoport kivalasztva.
         updateErtekelesList();
@@ -172,11 +174,13 @@ public class Ertekelesek extends SecuredPageTemplate {
                 Iterator iterator = cstag.iterator();
                 Csoport cs = null;
                 while (iterator.hasNext()) {
+                    //TODO simplify this
                     cs = ((Csoporttagsag) iterator.next()).getCsoport();
                     if (cs.getNev().equals(selected)) {
                         ((VirSession) getSession()).setCsoport(cs);
                         updateErtekelesList();
-                        if ((ertekelesList.size() == 0) || (!ertekelesManager.isErtekelesLeadhato(csoport))) {
+                        if ((ertekelesList.size() == 0) ||
+                                (!ertekelesManager.isErtekelesLeadhato(csoport))) {
                             ujertekeles.setVisible(false);
                         } else {
                             ujertekeles.setVisible(true);
@@ -278,7 +282,8 @@ public class Ertekelesek extends SecuredPageTemplate {
 //            info(getLocalizer().getString("info.NincsErtekeles", this));
 //            ujertekeles.setVisible(false);
 //        }
-        if ((ertekelesList.size() == 0) || (!ertekelesManager.isErtekelesLeadhato(csoport))) {
+        if ((ertekelesList.size() == 0) ||
+                (!ertekelesManager.isErtekelesLeadhato(csoport))) {
             ujertekeles.setVisible(false);
         } else {
             if (hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO)) {
