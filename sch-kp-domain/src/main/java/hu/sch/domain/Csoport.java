@@ -269,8 +269,7 @@ public class Csoport implements Serializable, Comparable<Csoport> {
 
     @Override
     public String toString() {
-        return "hu.uml13.domain.Csoport id=" + getId() +
-                ", nev=" + getNev();
+        return getNev();
     }
 
     public int compareTo(Csoport o) {
