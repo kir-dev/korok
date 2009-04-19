@@ -22,7 +22,7 @@
                         <webModule>
                             <groupId>hu.sch</groupId>
                             <artifactId>sch-kp-web</artifactId>
-                            <contextRoot>/korok</contextRoot>
+                            <contextRoot>/korok-teszt</contextRoot>
                             <!--unpack>true</unpack-->
                         </webModule>
                         <ejbModule>
