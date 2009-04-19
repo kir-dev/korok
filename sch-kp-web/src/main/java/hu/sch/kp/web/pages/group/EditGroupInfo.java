@@ -50,7 +50,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
         csoport = userManager.findGroupById(id);
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(((VirSession) getSession()).getUser().getId());
         if (true || user == null || !hasUserRoleInGroup(csoport, TagsagTipus.KORVEZETO)) {
-            ((VirSession) getSession()).error(getLocalizer().getString("err.NincsJog", this));
+            getSession().error(getLocalizer().getString("err.NincsJog", this));
             setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
             return;
         }
@@ -61,9 +61,9 @@ public class EditGroupInfo extends SecuredPageTemplate {
             protected void onSubmit() {
                 super.onSubmit();
                 if (userManager.groupInfoUpdate(csoport)) {
-                    ((VirSession) getSession()).info(getLocalizer().getString("info.AdatlapMentve", this));
+                    getSession().info(getLocalizer().getString("info.AdatlapMentve", this));
                 } else {
-                    ((VirSession) getSession()).error(getLocalizer().getString("err.AdatlapFailed", this));
+                    getSession().error(getLocalizer().getString("err.AdatlapFailed", this));
                 }
                 setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
                 return;

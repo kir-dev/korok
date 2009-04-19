@@ -44,7 +44,7 @@ public class BelepoIgenylesIndoklas extends SecuredPageTemplate {
             protected void onSubmit() {
 
                 if (ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek)) {
-                    ((VirSession) getSession()).info(getLocalizer().getString("info.BelepoIgenylesMentve", this));
+                    getSession().info(getLocalizer().getString("info.BelepoIgenylesMentve", this));
                     //getSession().info("Belépőigények elmentve");
                     setResponsePage(Ertekelesek.class);
                     return;

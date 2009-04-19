@@ -9,10 +9,8 @@ import hu.sch.domain.BelepoTipus;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.kp.services.ErtekelesManagerLocal;
-import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.components.BelepoTipusValaszto;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
-import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
 import java.util.List;
@@ -33,8 +31,6 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
 
     public BelepoIgenylesLeadas(final Ertekeles ert) {
         //TODO jogosultság?!
@@ -56,7 +52,7 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
                     }
                 }
                 ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenylista);
-                ((VirSession) getSession()).info(getLocalizer().getString("info.BelepoIgenylesMentve", getParent()));
+                getSession().info(getLocalizer().getString("info.BelepoIgenylesMentve", getParent()));
                 setResponsePage(Ertekelesek.class);
             }
         };

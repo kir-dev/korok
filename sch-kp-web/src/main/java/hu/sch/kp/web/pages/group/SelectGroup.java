@@ -7,14 +7,12 @@ package hu.sch.kp.web.pages.group;
 import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
-import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -27,8 +25,6 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class SelectGroup extends SecuredPageTemplate {
 
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
     Long id;
     public String selected = "";
 
@@ -41,7 +37,7 @@ public class SelectGroup extends SecuredPageTemplate {
         getSession().getUser().getCsoportok();*/
 
         if (id == null) {
-            id = ((VirSession) getSession()).getUser().getId();
+            id = getSession().getUser().getId();
         }
         if (id == null) {
             setResponsePage(Index.class);
@@ -90,7 +86,7 @@ public class SelectGroup extends SecuredPageTemplate {
                 while (iterator.hasNext()) {
                     cs = ((Csoporttagsag) iterator.next()).getCsoport();
                     if (cs.getNev().equals(selected)) {
-                        ((VirSession) getSession()).setCsoport(cs);
+                        ((VirSession)getSession()).setCsoport(cs);
                         break;
                     }
                 }

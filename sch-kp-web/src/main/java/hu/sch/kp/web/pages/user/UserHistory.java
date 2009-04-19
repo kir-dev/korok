@@ -8,13 +8,10 @@ import hu.sch.domain.BelepoIgeny;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.PontIgeny;
 import hu.sch.domain.Szemeszter;
-import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.index.Index;
-import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -28,9 +25,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public class UserHistory extends SecuredPageTemplate
 {
-
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
     Long id;
     private boolean own_profile = false;
 
@@ -57,7 +51,7 @@ public class UserHistory extends SecuredPageTemplate
     {
         if (id == null)
         {
-            id = ((VirSession) getSession()).getUser().getId();
+            id = getSession().getUser().getId();
         }
         if (id == null)
         {

@@ -4,19 +4,12 @@
  */
 package hu.sch.kp.web.pages.user;
 
-import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
-import hu.sch.kp.services.UserManagerLocal;
-import hu.sch.kp.web.pages.error.InternalServerError;
-import hu.sch.kp.web.pages.error.PageExpiredError;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.ShowGroup;
-import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
-import java.util.List;
-import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
@@ -32,8 +25,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public class ShowUser extends SecuredPageTemplate {
 
-    @EJB(name = "ejb/UserManagerLocal")
-    UserManagerLocal userManager;
     Long id;
     private boolean own_profile = false;
 
@@ -45,7 +36,7 @@ public class ShowUser extends SecuredPageTemplate {
     public void initComponents() {
         try {
             if (id == null) {
-                id = ((VirSession) getSession()).getUser().getId();
+                id = getSession().getUser().getId();
             }
         } catch (Exception e) {
             id = null;

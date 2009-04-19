@@ -16,10 +16,7 @@ public class Logout extends SecuredPageTemplate {
     public Logout() {
         setHeaderLabelText("Kijelentkezés");
         add(new FeedbackPanel("pagemessages"));
-        if (getUid() == null) {
-            info("Sikeres kijelentkezés. :)");
-        } else {
-            error("Sikertelen kijelentkezés. :(");
-        }
+
+        info("Sikeres kijelentkezés. :)");
     }
 }

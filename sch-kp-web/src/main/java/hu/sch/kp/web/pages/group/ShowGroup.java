@@ -8,14 +8,10 @@ import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
-import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.components.FelhasznaloLink;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.user.ShowUser;
-import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
-import javax.ejb.EJB;
-
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
@@ -33,8 +29,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public class ShowGroup extends SecuredPageTemplate {
 
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
 //    @EJB(name = "LDAPPersonManagerBean")
 //    LdapPersonManagerLocal ldapManager;
 
@@ -49,7 +43,7 @@ public class ShowGroup extends SecuredPageTemplate {
         }
 
         Csoport cs = userManager.findGroupWithCsoporttagsagokById(id);
-        Felhasznalo user = userManager.findUserWithCsoporttagsagokById(((VirSession) getSession()).getUser().getId());
+        Felhasznalo user = userManager.findUserWithCsoporttagsagokById(getSession().getUser().getId());
         if (cs == null) {
             info("Nem vagy körtag");
             setResponsePage(GroupHierarchy.class);

@@ -10,7 +10,6 @@ import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
-import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.index.Index;
@@ -123,8 +122,6 @@ public class Ertekelesek extends SecuredPageTemplate {
     }*/
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
     public String selected = "";
     List<Ertekeles> ertekelesList = new ArrayList<Ertekeles>();
     Long id;
@@ -134,7 +131,7 @@ public class Ertekelesek extends SecuredPageTemplate {
     public Ertekelesek() {
         setHeaderLabelText("Csoportválasztás");
         if (id == null) {
-            id = ((VirSession) getSession()).getUser().getId();
+            id = getSession().getUser().getId();
         }
         if (id == null) {
             setResponsePage(Index.class);
@@ -277,7 +274,7 @@ public class Ertekelesek extends SecuredPageTemplate {
     }
 
     public void updateErtekelesList() {
-        csoport = ((VirSession) getSession()).getCsoport();
+        csoport = getSession().getCsoport();
         if (csoport != null) {
             ertekelesList.clear();
             ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
