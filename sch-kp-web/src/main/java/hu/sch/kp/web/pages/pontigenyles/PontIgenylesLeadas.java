@@ -35,7 +35,7 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
 
-    public PontIgenylesLeadas(Ertekeles ert) {
+    public PontIgenylesLeadas(final Ertekeles ert) {
         setHeaderLabelText("Pontigénylés leadása");
         //TODO jogosultság?!
         final Long ertekelesId = ert.getId();
@@ -72,7 +72,6 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
 
             @Override
             protected void populateItem(Item item) {
-                final PontIgeny igeny = (PontIgeny) item.getModelObject();
                 final ValidationError validationError = new ValidationError();
                 validationError.addMessageKey("err.MinimumPontHiba");
 
@@ -80,7 +79,7 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
                 item.add(new Label("felhasznalo.becenev"));
                 TextField pont = new TextField("pont");
                 //csoportfüggő validátor hozzácsatolása
-                if (igeny.getErtekeles().getCsoport().getId().equals(SCH_QPA_ID)) {
+                if (ert.getCsoport().getId().equals(SCH_QPA_ID)) {
                     pont.add(QpaPontValidator);
                 } else {
                     pont.add(pontValidator);
