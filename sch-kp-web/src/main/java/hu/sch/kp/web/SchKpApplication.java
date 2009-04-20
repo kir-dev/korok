@@ -69,6 +69,7 @@ public class SchKpApplication extends WebApplication {
 //        mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/showgroup", ShowGroup.class);
+        mountBookmarkablePage("/pontigenyles", hu.sch.kp.web.pages.ertekeles.Ertekelesek.class);
         mount("/error", PackageName.forClass(InternalServerError.class));
 
         getApplicationSettings().setInternalErrorPage(InternalServerError.class);

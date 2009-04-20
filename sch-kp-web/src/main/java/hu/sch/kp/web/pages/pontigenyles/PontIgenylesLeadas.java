@@ -20,13 +20,14 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
  *
  * @author hege
  */
-public class PontIgenylesLeadas extends SecuredPageTemplate {
-
+public class PontIgenylesLeadas extends SecuredPageTemplate
+{
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
 
@@ -39,20 +40,35 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
         setModel(new CompoundPropertyModel(ert));
         add(new Label("csoport.nev"));
         add(new Label("szemeszter"));
+        add(new FeedbackPanel("pagemessages"));
 
-        Form igform = new Form("igenyekform") {
-
+        // Űrlap létrehozása
+        Form igform = new Form("igenyekform")
+        {
             @Override
-            protected void onSubmit() {
+            protected void onSubmit()
+            {
+                // pontok ellenőrzése
+                for (PontIgeny pontIgeny : igenylista)
+                {
+                    if (pontIgeny.getPont() > 0 && pontIgeny.getPont() < 5)
+                    {
+                        // Hibás pontot találtam!
+                        getSession().error(getLocalizer().getString("err.MinimumPontHiba", this));
+                        return;
+                    }
+                }
+
+                // pontok tárolása
                 ertekelesManager.pontIgenyekLeadasa(ertekelesId, igenylista);
                 getSession().info(getLocalizer().getString("info.PontIgenylesMentve", this));
                 setResponsePage(Ertekelesek.class);
             }
         };
 
+        // Bevitelhez táblázat létrehozása
         IDataProvider provider = new ListDataProviderCompoundPropertyModelImpl(igenylista);
         DataView dview = new DataView("igenyek", provider) {
-
             @Override
             protected void populateItem(Item item) {
                 item.add(new Label("felhasznalo.nev"));
@@ -74,7 +90,7 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
             for (Felhasznalo f : csoporttagok) {
                 igenyek.add(new PontIgeny(f, 0));
             }
-        } else {
+        }else{
             // TODO tényleges összefésülés
             if (igenyek.size() != csoporttagok.size()) {
                 // TODO összefésülés
