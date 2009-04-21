@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -72,7 +73,8 @@ public class GroupHistory extends SecuredPageTemplate {
                     selectedErtekeles = (Ertekeles) iterator.next();
                     szemeszter = selectedErtekeles.getSzemeszter();
                     if (szemeszter.toString().equals(selected)) {
-                        setHeaderLabelText(csoport.getNev() + " részletes pontozásai");
+                        setHeaderLabelText("A kör részletes pontozásai");
+                        //csoport.getNev()
                         ertekelesPanel.updateDatas(selectedErtekeles);
                         ertekelesPanel.setVisible(true);
                         break;
@@ -80,7 +82,8 @@ public class GroupHistory extends SecuredPageTemplate {
                 }
             }
         };
-
+        //add(new Label("nev"));
+        add(new Label("nev",csoport.getNev()));
         DropDownChoice ddc = new DropDownChoice("semesters", szemeszterek);
         ddc.setModel(new PropertyModel(this, "selected"));
 
