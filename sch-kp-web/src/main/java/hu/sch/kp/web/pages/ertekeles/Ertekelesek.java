@@ -12,10 +12,8 @@ import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
-
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.index.Index;
-
 import hu.sch.kp.web.pages.pontigenyles.PontIgenylesLeadas;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
@@ -143,6 +141,9 @@ public class Ertekelesek extends SecuredPageTemplate {
             return;
         }
         add(new FeedbackPanel("pagemessages"));
+        kornev = new Label("nev", "");
+        kornev.setVisible(false);
+        add(kornev);
 
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
         if (user == null) {
@@ -292,8 +293,6 @@ public class Ertekelesek extends SecuredPageTemplate {
                 ujertekeles.setVisible(true);
             }
         }
-        kornev = new Label("nev","");
-        kornev.setVisible(false);
     }
 
     public void updateErtekelesList() {
@@ -303,9 +302,8 @@ public class Ertekelesek extends SecuredPageTemplate {
             ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
             selected = csoport.getNev();
             setHeaderLabelText("Értékelések");
-            kornev.setVisible(true);
             kornev.setModel(new Model(csoport.getNev()));
-            add(kornev);
+            kornev.setVisible(true);
         }
     }
 }
