@@ -34,6 +34,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 /**
@@ -130,6 +131,7 @@ public class Ertekelesek extends SecuredPageTemplate {
     Long id;
     Csoport csoport;
     Link ujertekeles;
+    Label kornev;
 
     public Ertekelesek() {
         setHeaderLabelText("Csoportválasztás");
@@ -290,6 +292,8 @@ public class Ertekelesek extends SecuredPageTemplate {
                 ujertekeles.setVisible(true);
             }
         }
+        kornev = new Label("nev","");
+        kornev.setVisible(false);
     }
 
     public void updateErtekelesList() {
@@ -298,7 +302,10 @@ public class Ertekelesek extends SecuredPageTemplate {
             ertekelesList.clear();
             ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
             selected = csoport.getNev();
-            setHeaderLabelText(csoport.getNev());
+            setHeaderLabelText("Értékelések");
+            kornev.setVisible(true);
+            kornev.setModel(new Model(csoport.getNev()));
+            add(kornev);
         }
     }
 }
