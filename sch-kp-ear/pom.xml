@@ -47,6 +47,29 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.glassfish.maven.plugin</groupId>
+                <artifactId>maven-glassfish-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <glassfishDirectory>/home/kirdev/glassfish</glassfishDirectory>
+                    <user>admin</user>
+                    <passwordFile>/home/kirdev/.asadminpass</passwordFile>
+                    <autoCreate>false</autoCreate>
+                    <echo>true</echo>
+                    <debug>true</debug>
+                    <components>
+                        <component>
+                            <name>korok</name>
+                            <artifact>${project.build.directory}/${project.build.finalName}.ear</artifact>
+                        </component>
+                    </components>
+                    <domain>
+                        <name>clients-test</name>
+                        <adminPort>24848</adminPort>
+                    </domain>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <properties>
@@ -54,6 +77,13 @@
         <netbeans.hint.deploy.server>J2EE</netbeans.hint.deploy.server>
 
     </properties>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven.java.net</id>
+            <name>Java.net Maven2 Repository</name>
+            <url>http://download.java.net/maven/2</url>
+        </pluginRepository>
+    </pluginRepositories>
     <dependencies>
         <dependency>
             <type>ejb</type>
