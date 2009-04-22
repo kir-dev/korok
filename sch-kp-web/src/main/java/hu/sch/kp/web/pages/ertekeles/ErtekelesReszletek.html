@@ -11,11 +11,10 @@
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
-            <a href="#" wicket:id="backlink">vissza</a><br/><br/>
-            
-            Csoport: <span wicket:id="csoport.nev">csoport</span><br/>
-            Feladó: <span wicket:id="felado">felado</span><br/>
-            Szemeszter: <span wicket:id="szemeszter">szemeszter</span><br/>
+            <a wicket:id="backlink"><wicket:message key="link.vissza"/></a><br/>
+            <h2><span wicket:id="csoport.nev">csoport</span></h2><br/>
+            <h3>Felado:<span wicket:id="felado">felado</span></h3><br/>
+            <h3>Szemeszter: <span wicket:id="szemeszter">szemeszter</span></h3><br/>
             <a wicket:id="belepokerelmeklink">Belépőkérelmek</a> státusza: <span wicket:id="belepoStatusz">bs</span><br/>
             <a wicket:id="pontkerelmeklink">Pontkérelmek</a> státusza: <span wicket:id="pontStatusz">ps</span><br/>
             Kiosztott pontok átlaga: <span wicket:id="stat.atlagPont">0.0</span><br/>

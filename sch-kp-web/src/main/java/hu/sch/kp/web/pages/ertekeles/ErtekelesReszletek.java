@@ -40,7 +40,7 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
         IModel model = new CompoundPropertyModel(ertekeles);
 
         setModel(model);
-        Link backlink = new Link("backlink") {
+        /*Link backlink = new Link("backlink") {
 
             @Override
             public void onClick() {
@@ -50,13 +50,19 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
         if (prevPage == null) {
             backlink.setVisible(false);
         }
-        add(backlink);
-        add(new CsoportLink("csoport.nev", ertekeles.getCsoport()));
+        add(backlink);*/
+        add(new Link("backlink"){
+            @Override
+            public void onClick() {
+                setResponsePage(Ertekelesek.class);
+            }
+        });
+        add(new Label("csoport.nev", ertekeles.getCsoport().getNev()));
         //TODO fix this with compoundpropertymodel :)
         if (ertekeles.getFelado() != null) {
             add(new FelhasznaloLink("felado", ertekeles.getFelado()));
         } else {
-            add(new Label("felado", ""));
+            add(new Label("felado", "Nincs megadva"));
         }
         add(new Label("szemeszter"));
         add(new Label("belepoStatusz"));
