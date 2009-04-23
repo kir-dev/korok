@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author aldaris
  */
 @Stateless
-public class EntitlementManagerBeanBean implements EntitlementManagerBeanLocal {
+public class EntitlementManagerBean implements EntitlementManagerBeanLocal {
 
     @PersistenceContext
     EntityManager em;
