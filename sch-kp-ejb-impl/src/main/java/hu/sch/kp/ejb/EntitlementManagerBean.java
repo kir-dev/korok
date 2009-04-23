@@ -5,7 +5,7 @@
 package hu.sch.kp.ejb;
 
 import hu.sch.domain.Felhasznalo;
-import hu.sch.kp.services.EntitlementManagerBeanLocal;
+import hu.sch.kp.services.EntitlementManagerLocal;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author aldaris
  */
 @Stateless
-public class EntitlementManagerBean implements EntitlementManagerBeanLocal {
+public class EntitlementManagerBean implements EntitlementManagerLocal {
 
     @PersistenceContext
     EntityManager em;

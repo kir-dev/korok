@@ -12,7 +12,7 @@ import javax.ejb.Local;
  * @author aldaris
  */
 @Local
-public interface EntitlementManagerBeanLocal {
+public interface EntitlementManagerLocal {
 
     Felhasznalo createUserEntry(Felhasznalo user);
 }
