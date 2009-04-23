@@ -5,7 +5,7 @@
 package hu.sch.kp.ejb;
 
 import hu.sch.domain.Felhasznalo;
-import hu.sch.kp.services.EntitlementManagerLocal;
+import hu.sch.kp.services.EntitlementManagerRemote;
 import hu.sch.kp.services.UserManagerLocal;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -18,7 +18,7 @@ import javax.persistence.Query;
  * @author aldaris
  */
 @Stateless
-public class EntitlementManagerBean implements EntitlementManagerLocal {
+public class EntitlementManagerBean implements EntitlementManagerRemote {
 
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;

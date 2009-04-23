@@ -5,14 +5,14 @@
 package hu.sch.kp.services;
 
 import hu.sch.domain.Felhasznalo;
-import javax.ejb.Local;
+import javax.ejb.Remote;
 
 /**
  *
  * @author aldaris
  */
-@Local
-public interface EntitlementManagerLocal {
+@Remote
+public interface EntitlementManagerRemote {
 
     Felhasznalo createUserEntry(Felhasznalo user);
 }
