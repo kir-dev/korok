@@ -24,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -36,8 +37,10 @@ import javax.persistence.Transient;
 @NamedQueries({
     @NamedQuery(name = "findUserWithCsoporttagsagok",
     query =
-    "SELECT f FROM Felhasznalo f JOIN FETCH f.csoporttagsagok WHERE f.id = :id")
-})
+    "SELECT f FROM Felhasznalo f JOIN FETCH f.csoporttagsagok WHERE f.id = :id"),
+    @NamedQuery(name = "findUserByNeptunCode",
+    query = "SELECT f FROM Felhasznalo f WHERE f.neptunkod = :neptun")})
+@SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
 public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
 
     private static final long serialVersionUID = 1L;
@@ -81,8 +84,12 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
         this.id = id;
     }
 
+    /**
+     * A felhasználó egyedi azonosítóját visszaadó függvény
+     * @return A user virId-je
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "users_seq")
     @Column(name = "usr_id")
     public Long getId() {
         return id;

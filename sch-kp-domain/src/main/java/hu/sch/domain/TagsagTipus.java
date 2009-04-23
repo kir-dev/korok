@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author major
+ * @author aldaris
  */
 public enum TagsagTipus {
 

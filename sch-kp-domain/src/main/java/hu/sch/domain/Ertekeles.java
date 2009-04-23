@@ -42,7 +42,8 @@ import javax.persistence.Transient;
     query = "SELECT e FROM Ertekeles e LEFT JOIN FETCH e.uzenetek " +
     "WHERE e.id=:id"),
     @NamedQuery(name = "findErtekelesByCsoport",
-    query = "SELECT e FROM Ertekeles e WHERE e.csoport=:csoport")
+    query = "SELECT e FROM Ertekeles e WHERE e.csoport=:csoport " +
+    "ORDER BY e.szemeszter DESC")
 })
 public class Ertekeles implements Serializable {
 
