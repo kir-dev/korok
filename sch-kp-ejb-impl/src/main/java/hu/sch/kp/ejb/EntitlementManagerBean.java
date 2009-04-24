@@ -31,12 +31,20 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
             q.setParameter("neptun", user.getNeptunkod());
             try {
                 Felhasznalo exists = (Felhasznalo) q.getSingleResult();
-                return exists;
+                return mapReturn(exists);
             } catch (Exception e) {
             }
         }
         em.persist(user);
         em.flush();
-        return user;
+        return mapReturn(user);
+    }
+
+    protected Felhasznalo mapReturn(Felhasznalo f) {
+        Felhasznalo felhasznalo = new Felhasznalo();
+        felhasznalo.setId(f.getId());
+        felhasznalo.setNeptunkod(f.getNeptunkod());
+        
+        return felhasznalo;
     }
 }
