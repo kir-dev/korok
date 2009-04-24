@@ -29,7 +29,6 @@ import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.AddGroupMember;
 import hu.sch.kp.web.pages.group.ChangePost;
-import hu.sch.kp.web.pages.group.EditEntitlements;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
 import hu.sch.kp.web.util.TagsagTipusConverter;
@@ -66,7 +65,6 @@ public class SchKpApplication extends WebApplication {
         mountBookmarkablePage("/grouphistory", GroupHistory.class);
         mountBookmarkablePage("/addgroupmember", AddGroupMember.class);
         mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
-        mountBookmarkablePage("/editposts", EditEntitlements.class);
         mountBookmarkablePage("/changepost", ChangePost.class);
 
         mountBookmarkablePage("/valuation", Ertekelesek.class);

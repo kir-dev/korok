@@ -64,7 +64,6 @@ public class ShowGroup extends SecuredPageTemplate {
                     new PageParameters("id=" + cs.getId().toString())).setVisible(true));
         } else {
             add(new BookmarkablePageLink("editPage", ShowUser.class).setVisible(false));
-            add(new BookmarkablePageLink("editEntitle", EditEntitlements.class).setVisible(false));
         }
 
         setModel(new CompoundPropertyModel(cs));
