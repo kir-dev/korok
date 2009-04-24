@@ -60,9 +60,10 @@ public class EditGroupInfo extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 super.onSubmit();
-                if (userManager.groupInfoUpdate(csoport)) {
+                try {
+                    userManager.groupInfoUpdate(csoport);
                     getSession().info(getLocalizer().getString("info.AdatlapMentve", this));
-                } else {
+                } catch (Exception ex) {
                     getSession().error(getLocalizer().getString("err.AdatlapFailed", this));
                 }
                 setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
