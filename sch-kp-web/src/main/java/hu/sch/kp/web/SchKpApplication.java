@@ -21,6 +21,7 @@ import hu.sch.kp.web.pages.group.GroupHistory;
 import hu.sch.kp.web.pages.logout.Logout;
 import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.authz.UserAuthorization;
+import hu.sch.kp.web.pages.group.AddGroupMember;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
 import hu.sch.kp.web.util.TagsagTipusConverter;
@@ -69,6 +70,7 @@ public class SchKpApplication extends WebApplication {
 //        mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/showgroup", ShowGroup.class);
+        mountBookmarkablePage("/addgroupmember", AddGroupMember.class);
         mountBookmarkablePage("/pontigenyles", hu.sch.kp.web.pages.ertekeles.Ertekelesek.class);
         mount("/error", PackageName.forClass(InternalServerError.class));
 
