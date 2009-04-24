@@ -26,7 +26,7 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
     EntityManager em;
 
     public Felhasznalo createUserEntry(Felhasznalo user) {
-        if (!user.getNeptunkod().isEmpty()) {
+        if (user.getNeptunkod() != null) {
             Query q = em.createNamedQuery("findUserByNeptunCode");
             q.setParameter("neptun", user.getNeptunkod());
             try {
