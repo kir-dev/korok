@@ -35,9 +35,10 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
             } catch (Exception e) {
             }
         }
-        em.persist(user);
+        Felhasznalo newUser = mapNew(user);
+        em.persist(newUser);
         em.flush();
-        return mapReturn(user);
+        return mapReturn(newUser);
     }
 
     protected Felhasznalo mapReturn(Felhasznalo f) {
@@ -45,6 +46,17 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
         felhasznalo.setId(f.getId());
         felhasznalo.setNeptunkod(f.getNeptunkod());
         
+        return felhasznalo;
+    }
+
+    protected Felhasznalo mapNew(Felhasznalo f) {
+        Felhasznalo felhasznalo = mapReturn(f);
+        felhasznalo.setNeptunkod(f.getNeptunkod());
+        felhasznalo.setVezeteknev(f.getVezeteknev());
+        felhasznalo.setKeresztnev(f.getKeresztnev());
+        felhasznalo.setBecenev(f.getBecenev());
+        felhasznalo.setEmailcim(f.getEmailcim());
+
         return felhasznalo;
     }
 }
