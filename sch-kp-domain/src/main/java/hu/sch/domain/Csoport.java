@@ -122,6 +122,14 @@ public class Csoport implements Serializable, Comparable<Csoport> {
      * Cache-elt mező
      */
     private List<Felhasznalo> csoporttagok;
+    /**
+     * Aktív tagságok
+     */
+    private List<Csoporttagsag> activeMembers;
+    /**
+     * Öregtagok
+     */
+    private List<Csoporttagsag> inactiveMembers;
 
     /** Creates a new instance of Csoport */
     public Csoport() {
@@ -249,9 +257,32 @@ public class Csoport implements Serializable, Comparable<Csoport> {
 
     private void loadCsoporttagok() {
         csoporttagok = new ArrayList<Felhasznalo>();
+        activeMembers = new ArrayList<Csoporttagsag>();
+        inactiveMembers = new ArrayList<Csoporttagsag>();
         for (Csoporttagsag cst : getCsoporttagsagok()) {
             csoporttagok.add(cst.getFelhasznalo());
+            if (cst.getVeg() == null) {
+                activeMembers.add(cst);
+            } else {
+                inactiveMembers.add(cst);
+            }
         }
+    }
+
+    @Transient
+    public List<Csoporttagsag> getActiveMembers() {
+        if (csoporttagok == null) {
+            loadCsoporttagok();
+        }
+        return activeMembers;
+    }
+
+    @Transient
+    public List<Csoporttagsag> getInactiveMembers() {
+        if (csoporttagok == null) {
+            loadCsoporttagok();
+        }
+        return inactiveMembers;
     }
 
     public void sortCsoporttagsagok() {

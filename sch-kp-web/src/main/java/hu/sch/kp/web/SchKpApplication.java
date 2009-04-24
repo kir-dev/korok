@@ -8,12 +8,15 @@
  */
 package hu.sch.kp.web;
 
+import hu.sch.domain.BelepoIgeny;
 import hu.sch.kp.web.util.BelepoTipusConverter;
 import hu.sch.domain.BelepoTipus;
 import hu.sch.domain.ErtekelesStatusz;
+import hu.sch.domain.PontIgeny;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.pages.error.InternalServerError;
 import hu.sch.kp.web.pages.error.PageExpiredError;
+import hu.sch.kp.web.pages.group.EditGroupInfo;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
@@ -21,7 +24,12 @@ import hu.sch.kp.web.pages.group.GroupHistory;
 import hu.sch.kp.web.pages.logout.Logout;
 import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.authz.UserAuthorization;
+import hu.sch.kp.web.pages.admin.EditSettings;
+import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
+import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.AddGroupMember;
+import hu.sch.kp.web.pages.group.ChangePost;
+import hu.sch.kp.web.pages.group.EditEntitlements;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.util.ErtekelesStatuszConverter;
 import hu.sch.kp.web.util.TagsagTipusConverter;
@@ -51,34 +59,29 @@ public class SchKpApplication extends WebApplication {
     protected void init() {
         addComponentInstantiationListener(new JavaEEComponentInjector(this));
 
-//        mount("/index", PackageName.forClass(Index.class));
-//        mount("/user", PackageName.forClass(ShowUser.class));
-//        mount("/group", PackageName.forClass(ShowGroup.class));
-//        mount("/Valuation", PackageName.forClass(Ertekelesek.class));
-//        mount("/PointRequests", PackageName.forClass(PontIgeny.class));
-//        mount("/AccessRequests", PackageName.forClass(BelepoIgeny.class));
-        //mount("/admin", PackageName.forClass(EditSemesterPage.class));
-//        mount("/Consider", PackageName.forClass(OsszesErtekeles.class));
-//        mountBookmarkablePage("/EditSettings", EditSettings.class);
-        //mountBookmarkablePage("/Valuation", Ertekelesek.class);
-        /*        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
-        mountBookmarkablePage("/group", ShowGroup.class);
-        mountBookmarkablePage("/user123", ShowUser.class);*/
-        mountBookmarkablePage("/logout", Logout.class);
-        mountBookmarkablePage("/userhistory", UserHistory.class);
-        mountBookmarkablePage("/grouphistory", GroupHistory.class);
-//        mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
         mountBookmarkablePage("/showuser", ShowUser.class);
-        mountBookmarkablePage("/showgroup", ShowGroup.class);
-        mountBookmarkablePage("/addgroupmember", AddGroupMember.class);
-        mountBookmarkablePage("/pontigenyles", hu.sch.kp.web.pages.ertekeles.Ertekelesek.class);
-        mount("/error", PackageName.forClass(InternalServerError.class));
+        mountBookmarkablePage("/userhistory", UserHistory.class);
 
+        mountBookmarkablePage("/showgroup", ShowGroup.class);
+        mountBookmarkablePage("/grouphistory", GroupHistory.class);
+        mountBookmarkablePage("/addgroupmember", AddGroupMember.class);
+        mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
+        mountBookmarkablePage("/editposts", EditEntitlements.class);
+        mountBookmarkablePage("/changepost", ChangePost.class);
+
+        mountBookmarkablePage("/valuation", Ertekelesek.class);
+        mountBookmarkablePage("/pointrequests", PontIgeny.class);
+        mountBookmarkablePage("/entrantrequests", BelepoIgeny.class);
+
+        mountBookmarkablePage("/consider", OsszesErtekeles.class);
+        mountBookmarkablePage("/editsettings", EditSettings.class);
+        mountBookmarkablePage("/logout", Logout.class);
+        mount("/error", PackageName.forClass(InternalServerError.class));
         getApplicationSettings().setInternalErrorPage(InternalServerError.class);
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
         getMarkupSettings().setStripWicketTags(true);
         getPageSettings().setAutomaticMultiWindowSupport(false);
-        
+
         String classname = getInitParameter(AUTHZ_COMPONENT_PARAM);
         try {
             authorizationComponent = Class.forName(classname).

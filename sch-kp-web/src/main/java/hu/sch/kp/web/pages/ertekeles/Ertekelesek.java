@@ -6,6 +6,7 @@ package hu.sch.kp.web.pages.ertekeles;
 
 import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
+import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.domain.Felhasznalo;
@@ -192,11 +193,6 @@ public class Ertekelesek extends SecuredPageTemplate {
                         break;
                     }
                 }
-//                if (!continueToOriginalDestination()) {
-//                    setResponsePage(ShowGroup.class, new PageParameters("id=" + cs.getId().toString()));
-//                } else {
-//                return;
-//                }
             }
         };
         DropDownChoice ddc = new DropDownChoice("groups", csoportok);

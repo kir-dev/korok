@@ -1,0 +1,29 @@
+<wicket:extend>
+    <div class="subdata">
+        <form wicket:id="form">
+            <table wicket:id="table" class="withheader">
+                <tr class="headers">
+                    <th style="width: 250px;">Felhasználó neve</th>
+                    <th>Becenév</th>
+                    <th>Jelenlegi jogok</th>
+                    <th>Jogok kiosztása</th>
+                    <th style="text-align: center;">Öregtagok</th>
+                </tr>
+                <tr wicket:id="members">
+                    <td>
+                        <span wicket:id="felhlink" />
+                    </td>
+                    <td wicket:id="becenev" />
+                    <td wicket:id="jogok" />
+                    <td>
+                        <span wicket:id="postLink" />
+                    </td>
+                    <td style="text-align: center;">
+                        <input wicket:id="check" type="checkbox" />
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="save" />
+        </form>
+    </div>
+</wicket:extend>

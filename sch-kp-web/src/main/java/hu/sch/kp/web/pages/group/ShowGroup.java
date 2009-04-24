@@ -8,12 +8,12 @@ import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
+import hu.sch.kp.web.components.ActiveMembershipsPanel;
+import hu.sch.kp.web.components.AdminMembershipsPanel;
 import hu.sch.kp.web.components.FelhasznaloLink;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
@@ -64,9 +64,9 @@ public class ShowGroup extends SecuredPageTemplate {
                     new PageParameters("id=" + cs.getId().toString())).setVisible(true));
         } else {
             add(new BookmarkablePageLink("editPage", ShowUser.class).setVisible(false));
+            add(new BookmarkablePageLink("editEntitle", EditEntitlements.class).setVisible(false));
         }
-        //List<LdapPerson> persons = ldapManager.searchsomething("19880304");
-        //System.out.println(persons.get(0).getFullName());
+
         setModel(new CompoundPropertyModel(cs));
         add(new Label("nev"));
         add(new Label("alapitasEve"));
@@ -74,40 +74,20 @@ public class ShowGroup extends SecuredPageTemplate {
         add(new SmartLinkLabel("levelezoLista"));
         add(new MultiLineLabel("leiras"));
         cs.sortCsoporttagsagok();
-        List<Csoporttagsag> activeMembers = cs.getCsoporttagsagok();
+        List<Csoporttagsag> activeMembers = cs.getActiveMembers();
+        List<Csoporttagsag> inactiveMembers = cs.getInactiveMembers();
 
-        int low = 0;
-        int high = activeMembers.size() - 1;
-        int mid = high + 1;
-        while (low <= high) {
-            mid = (low + high) / 2;
-            if (activeMembers.get(mid).getVeg() == null) {
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
-        }
-        List<Csoporttagsag> inactiveMembers =
-                new ArrayList<Csoporttagsag>(activeMembers.subList(mid, activeMembers.size()));
-        if (inactiveMembers.get(0).getVeg() == null) {
-            inactiveMembers = new ArrayList<Csoporttagsag>();
-        }
         activeMembers.removeAll(inactiveMembers);
-        ListView csoptagsagok = new ListView("csoptagsag", activeMembers) {
+        AdminMembershipsPanel adminPanel = new AdminMembershipsPanel("admin", activeMembers);
+        ActiveMembershipsPanel activePanel = new ActiveMembershipsPanel("user", activeMembers);
+        add(adminPanel);
+        add(activePanel);
+        if (user != null && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO)) {
+            activePanel.setVisible(false);
+        } else {
+            adminPanel.setVisible(false);
+        }
 
-            @Override
-            protected void populateItem(ListItem item) {
-                Csoporttagsag cs = (Csoporttagsag) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(cs));
-                item.add(new FelhasznaloLink("felhlink", cs.getFelhasznalo()));
-                item.add(new Label("becenev", cs.getFelhasznalo().getBecenev()));
-                item.add(new Label("jogok",
-                        getConverter(TagsagTipus.class).convertToString(cs.getJogokString(), getLocale())));
-                item.add(DateLabel.forDatePattern("kezdet", "yyyy.MM.dd."));
-                item.add(DateLabel.forDatePattern("veg", "yyyy.MM.dd."));
-            }
-        };
-        add(csoptagsagok);
         ListView oregtagsagok = new ListView("oregtagsag", inactiveMembers) {
 
             @Override

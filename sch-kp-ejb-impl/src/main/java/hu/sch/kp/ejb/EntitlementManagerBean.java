@@ -17,7 +17,7 @@ import javax.persistence.Query;
  *
  * @author aldaris
  */
-@Stateless(mappedName="EntitlementManager")
+@Stateless(mappedName = "EntitlementManager")
 public class EntitlementManagerBean implements EntitlementManagerRemote {
 
     @EJB(name = "UserManagerBean")
@@ -45,7 +45,7 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
         Felhasznalo felhasznalo = new Felhasznalo();
         felhasznalo.setId(f.getId());
         felhasznalo.setNeptunkod(f.getNeptunkod());
-        
+
         return felhasznalo;
     }
 

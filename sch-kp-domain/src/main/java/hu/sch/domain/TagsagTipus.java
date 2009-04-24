@@ -13,13 +13,31 @@ import java.util.ArrayList;
 public enum TagsagTipus {
 
     TAG(0),
-    KORVEZETO(1),
+    KORVEZETO(1) {
+
+        @Override
+        public String toString() {
+            return "körvezető";
+        }
+    },
     VOLTKORVEZETO(2),
-    GAZDASAGIS(3),
-    PRMENEDZSER(4),
-    VENDEGFOGADAS(5),
-    OREGTAG(15),
-    JELENTKEZO(16);
+    GAZDASAGIS(4) {
+
+        @Override
+        public String toString() {
+            return "gazdaságis";
+        }
+    },
+    PRMENEDZSER(8) {
+
+        @Override
+        public String toString() {
+            return "PR menedzser";
+        }
+    },
+    VENDEGFOGADAS(16),
+    OREGTAG(16384),
+    JELENTKEZO(32768);
     private final int value;
 
     private TagsagTipus(int value) {
@@ -34,7 +52,7 @@ public enum TagsagTipus {
             return retList.toArray(ret);
         }
         for (TagsagTipus t : values()) {
-            if ((jogok & (1 << t.value - 1)) != 0) {
+            if ((jogok & t.value) != 0) {
                 retList.add(t);
             }
         }
@@ -54,5 +72,14 @@ public enum TagsagTipus {
         }
 
         return null;
+    }
+
+    public static boolean hasJogCsoportban(Csoporttagsag cstagsag, TagsagTipus type) {
+        Long jogok = cstagsag.getJogok();
+        return (jogok & type.value) != 0;
+    }
+
+    public static Long addOrRemoveEntitlement(Long current, TagsagTipus type) {
+        return (current ^ type.value);
     }
 }

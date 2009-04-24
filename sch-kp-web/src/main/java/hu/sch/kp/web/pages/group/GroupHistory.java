@@ -82,7 +82,6 @@ public class GroupHistory extends SecuredPageTemplate {
                 }
             }
         };
-        //add(new Label("nev"));
         add(new Label("nev",csoport.getNev()));
         DropDownChoice ddc = new DropDownChoice("semesters", szemeszterek);
         ddc.setModel(new PropertyModel(this, "selected"));

@@ -11,6 +11,7 @@ import hu.sch.kp.services.UserManagerLocal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -233,17 +234,47 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
-    public boolean groupInfoUpdate(Csoport cs) {
-        try {
-            Csoport csoport = em.find(Csoport.class, cs.getId());
-            csoport.setAlapitasEve(cs.getAlapitasEve());
-            csoport.setNev(cs.getNev());
-            csoport.setWebpage(cs.getWebpage());
-            csoport.setLeiras(cs.getLeiras());
-            csoport.setLevelezoLista(cs.getLevelezoLista());
-            return true;
-        } catch (Exception e) {
-            return false;
+    public void groupInfoUpdate(Csoport cs) {
+        Csoport csoport = em.find(Csoport.class, cs.getId());
+        csoport.setAlapitasEve(cs.getAlapitasEve());
+        csoport.setNev(cs.getNev());
+        csoport.setWebpage(cs.getWebpage());
+        csoport.setLeiras(cs.getLeiras());
+        csoport.setLevelezoLista(cs.getLevelezoLista());
+    }
+
+    public Csoporttagsag getCsoporttagsag(Long userId, Long groupId) {
+        Csoporttagsag cst = em.find(Csoporttagsag.class, new CsoporttagsagPK(userId, groupId));
+        return cst;
+    }
+
+    public void updateMemberRights(Csoporttagsag oldOne, Csoporttagsag newOne, TagsagTipus type) {
+        if (type == TagsagTipus.KORVEZETO) {
+            if (newOne == null) {
+                throw new EJBException();
+            }
+            if (oldOne != null) {
+                Csoporttagsag oldPersisted = em.find(Csoporttagsag.class, oldOne.getId());
+                oldPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(oldPersisted.getJogok(), type));
+                oldPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(oldPersisted.getJogok(), TagsagTipus.VOLTKORVEZETO));
+            }
+            Csoporttagsag newPersisted = em.find(Csoporttagsag.class, newOne.getId());
+            newPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(newPersisted.getJogok(), type));
+        } else {
+            if (oldOne != null) {
+                Csoporttagsag oldPersisted = em.find(Csoporttagsag.class, oldOne.getId());
+                oldPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(oldPersisted.getJogok(), type));
+            }
+            if (newOne != null) {
+                Csoporttagsag newPersisted = em.find(Csoporttagsag.class, newOne.getId());
+                newPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(newPersisted.getJogok(), type));
+            }
         }
+    }
+
+    public void setMemberToOldBoy(Csoporttagsag user) {
+        Csoporttagsag temp = em.find(Csoporttagsag.class,
+                new CsoporttagsagPK(user.getFelhasznalo().getId(), user.getCsoport().getId()));
+        temp.setVeg(new Date());
     }
 }

@@ -186,6 +186,12 @@ form label {
     padding-top: 3px;
     font-weight: bold;
 }
+
+span label {
+    display:inline;
+    float:none;
+    margin:5px;
+}
 form label.labelError {
     color: #7D3434;
 }

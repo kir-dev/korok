@@ -116,17 +116,7 @@ public class Csoporttagsag implements Serializable {
         return TagsagTipus.getTagsagTipusByJogok(jogok);
     }
 
-//    @Transient
-//    public boolean isKorvezeto() {
-//        Long jogok1 = getJogok();
-//        if ((jogok1 & 1) != 0) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
     public void setJogok(Long jogok) {
         this.jogok = jogok;
     }
 }
-
