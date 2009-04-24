@@ -17,7 +17,7 @@ import javax.persistence.Query;
  *
  * @author aldaris
  */
-@Stateless
+@Stateless(mappedName="EntitlementManager")
 public class EntitlementManagerBean implements EntitlementManagerRemote {
 
     @EJB(name = "UserManagerBean")
