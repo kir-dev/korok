@@ -2,44 +2,35 @@
 To change this template, choose Tools | Templates
 and open the template in the editor.
 -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-    <head>
-        <title></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
-    <body>
-        <wicket:extend>
-            <span wicket:id="pagemessages" id="pagemessages" style="display: block; margin-bottom: 20px;"></span>
-            <div id="admincont">
-                <form wicket:id="editInfoForm">
-                    <table>
-                        <tr>
-                            <td><label wicket:id="nevLabel">Név *</label></td>
-                            <td><input class="textinput" wicket:id="nev"/></td>
-                        </tr>
-                        <tr>
-                            <td><label wicket:id="alapevLabel">Alapítás éve</label></td>
-                            <td><input class="textinput" wicket:id="alapitasEve"/></td>
-                        </tr>
-                        <tr>
-                            <td><label wicket:id="webpageLabel">Weboldal</label></td>
-                            <td><input class="textinput" wicket:id="webpage"/></td>
-                        </tr>
-                        <tr>
-                            <td><label wicket:id="levlistaLabel">Levelezőlista</label></td>
-                            <td><input class="textinput" wicket:id="levelezoLista"/></td>
-                        </tr>
-                        <tr>
-                            <td><label wicket:id="descrLabel">Levelezőlista</label></td>
-                            <td><textarea class="textinput" wicket:id="leiras">
+<wicket:extend>
+    <span wicket:id="pagemessages" id="pagemessages" style="display: block; margin-bottom: 20px;"></span>
+    <div id="admincont">
+        <form wicket:id="editInfoForm">
+            <table>
+                <tr>
+                    <td><label wicket:id="nevLabel">Név *</label></td>
+                    <td><input class="textinput" wicket:id="nev"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="alapevLabel">Alapítás éve</label></td>
+                    <td><input class="textinput" wicket:id="alapitasEve"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="webpageLabel">Weboldal</label></td>
+                    <td><input class="textinput" wicket:id="webpage"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="levlistaLabel">Levelezőlista</label></td>
+                    <td><input class="textinput" wicket:id="levelezoLista"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="descrLabel">Levelezőlista</label></td>
+                    <td><textarea class="textinput" wicket:id="leiras">
                             bla bla
-                            </textarea></td>
-                        </tr>
-                    </table>
-                    <span id="btns"><input class="btn"type="submit" value="Mentés"/></span>
-                </form>
-            </div>
-        </wicket:extend>
-    </body>
-</html>
+                    </textarea></td>
+                </tr>
+            </table>
+            <span id="btns"><input class="btn" type="submit" value="Mentés"/></span>
+        </form>
+    </div>
+</wicket:extend>

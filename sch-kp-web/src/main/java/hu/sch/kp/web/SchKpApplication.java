@@ -26,6 +26,7 @@ import hu.sch.kp.web.pages.user.UserHistory;
 import hu.sch.kp.web.authz.UserAuthorization;
 import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
+import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.AddGroupMember;
 import hu.sch.kp.web.pages.group.ChangePost;

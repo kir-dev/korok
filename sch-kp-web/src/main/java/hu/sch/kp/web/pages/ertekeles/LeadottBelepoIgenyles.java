@@ -10,20 +10,19 @@ import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
-import hu.sch.kp.web.components.BelepoTipusValaszto;
-import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
-import hu.sch.kp.web.session.VirSession;
+import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
 import java.util.List;
 import javax.ejb.EJB;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  *
@@ -33,40 +32,38 @@ public class LeadottBelepoIgenyles extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
 
     public LeadottBelepoIgenyles(final Ertekeles ert) {
 
-        setHeaderLabelText("Leadott belépőigénylések megtekintése");
+        setHeaderLabelText("Kiosztott belépők");
         final List<BelepoIgeny> igenylista = igenyeketElokeszit(ert);
 
         setModel(new CompoundPropertyModel(ert));
         add(new Label("csoport.nev"));
         add(new Label("szemeszter"));
 
-        Form igform = new Form("igenyekform") {
-
-            @Override
-            protected void onSubmit() {
-                
-
-                return;
-            }
-        };
         IDataProvider provider = new ListDataProviderCompoundPropertyModelImpl(igenylista);
         DataView dview = new DataView("igenyek", provider) {
 
             @Override
             protected void populateItem(Item item) {
-                item.add(new Label("felhasznalo.nev"));
-                item.add(new Label("felhasznalo.becenev"));
+                final BelepoIgeny b = (BelepoIgeny) item.getModelObject();
+                Link felhasznaloLink = new Link("felhLink") {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(ShowUser.class,
+                                new PageParameters("id=" + b.getFelhasznalo().getId().toString()));
+                    }
+                };
+                felhasznaloLink.add(new Label("felhNev", new PropertyModel(b, "felhasznalo.nev")));
+                item.add(felhasznaloLink);
                 item.add(new Label("belepotipus"));
+                item.add(new Label("szovegesErtekeles"));
             }
         };
 
-        igform.add(dview);
-        add(igform);
+        add(dview);
     }
 
     private List<BelepoIgeny> igenyeketElokeszit(Ertekeles ert) {

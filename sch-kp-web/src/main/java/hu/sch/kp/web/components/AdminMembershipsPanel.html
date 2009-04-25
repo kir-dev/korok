@@ -1,12 +1,20 @@
 <wicket:panel wicket:id="admin">
+    <h3>
+        Az egyes egyének kinevezéseit a Jogok oszlopban található link segítségével
+        tudod egyénenként beállítani. Öregtaggá avatni pedig az Öregtagok oszlopban található
+        jelölőnégyzeteket használva tudod csoportosan kijelölni az egyes tagokat.
+        Öregtaggá csak olyan tagot lehet avatni, aki nem rendelkezik különleges jogokkal.<br/>
+        A táblázat alján található Mentés gombbal tudod véglegesíteni az öregtaggá
+        nyílvánítást.
+    </h3>
     <div class="subdata">
         <form wicket:id="form">
             <table wicket:id="table" class="withheader">
                 <tr class="headers">
                     <th style="width: 250px;">Felhasználó neve</th>
                     <th>Becenév</th>
-                    <th>Jelenlegi jogok</th>
-                    <th>Jogok kiosztása</th>
+                    <th>Betöltött poszt</th>
+                    <th>Jogok</th>
                     <th style="text-align: center;">Öregtagok</th>
                 </tr>
                 <tr wicket:id="members">
@@ -23,7 +31,7 @@
                     </td>
                 </tr>
             </table>
-            <input type="submit" value="save" />
+            <input type="submit" class="btn" value="Mentés" />
         </form>
     </div>
 </wicket:panel>

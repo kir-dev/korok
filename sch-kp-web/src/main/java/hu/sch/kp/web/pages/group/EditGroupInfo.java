@@ -44,12 +44,12 @@ public class EditGroupInfo extends SecuredPageTemplate {
         } catch (NumberFormatException e) {
             setResponsePage(Index.class);
         }
-        setHeaderLabelText("Csoport adatlap szerkesztése");
+        setHeaderLabelText("Kör adatlap szerkesztése");
         add(new FeedbackPanel("pagemessages"));
 
         csoport = userManager.findGroupById(id);
         Felhasznalo user = userManager.findUserWithCsoporttagsagokById(((VirSession) getSession()).getUser().getId());
-        if (true || user == null || !hasUserRoleInGroup(csoport, TagsagTipus.KORVEZETO)) {
+        if (user == null || !hasUserRoleInGroup(csoport, TagsagTipus.KORVEZETO)) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
             setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
             return;

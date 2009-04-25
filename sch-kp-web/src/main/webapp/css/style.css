@@ -158,6 +158,7 @@ ul.horizontal li {
 input.textinput.limited { width: 90px; }
 textarea.textinput { 
     height: 200px;
+    margin-bottom: 15px;
 }
 input.inputError{
     height: 20px;

@@ -32,7 +32,6 @@ public class EditEntitlementsForm extends Form {
 
     public EditEntitlementsForm(String name, List<Csoporttagsag> active) {
         super(name);
-        // add some dummy data
         datas = active;
 
         WebMarkupContainer table = new WebMarkupContainer("table");

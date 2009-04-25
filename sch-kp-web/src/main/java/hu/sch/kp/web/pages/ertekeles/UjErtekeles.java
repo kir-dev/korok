@@ -23,18 +23,26 @@ public class UjErtekeles extends SecuredPageTemplate {
     String ertekeles = "";
 
     public UjErtekeles() {
+        setHeaderLabelText("Új szöveges értékelés leadása");
+        FeedbackPanel feedbackPanel = new FeedbackPanel("pagemessages");
+        add(feedbackPanel);
         if (!ertekelesManager.isErtekelesLeadhato(getCsoport())) {
             getSession().info(getLocalizer().getString("err.UjErtekelesNemAdhatoLe", this));
             setResponsePage(Ertekelesek.class);
+            return;
         }
-        add(new FeedbackPanel("pagemessages"));
         Form ertekelesform = new Form("ujertekelesform") {
 
             @Override
             protected void onSubmit() {
+                if (getErtekeles().isEmpty()) {
+                    getSession().error(getLocalizer().getString("err.NincsBeszamolo", this));
+                    return;
+                }
                 ertekelesManager.ujErtekeles(getCsoport(), getFelhasznalo(), getErtekeles());
                 getSession().info(getLocalizer().getString("info.ErtekelesMentve", this));
                 setResponsePage(Ertekelesek.class);
+                return;
             }
         };
 

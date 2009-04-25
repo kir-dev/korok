@@ -55,6 +55,7 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
                 ertekelesManager.pontIgenyekLeadasa(ertekelesId, igenylista);
                 getSession().info(getLocalizer().getString("info.PontIgenylesMentve", this));
                 setResponsePage(Ertekelesek.class);
+                return;
             }
         };
 
