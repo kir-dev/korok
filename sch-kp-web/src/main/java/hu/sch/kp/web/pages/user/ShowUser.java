@@ -4,20 +4,27 @@
  */
 package hu.sch.kp.web.pages.user;
 
+import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  *
@@ -27,6 +34,7 @@ public class ShowUser extends SecuredPageTemplate {
 
     Long id;
     private boolean own_profile = false;
+    private Csoport addToCsoportSelected;
 
     public ShowUser() {
         own_profile = true;
@@ -54,7 +62,7 @@ public class ShowUser extends SecuredPageTemplate {
 //            }
 //        }
 
-        Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
+        final Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
         if (user == null) {
             info("Egy körben sem vagy tag");
             setResponsePage(GroupHierarchy.class);
@@ -84,7 +92,8 @@ public class ShowUser extends SecuredPageTemplate {
                 item.setModel(new CompoundPropertyModel(cs));
                 BookmarkablePageLink csoplink =
                         new BookmarkablePageLink("csoplink", ShowGroup.class,
-                        new PageParameters("id=" + cs.getCsoport().getId().toString()));
+                        new PageParameters("id=" +
+                        cs.getCsoport().getId().toString()));
                 csoplink.add(new Label("csoport.nev"));
                 item.add(csoplink);
                 item.add(new Label("jogok", getConverter(TagsagTipus.class).convertToString(cs.getJogokString(), getLocale())));
@@ -93,6 +102,32 @@ public class ShowUser extends SecuredPageTemplate {
             }
         };
         add(csoptagsagok);
+
+        List<Csoport> csoportok = getFelhasznalo().getCsoportok();
+        List<Csoport> korvezetoicsoportok = new LinkedList<Csoport>();
+        for (Csoport cs : csoportok) {
+            if (hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) &&
+                    !user.getCsoportok().contains(cs)) {
+                korvezetoicsoportok.add(cs);
+            }
+        }
+
+        final DropDownChoice csoport = new DropDownChoice("csoport",
+                new PropertyModel(this, "addToCsoportSelected"), korvezetoicsoportok);
+        Form csoportbaFelvetel = new Form("csoportbaFelvetel") {
+
+            @Override
+            protected void onSubmit() {
+                userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null);
+                getSession().info("A felhasználó a csoportba felvéve");
+                setResponsePage(ShowGroup.class, new PageParameters("id=" +
+                        addToCsoportSelected.getId()));
+            }
+        };
+
+        csoportbaFelvetel.add(csoport);
+        add(csoportbaFelvetel);
+        csoportbaFelvetel.setVisible(hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO));
     }
 
     public ShowUser(PageParameters parameters) {
@@ -102,5 +137,13 @@ public class ShowUser extends SecuredPageTemplate {
             t.printStackTrace();
         }
         initComponents();
+    }
+
+    public Csoport getAddToCsoportSelected() {
+        return addToCsoportSelected;
+    }
+
+    public void setAddToCsoportSelected(Csoport addToCsoportSelected) {
+        this.addToCsoportSelected = addToCsoportSelected;
     }
 }

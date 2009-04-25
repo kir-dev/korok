@@ -21,7 +21,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -308,5 +307,66 @@ public class Csoport implements Serializable, Comparable<Csoport> {
     public int compareTo(Csoport o) {
         Collator huCollator = Collator.getInstance(new Locale("hu"));
         return huCollator.compare(getNev(), o.getNev());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Csoport other = (Csoport) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        if ((this.nev == null) ? (other.nev != null) : !this.nev.equals(other.nev)) {
+            return false;
+        }
+        if ((this.tipus == null) ? (other.tipus != null) : !this.tipus.equals(other.tipus)) {
+            return false;
+        }
+        if ((this.webpage == null) ? (other.webpage != null) : !this.webpage.equals(other.webpage)) {
+            return false;
+        }
+        if ((this.leiras == null) ? (other.leiras != null) : !this.leiras.equals(other.leiras)) {
+            return false;
+        }
+        if ((this.levelezoLista == null) ? (other.levelezoLista != null) : !this.levelezoLista.equals(other.levelezoLista)) {
+            return false;
+        }
+        if (this.alapitasEve != other.alapitasEve &&
+                (this.alapitasEve == null ||
+                !this.alapitasEve.equals(other.alapitasEve))) {
+            return false;
+        }
+        if (this.statusz != other.statusz) {
+            return false;
+        }
+        if (this.flagek != other.flagek &&
+                (this.flagek == null || !this.flagek.equals(other.flagek))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 31 * hash + (this.nev != null ? this.nev.hashCode() : 0);
+        hash = 31 * hash + (this.tipus != null ? this.tipus.hashCode() : 0);
+        hash = 31 * hash + (this.webpage != null ? this.webpage.hashCode() : 0);
+        hash = 31 * hash + (this.leiras != null ? this.leiras.hashCode() : 0);
+        hash =
+                31 * hash +
+                (this.levelezoLista != null ? this.levelezoLista.hashCode() : 0);
+        hash =
+                31 * hash +
+                (this.alapitasEve != null ? this.alapitasEve.hashCode() : 0);
+        hash = 31 * hash + (this.statusz != null ? this.statusz.hashCode() : 0);
+        hash = 31 * hash + (this.flagek != null ? this.flagek.hashCode() : 0);
+        return hash;
     }
 }
