@@ -11,7 +11,9 @@ import hu.sch.domain.PontIgeny;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -110,16 +112,18 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
         List<PontIgeny> igenyek =
                 ertekelesManager.findPontIgenyekForErtekeles(ert.getId());
 
-        //tagok és igények összefésülése
-        if (igenyek.size() == 0) {
-            for (Felhasznalo f : csoporttagok) {
-                igenyek.add(new PontIgeny(f, 0));
+        if (igenyek.size() != csoporttagok.size()) {
+            Set<Long> felhasznalokraLeadva =
+                    new HashSet<Long>(csoporttagok.size());
+
+            for (PontIgeny p : igenyek) {
+                felhasznalokraLeadva.add(p.getFelhasznalo().getId());
             }
-        } else {
-            // TODO tényleges összefésülés
-            if (igenyek.size() != csoporttagok.size()) {
-                // TODO összefésülés
-                throw new UnsupportedOperationException("PontIgény - Csoporttag összefésülés még nincs implementálva");
+
+            for (Felhasznalo f : csoporttagok) {
+                if (!felhasznalokraLeadva.contains(f.getId())) {
+                    igenyek.add(new PontIgeny(f, 0));
+                }
             }
         }
 

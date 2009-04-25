@@ -280,11 +280,15 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
             throw new RuntimeException("Elfogadott értékelésen nem változtathat");
         }
         for (PontIgeny igeny : igenyek) {
-            if (igeny.getErtekeles() == null) { //Új
+            if (igeny.getErtekeles() == null && igeny.getPont() > 0) { //Új
                 add(ertekeles, igeny);
             } else { //módosítás
                 PontIgeny ig = em.find(PontIgeny.class, igeny.getId());
-                ig.setPont(igeny.getPont());
+                if (igeny.getPont().equals(0)) {
+                    em.remove(ig);
+                } else {
+                    ig.setPont(igeny.getPont());
+                }
             }
         }
         ertekeles.setPontStatusz(ErtekelesStatusz.ELBIRALATLAN);
