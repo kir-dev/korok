@@ -31,7 +31,7 @@ public class ElbiralasIndoklas extends SecuredPageTemplate {
 
     public ElbiralasIndoklas(final List<ElbiraltErtekeles> elbiralasAlatt) {
         add(new FeedbackPanel("pagemessages"));
-        setHeaderLabelText("Elbírálás értékelése");
+        setHeaderLabelText("Elbírálás indoklása");
         Form elbiralasForm = new Form("elbiralasindoklasform") {
 
             @Override
