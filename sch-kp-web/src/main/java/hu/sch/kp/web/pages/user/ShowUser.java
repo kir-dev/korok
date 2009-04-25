@@ -119,7 +119,7 @@ public class ShowUser extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null);
-                getSession().info("A felhasználó a csoportba felvéve");
+                getSession().info("A felhasználó a körbe felvéve");
                 setResponsePage(ShowGroup.class, new PageParameters("id=" +
                         addToCsoportSelected.getId()));
             }
