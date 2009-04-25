@@ -37,7 +37,7 @@ import javax.persistence.Transient;
 @NamedQueries({
     @NamedQuery(name = "findUserWithCsoporttagsagok",
     query =
-    "SELECT f FROM Felhasznalo f JOIN FETCH f.csoporttagsagok WHERE f.id = :id"),
+    "SELECT f FROM Felhasznalo f LEFT OUTER JOIN FETCH f.csoporttagsagok WHERE f.id = :id"),
     @NamedQuery(name = "findUserByNeptunCode",
     query = "SELECT f FROM Felhasznalo f WHERE f.neptunkod = :neptun")})
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
