@@ -162,7 +162,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
             if (ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA) || ee.getPontStatusz().equals(ErtekelesStatusz.ELUTASITVA)) {
                 PontIgenyElbiral(ee.getErtekeles(), felhasznalo, ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA));
             }
-            if (ee.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA) || ee.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA)) {
+            if (ee.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA) || ee.getBelepoStatusz().equals(ErtekelesStatusz.ELUTASITVA)) {
                 BelepoIgenyElbiral(ee.getErtekeles(), felhasznalo, ee.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA));
             }
             if (ee.getIndoklas() != null) {
