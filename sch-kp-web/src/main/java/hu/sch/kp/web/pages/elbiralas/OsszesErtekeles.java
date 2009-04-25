@@ -7,6 +7,7 @@ package hu.sch.kp.web.pages.elbiralas;
 
 import hu.sch.domain.ElbiraltErtekeles;
 import hu.sch.domain.Ertekeles;
+import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.ErtekelesStatisztika;
 import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.kp.services.ErtekelesManagerLocal;
@@ -52,11 +53,20 @@ public class OsszesErtekeles extends SecuredPageTemplate {
     }
 
     public OsszesErtekeles() {
+        // jogosultság ellenőrzés
         if (!isCurrentUserJETI()) {
             info("Nincs jogod a megadott művelethez");
             setResponsePage(GroupHierarchy.class);
             return;
         }
+
+        // időszak ellenőrzés
+        if (systemManager.getErtekelesIdoszak() != ErtekelesIdoszak.ERTEKELESELBIRALAS) {
+            info("Nincs elbírálási időszak!");
+            setResponsePage(GroupHierarchy.class);
+            return;
+        }
+
         setHeaderLabelText("Leadott értékelések elbírálása");
         add(new FeedbackPanel("pagemessages"));
         add(new Label("szemeszter", new PropertyModel(this, "szemeszter")));
