@@ -127,7 +127,8 @@ public class ShowUser extends SecuredPageTemplate {
 
         csoportbaFelvetel.add(csoport);
         add(csoportbaFelvetel);
-        csoportbaFelvetel.setVisible(hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO));
+        csoportbaFelvetel.setVisible(korvezetoicsoportok.size() > 0 &&
+                hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO));
     }
 
     public ShowUser(PageParameters parameters) {
