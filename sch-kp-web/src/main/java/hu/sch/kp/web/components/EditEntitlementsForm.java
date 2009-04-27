@@ -41,7 +41,7 @@ public class EditEntitlementsForm extends Form {
             protected void populateItem(ListItem item) {
                 Csoporttagsag cs = (Csoporttagsag) item.getModelObject();
                 item.setModel(new CompoundPropertyModel(cs));
-                item.add(new Label("felhlink", cs.getFelhasznalo().getNev()));
+                item.add(new FelhasznaloLink("felhlink", cs.getFelhasznalo()));
                 item.add(new Label("becenev", cs.getFelhasznalo().getBecenev()));
                 item.add(new Label("jogok",
                         getConverter(TagsagTipus.class).convertToString(cs.getJogokString(), getLocale())));
