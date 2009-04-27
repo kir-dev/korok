@@ -7,7 +7,9 @@ package hu.sch.kp.web.pages.ertekeles;
 import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Ertekeles;
+import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.ErtekelesStatusz;
+import hu.sch.domain.ErtekelesUzenet;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
@@ -87,6 +89,90 @@ public class Ertekelesek extends SecuredPageTemplate {
                 csoportok.add(t.getCsoport().getNev());
             }
         }
+
+        // megkeresem mire nem adott még le értékelést vagy belépőigényt az aktuális félévben
+        final ArrayList<Csoport> hatravan = new ArrayList<Csoport>();
+        Iterator iterator = cstag.iterator();
+        Csoport cs = null;
+        while (iterator.hasNext())
+        {
+            cs = ((Csoporttagsag) iterator.next()).getCsoport();
+
+            Ertekeles ert = ertekelesManager.findErtekeles(cs, systemManager.getSzemeszter());
+            if ((ert == null || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS)  && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) && systemManager.getErtekelesIdoszak() == ErtekelesIdoszak.ERTEKELESLEADAS)
+            {
+                ertekelesManager.findBelepoIgenyekForErtekeles(cs.getId());
+                hatravan.add(cs);
+            }
+        }
+
+        // megjelenítem a még nem értékel csoportokra a figyelmeztetést, és hozzá a linkeket
+        WebMarkupContainer ertekelFigyelmeztet = new WebMarkupContainer("ertekelFigyelmeztet");
+        this.add(ertekelFigyelmeztet);
+        ertekelFigyelmeztet.setVisible(!hatravan.isEmpty());
+
+        ListView hatravanListView = new ListView("ertekelFigyelmeztetSor", hatravan)
+        {
+            @Override
+            protected void populateItem(ListItem item)
+            {
+                final Csoport csoport = (Csoport)item.getModelObject();
+                final Ertekeles ert = ertekelesManager.findErtekeles(csoport, systemManager.getSzemeszter());
+
+                // csoport név kijelés
+                item.add(new Label("ertekelFigyelmeztetCsoportnev", csoport.getNev()));
+
+                // értékelés kijelzés
+                Link ertekelesLink = new Link("ertekelFigyelmeztetErtekelesLink")
+                {
+                    @Override
+                    public void onClick()
+                    {
+                        Ertekeles ert = new Ertekeles();
+                        ert.setCsoport(csoport);
+                        ert.setSzemeszter(systemManager.getSzemeszter());
+                        setResponsePage(new PontIgenylesLeadas(ert));
+                    }
+                };
+
+                if (ert == null)
+                {
+                    ertekelesLink.setVisible(true);
+                }
+                else
+                {
+                    ertekelesLink.setVisible(false);
+                }
+
+                item.add(ertekelesLink);
+
+                // belépőigénylés kijelzés
+                Link belepoLink = new Link("ertekelFigyelmeztetBelepoLink")
+                {
+                    @Override
+                    public void onClick()
+                    {
+                        Ertekeles ert = new Ertekeles();
+                        ert.setCsoport(csoport);
+                        ert.setSzemeszter(systemManager.getSzemeszter());
+                        setResponsePage(new BelepoIgenylesLeadas(ert));
+                    }
+                };
+
+                if (ert == null || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS)
+                {
+                    belepoLink.setVisible(true);
+                }
+                else
+                {
+                    belepoLink.setVisible(false);
+                }
+
+                item.add(belepoLink);
+            }
+        };
+        ertekelFigyelmeztet.add(hatravanListView);
+
         // Ha mar korabban volt csoport kivalasztva.
         updateErtekelesList();
         Form csoportForm = new Form("csoportform") {
