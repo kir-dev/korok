@@ -99,9 +99,8 @@ public class Ertekelesek extends SecuredPageTemplate {
             cs = ((Csoporttagsag) iterator.next()).getCsoport();
 
             Ertekeles ert = ertekelesManager.findErtekeles(cs, systemManager.getSzemeszter());
-            if ((ert == null || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS)  && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) && systemManager.getErtekelesIdoszak() == ErtekelesIdoszak.ERTEKELESLEADAS)
+            if ((ert == null || ert.getPontStatusz() == ErtekelesStatusz.NINCS || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS) && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) && systemManager.getErtekelesIdoszak() == ErtekelesIdoszak.ERTEKELESLEADAS)
             {
-                ertekelesManager.findBelepoIgenyekForErtekeles(cs.getId());
                 hatravan.add(cs);
             }
         }
@@ -128,14 +127,26 @@ public class Ertekelesek extends SecuredPageTemplate {
                     @Override
                     public void onClick()
                     {
-                        Ertekeles ert = new Ertekeles();
-                        ert.setCsoport(csoport);
-                        ert.setSzemeszter(systemManager.getSzemeszter());
-                        setResponsePage(new PontIgenylesLeadas(ert));
+                        // csoport kiválasztása (mert nem feltétlen volt legördülővel...)
+                        ((VirSession) getSession()).setCsoport(csoport);
+
+                        if (ert == null)
+                        {
+                            /*
+                             * ha egyáltalán nincs még értékelés az adott csoporthoz
+                             * és szemeszterhez, akkor elősször szöveges értékelés kell
+                             */
+                            setResponsePage(UjErtekeles.class);
+                        }
+                        else
+                        {
+                            // pontigény leadása a szöveges értékelés mellé
+                            setResponsePage(new PontIgenylesLeadas(ert));
+                        }
                     }
                 };
 
-                if (ert == null)
+                if (ert == null || ert.getPontStatusz() == ErtekelesStatusz.NINCS)
                 {
                     ertekelesLink.setVisible(true);
                 }
@@ -152,10 +163,22 @@ public class Ertekelesek extends SecuredPageTemplate {
                     @Override
                     public void onClick()
                     {
-                        Ertekeles ert = new Ertekeles();
-                        ert.setCsoport(csoport);
-                        ert.setSzemeszter(systemManager.getSzemeszter());
-                        setResponsePage(new BelepoIgenylesLeadas(ert));
+                        // csoport kiválasztása (mert nem feltétlen volt legördülővel...)
+                        ((VirSession) getSession()).setCsoport(csoport);
+
+                        if (ert == null)
+                        {
+                            /*
+                             * ha egyáltalán nincs még értékelés az adott csoporthoz
+                             * és szemeszterhez, akkor elősször szöveges értékelés kell
+                             */
+                            setResponsePage(UjErtekeles.class);
+                        }
+                        else
+                        {
+                            // belépőigény leadása a szöveges értékelés mellé
+                            setResponsePage(new BelepoIgenylesLeadas(ert));
+                        }
                     }
                 };
 
