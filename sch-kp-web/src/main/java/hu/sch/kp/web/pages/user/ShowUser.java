@@ -82,7 +82,7 @@ public class ShowUser extends SecuredPageTemplate {
         new PageParameters("id=" + id.toString())));*/
 
         add(new ExternalLink("profilelink",
-                "https://idp.sch.bme.hu/profile/show/virid/" + id.toString()));
+                "/profile/show/virid/" + id.toString()));
         user.sortCsoporttagsagok();
         ListView csoptagsagok = new ListView("csoptagsag", user.getCsoporttagsagok()) {
 
