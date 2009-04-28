@@ -5,11 +5,11 @@
     <context-root>/korok</context-root>
     <security-role-mapping>
         <role-name>ADMIN</role-name>
-        <group-name>id=KIR fejlesztők és üzemeltetők,ou=group,dc=sch,dc=hu</group-name>
+        <group-name>am_admin_role</group-name>
     </security-role-mapping>
     <security-role-mapping>
         <role-name>JETI</role-name>
-        <group-name>id=Jutalmazást Elbíráló Testület,ou=group,dc=sch,dc=hu</group-name>
+        <group-name>am_jeti_role</group-name>
     </security-role-mapping>
     <class-loader delegate="true"/>
     <jsp-config>
