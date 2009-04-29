@@ -101,7 +101,7 @@ public class AgentBasedAuthorization implements UserAuthorization {
 
         if (entitlementSet != null) {
             for (Object entitlement : entitlementSet) {
-                String[] entitlements = entitlement.toString().split("|");
+                String[] entitlements = entitlement.toString().split("\\|");
                 for (String string : entitlements) {
                     Matcher m =
                             ENTITLEMENT_PATTERN.matcher(string);
