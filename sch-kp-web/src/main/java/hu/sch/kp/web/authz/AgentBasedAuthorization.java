@@ -126,7 +126,9 @@ public class AgentBasedAuthorization implements UserAuthorization {
                             if (temp != TagsagTipus.KORVEZETO && tt == TagsagTipus.KORVEZETO) {
                                 tagsag.put(csoportId, tt);
                             }
-                        }
+                        } else {
+                                tagsag.put(csoportId, tt);
+			}
                     }
                 }
             }
