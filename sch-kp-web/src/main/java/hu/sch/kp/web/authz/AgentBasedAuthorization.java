@@ -101,25 +101,28 @@ public class AgentBasedAuthorization implements UserAuthorization {
 
         if (entitlementSet != null) {
             for (Object entitlement : entitlementSet) {
-                Matcher m =
-                        ENTITLEMENT_PATTERN.matcher(entitlement.toString());
-                if (m.matches()) {
-                    String tagsagTipus = m.group(1);
-                    String csoportNev = m.group(2);
-                    Long csoportId = Long.parseLong(m.group(3));
+                String[] entitlements = entitlement.toString().split("|");
+                for (String string : entitlements) {
+                    Matcher m =
+                            ENTITLEMENT_PATTERN.matcher(string);
+                    if (m.matches()) {
+                        String tagsagTipus = m.group(1);
+                        String csoportNev = m.group(2);
+                        Long csoportId = Long.parseLong(m.group(3));
 
-                    if (log.isDebugEnabled()) {
-                        log.debug("Entitlement: csoportNev: " + csoportNev +
-                                " ,tagsagTipus: " + tagsagTipus +
-                                " , csoportId: " + csoportId.toString());
+                        if (log.isDebugEnabled()) {
+                            log.debug("Entitlement: csoportNev: " + csoportNev +
+                                    " ,tagsagTipus: " + tagsagTipus +
+                                    " , csoportId: " + csoportId.toString());
+                        }
+                        TagsagTipus tt =
+                                TagsagTipus.fromEntitlement(tagsagTipus);
+                        if (tt == null) {
+                            log.warn("Cannot map entitlement " + tagsagTipus);
+                            continue;
+                        }
+                        tagsag.put(csoportId, tt);
                     }
-                    TagsagTipus tt =
-                            TagsagTipus.fromEntitlement(tagsagTipus);
-                    if (tt == null) {
-                        log.warn("Cannot map entitlement " + tagsagTipus);
-                        continue;
-                    }
-                    tagsag.put(csoportId, tt);
                 }
             }
         }
