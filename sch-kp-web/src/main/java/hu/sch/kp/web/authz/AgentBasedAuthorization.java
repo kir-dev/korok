@@ -121,7 +121,12 @@ public class AgentBasedAuthorization implements UserAuthorization {
                             log.warn("Cannot map entitlement " + tagsagTipus);
                             continue;
                         }
-                        tagsag.put(csoportId, tt);
+                        TagsagTipus temp = tagsag.get(csoportId);
+                        if (temp != null) {
+                            if (temp != TagsagTipus.KORVEZETO && tt == TagsagTipus.KORVEZETO) {
+                                tagsag.put(csoportId, tt);
+                            }
+                        }
                     }
                 }
             }
