@@ -4,6 +4,7 @@
  */
 package hu.sch.kp.web.pages.ertekeles;
 
+import hu.sch.domain.Csoport;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import javax.ejb.EJB;
@@ -23,7 +24,13 @@ public class UjErtekeles extends SecuredPageTemplate {
     String ertekeles = "";
 
     public UjErtekeles() {
-        setHeaderLabelText("Új szöveges értékelés leadása");
+        Csoport cs = getCsoport();
+        if (cs == null) {
+            getSession().info("Nincs csoport kiválasztva");
+            setResponsePage(Ertekelesek.class);
+            return;
+        }
+        setHeaderLabelText(getCsoport().getNev());
         FeedbackPanel feedbackPanel = new FeedbackPanel("pagemessages");
         add(feedbackPanel);
         if (!ertekelesManager.isErtekelesLeadhato(getCsoport())) {

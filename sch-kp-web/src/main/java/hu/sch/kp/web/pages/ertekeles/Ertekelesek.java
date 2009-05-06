@@ -94,13 +94,11 @@ public class Ertekelesek extends SecuredPageTemplate {
         final ArrayList<Csoport> hatravan = new ArrayList<Csoport>();
         Iterator iterator = cstag.iterator();
         Csoport cs = null;
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             cs = ((Csoporttagsag) iterator.next()).getCsoport();
 
             Ertekeles ert = ertekelesManager.findErtekeles(cs, systemManager.getSzemeszter());
-            if ((ert == null || ert.getPontStatusz() == ErtekelesStatusz.NINCS || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS) && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) && systemManager.getErtekelesIdoszak() == ErtekelesIdoszak.ERTEKELESLEADAS)
-            {
+            if ((ert == null || ert.getPontStatusz() == ErtekelesStatusz.NINCS || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS) && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) && systemManager.getErtekelesIdoszak() == ErtekelesIdoszak.ERTEKELESLEADAS) {
                 hatravan.add(cs);
             }
         }
@@ -110,84 +108,69 @@ public class Ertekelesek extends SecuredPageTemplate {
         this.add(ertekelFigyelmeztet);
         ertekelFigyelmeztet.setVisible(!hatravan.isEmpty());
 
-        ListView hatravanListView = new ListView("ertekelFigyelmeztetSor", hatravan)
-        {
+        ListView hatravanListView = new ListView("ertekelFigyelmeztetSor", hatravan) {
+
             @Override
-            protected void populateItem(ListItem item)
-            {
-                final Csoport csoport = (Csoport)item.getModelObject();
+            protected void populateItem(ListItem item) {
+                final Csoport csoport = (Csoport) item.getModelObject();
                 final Ertekeles ert = ertekelesManager.findErtekeles(csoport, systemManager.getSzemeszter());
 
                 // csoport név kijelés
                 item.add(new Label("ertekelFigyelmeztetCsoportnev", csoport.getNev()));
 
                 // értékelés kijelzés
-                Link ertekelesLink = new Link("ertekelFigyelmeztetErtekelesLink")
-                {
+                Link ertekelesLink = new Link("ertekelFigyelmeztetErtekelesLink") {
+
                     @Override
-                    public void onClick()
-                    {
+                    public void onClick() {
                         // csoport kiválasztása (mert nem feltétlen volt legördülővel...)
                         ((VirSession) getSession()).setCsoport(csoport);
 
-                        if (ert == null)
-                        {
+                        if (ert == null) {
                             /*
                              * ha egyáltalán nincs még értékelés az adott csoporthoz
                              * és szemeszterhez, akkor elősször szöveges értékelés kell
                              */
                             setResponsePage(UjErtekeles.class);
-                        }
-                        else
-                        {
+                        } else {
                             // pontigény leadása a szöveges értékelés mellé
                             setResponsePage(new PontIgenylesLeadas(ert));
                         }
                     }
                 };
 
-                if (ert == null || ert.getPontStatusz() == ErtekelesStatusz.NINCS)
-                {
+                if (ert == null || ert.getPontStatusz() == ErtekelesStatusz.NINCS) {
                     ertekelesLink.setVisible(true);
-                }
-                else
-                {
+                } else {
                     ertekelesLink.setVisible(false);
                 }
 
                 item.add(ertekelesLink);
 
                 // belépőigénylés kijelzés
-                Link belepoLink = new Link("ertekelFigyelmeztetBelepoLink")
-                {
+                Link belepoLink = new Link("ertekelFigyelmeztetBelepoLink") {
+
                     @Override
-                    public void onClick()
-                    {
+                    public void onClick() {
                         // csoport kiválasztása (mert nem feltétlen volt legördülővel...)
                         ((VirSession) getSession()).setCsoport(csoport);
 
-                        if (ert == null)
-                        {
+                        if (ert == null) {
                             /*
                              * ha egyáltalán nincs még értékelés az adott csoporthoz
                              * és szemeszterhez, akkor elősször szöveges értékelés kell
                              */
                             setResponsePage(UjErtekeles.class);
-                        }
-                        else
-                        {
+                        } else {
                             // belépőigény leadása a szöveges értékelés mellé
                             setResponsePage(new BelepoIgenylesLeadas(ert));
                         }
                     }
                 };
 
-                if (ert == null || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS)
-                {
+                if (ert == null || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS) {
                     belepoLink.setVisible(true);
-                }
-                else
-                {
+                } else {
                     belepoLink.setVisible(false);
                 }
 
