@@ -59,8 +59,8 @@ public class SecuredPageTemplate extends WebPage {
         } else {
             add(new BookmarkablePageLink("ertekeleseklink", Ertekelesek.class).setVisible(false));
         }
-        if (isCurrentUserJETI() || isCurrentUserAdmin()) {
-            add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(true));
+        if (isCurrentUserJETI()) {
+            add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class));
             add(new BookmarkablePageLink("editsettings", EditSettings.class));
         } else {
             add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(false));

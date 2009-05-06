@@ -37,7 +37,7 @@ public class EditSettings extends SecuredPageTemplate {
 
     public EditSettings() {
         super();
-        if (!isCurrentUserAdmin() && !isCurrentUserJETI()) {
+        if (!isCurrentUserJETI()) {
             info("Nincs jogod a megadott művelethez");
             setResponsePage(GroupHierarchy.class);
             return;
