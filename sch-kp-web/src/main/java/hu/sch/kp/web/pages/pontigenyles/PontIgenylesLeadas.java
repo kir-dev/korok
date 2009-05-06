@@ -4,7 +4,6 @@
  */
 package hu.sch.kp.web.pages.pontigenyles;
 
-import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.PontIgeny;
@@ -18,9 +17,8 @@ import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.validation.IValidatable;
@@ -36,25 +34,35 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
+    final List<PontIgeny> requestList;
 
     public PontIgenylesLeadas(final Ertekeles ert) {
         setHeaderLabelText("Pontigénylés leadása");
         //TODO jogosultság?!
-        final Long ertekelesId = ert.getId();
-        final List<PontIgeny> igenylista = igenyeketElokeszit(ert);
+        //szerintem nem kell ide, mivel nem könyvjelzőzhető az oldal
+        requestList = igenyeketElokeszit(ert);
+        initComponents(ert);
+    }
 
+    public PontIgenylesLeadas(Ertekeles ert, List<PontIgeny> lista) {
+        requestList = lista;
+        initComponents(ert);
+    }
+
+    public void initComponents(final Ertekeles ert) {
+        final Long ertekelesId = ert.getId();
         setModel(new CompoundPropertyModel(ert));
         add(new Label("csoport.nev"));
         add(new Label("szemeszter"));
         add(new FeedbackPanel("pagemessages"));
 
         // Űrlap létrehozása
-        Form igform = new Form("igenyekform") {
+        Form pointRequestsForm = new Form("igenyekform") {
 
             @Override
             protected void onSubmit() {
                 // pontok tárolása
-                ertekelesManager.pontIgenyekLeadasa(ertekelesId, igenylista);
+                ertekelesManager.pontIgenyekLeadasa(ertekelesId, requestList);
                 getSession().info(getLocalizer().getString("info.PontIgenylesMentve", this));
                 setResponsePage(Ertekelesek.class);
                 return;
@@ -62,9 +70,7 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
         };
 
         // Bevitelhez táblázat létrehozása
-        IDataProvider provider =
-                new ListDataProviderCompoundPropertyModelImpl(igenylista);
-        DataView dview = new DataView("igenyek", provider) {
+        ListView listView = new ListView("igenyek", requestList) {
 
             // QPA csoport pontozásvalidátora
             final IValidator QpaPontValidator = RangeValidator.range(0, 100);
@@ -74,7 +80,9 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
             private final long SCH_QPA_ID = 27L;
 
             @Override
-            protected void populateItem(Item item) {
+            protected void populateItem(ListItem item) {
+                PontIgeny pontIgeny = (PontIgeny) item.getModelObject();
+                item.setModel(new CompoundPropertyModel(pontIgeny));
                 final ValidationError validationError = new ValidationError();
                 validationError.addMessageKey("err.MinimumPontHiba");
 
@@ -101,9 +109,9 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
                 item.add(pont);
             }
         };
-
-        igform.add(dview);
-        add(igform);
+        listView.setReuseItems(true);
+        pointRequestsForm.add(listView);
+        add(pointRequestsForm);
     }
 
     private List<PontIgeny> igenyeketElokeszit(Ertekeles ert) {

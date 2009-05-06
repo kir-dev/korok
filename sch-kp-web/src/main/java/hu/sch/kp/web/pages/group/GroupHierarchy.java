@@ -8,9 +8,9 @@ import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.ejb.EJB;
-import java.util.Arrays;
 import java.util.Locale;
 import java.text.Collator;
+import java.util.Arrays;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
@@ -35,12 +35,9 @@ public class GroupHierarchy extends SecuredPageTemplate {
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
 
-
     private String[] sort(String[] items) {
         Collator huCollator = Collator.getInstance(new Locale("hu"));
-
-        java.util.Arrays.sort(items,huCollator);
-
+        Arrays.sort(items, huCollator);
         return items;
     }
 
@@ -48,7 +45,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
         setHeaderLabelText("Csoportok listája");
         add(new FeedbackPanel("pagemessages"));
         final String[] csoportok = sort(userManager.getEveryGroupName().toArray(new String[0]));
-      
+
         Form form = new Form("form");
         add(form);
 
@@ -152,7 +149,5 @@ public class GroupHierarchy extends SecuredPageTemplate {
         public Enumeration children() {
             return children.elements();
         }
-
-        
     }
 }
