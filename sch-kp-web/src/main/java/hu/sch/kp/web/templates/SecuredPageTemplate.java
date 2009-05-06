@@ -19,12 +19,10 @@ import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
-import hu.sch.kp.web.pages.group.SelectGroup;
 import hu.sch.kp.web.pages.logout.Logout;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.session.VirSession;
 import javax.ejb.EJB;
-import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -99,10 +97,6 @@ public class SecuredPageTemplate extends WebPage {
 
     public Csoport getCsoport() {
         Csoport cs = getSession().getCsoport();
-        if (cs == null) {
-            throw new RestartResponseAtInterceptPageException(SelectGroup.class);
-        }
-
         return cs;
     }
 

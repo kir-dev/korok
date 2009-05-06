@@ -70,8 +70,6 @@ public class SchKpApplication extends WebApplication {
 
         mountBookmarkablePage("/valuation", Ertekelesek.class);
         mountBookmarkablePage("/newvaluation", UjErtekeles.class);
-        mountBookmarkablePage("/pointrequests", PontIgeny.class);
-        mountBookmarkablePage("/entrantrequests", BelepoIgeny.class);
 
         mountBookmarkablePage("/consider", OsszesErtekeles.class);
         mountBookmarkablePage("/editsettings", EditSettings.class);

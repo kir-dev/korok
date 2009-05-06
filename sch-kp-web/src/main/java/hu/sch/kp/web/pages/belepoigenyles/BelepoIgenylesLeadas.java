@@ -33,6 +33,7 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
     ErtekelesManagerLocal ertekelesManager;
 
     public BelepoIgenylesLeadas(final Ertekeles ert) {
+        setHeaderLabelText("Belépőigénylések leadása");
         //TODO jogosultság?!
         final List<BelepoIgeny> igenylista = igenyeketElokeszit(ert);
 
