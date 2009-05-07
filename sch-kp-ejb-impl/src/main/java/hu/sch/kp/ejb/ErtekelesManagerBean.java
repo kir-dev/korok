@@ -173,6 +173,35 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
                     ee.getBelepoStatusz().equals(ErtekelesStatusz.ELUTASITVA)) &&
                     ee.getIndoklas() == null) {
                 return false;
+            } else {
+
+
+                  StringBuilder sb = new StringBuilder(140);
+                  sb.append("------------------\n");
+                sb.append(ee.getErtekeles().getCsoport());
+                sb.append(" kör ");
+                sb.append(ee.getErtekeles().getSzemeszter());
+                sb.append(" félévi értékelése megváltozott.\n Az új adatok:");
+                if (ee.getBelepoStatusz() == ee.getErtekeles().getBelepoStatusz()) {
+                    sb.append("\nBelépőpontozás: nincs módosítás");
+                } else {
+                    sb.append("\nBelépőpontozás: ");
+                    sb.append(ee.getErtekeles().getBelepoStatusz());
+                    sb.append(" => ");
+                    sb.append(ee.getBelepoStatusz());
+                }
+
+                if (ee.getPontStatusz() == ee.getErtekeles().getPontStatusz()) {
+                    sb.append("\nKözösségi pontok: nincs módosítás");
+                } else {
+                    sb.append("\nKözösségi pontok: ");
+                    sb.append(ee.getErtekeles().getPontStatusz());
+                    sb.append(" => ");
+                    sb.append(ee.getPontStatusz());
+                }
+                ee.setIndoklas(ee.getIndoklas() + "\n" + sb.toString());
+
+
             }
 
             if (ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA) || ee.getPontStatusz().equals(ErtekelesStatusz.ELUTASITVA)) {

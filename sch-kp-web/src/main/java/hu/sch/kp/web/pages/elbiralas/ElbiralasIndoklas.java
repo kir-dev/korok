@@ -41,12 +41,15 @@ public class ElbiralasIndoklas extends SecuredPageTemplate {
                 if (ertekelesManager.ErtekeleseketElbiral(elbiralasAlatt, getFelhasznalo())) {
                     getSession().info("Az elbírálás sikeres volt.");
                     setResponsePage(OsszesErtekeles.class);
-                    return;
+                    
                 } else {
                     getSession().info("Minden elutasított értékeléshez kell indoklást mellékelni!");
                     setResponsePage(new ElbiralasIndoklas(elbiralasAlatt));
                     return;
                 }
+
+
+
 
             }
         };
@@ -62,30 +65,7 @@ public class ElbiralasIndoklas extends SecuredPageTemplate {
                 item.add(new Label("belepoStatusz"));
                 FormComponent ta = new TextArea("indoklas");
 
-                StringBuilder sb = new StringBuilder(140);
-
-                sb.append(e.getErtekeles().getCsoport());
-                sb.append(" kör ");
-                sb.append(e.getErtekeles().getSzemeszter());
-                sb.append(" félévi értékelése megváltozott.\n Az új adatok:");
-                if (e.getBelepoStatusz() == e.getErtekeles().getBelepoStatusz()) {
-                    sb.append("\nBelépőpontozás: nincs módosítás");
-                } else {
-                    sb.append("\nBelépőpontozás: ");
-                    sb.append(e.getErtekeles().getBelepoStatusz());
-                    sb.append(" => ");
-                    sb.append(e.getBelepoStatusz());
-                }
-
-                if (e.getPontStatusz() == e.getErtekeles().getPontStatusz()) {
-                    sb.append("\nKözösségi pontok: nincs módosítás");
-                } else {
-                    sb.append("\nKözösségi pontok: ");
-                    sb.append(e.getErtekeles().getPontStatusz());
-                    sb.append(" => ");
-                    sb.append(e.getPontStatusz());
-                }
-                e.setIndoklas(sb.toString());
+              
 
                 if (!e.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA) ||
                         !e.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA)) {
@@ -98,5 +78,6 @@ public class ElbiralasIndoklas extends SecuredPageTemplate {
                 item.add(ta);
             }
         });
+
     }
 }
