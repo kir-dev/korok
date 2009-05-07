@@ -203,8 +203,8 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         em.merge(ertekeles);
 
         // E-mail értesítés küldése az üzenetről
-        String emailText = uzenet.toString() + "\n" +
-                "\n\n\n" +
+        String emailText = uzenet.toString() + "\n\n\n" +
+                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
                 "Ez egy automatikusan generált e-mail.";
 
         // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre

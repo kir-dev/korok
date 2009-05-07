@@ -5,7 +5,9 @@
 package hu.sch.domain;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -89,11 +91,12 @@ public class ErtekelesUzenet implements Serializable {
     }
 
     @Override
-    public String toString()
-    {
-        String result = "Feladó: " + this.felado.getNev()+ "\n" +
-                        "Dátum: " + this.datum.toLocaleString() + "\n"+
-                        "Üzenet szövege:\n\n " + this.uzenet;
+    public String toString() {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy. MMMMM dd. HH:mm:ss", new Locale("hu"));
+        String result = "Feladó: " + felado.getNev() + "\n" +
+                "Dátum: " + dateFormat.format(date) + "\n" +
+                "Üzenet szövege:\n\n" + uzenet;
 
         return result;
     }
