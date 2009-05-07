@@ -282,10 +282,8 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public Felhasznalo findKorvezetoForCsoport(Long csoportId) {
-        Query q = em.createQuery("SELECT cs FROM Csoport cs " +
-                "WHERE cs.nev=:kornev");
 
-        em.createQuery("SELECT cst.felhasznalo FROM Csoporttagsag cst JOIN " +
+        Query q = em.createQuery("SELECT cst.felhasznalo FROM Csoporttagsag cst JOIN " +
                 "cst.felhasznalo " +
                 "WHERE cst.csoport.id=:csoportId AND cst.jogok = 1 ");
         q.setParameter("csoportId", csoportId);
