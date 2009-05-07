@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 
@@ -54,14 +55,7 @@ public class ShowUser extends SecuredPageTemplate {
             setResponsePage(GroupHierarchy.class);
             return;
         }
-
-//        List<Csoport> csoports = userManager.findGroupByName("%KIR%");
-//        if (csoports != null) {
-//            for (Csoport csoport : csoports) {
-//                System.out.println(csoport.getNev());
-//            }
-//        }
-
+        add(new FeedbackPanel("pagemessages"));
         final Felhasznalo user = userManager.findUserWithCsoporttagsagokById(id);
         if (user == null) {
             info("Egy körben sem vagy tag");
@@ -76,10 +70,6 @@ public class ShowUser extends SecuredPageTemplate {
             add(new BookmarkablePageLink("detailView", UserHistory.class,
                     new PageParameters("id=" + user.getId().toString())));
         }
-
-        /* add(new BookmarkablePageLink(
-        "historylink", UserHistory.class,
-        new PageParameters("id=" + id.toString())));*/
 
         add(new ExternalLink("profilelink",
                 "/profile/show/virid/" + id.toString()));
@@ -119,9 +109,8 @@ public class ShowUser extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null);
-                getSession().info("A felhasználó a körbe felvéve");
-                setResponsePage(ShowGroup.class, new PageParameters("id=" +
-                        addToCsoportSelected.getId()));
+                getSession().info("A felhasználó a " + addToCsoportSelected + " körbe felvéve");
+                setResponsePage(ShowUser.class, new PageParameters("id=" + user.getId()));
             }
         };
 

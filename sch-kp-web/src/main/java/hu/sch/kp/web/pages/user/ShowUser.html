@@ -1,36 +1,29 @@
-<html>
-    <body>
-        <wicket:extend>
-            <!--<h3>Linkek</h3>
-            <a href="#" wicket:id="profilelink">Teljes profil</a><br/>
-            <a href="#" wicket:id="historylink">Részletes közösségi adatlap</a><br/>-->
-            <a wicket:id="detailView" style="float: right;">Részletes közösségi történet</a>
-            <a wicket:id="profilelink">Teljes profil</a>
-            <h2>Tagságok</h2>
-            <!--style="margin:5px 14px; width: 820px; z-index:1; position:relative;"-->
-            <div class="subdata">
-                <table class="withheader">
-                    <tr class="headers">
-                        <th>Kör neve</th>
-                        <th>Betöltött poszt</th>
-                        <th>Tagsági idő</th>
-                    </tr>
-                    <tr wicket:id="csoptagsag">
-                        <td>
-                            <a href="#" wicket:id="csoplink">
-                                <span wicket:id="csoport.nev"/>
-                            </a>
-                        </td>
-                        <td wicket:id="jogok" />
-                        <td><span wicket:id="kezdet"/> - <span wicket:id="veg"/></td>
-                    </tr>
-                </table>
-            </div>
-            <form wicket:id="csoportbaFelvetel">
-                <h2>Felvétel körbe</h2>
-                <select wicket:id="csoport" />
-                <input class="btn" type="submit" value="Felvétel" />
-            </form>
-        </wicket:extend>
-    </body>
-</html>
+<wicket:extend>
+    <span wicket:id="pagemessages" id="pagemessages"></span>
+    <a wicket:id="detailView" style="float: right;">Részletes közösségi történet</a>
+    <a wicket:id="profilelink">Teljes profil</a>
+    <h2>Tagságok</h2>
+    <div class="subdata">
+        <table class="withheader">
+            <tr class="headers">
+                <th>Kör neve</th>
+                <th>Betöltött poszt</th>
+                <th>Tagsági idő</th>
+            </tr>
+            <tr wicket:id="csoptagsag">
+                <td>
+                    <a href="#" wicket:id="csoplink">
+                        <span wicket:id="csoport.nev"/>
+                    </a>
+                </td>
+                <td wicket:id="jogok" />
+                <td><span wicket:id="kezdet"/> - <span wicket:id="veg"/></td>
+            </tr>
+        </table>
+    </div>
+    <form wicket:id="csoportbaFelvetel">
+        <h2>Felvétel körbe</h2>
+        <select wicket:id="csoport" />
+        <input class="btn" type="submit" value="Felvétel" />
+    </form>
+</wicket:extend>
