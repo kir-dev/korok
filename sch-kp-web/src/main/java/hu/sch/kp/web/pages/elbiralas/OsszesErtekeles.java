@@ -118,7 +118,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                 /**/
 
                 if (!hasError() && list.isEmpty()) {
-                    error("Nem bíráltál el egy értékelést sem!");
+                   error("Nem bíráltál el egy értékelést sem!");
                 }
                 if (!hasError()) {
                     setResponsePage(new ElbiralasIndoklas(list));

@@ -87,4 +87,14 @@ public class ErtekelesUzenet implements Serializable {
     public void setDefaultValues() {
         setDatum(new Date());
     }
+
+    @Override
+    public String toString()
+    {
+        String result = "Feladó: " + this.felado.getNev()+ "\n" +
+                        "Dátum: " + this.datum.toLocaleString() + "\n"+
+                        "Üzenet szövege:\n\n " + this.uzenet;
+
+        return result;
+    }
 }

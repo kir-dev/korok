@@ -13,10 +13,12 @@ import hu.sch.domain.ErtekelesUzenet;
 import hu.sch.domain.PontIgeny;
 import hu.sch.domain.Szemeszter;
 import hu.sch.domain.Csoport;
+import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.ElfogadottBelepo;
 import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.ErtekelesStatisztika;
 import hu.sch.domain.Felhasznalo;
+import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
@@ -27,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -35,6 +38,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.mail.*;
+import javax.mail.Message.RecipientType;
+import javax.mail.internet.MimeMessage;
 
 /**
  *
@@ -185,6 +191,76 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
 
         em.persist(uzenet);
         em.merge(ertekeles);
+
+        // E-mail értesítés küldése az üzenetről
+
+        String emailText = uzenet.toString() + "\n" +
+                           "\n\n\n" +
+                           "Ez egy automatikusan generált e-mail.";
+
+        // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
+        Csoport csoport = ertekeles.getCsoport();
+        List<Felhasznalo> csoportTagok = csoport.getCsoporttagok();
+        for (Felhasznalo felhasznalo : csoportTagok)
+        {
+            System.out.println(felhasznalo.getEmailcim());
+            //eMail(felhasznalo.getEmailcim(), "[KÖRÖK] Új üzenet", emailText);
+        }
+
+        eMail("halacs@sch.bme.hu", "[KÖRÖK] Új üzenet", emailText); // ez majd nem kell ide
+    }
+
+    // E-mailt küld
+    @Resource(name="mail/korokMail")
+    private Session mailSession;
+    private void eMail(/* string from, */ String to, String subject, String message)
+    {
+        System.out.println("E-mail küldés...");
+
+/*
+        Properties props = new Properties();
+        props.setProperty("mail.transport.protocol", "smtp");
+        props.setProperty("mail.host", "192.168.0.6");
+        props.setProperty("mail.user", "");
+        props.setProperty("mail.password", "");
+        Session mailSession = Session.getDefaultInstance(props, null);
+*/
+
+/*
+        Session mailSession = null;
+
+        try
+        {
+            InitialContext ic = new InitialContext();
+            String snName = "java:comp/env/mail/korokMail";
+            mailSession = (Session)ic.lookup(snName);
+        }
+        catch (Exception ex)
+        {
+        }
+*/
+
+        try
+        {
+            MimeMessage msg = new MimeMessage(mailSession);
+            // msg.setFrom(new InternetAddress(from));
+            msg.setRecipients(RecipientType.TO, to);
+            msg.setSubject(subject);
+            msg.setText(message);
+
+            Transport transport = mailSession.getTransport();
+
+            transport.connect();
+            transport.send(msg, msg.getRecipients(Message.RecipientType.TO));
+            transport.close();
+
+            System.out.println("E-mail elküldve!");
+        }
+        catch (Exception ex)
+        {
+            System.out.println("HIBA: " + ex.toString());
+        }
+         
     }
 
     public Ertekeles getErtekelesWithUzenetek(Long ertekelesId) {
