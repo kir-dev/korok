@@ -118,7 +118,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                 /**/
 
                 if (!hasError() && list.isEmpty()) {
-                   error("Nem bíráltál el egy értékelést sem!");
+                    error("Nem bíráltál el egy értékelést sem!");
                 }
                 if (!hasError()) {
                     setResponsePage(new ElbiralasIndoklas(list));
@@ -156,7 +156,6 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                     public void onClick() {
                         setResponsePage(new LeadottBelepoIgenyles(ert));
                     }
-
                 };
                 szinesKDOLink.add(new Label("kiosztottKDO"));
 
@@ -185,22 +184,22 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                     public void onClick() {
                         setResponsePage(new LeadottPontIgenyles(ert));
                     }
-
                 };
 
 
                 pontozasLink.add(new Label("atlagPont"));
-                
+
                 item.add(szinesKDOLink);
                 item.add(szinesKBLink);
                 item.add(szinesABLink);
-                
+
                 item.add(pontozasLink);
                 Component pontStatusz = new ErtekelesStatuszValaszto("pontStatusz");
                 Component belepoStatusz = new ErtekelesStatuszValaszto("belepoStatusz");
                 pontStatusz.setVisible(!ert.getPontStatusz().equals(ErtekelesStatusz.NINCS));
                 if (belepoStatusz != null && ert != null && ert.getBelepoStatusz() != null) {
-                belepoStatusz.setVisible(!ert.getBelepoStatusz().equals(ErtekelesStatusz.NINCS));}
+                    belepoStatusz.setVisible(!ert.getBelepoStatusz().equals(ErtekelesStatusz.NINCS));
+                }
                 //System.out.println("abba: " + ert.getPontStatusz() + " " + ert.getBelepoStatusz());
                 //System.out.println("aaa: " + ert.getPontStatusz());
                 //System.out.println("bbb: " + ert.getBelepoStatusz());

@@ -24,9 +24,8 @@ public class DummyAuthorization implements UserAuthorization {
 
     public boolean hasRoleInGroup(Request wicketRequest, Csoport csoport, TagsagTipus tagsagTipus) {
         // KIR-DEV és SPOT
-        if ((csoport.getId().equals(106L) || csoport.getId().equals(13L)) &&
+        if ((csoport.getId().equals(331L) || csoport.getId().equals(106L) || csoport.getId().equals(21L)) &&
                 tagsagTipus.equals(TagsagTipus.KORVEZETO)) {
-
             return true;
         }
         return false;
@@ -40,6 +39,7 @@ public class DummyAuthorization implements UserAuthorization {
         } else {
             return false;
         }
+
     }
 
     public boolean hasRoleInSomeGroup(Request wicketRequest, TagsagTipus tagsagTipus) {

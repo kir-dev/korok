@@ -55,7 +55,7 @@ public class UserManagerBean implements UserManagerLocal {
     public void addUserToGroup(Felhasznalo felhasznalo, Csoport csoport, Date kezdet, Date veg) {
         CsoporttagsagPK cspk =
                 new CsoporttagsagPK(felhasznalo.getId(), csoport.getId());
-        Csoporttagsag m = em.find(Csoporttagsag.class,cspk);
+        Csoporttagsag m = em.find(Csoporttagsag.class, cspk);
         if (m != null) { //már létező csoporttagság
             return;
         }
@@ -279,5 +279,21 @@ public class UserManagerBean implements UserManagerLocal {
         Csoporttagsag temp = em.find(Csoporttagsag.class,
                 new CsoporttagsagPK(user.getFelhasznalo().getId(), user.getCsoport().getId()));
         temp.setVeg(new Date());
+    }
+
+    public Felhasznalo findKorvezetoForCsoport(Long csoportId) {
+        Query q = em.createQuery("SELECT cs FROM Csoport cs " +
+                "WHERE cs.nev=:kornev");
+
+        em.createQuery("SELECT cst.felhasznalo FROM Csoporttagsag cst JOIN " +
+                "cst.felhasznalo " +
+                "WHERE cst.csoport.id=:csoportId AND cst.jogok = 1 ");
+        q.setParameter("csoportId", csoportId);
+        try {
+            Felhasznalo user = (Felhasznalo) q.getSingleResult();
+            return user;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

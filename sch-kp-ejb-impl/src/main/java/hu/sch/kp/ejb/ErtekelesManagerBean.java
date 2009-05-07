@@ -13,12 +13,10 @@ import hu.sch.domain.ErtekelesUzenet;
 import hu.sch.domain.PontIgeny;
 import hu.sch.domain.Szemeszter;
 import hu.sch.domain.Csoport;
-import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.ElfogadottBelepo;
 import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.ErtekelesStatisztika;
 import hu.sch.domain.Felhasznalo;
-import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
@@ -34,13 +32,17 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.mail.Message;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.mail.*;
 import javax.mail.Message.RecipientType;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -51,13 +53,21 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
 
     private static final String defaultSortColumnForErtekelesLista = "csoportNev";
     private static final Map<String, String> sortMapForErtekelesLista;
-    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ErtekelesStatisztika(e, " + "(SELECT avg(p.pont) FROM PontIgeny p WHERE p.ertekeles = e AND p.pont > 0) as atlagpont, " + "(SELECT count(*) as numKDO FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KDO\') as igenyeltkdo, " + "(SELECT count(*) as numKB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KB\') as igenyeltkb, " + "(SELECT count(*) as numAB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'AB\') as igenyeltab" + ") FROM Ertekeles e ";
+    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ErtekelesStatisztika(e, " +
+            "(SELECT avg(p.pont) FROM PontIgeny p WHERE p.ertekeles = e AND p.pont > 0) as atlagpont, " +
+            "(SELECT count(*) as numKDO FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KDO\') as igenyeltkdo, " +
+            "(SELECT count(*) as numKB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KB\') as igenyeltkb, " +
+            "(SELECT count(*) as numAB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'AB\') as igenyeltab" +
+            ") FROM Ertekeles e ";
+    @Resource(name = "mail/korokMail")
+    private Session mailSession;
     @PersistenceContext
     EntityManager em;
     @EJB
     UserManagerLocal userManager;
     @EJB
     SystemManagerLocal systemManager;
+    Logger logger = Logger.getLogger(getClass());
 
 
     static {
@@ -193,74 +203,36 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         em.merge(ertekeles);
 
         // E-mail értesítés küldése az üzenetről
-
         String emailText = uzenet.toString() + "\n" +
-                           "\n\n\n" +
-                           "Ez egy automatikusan generált e-mail.";
+                "\n\n\n" +
+                "Ez egy automatikusan generált e-mail.";
 
         // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
-        Csoport csoport = ertekeles.getCsoport();
-        List<Felhasznalo> csoportTagok = csoport.getCsoporttagok();
-        for (Felhasznalo felhasznalo : csoportTagok)
-        {
-            System.out.println(felhasznalo.getEmailcim());
-            //eMail(felhasznalo.getEmailcim(), "[KÖRÖK] Új üzenet", emailText);
-        }
-
-        eMail("halacs@sch.bme.hu", "[KÖRÖK] Új üzenet", emailText); // ez majd nem kell ide
+        Felhasznalo groupLeader = userManager.findKorvezetoForCsoport(ertekeles.getCsoport().getId());
+        System.out.println(groupLeader.getEmailcim());
+        // ezt át kell írni az előző getemailcim-re, most csak teszt célból megy
+        sendEmail("majorpetya@sch.bme.hu", emailText);
     }
 
     // E-mailt küld
-    @Resource(name="mail/korokMail")
-    private Session mailSession;
-    private void eMail(/* string from, */ String to, String subject, String message)
-    {
-        System.out.println("E-mail küldés...");
-
-/*
-        Properties props = new Properties();
-        props.setProperty("mail.transport.protocol", "smtp");
-        props.setProperty("mail.host", "192.168.0.6");
-        props.setProperty("mail.user", "");
-        props.setProperty("mail.password", "");
-        Session mailSession = Session.getDefaultInstance(props, null);
-*/
-
-/*
-        Session mailSession = null;
-
-        try
-        {
-            InitialContext ic = new InitialContext();
-            String snName = "java:comp/env/mail/korokMail";
-            mailSession = (Session)ic.lookup(snName);
-        }
-        catch (Exception ex)
-        {
-        }
-*/
-
-        try
-        {
-            MimeMessage msg = new MimeMessage(mailSession);
-            // msg.setFrom(new InternetAddress(from));
-            msg.setRecipients(RecipientType.TO, to);
-            msg.setSubject(subject);
+    private void sendEmail(String to, String message) {
+        logger.info("E-mail küldése\n" +
+                "Címzett: " + to + "\n" +
+                "Üzenet: " + message);
+        try {
+            Message msg = new MimeMessage(mailSession);
+            msg.setFrom();
+            msg.setRecipients(RecipientType.TO, InternetAddress.parse(to, false));
+            msg.setSubject("[VIR KÖRÖK] Új üzeneted érkezett");
             msg.setText(message);
-
-            Transport transport = mailSession.getTransport();
-
-            transport.connect();
-            transport.send(msg, msg.getRecipients(Message.RecipientType.TO));
-            transport.close();
-
-            System.out.println("E-mail elküldve!");
+            msg.setSentDate(new Date());
+            Transport.send(msg, msg.getRecipients(Message.RecipientType.TO));
+            logger.info("Levél sikeresen elküldve.");
+        } catch (Exception ex) {
+            logger.error("Hiba az e-mail elküldése közben.");
+            ex.printStackTrace();
         }
-        catch (Exception ex)
-        {
-            System.out.println("HIBA: " + ex.toString());
-        }
-         
+
     }
 
     public Ertekeles getErtekelesWithUzenetek(Long ertekelesId) {
@@ -347,6 +319,8 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
 
         uz.setFelado(felado);
         uz.setUzenet(uzenet);
+        uz.setDatum(new Date());
+
         add(e, uz);
     }
 

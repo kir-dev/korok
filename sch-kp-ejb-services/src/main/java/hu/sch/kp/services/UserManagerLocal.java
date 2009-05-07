@@ -68,4 +68,6 @@ public interface UserManagerLocal {
     void updateMemberRights(Csoporttagsag oldOne, Csoporttagsag newOne, TagsagTipus type);
 
     void setMemberToOldBoy(Csoporttagsag user);
+
+    Felhasznalo findKorvezetoForCsoport(Long csoportId);
 }
