@@ -237,6 +237,7 @@ public class Ertekelesek extends SecuredPageTemplate {
                         setResponsePage(new ErtekelesUzenetek(e.getId()));
                     }
                 };
+                uzenetekLink.add(new Label("uzenetek", "Üzenetek"));
                 item.add(uzenetekLink);
 
                 Link pontkerelemLink = new Link("pontkerelemlink", model) {
