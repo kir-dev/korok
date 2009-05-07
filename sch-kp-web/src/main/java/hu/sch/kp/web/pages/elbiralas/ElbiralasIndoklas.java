@@ -38,10 +38,10 @@ public class ElbiralasIndoklas extends SecuredPageTemplate {
             protected void onSubmit() {
                 Iterator<ElbiraltErtekeles> it = elbiralasAlatt.iterator();
 
-                    if (ertekelesManager.ErtekeleseketElbiral(elbiralasAlatt, getFelhasznalo())) {
-                        getSession().info("Az elbírálás sikeres volt.");
-                        setResponsePage(OsszesErtekeles.class);
-                        return;
+                if (ertekelesManager.ErtekeleseketElbiral(elbiralasAlatt, getFelhasznalo())) {
+                    getSession().info("Az elbírálás sikeres volt.");
+                    setResponsePage(OsszesErtekeles.class);
+                    return;
                 } else {
                     getSession().info("Minden elutasított értékeléshez kell indoklást mellékelni!");
                     setResponsePage(new ElbiralasIndoklas(elbiralasAlatt));
@@ -69,27 +69,22 @@ public class ElbiralasIndoklas extends SecuredPageTemplate {
                 sb.append(e.getErtekeles().getSzemeszter());
                 sb.append(" félévi értékelése megváltozott.\n Az új adatok:");
                 if (e.getBelepoStatusz() == e.getErtekeles().getBelepoStatusz()) {
-                sb.append("\nBelépőpontozás: nincs módosítás");
+                    sb.append("\nBelépőpontozás: nincs módosítás");
                 } else {
                     sb.append("\nBelépőpontozás: ");
-                    sb.append(e.getBelepoStatusz());
-                    sb.append(" (");
                     sb.append(e.getErtekeles().getBelepoStatusz());
-                    sb.append(")");
+                    sb.append(" => ");
+                    sb.append(e.getBelepoStatusz());
                 }
 
                 if (e.getPontStatusz() == e.getErtekeles().getPontStatusz()) {
-                sb.append("\nKözösségi pontok: nincs módosítás");
+                    sb.append("\nKözösségi pontok: nincs módosítás");
                 } else {
                     sb.append("\nKözösségi pontok: ");
-                    sb.append(e.getPontStatusz());
-                    sb.append(" (");
                     sb.append(e.getErtekeles().getPontStatusz());
-                    sb.append(")");
+                    sb.append(" => ");
+                    sb.append(e.getPontStatusz());
                 }
-
-
-
                 e.setIndoklas(sb.toString());
 
                 if (!e.getBelepoStatusz().equals(ErtekelesStatusz.ELFOGADVA) ||
