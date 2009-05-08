@@ -24,6 +24,9 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
     UserManagerLocal userManager;
     @PersistenceContext
     EntityManager em;
+    private final String FINDUSER =
+            "SELECT f FROM Felhasznalo f WHERE upper(f.neptunkod) = upper(:neptunkod) OR " +
+            "upper(f.emailcim) = upper(:emailcim)";
 
     public Felhasznalo createUserEntry(Felhasznalo user) {
         if (user.getNeptunkod() != null) {
@@ -45,6 +48,7 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
         Felhasznalo felhasznalo = new Felhasznalo();
         felhasznalo.setId(f.getId());
         felhasznalo.setNeptunkod(f.getNeptunkod());
+        felhasznalo.setEmailcim(f.getEmailcim());
 
         return felhasznalo;
     }
@@ -58,5 +62,16 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
         felhasznalo.setEmailcim(f.getEmailcim());
 
         return felhasznalo;
+    }
+
+    public Felhasznalo findUser(String neptun, String email) {
+        return mapReturn((Felhasznalo) em.createQuery(FINDUSER).
+                setParameter("neptunkod", neptun).
+                setParameter("emailcim", email).
+                getSingleResult());
+    }
+
+    public Felhasznalo findUser(Long virId) {
+        return mapReturn(em.find(Felhasznalo.class, virId));
     }
 }

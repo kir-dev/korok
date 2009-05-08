@@ -15,4 +15,6 @@ import javax.ejb.Remote;
 public interface EntitlementManagerRemote {
 
     Felhasznalo createUserEntry(Felhasznalo user);
+    Felhasznalo findUser(String neptun, String email);
+    Felhasznalo findUser(Long virId);
 }
