@@ -49,7 +49,7 @@ public class BelepoIgenylesIndoklas extends SecuredPageTemplate {
                     setResponsePage(Ertekelesek.class);
                     return;
                 } else {
-                    getSession().info(getLocalizer().getString("info.BelepoIgenylesNincsIndoklas", this));
+                    getSession().error(getLocalizer().getString("info.BelepoIgenylesNincsIndoklas", this));
                     setResponsePage(new BelepoIgenylesIndoklas(ert, igenyek));
                     return;
                 }

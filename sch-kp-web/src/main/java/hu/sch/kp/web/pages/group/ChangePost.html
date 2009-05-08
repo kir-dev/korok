@@ -1,9 +1,9 @@
 <wicket:extend>
     <h2>
-        Kör neve: <span wicket:id="groupname"/><br/>
-        Tag neve: <span wicket:id="username"/><br/>
+        <span wicket:id="groupname" /> - <span wicket:id="username" />
     </h2>
     <form wicket:id="changePost">
+        <div class="subdata">
         <table>
             <tr>
                 <td>
@@ -12,14 +12,7 @@
                 </td>
             </tr>
         </table>
-        <!--span wicket:id="boxes">
-            <table>
-                <tr wicket:id="choices">
-                    <td><input type="checkbox" wicket:id="checkbox"/></td>
-                    <td><span wicket:id="name">[this is where name will be]</span></td>
-                </tr>
-            </table>
-        </span-->
+        </div>
         <input class="btn" type="submit" value="OK"/>
     </form>
 </wicket:extend>

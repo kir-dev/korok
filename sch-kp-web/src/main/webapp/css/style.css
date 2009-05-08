@@ -5,7 +5,7 @@
 a {
     text-decoration: none;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 13px;
     color: #1E4565;
     border-bottom: 1px dotted #1E4565;
 }
@@ -15,7 +15,7 @@ a:hover {
 html, body { height: 100%; }
 body {
     background: #CCDCE6 url('../images/bckgBody.gif') top center repeat-x;
-    font: 12px verdana, arial, sans;
+    font: 13px verdana, arial, sans;
     color: #1E4565;
 }
 #container {
@@ -60,7 +60,7 @@ ul.horizontal li {
     top: 112px;
     right: 2px;
 }
-#header ul li { padding: 5px 8px 4px 8px; } 
+#header ul li { padding: 4px 8px 4px 8px; }
 #header ul li:hover { background: #58829e; }
 
 #content .header {
@@ -71,9 +71,11 @@ ul.horizontal li {
 #content .header span {
     font: bold 30px arial, sans;
     color: #EEF8FE;
-    position: relative;
-    top: 3px;
-    left: 21px;
+    display: block;
+    overflow: hidden;
+    width: 655px;
+    margin-left: 21px;
+    padding-top: 4px;
 }
 #hits {
     border-spacing: 0;
@@ -288,7 +290,6 @@ select.wide { width: 355px; }
 }
 #pagemessages ul li .feedbackPanelERROR, #pagemessages ul li .feedbackPanelINFO {
     display: block;
-    font-size: 12px;
     padding: 6px 0 6px 36px;
 }
 #pagemessages ul li .feedbackPanelERROR { background: url('../images/iconError.gif') top left no-repeat; }
@@ -365,4 +366,66 @@ table.wicket-tree-content table.icon-panel a:hover,
 table.wicket-tree-content table.icon-panel a:visited {
     color: #1E4565 !important;
     text-decoration: none !important;
+}
+/* Értékelési gyorslinkek */
+.ertekelFigyelmeztet table td {
+    padding: 2px 20px 2px 0;
+}
+/* Értékelés részletek */
+table.ertekelesReszletek td {
+    padding: 2px 20px 2px 0;
+}
+table.ertekelesReszletek td.col1 {
+    width: 115px;
+    font-style: italic;
+}
+h3 {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 10px 0 5px;
+}
+h5 {
+    font-size: 13px;
+    font-style: italic;
+    font-weight: normal;
+}
+/* Üzenet megjelenítése */
+.notifybox {
+    border: 1px solid #CBE5F7;
+    background: #D9EBF9;
+    margin: 10px;
+    padding: 10px;
+}
+#ViewNavigation {
+    background: #467292 url('../images/iconOrderUp.gif') 160px 8px no-repeat;
+    border: 1px solid #7FB4C8;
+    color: #ffffff;
+    float: right;
+    font-weight: bold;
+    margin-top: -48px;
+    position: relative;
+    width: 180px;
+}
+#ViewNavigation a {
+    color: #ffffff;
+    border: none;
+}
+#ViewNavigation span, #ViewNavigation li {
+    padding: 4px 25px 4px 4px;
+    display: block;
+}
+#ViewNavigation ul li {
+    display: none;
+    list-style: none;
+    border-top: 1px solid #7FB4C8;
+}
+#ViewNavigation span:hover {
+    cursor: default;
+    background: #58829e url('../images/iconOrderUp.gif') 160px 8px no-repeat;
+}
+#ViewNavigation ul li:hover {
+    background: #58829e;
+}
+#ViewNavigation:hover ul li {
+    display: block;
 }

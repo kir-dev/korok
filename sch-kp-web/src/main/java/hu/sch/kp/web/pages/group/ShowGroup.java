@@ -55,7 +55,7 @@ public class ShowGroup extends SecuredPageTemplate {
         if (cs.getNev().contains("Informatikus-hallgatók")) {
             setHeaderLabelText("MAVE adatlapja");
         } else {
-            setHeaderLabelText(cs.getNev() + " adatlapja");
+            setHeaderLabelText(cs.getNev());
         }
         add(new BookmarkablePageLink("detailView", GroupHistory.class,
                 new PageParameters("id=" + cs.getId().toString())));

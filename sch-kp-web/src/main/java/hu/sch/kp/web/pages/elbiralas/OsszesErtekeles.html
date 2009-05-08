@@ -11,12 +11,23 @@
     </head>
     <body>
         <wicket:extend xmlns:wicket="http://wicket.apache.org">
+            <span id="pagemessages">
+                <ul>
+                    <li class="feedbackPanelINFO">
+                        <span class="feedbackPanelINFO">
+                            A státuszok átállítása után nyomd meg az OK gombot a mentéshez! <br />
+                            A lista mentés nélküli újrarendezésekor a már beállított státuszok törlődnek!
+                        </span>
+                    </li>
+                </ul>
+            </span>
+
             <span wicket:id="pagemessages" id="pagemessages"></span>
-                <h2>Szemeszter: <span wicket:id="szemeszter">sz</span></h2><br/>
-                <h3>A státuszok átállítása után nyomd meg az OK gombot a mentéshez!<br/>
-                A lista mentés nélküli újrarendezésekor a már beállított státuszok törlődnek!</h3>
-                <form wicket:id="elbiralasform">
-                    <table class="withheader" style="z-index:1; position:relative;">
+
+            <h2>Szemeszter: <span wicket:id="szemeszter">sz</span></h2>
+            <form wicket:id="elbiralasform">
+                <div class="subdata">
+                    <table class="withheader">
                         <tr>
                             <th wicket:id="orderByCsoport">Csoport</th>
                             <th wicket:id="orderByAtlagPont">Pontok átlaga</th>
@@ -37,7 +48,8 @@
                         </tr>
                     </table>
                     <input class="btn" type="submit" value="Mentés"/>
-                </form>
+                </div>
+            </form>
         </wicket:extend>
     </body>
 </html>

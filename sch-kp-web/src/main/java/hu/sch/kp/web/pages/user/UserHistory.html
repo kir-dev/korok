@@ -1,60 +1,57 @@
-<!-- 
-    Document   : UserHistory
-    Created on : Oct 23, 2008, 6:48:37 PM
-    Author     : Adam Lantos
--->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-    <body>
-        <wicket:extend>
-            <a wicket:id="simpleView" style="float: right;">Egyszerű felhasználói nézet</a>
-            <h2>Szemeszterenkénti közösségi pontok</h2>
-            <div class="subdata">
-                <table class="withheader">
-                    <tr class="headers">
-                        <th style="width: 140px;">Szemeszter</th>
-                        <th>Pontszám</th>
-                    </tr>
+<wicket:extend>
+    <div id="ViewNavigation">
+        <span>Részletes nézet</span>
+        <ul >
+            <li><a wicket:id="simpleView">Egyszerű nézet</a></li>
+            <li><a wicket:id="profilelink">Teljes profil</a></li>
+        </ul>
+    </div>
 
-                    <tr wicket:id="szemeszterPont">
-                    <td><span wicket:id="szemeszterPont.szemeszter" /></td>
-                    <td><span wicket:id="szemeszterPont.pont" /></td>
-                    </tr>
-                </table>
-            </div>
+    <h2>Szemeszterenkénti közösségi pontok</h2>
+    <div class="subdata">
+        <table class="withheader">
+            <tr class="headers">
+                <th style="width: 140px;">Szemeszter</th>
+                <th>Pontszám</th>
+            </tr>
 
-            <h2>Részletes közösségi pontozás</h2>
-            <div class="subdata">
-                <table id="pontigenyek" class="withheader">
-                    <tr class="headers">
-                        <th style="width: 140px;">Szemeszter</th>
-                        <th>Kör</th>
-                        <th style="width: 80px;">Pontszám</th>
-                    </tr>
-                    <tr wicket:id="pontigeny">
-                        <td><span wicket:id="ertekeles.szemeszter" /></td>
-                        <td><span wicket:id="ertekeles.csoport.nev" /></td>
-                        <td><span wicket:id="pont" /></td>
-                    </tr>
-                </table>
-            </div>
-            <h2>Belépők</h2>
-            <div class="subdata">
-                <table id="belepoigenyek" class="withheader">
-                    <tr class="headers">
-                        <th style="width: 140px;">Szemeszter</th>
-                        <th style="width: 130px;">Kör</th>
-                        <th>Igényelt belépő</th>
-                        <th style="width: 400px;">Szöveges indoklás</th>
-                    </tr>
-                    <tr wicket:id="belepoigeny">
-                        <td><span wicket:id="ertekeles.szemeszter" /></td>
-                        <td><span wicket:id="ertekeles.csoport.nev" /></td>
-                        <td><span wicket:id="belepotipus" /></td>
-                        <td><span wicket:id="szovegesErtekeles" /></td>
-                    </tr>
-                </table>
-            </div>
-        </wicket:extend>
-    </body>
-</html>
+            <tr wicket:id="szemeszterPont">
+                <td><span wicket:id="szemeszterPont.szemeszter" /></td>
+                <td><span wicket:id="szemeszterPont.pont" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>Részletes közösségi pontozás</h2>
+    <div class="subdata">
+        <table id="pontigenyek" class="withheader">
+            <tr class="headers">
+                <th style="width: 140px;">Szemeszter</th>
+                <th>Kör</th>
+                <th style="width: 80px;">Pontszám</th>
+            </tr>
+            <tr wicket:id="pontigeny">
+                <td><span wicket:id="ertekeles.szemeszter" /></td>
+                <td><span wicket:id="ertekeles.csoport.nev" /></td>
+                <td><span wicket:id="pont" /></td>
+            </tr>
+        </table>
+    </div>
+    <h2>Belépők</h2>
+    <div class="subdata">
+        <table id="belepoigenyek" class="withheader">
+            <tr class="headers">
+                <th style="width: 140px;">Szemeszter</th>
+                <th style="width: 130px;">Kör</th>
+                <th>Igényelt belépő</th>
+                <th style="width: 400px;">Szöveges indoklás</th>
+            </tr>
+            <tr wicket:id="belepoigeny">
+                <td><span wicket:id="ertekeles.szemeszter" /></td>
+                <td><span wicket:id="ertekeles.csoport.nev" /></td>
+                <td><span wicket:id="belepotipus" /></td>
+                <td><span wicket:id="szovegesErtekeles" /></td>
+            </tr>
+        </table>
+    </div>
+</wicket:extend>

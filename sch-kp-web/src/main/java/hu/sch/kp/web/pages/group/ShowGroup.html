@@ -1,12 +1,14 @@
-<!-- 
-    Document   : ShowGroup
-    Created on : May 26, 2008, 8:34:14 PM
-    Author     : hege
--->
 <wicket:extend>
+    <div id="ViewNavigation">
+        <span>Adatlap nézet</span>
+        <ul >
+            <li><a wicket:id="detailView">Korábbi értékelések</a></li>
+            <li><a wicket:id="editPage">Adatlap szerkesztése</a></li>
+        </ul>
+    </div>
+
     <span wicket:id="pagemessages" id="pagemessages"></span>
-    <a wicket:id="detailView" style="float: right;">Kör korábbi értékelései</a>
-    <a wicket:id="editPage">Adatlap szerkesztése</a>
+
     <h2>Kör adatai</h2>
     <div class="subdata">
         <table>

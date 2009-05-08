@@ -53,7 +53,7 @@ public class Ertekelesek extends SecuredPageTemplate {
     Label kornev;
 
     public Ertekelesek() {
-        setHeaderLabelText("Kör kiválasztása");
+        setHeaderLabelText("Értékelések");
         if (id == null) {
             id = getSession().getUser().getId();
         }

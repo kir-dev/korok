@@ -1,7 +1,14 @@
 <wicket:extend>
+    <div id="ViewNavigation">
+        <span>Egyszerű nézet</span>
+        <ul >
+            <li><a wicket:id="detailView">Részletes nézet</a></li>
+            <li><a wicket:id="profilelink">Teljes profil</a></li>
+        </ul>
+    </div>
+
     <span wicket:id="pagemessages" id="pagemessages"></span>
-    <a wicket:id="detailView" style="float: right;">Részletes közösségi történet</a>
-    <a wicket:id="profilelink">Teljes profil</a>
+
     <h2>Tagságok</h2>
     <div class="subdata">
         <table class="withheader">
