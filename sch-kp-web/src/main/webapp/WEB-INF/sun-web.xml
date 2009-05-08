@@ -5,11 +5,11 @@
     <context-root>/korok</context-root>
     <security-role-mapping>
         <role-name>ADMIN</role-name>
-        <group-name>am_admin_role</group-name>
+        <group-name>urn:geant:niif.hu:sch.bme.hu:entitlement:tag:KIR fejlesztők és üzemeltetők:106</group-name>
     </security-role-mapping>
     <security-role-mapping>
         <role-name>JETI</role-name>
-        <group-name>am_jeti_role</group-name>
+        <group-name>urn:geant:niif.hu:sch.bme.hu:entitlement:tag:Jutalmazást Elbíráló Testület:156</group-name>
     </security-role-mapping>
     <class-loader delegate="true"/>
     <jsp-config>
