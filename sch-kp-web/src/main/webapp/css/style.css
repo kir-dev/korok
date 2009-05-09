@@ -405,6 +405,7 @@ h5 {
     margin-top: -48px;
     position: relative;
     width: 180px;
+    z-index: 3;
 }
 #ViewNavigation a {
     color: #ffffff;
