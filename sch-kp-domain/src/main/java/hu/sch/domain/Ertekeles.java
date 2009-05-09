@@ -5,6 +5,8 @@
 package hu.sch.domain;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -217,5 +219,17 @@ public class Ertekeles implements Serializable {
 
     public void setPontAtlag(Float pontAtlag) {
         this.pontAtlag = pontAtlag;
+    }
+
+    public void sortUzenetek() {
+        if (this.getUzenetek() != null) {
+            Collections.sort(this.getUzenetek(),
+                    new Comparator<ErtekelesUzenet>() {
+
+                        public int compare(ErtekelesUzenet o1, ErtekelesUzenet o2) {
+                            return o1.getDatum().compareTo(o2.getDatum()) * -1;
+                        }
+                    });
+        }
     }
 }
