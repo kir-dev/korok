@@ -7,7 +7,6 @@ package hu.sch.kp.web.pages.ertekeles;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.ErtekelesUzenet;
 import hu.sch.kp.services.ErtekelesManagerLocal;
-import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.web.components.FelhasznaloLink;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.List;
@@ -23,7 +22,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  *
  * @author hege
  */
-class ErtekelesUzenetek extends SecuredPageTemplate {
+public class ErtekelesUzenetek extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
@@ -31,6 +30,7 @@ class ErtekelesUzenetek extends SecuredPageTemplate {
     public ErtekelesUzenetek(final Long ertekelesId) {
         setHeaderLabelText("Üzenetek");
         Ertekeles ertekeles = ertekelesManager.getErtekelesWithUzenetek(ertekelesId);
+        ertekeles.sortUzenetek();
         List<ErtekelesUzenet> uzenetek = ertekeles.getUzenetek();
         if (uzenetek.size() == 0) {
             info(getLocalizer().getString("info.NincsUzenet", this));
@@ -48,13 +48,6 @@ class ErtekelesUzenetek extends SecuredPageTemplate {
             }
         };
         add(uzenetekView);
-        add(new Link("backlink") {
-
-            @Override
-            public void onClick() {
-                setResponsePage(Ertekelesek.class);
-            }
-        });
 
         Link ujuzenet = new Link("ujuzenetlink") {
 

@@ -250,7 +250,6 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
                 "Üzenet: " + message);
         try {
             Message msg = new MimeMessage(mailSession);
-            msg.setFrom();
             msg.setRecipients(RecipientType.TO, InternetAddress.parse(to, false));
             msg.setSubject("[VIR KÖRÖK] Új üzeneted érkezett");
             msg.setText(message);

@@ -50,7 +50,7 @@ public class AgentBasedAuthorization implements UserAuthorization {
                 }
             }
         }
-        throw new IllegalStateException("Agent information for VIRID were not found in Request");
+        return null;
     }
 
     public boolean hasAbstractRole(Request wicketRequest, String role) {
@@ -127,8 +127,8 @@ public class AgentBasedAuthorization implements UserAuthorization {
                                 tagsag.put(csoportId, tt);
                             }
                         } else {
-                                tagsag.put(csoportId, tt);
-			}
+                            tagsag.put(csoportId, tt);
+                        }
                     }
                 }
             }

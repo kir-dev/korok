@@ -13,6 +13,7 @@ import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.components.ErtekelesStatuszValaszto;
 import hu.sch.kp.web.pages.ertekeles.ErtekelesReszletek;
+import hu.sch.kp.web.pages.ertekeles.ErtekelesUzenetek;
 import hu.sch.kp.web.pages.ertekeles.LeadottBelepoIgenyles;
 import hu.sch.kp.web.pages.ertekeles.LeadottPontIgenyles;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
@@ -194,6 +195,15 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                 item.add(szinesABLink);
 
                 item.add(pontozasLink);
+                Link uzenetekLink = new Link("uzeneteklink") {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new ErtekelesUzenetek(ert.getId()));
+                    }
+                };
+                item.add(uzenetekLink);
+
                 Component pontStatusz = new ErtekelesStatuszValaszto("pontStatusz");
                 Component belepoStatusz = new ErtekelesStatuszValaszto("belepoStatusz");
                 pontStatusz.setVisible(!ert.getPontStatusz().equals(ErtekelesStatusz.NINCS));
@@ -233,13 +243,13 @@ public class OsszesErtekeles extends SecuredPageTemplate {
             }*/
         });
 
-        form.add(new OrderByBorderImpl("orderByCsoport", "csoportNev", dp));
-        form.add(new OrderByBorderImpl("orderByAtlagPont", "atlagPont", dp));
-        form.add(new OrderByBorderImpl("orderByKiosztottKDO", "kiosztottKDO", dp));
-        form.add(new OrderByBorderImpl("orderByKiosztottKB", "kiosztottKB", dp));
-        form.add(new OrderByBorderImpl("orderByKiosztottAB", "kiosztottAB", dp));
-        form.add(new OrderByBorderImpl("orderByPontStatusz", "pontStatusz", dp));
-        form.add(new OrderByBorderImpl("orderByBelepoStatusz", "belepoStatusz", dp));
+//        form.add(new OrderByBorderImpl("orderByCsoport", "csoportNev", dp));
+//        form.add(new OrderByBorderImpl("orderByAtlagPont", "atlagPont", dp));
+//        form.add(new OrderByBorderImpl("orderByKiosztottKDO", "kiosztottKDO", dp));
+//        form.add(new OrderByBorderImpl("orderByKiosztottKB", "kiosztottKB", dp));
+//        form.add(new OrderByBorderImpl("orderByKiosztottAB", "kiosztottAB", dp));
+//        form.add(new OrderByBorderImpl("orderByPontStatusz", "pontStatusz", dp));
+//        form.add(new OrderByBorderImpl("orderByBelepoStatusz", "belepoStatusz", dp));
     }
 
     private class OrderByBorderImpl extends OrderByBorder {

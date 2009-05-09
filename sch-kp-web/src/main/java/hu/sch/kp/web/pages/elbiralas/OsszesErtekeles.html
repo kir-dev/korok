@@ -1,55 +1,50 @@
-<!-- 
-    Document   : OsszesErtekeles
-    Created on : May 28, 2008, 3:33:29 PM
-    Author     : hege
--->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-    <head>
-        <title></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
-    <body>
-        <wicket:extend xmlns:wicket="http://wicket.apache.org">
-            <span id="pagemessages">
-                <ul>
-                    <li class="feedbackPanelINFO">
-                        <span class="feedbackPanelINFO">
-                            A státuszok átállítása után nyomd meg az OK gombot a mentéshez! <br />
-                            A lista mentés nélküli újrarendezésekor a már beállított státuszok törlődnek!
-                        </span>
-                    </li>
-                </ul>
-            </span>
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+    <span id="pagemessages">
+        <ul>
+            <li class="feedbackPanelINFO">
+                <span class="feedbackPanelINFO">
+                    A státuszok átállítása után nyomd meg az OK gombot a mentéshez! <br />
+                    A lista mentés nélküli újrarendezésekor a már beállított státuszok törlődnek!
+                </span>
+            </li>
+        </ul>
+    </span>
 
-            <span wicket:id="pagemessages" id="pagemessages"></span>
+    <span wicket:id="pagemessages" id="pagemessages"></span>
 
-            <h2>Szemeszter: <span wicket:id="szemeszter">sz</span></h2>
-            <form wicket:id="elbiralasform">
-                <div class="subdata">
-                    <table class="withheader">
-                        <tr>
-                            <th wicket:id="orderByCsoport">Csoport</th>
-                            <th wicket:id="orderByAtlagPont">Pontok átlaga</th>
-                            <th wicket:id="orderByKiosztottKDO">Kiosztott KDO</th>
-                            <th wicket:id="orderByKiosztottKB">Kiosztott KB</th>
-                            <th wicket:id="orderByKiosztottAB">Kiosztott ÁB</th>
-                            <th wicket:id="orderByPontStatusz">Pontok</th>
-                            <th wicket:id="orderByBelepoStatusz">Belépők</th>
-                        </tr>
-                        <tr wicket:id="ertekeleslista">
-                            <td><a wicket:id="ertekeleslink"><span wicket:id="ertekeles.csoport.nev">csoport</span></a></td>
-                            <td><a wicket:id="pontoklink"><span wicket:id="atlagPont">0.00</span></a></td>
-                            <td><a wicket:id="szinesKDO"><span wicket:id="kiosztottKDO">0</span></a></td>
-                            <td><a wicket:id="szinesKB"><span wicket:id="kiosztottKB">0</span></a></td>
-                            <td><a wicket:id="szinesAB"><span wicket:id="kiosztottAB">0</span></a></td>
-                            <td><select wicket:id="pontStatusz"/></td>
-                            <td><select wicket:id="belepoStatusz"/></td>
-                        </tr>
-                    </table>
-                    <input class="btn" type="submit" value="Mentés"/>
-                </div>
-            </form>
-        </wicket:extend>
-    </body>
-</html>
+    <h2>Szemeszter: <span wicket:id="szemeszter">sz</span></h2>
+    <form wicket:id="elbiralasform">
+        <div class="subdata">
+            <table class="withheader">
+                <tr>
+                    <!--th wicket:id="orderByCsoport">Csoport</th>
+                    <th wicket:id="orderByAtlagPont">Pontok átlaga</th>
+                    <th wicket:id="orderByKiosztottKDO">Kiosztott KDO</th>
+                    <th wicket:id="orderByKiosztottKB">Kiosztott KB</th>
+                    <th wicket:id="orderByKiosztottAB">Kiosztott ÁB</th>
+                    <th wicket:id="orderByPontStatusz">Pontok</th>
+                    <th wicket:id="orderByBelepoStatusz">Belépők</th-->
+                    <th>Csoport</th>
+                    <th>Pontok átlaga</th>
+                    <th>KDO</th>
+                    <th>KB</th>
+                    <th>ÁB</th>
+                    <th>Pontok</th>
+                    <th>Belépők</th>
+                    <th>Üzenetek</th>
+                </tr>
+                <tr wicket:id="ertekeleslista">
+                    <td><a wicket:id="ertekeleslink"><span wicket:id="ertekeles.csoport.nev">csoport</span></a></td>
+                    <td><a wicket:id="pontoklink"><span wicket:id="atlagPont">0.00</span></a></td>
+                    <td><a wicket:id="szinesKDO"><span wicket:id="kiosztottKDO">0</span></a></td>
+                    <td><a wicket:id="szinesKB"><span wicket:id="kiosztottKB">0</span></a></td>
+                    <td><a wicket:id="szinesAB"><span wicket:id="kiosztottAB">0</span></a></td>
+                    <td><select wicket:id="pontStatusz" style="width: 110px;"/></td>
+                    <td><select wicket:id="belepoStatusz" style="width: 110px;"/></td>
+                    <td><a wicket:id="uzeneteklink">Üzenetek</a></td>
+                </tr>
+            </table>
+            <input class="btn" type="submit" value="Mentés"/>
+        </div>
+    </form>
+</wicket:extend>

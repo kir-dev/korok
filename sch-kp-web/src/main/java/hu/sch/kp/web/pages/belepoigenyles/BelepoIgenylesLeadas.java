@@ -86,13 +86,14 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
         } else {
 
             //tényleges összefésülés
-             boolean szerepel = false;
+            boolean szerepel = false;
             if (igenyek.size() != csoporttagok.size()) {
-                for(Felhasznalo csoporttag: csoporttagok) {
+                for (Felhasznalo csoporttag : csoporttagok) {
                     szerepel = false;
                     for (BelepoIgeny igeny : igenyek) {
                         if (igeny.getFelhasznalo().getId().equals(csoporttag.getId())) {
-                            szerepel = true; break;
+                            szerepel = true;
+                            break;
                         }
                     }
                     if (!szerepel) {

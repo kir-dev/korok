@@ -7,7 +7,6 @@ package hu.sch.kp.web.pages.ertekeles;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.ErtekelesStatisztika;
 import hu.sch.kp.services.ErtekelesManagerLocal;
-import hu.sch.kp.web.components.CsoportLink;
 import hu.sch.kp.web.components.FelhasznaloLink;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.ArrayList;
@@ -51,12 +50,6 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
             backlink.setVisible(false);
         }
         add(backlink);*/
-        add(new Link("backlink"){
-            @Override
-            public void onClick() {
-                setResponsePage(Ertekelesek.class);
-            }
-        });
         add(new Label("csoport.nev", ertekeles.getCsoport().getNev()));
         //TODO fix this with compoundpropertymodel :)
         if (ertekeles.getFelado() != null) {

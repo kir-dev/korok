@@ -9,10 +9,10 @@ import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.ErtekelesStatusz;
-import hu.sch.domain.ErtekelesUzenet;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
+import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.web.pages.belepoigenyles.BelepoIgenylesLeadas;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.index.Index;
@@ -45,6 +45,8 @@ public class Ertekelesek extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
+    @EJB(name = "SystemManagerBean")
+    SystemManagerLocal systemManager;
     public String selected = "";
     List<Ertekeles> ertekelesList = new ArrayList<Ertekeles>();
     Long id;
@@ -244,7 +246,8 @@ public class Ertekelesek extends SecuredPageTemplate {
 
                     @Override
                     public void onClick() {
-                        if (e.getPontStatusz() == ErtekelesStatusz.ELFOGADVA) {
+                        if (e.getPontStatusz() == ErtekelesStatusz.ELFOGADVA ||
+                                systemManager.getErtekelesIdoszak() != ErtekelesIdoszak.ERTEKELESLEADAS) {
                             setResponsePage(new LeadottPontIgenyles(e));
                             return;
                         } else {
@@ -259,7 +262,8 @@ public class Ertekelesek extends SecuredPageTemplate {
 
                     @Override
                     public void onClick() {
-                        if (e.getBelepoStatusz() == ErtekelesStatusz.ELFOGADVA) {
+                        if (e.getBelepoStatusz() == ErtekelesStatusz.ELFOGADVA ||
+                                systemManager.getErtekelesIdoszak() != ErtekelesIdoszak.ERTEKELESLEADAS) {
                             setResponsePage(new LeadottBelepoIgenyles(e));
                             return;
                         } else {

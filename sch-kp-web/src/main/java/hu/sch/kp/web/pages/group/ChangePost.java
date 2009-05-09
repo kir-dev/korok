@@ -58,20 +58,34 @@ public final class ChangePost extends SecuredPageTemplate {
                 List<TagsagTipus> originalRights = Arrays.asList(cst.getJogokString());
                 boolean found = false;
                 try {
+                    //milyen jogok vannak a checkbox-ok alapján
                     for (TagsagTipus tagsagTipus : memberRights) {
+                        //Ha az eredeti jogai között nem szerepelt valamelyik jog:
                         if (!originalRights.contains(tagsagTipus)) {
+                            //végigmegyünk az összes csoporttagon
                             for (Csoporttagsag csoporttagsag : activeMembers) {
+                                //megnézzük, hogy van-e neki ugyanilyen joga
                                 if (TagsagTipus.hasJogCsoportban(csoporttagsag, tagsagTipus)) {
+                                    //ha már volt ilyen emberke
+                                    if (found) {
+                                        //akkor ennek már csak elvesszük a jogát
+                                        userManager.updateMemberRights(csoporttagsag, null, tagsagTipus);
+                                    } else {
+                                        //egyébként a kettő user posztot cserél
+                                        userManager.updateMemberRights(csoporttagsag, cst, tagsagTipus);
+                                    }
                                     found = true;
-                                    userManager.updateMemberRights(csoporttagsag, cst, tagsagTipus);
                                 }
                             }
+                            //ha nem volt egy emberke se ilyen joggal, akkor ez a user fogja megkapni
                             if (!found) {
                                 userManager.updateMemberRights(null, cst, tagsagTipus);
                             }
                         }
                     }
+                    //végigmegyünk az eredeti jogain
                     for (TagsagTipus tagsagTipus : originalRights) {
+                        //ha most elvettünk egy jogot a user-től, akkor tényleg elvesszük :)
                         if (!memberRights.contains(tagsagTipus)) {
                             userManager.updateMemberRights(cst, null, tagsagTipus);
                         }
