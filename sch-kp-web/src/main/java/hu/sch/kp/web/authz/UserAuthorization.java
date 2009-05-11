@@ -1,6 +1,7 @@
 package hu.sch.kp.web.authz;
 
 import hu.sch.domain.Csoport;
+import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import org.apache.wicket.Application;
 import org.apache.wicket.Request;
@@ -53,5 +54,13 @@ public interface UserAuthorization {
      * @param role
      * @return
      */
-    public boolean hasAbstractRole(Request wicketRequest, String role);
+    boolean hasAbstractRole(Request wicketRequest, String role);
+
+    /**
+     * Az aktuálisan bejelentkezett felhasználó attribútumait adja vissza.
+     *
+     * @param wicketRequest
+     * @return
+     */
+    Felhasznalo getUserAttributes(Request wicketRequest);
 }

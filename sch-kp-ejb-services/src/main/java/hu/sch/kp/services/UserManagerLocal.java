@@ -11,8 +11,6 @@ import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.PontIgeny;
 import hu.sch.domain.TagsagTipus;
 import javax.ejb.Local;
-import hu.sch.kp.services.exceptions.GroupAlreadyExistsException;
-import hu.sch.kp.services.exceptions.UserAlreadyExistsException;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +23,7 @@ public interface UserManagerLocal {
 
     List<Felhasznalo> getAllUsers();
 
-    Felhasznalo saveOrAddUser(Felhasznalo user) throws UserAlreadyExistsException;
+    void updateUserAttributes(Felhasznalo user);
 
     Felhasznalo findUserById(Long userId);
 
@@ -46,8 +44,6 @@ public interface UserManagerLocal {
     Csoport findGroupById(Long id);
 
     Csoport findGroupWithCsoporttagsagokById(Long id);
-
-    Csoport saveOrAddGroup(Csoport group) throws GroupAlreadyExistsException;
 
     void modifyMembership(Felhasznalo user, Csoport group, Date start, Date end);
 

@@ -1,6 +1,7 @@
 package hu.sch.kp.web.authz;
 
 import hu.sch.domain.Csoport;
+import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import org.apache.wicket.Application;
 import org.apache.wicket.Request;
@@ -48,5 +49,9 @@ public class DummyAuthorization implements UserAuthorization {
         } else {
             return false;
         }
+    }
+
+    public Felhasznalo getUserAttributes(Request wicketRequest) {
+        return null;
     }
 }

@@ -5,8 +5,6 @@
 package hu.sch.kp.ejb;
 
 import hu.sch.domain.*;
-import hu.sch.kp.services.exceptions.GroupAlreadyExistsException;
-import hu.sch.kp.services.exceptions.UserAlreadyExistsException;
 import hu.sch.kp.services.UserManagerLocal;
 import java.util.Date;
 import java.util.LinkedList;
@@ -33,15 +31,15 @@ public class UserManagerBean implements UserManagerLocal {
         throw new UnsupportedOperationException();
     }
 
-    public Felhasznalo saveOrAddUser(Felhasznalo user) throws
-            UserAlreadyExistsException {
-        if (user.getId() != null) {
-            em.persist(user);
-        } else {
-            user = em.merge(user);
-        }
+    public void updateUserAttributes(Felhasznalo user) {
+        Felhasznalo f = em.find(Felhasznalo.class, user.getId());
+        f.setEmailcim(user.getEmailcim());
+        f.setBecenev(user.getBecenev());
+        f.setNeptunkod(user.getNeptunkod());
+        f.setVezeteknev(user.getVezeteknev());
+        f.setKeresztnev(user.getKeresztnev());
 
-        return user;
+        em.flush();
     }
 
     public Felhasznalo findUserById(Long userId) {
@@ -116,18 +114,6 @@ public class UserManagerBean implements UserManagerLocal {
 
     public Csoport findGroupById(Long id) {
         return em.find(Csoport.class, id);
-    }
-
-    public Csoport saveOrAddGroup(Csoport group) throws
-            GroupAlreadyExistsException {
-        /*Csoport oldgroup = findGroupByName(group.getNev());
-        if (oldgroup != null && oldgroup.getId() != group.getId()) {
-        throw new GroupAlreadyExistsException("A csoport már létezik: " + group.getNev());
-        }*/
-        group = em.merge(group);
-        em.flush();
-
-        return group;
     }
 
     public void modifyMembership(Felhasznalo user, Csoport group, Date start, Date end) {
@@ -247,7 +233,8 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public Csoporttagsag getCsoporttagsag(Long userId, Long groupId) {
-        Csoporttagsag cst = em.find(Csoporttagsag.class, new CsoporttagsagPK(userId, groupId));
+        Csoporttagsag cst =
+                em.find(Csoporttagsag.class, new CsoporttagsagPK(userId, groupId));
         return cst;
     }
 
@@ -257,26 +244,31 @@ public class UserManagerBean implements UserManagerLocal {
                 throw new EJBException();
             }
             if (oldOne != null) {
-                Csoporttagsag oldPersisted = em.find(Csoporttagsag.class, oldOne.getId());
+                Csoporttagsag oldPersisted =
+                        em.find(Csoporttagsag.class, oldOne.getId());
                 oldPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(oldPersisted.getJogok(), type));
                 oldPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(oldPersisted.getJogok(), TagsagTipus.VOLTKORVEZETO));
             }
-            Csoporttagsag newPersisted = em.find(Csoporttagsag.class, newOne.getId());
+            Csoporttagsag newPersisted =
+                    em.find(Csoporttagsag.class, newOne.getId());
             newPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(newPersisted.getJogok(), type));
         } else {
             if (oldOne != null) {
-                Csoporttagsag oldPersisted = em.find(Csoporttagsag.class, oldOne.getId());
+                Csoporttagsag oldPersisted =
+                        em.find(Csoporttagsag.class, oldOne.getId());
                 oldPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(oldPersisted.getJogok(), type));
             }
             if (newOne != null) {
-                Csoporttagsag newPersisted = em.find(Csoporttagsag.class, newOne.getId());
+                Csoporttagsag newPersisted =
+                        em.find(Csoporttagsag.class, newOne.getId());
                 newPersisted.setJogok(TagsagTipus.addOrRemoveEntitlement(newPersisted.getJogok(), type));
             }
         }
     }
 
     public void setMemberToOldBoy(Csoporttagsag user) {
-        Csoporttagsag temp = em.find(Csoporttagsag.class,
+        Csoporttagsag temp =
+                em.find(Csoporttagsag.class,
                 new CsoporttagsagPK(user.getFelhasznalo().getId(), user.getCsoport().getId()));
         temp.setVeg(new Date());
     }

@@ -1,8 +1,10 @@
 package hu.sch.kp.web.authz;
 
 import hu.sch.domain.Csoport;
+import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -25,11 +27,18 @@ public class AgentBasedAuthorization implements UserAuthorization {
             "hu.sch.kp.web.authz.EntitlementCache";
     private final static Pattern VIRID_PATTERN =
             Pattern.compile("^.*:([0-9]+)$");
+    private final static Pattern NEPTUN_PATTERN =
+            Pattern.compile("^.*:([A-Za-z0-9]{6,7})$");
     private final static Pattern ENTITLEMENT_PATTERN =
             //                          jog:csoportnév:csoportid
             Pattern.compile("^.*:entitlement:([^:]+):([^:]+):([0-9]+)$");
     private static final String VIRID_ATTRNAME = "virid";
     private static final String ENTITLEMENT_ATTRNAME = "eduPersonEntitlement";
+    private static final String EMAIL_ATTRNAME = "mail";
+    private static final String VEZETEKNEV_ATTRNAME = "sn";
+    private static final String KERESZTNEV_ATTRNAME = "givenName";
+    private static final String BECENEV_ATTRNAME = "displayName";
+    private static final String NEPTUN_ATTRNAME = "neptun";
 
     public void init(Application wicketApplication) {
     }
@@ -123,7 +132,8 @@ public class AgentBasedAuthorization implements UserAuthorization {
                         }
                         TagsagTipus temp = tagsag.get(csoportId);
                         if (temp != null) {
-                            if (temp != TagsagTipus.KORVEZETO && tt == TagsagTipus.KORVEZETO) {
+                            if (temp != TagsagTipus.KORVEZETO && tt ==
+                                    TagsagTipus.KORVEZETO) {
                                 tagsag.put(csoportId, tt);
                             }
                         } else {
@@ -137,20 +147,39 @@ public class AgentBasedAuthorization implements UserAuthorization {
         return tagsag;
     }
 
-    /*
-    private Set getTestEntitlementAttribute() {
-    Set set = new HashSet();
-    set.add("urn:mace:sch.hu:entitlement:korvezeto:KIR fejlesztők és üzemeltetők:106");
-    set.add("urn:mace:sch.hu:entitlement:tag:SPOT:13");
+    public Felhasznalo getUserAttributes(Request wicketRequest) {
+        HttpServletRequest servletRequest =
+                ((WebRequest) wicketRequest).getHttpServletRequest();
+        Felhasznalo felhasznalo = new Felhasznalo();
 
-    return set;
+        felhasznalo.setEmailcim(getSingleValuedStringAttribute(servletRequest, EMAIL_ATTRNAME));
+        felhasznalo.setVezeteknev(getSingleValuedStringAttribute(servletRequest, VEZETEKNEV_ATTRNAME));
+        felhasznalo.setKeresztnev(getSingleValuedStringAttribute(servletRequest, KERESZTNEV_ATTRNAME));
+        felhasznalo.setBecenev(getSingleValuedStringAttribute(servletRequest, BECENEV_ATTRNAME));
+
+        String neptunUrn =
+                getSingleValuedStringAttribute(servletRequest, NEPTUN_ATTRNAME);
+        
+        if (neptunUrn != null) {
+            Matcher m = NEPTUN_PATTERN.matcher(neptunUrn);
+            if (m.matches()) {
+                felhasznalo.setNeptunkod(m.group(1));
+            }
+        }
+
+        return felhasznalo;
     }
 
-    private Set getTestViridAttribute() {
-    Set set = new HashSet();
-    set.add("urn:terena:schac:schacUniqueId:16227");
+    private String getSingleValuedStringAttribute(HttpServletRequest request, String attrName) {
+        Set attrSet = (Set) request.getAttribute(attrName);
 
-    return set;
+        if (attrSet != null) {
+            Iterator it = attrSet.iterator();
+            if (it.hasNext()) {
+                return it.next().toString();
+            }
+        }
+
+        return null;
     }
-     */
 }

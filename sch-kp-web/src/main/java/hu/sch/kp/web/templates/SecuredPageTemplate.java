@@ -66,16 +66,28 @@ public class SecuredPageTemplate extends WebPage {
         add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 
-    protected Felhasznalo loadFelhasznalo() {
-        Long virID = getAuthorizationComponent().getUserid(getRequest());
-        if (virID != null) {
-            Felhasznalo user =
-                    userManager.findUserWithCsoporttagsagokById(virID);
-            getSession().setUser(user);
+    protected void loadFelhasznalo() {
+        if (this.getSession().getUser() == null) {
+            Long virID = getAuthorizationComponent().getUserid(getRequest());
+            if (virID != null) {
+                Felhasznalo user =
+                        userManager.findUserWithCsoporttagsagokById(virID);
+                Felhasznalo userAttrs =
+                        getAuthorizationComponent().getUserAttributes(getRequest());
+                if (userAttrs != null &&
+                        (!user.getNeptunkod().equals(userAttrs.getNeptunkod()) ||
+                        !user.getEmailcim().equals(userAttrs.getEmailcim()) ||
+                        !user.getBecenev().equals(userAttrs.getBecenev()) ||
+                        !user.getVezeteknev().equals(userAttrs.getVezeteknev()) ||
+                        !user.getKeresztnev().equals(userAttrs.getKeresztnev()))) {
 
-            return user;
+                    userManager.updateUserAttributes(userAttrs);
+                }
+                getSession().setUser(user);
+            } else {
+                getSession().setUser(new Felhasznalo());
+            }
         }
-        return null;
     }
 
     @Override
