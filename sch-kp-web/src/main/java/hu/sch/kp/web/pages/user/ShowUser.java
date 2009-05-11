@@ -11,6 +11,7 @@ import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,8 +93,13 @@ public class ShowUser extends SecuredPageTemplate {
             }
         };
         add(csoptagsagok);
+        List<Csoport> csoportok;
 
-        List<Csoport> csoportok = getFelhasznalo().getCsoportok();
+        if (getFelhasznalo() == null) {
+            csoportok = new ArrayList<Csoport>();
+        } else {
+            csoportok = getFelhasznalo().getCsoportok();
+        }
         List<Csoport> korvezetoicsoportok = new LinkedList<Csoport>();
         for (Csoport cs : csoportok) {
             if (hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) &&
@@ -113,7 +119,6 @@ public class ShowUser extends SecuredPageTemplate {
                 setResponsePage(ShowUser.class, new PageParameters("id=" + user.getId()));
             }
         };
-
         csoportbaFelvetel.add(csoport);
         add(csoportbaFelvetel);
         csoportbaFelvetel.setVisible(korvezetoicsoportok.size() > 0 &&
