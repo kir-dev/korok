@@ -45,14 +45,26 @@ public class GroupHierarchy extends SecuredPageTemplate {
         setHeaderLabelText("Csoportok listája");
         add(new FeedbackPanel("pagemessages"));
         final String[] csoportok = sort(userManager.getEveryGroupName().toArray(new String[0]));
-
-        Form form = new Form("form");
-        add(form);
-
-        SearchAutoCompleteTextField field = new SearchAutoCompleteTextField("ac", new Model(""), csoportok);
-
-        form.add(field);
+        final SearchAutoCompleteTextField field = new SearchAutoCompleteTextField("ac", new Model(""), csoportok);
         final Label label = new Label("selectedValue", field.getModel());
+        Form form = new Form("form") {
+
+            @Override
+            protected void onSubmit() {
+                super.onSubmit();
+                try {
+                    Long id = userManager.getGroupByName(field.getModelObjectAsString()).getId();
+                    setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
+                } catch (Exception ex) {
+                    error("A megadott keresési feltételeknek egyetlen kör sem felelt meg.");
+                }
+                return;
+            }
+        };
+
+        add(form);
+        form.add(field);
+
         label.setOutputMarkupId(true);
         label.setVisible(false);
         form.add(label);
