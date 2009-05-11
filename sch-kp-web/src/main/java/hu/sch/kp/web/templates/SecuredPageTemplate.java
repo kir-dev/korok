@@ -9,7 +9,6 @@ import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.Szemeszter;
 import hu.sch.domain.TagsagTipus;
-import hu.sch.kp.services.LdapPersonManagerLocal;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
@@ -40,8 +39,6 @@ public class SecuredPageTemplate extends WebPage {
     protected SystemManagerLocal systemManager;
     @EJB(name = "UserManagerBean")
     protected UserManagerLocal userManager;
-    @EJB(name = "LDAPPersonManagerBean")
-    protected LdapPersonManagerLocal ldapManager;
 
     public SecuredPageTemplate() {
         loadFelhasznalo();
