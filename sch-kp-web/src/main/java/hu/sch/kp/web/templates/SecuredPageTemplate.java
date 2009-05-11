@@ -75,6 +75,7 @@ public class SecuredPageTemplate extends WebPage {
                 Felhasznalo userAttrs =
                         getAuthorizationComponent().getUserAttributes(getRequest());
                 if (userAttrs != null) {
+                    userAttrs.setId(virID);
                     userManager.updateUserAttributes(userAttrs);
                 }
                 getSession().setUser(user);
