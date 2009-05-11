@@ -67,8 +67,10 @@ public class SecuredPageTemplate extends WebPage {
     }
 
     protected void loadFelhasznalo() {
-        if (this.getSession().getUser() == null) {
-            Long virID = getAuthorizationComponent().getUserid(getRequest());
+        Long virID = getAuthorizationComponent().getUserid(getRequest());
+        if (this.getSession().getUser() == null ||
+                this.getSession().getUser().getId() != virID) {
+            
             if (virID != null) {
                 Felhasznalo user =
                         userManager.findUserWithCsoporttagsagokById(virID);
