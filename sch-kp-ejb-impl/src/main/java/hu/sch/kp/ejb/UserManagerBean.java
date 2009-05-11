@@ -33,11 +33,21 @@ public class UserManagerBean implements UserManagerLocal {
 
     public void updateUserAttributes(Felhasznalo user) {
         Felhasznalo f = em.find(Felhasznalo.class, user.getId());
-        f.setEmailcim(user.getEmailcim());
-        f.setBecenev(user.getBecenev());
-        f.setNeptunkod(user.getNeptunkod());
-        f.setVezeteknev(user.getVezeteknev());
-        f.setKeresztnev(user.getKeresztnev());
+        if (user.getEmailcim() != null) {
+            f.setEmailcim(user.getEmailcim());
+        }
+        if (user.getBecenev() != null) {
+            f.setBecenev(user.getBecenev());
+        }
+        if (user.getNeptunkod() != null) {
+            f.setNeptunkod(user.getNeptunkod());
+        }
+        if (user.getVezeteknev() != null) {
+            f.setVezeteknev(user.getVezeteknev());
+        }
+        if (user.getKeresztnev() != null) {
+            f.setKeresztnev(user.getKeresztnev());
+        }
 
         em.flush();
     }

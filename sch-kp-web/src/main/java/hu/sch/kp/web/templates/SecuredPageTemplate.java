@@ -74,13 +74,7 @@ public class SecuredPageTemplate extends WebPage {
                         userManager.findUserWithCsoporttagsagokById(virID);
                 Felhasznalo userAttrs =
                         getAuthorizationComponent().getUserAttributes(getRequest());
-                if (userAttrs != null &&
-                        (!user.getNeptunkod().equals(userAttrs.getNeptunkod()) ||
-                        !user.getEmailcim().equals(userAttrs.getEmailcim()) ||
-                        !user.getBecenev().equals(userAttrs.getBecenev()) ||
-                        !user.getVezeteknev().equals(userAttrs.getVezeteknev()) ||
-                        !user.getKeresztnev().equals(userAttrs.getKeresztnev()))) {
-
+                if (userAttrs != null) {
                     userManager.updateUserAttributes(userAttrs);
                 }
                 getSession().setUser(user);
