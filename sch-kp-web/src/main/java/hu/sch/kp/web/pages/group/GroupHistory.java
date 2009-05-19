@@ -8,12 +8,10 @@ import hu.sch.domain.Csoport;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Szemeszter;
 import hu.sch.kp.services.ErtekelesManagerLocal;
-import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.ertekeles.ErtekelesDetailPanel;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
@@ -33,8 +31,6 @@ public class GroupHistory extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
     private List<Ertekeles> ertekelesList = new ArrayList<Ertekeles>();
     private Long id;
     private Csoport csoport;
@@ -58,12 +54,11 @@ public class GroupHistory extends SecuredPageTemplate {
         csoport = userManager.findGroupById(id);
         ertekelesList.clear();
         ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
-        final List<String> szemeszterek = new ArrayList<String>();
+        final List<Szemeszter> szemeszterek = new ArrayList<Szemeszter>();
         Iterator iterator = ertekelesList.iterator();
         while (iterator.hasNext()) {
-            szemeszterek.add(((Ertekeles) iterator.next()).getSzemeszter().toString());
+            szemeszterek.add(((Ertekeles) iterator.next()).getSzemeszter());
         }
-        Collections.sort(szemeszterek);
         Form idoszakForm = new Form("idoszakForm") {
 
             @Override
@@ -82,7 +77,7 @@ public class GroupHistory extends SecuredPageTemplate {
                 }
             }
         };
-        add(new Label("nev",csoport.getNev()));
+        add(new Label("nev", csoport.getNev()));
         DropDownChoice ddc = new DropDownChoice("semesters", szemeszterek);
         ddc.setModel(new PropertyModel(this, "selected"));
 
