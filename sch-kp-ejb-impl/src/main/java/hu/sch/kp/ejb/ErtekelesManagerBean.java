@@ -176,8 +176,8 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
             } else {
 
 
-                  StringBuilder sb = new StringBuilder(140);
-                  sb.append("------------------\n");
+                StringBuilder sb = new StringBuilder(140);
+                sb.append("------------------\n");
                 sb.append(ee.getErtekeles().getCsoport());
                 sb.append(" kör ");
                 sb.append(ee.getErtekeles().getSzemeszter());
@@ -301,6 +301,18 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
     public List<Ertekeles> findErtekeles(Csoport csoport) {
         Query q = em.createNamedQuery(Ertekeles.findByCsoport);
         q.setParameter("csoport", csoport);
+
+        return (List<Ertekeles>) q.getResultList();
+    }
+
+    public List<Ertekeles> findApprovedValuations(Csoport group) {
+        Query q = em.createQuery("SELECT e FROM Ertekeles e WHERE e.csoport=:csoport " +
+                "AND (e.pontStatusz = :elfogadva OR e.pontStatusz = :nincs) " +
+                "AND (e.belepoStatusz = :elfogadva OR e.belepoStatusz = :nincs) " +
+                "ORDER BY e.szemeszter DESC");
+        q.setParameter("csoport", group);
+        q.setParameter("elfogadva", ErtekelesStatusz.ELFOGADVA);
+        q.setParameter("nincs", ErtekelesStatusz.NINCS);
 
         return (List<Ertekeles>) q.getResultList();
     }

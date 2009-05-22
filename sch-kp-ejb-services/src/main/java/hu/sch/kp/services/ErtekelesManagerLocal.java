@@ -55,6 +55,8 @@ public interface ErtekelesManagerLocal {
      */
     List<Ertekeles> findErtekeles(Csoport csoport);
 
+    List<Ertekeles> findApprovedValuations(Csoport group);
+
     /**
      * Az adott szemeszterben elbírálatlan értékelések megkeresése.
      * Elbírálatlan az értékelés, amiben vagy a pontigénylés vagy a 

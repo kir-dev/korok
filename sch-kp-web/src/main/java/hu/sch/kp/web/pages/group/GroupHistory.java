@@ -53,7 +53,7 @@ public class GroupHistory extends SecuredPageTemplate {
 
         csoport = userManager.findGroupById(id);
         ertekelesList.clear();
-        ertekelesList.addAll(ertekelesManager.findErtekeles(csoport));
+        ertekelesList.addAll(ertekelesManager.findApprovedValuations(csoport));
         final List<Szemeszter> szemeszterek = new ArrayList<Szemeszter>();
         Iterator iterator = ertekelesList.iterator();
         while (iterator.hasNext()) {
