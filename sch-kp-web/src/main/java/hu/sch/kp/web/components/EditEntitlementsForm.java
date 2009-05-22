@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -31,7 +32,7 @@ public class EditEntitlementsForm extends Form {
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
     private List<ExtendedGroup> lines = new ArrayList<ExtendedGroup>();
-    private boolean activePanel;
+    private final boolean activePanel;
 
     public EditEntitlementsForm(String name, List<Csoporttagsag> active, boolean isActivePanel) {
         super(name);
@@ -50,9 +51,14 @@ public class EditEntitlementsForm extends Form {
                 item.setModel(new CompoundPropertyModel(ext));
                 item.add(new FelhasznaloLink("felhlink", cst.getFelhasznalo()));
                 item.add(new Label("becenev", cst.getFelhasznalo().getBecenev()));
-                item.add(new Label("jogok",
-                        getConverter(TagsagTipus.class).convertToString(cst.getJogokString(), getLocale())));
-                item.add(new ChangePostLink("postLink", ext.getTagsag()));
+                if (activePanel) {
+                    item.add(new Label("jogok",
+                            getConverter(TagsagTipus.class).convertToString(cst.getJogokString(), getLocale())));
+                    item.add(new ChangePostLink("postLink", ext.getTagsag()));
+                } else {
+                    item.add(DateLabel.forDatePattern("tagsag.kezdet", "yyyy.MM.dd."));
+                    item.add(DateLabel.forDatePattern("tagsag.veg", "yyyy.MM.dd."));
+                }
                 item.add(new CheckBox("check", new PropertyModel(ext, "selected")));
             }
         };
