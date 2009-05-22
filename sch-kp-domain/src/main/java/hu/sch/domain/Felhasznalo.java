@@ -74,7 +74,6 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
      * Tranziens csoporttagsagok
      */
     private List<Csoport> csoportok;
-    private boolean selected = false;
 
     /** Creates a new instance of Felhasznalo */
     public Felhasznalo() {
@@ -184,15 +183,6 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
                         }
                     });
         }
-    }
-
-    @Transient
-    public boolean getSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     @Override
