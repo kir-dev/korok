@@ -1,19 +1,17 @@
-<wicket:panel wicket:id="user">
+<wicket:panel wicket:id="oldUser">
     <div class="subdata">
         <table class="withheader">
             <tr class="headers">
                 <th style="width: 250px;">Felhasználó neve</th>
                 <th>Becenév</th>
-                <th style="width: 160px">Betöltött poszt</th>
-                <th style="width: 180px">Tagság kezdete</th>
+                <th style="width: 180px">Tagság ideje</th>
             </tr>
-            <tr wicket:id="csoptagsag">
+            <tr wicket:id="oregtagsag">
                 <td>
                     <span wicket:id="felhlink" />
                 </td>
                 <td wicket:id="becenev" />
-                <td wicket:id="jogok" />
-                <td><span wicket:id="kezdet" /></td>
+                <td><span wicket:id="kezdet" /> - <span wicket:id="veg" /></td>
             </tr>
         </table>
     </div>

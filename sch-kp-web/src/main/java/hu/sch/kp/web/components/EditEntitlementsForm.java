@@ -8,6 +8,8 @@ import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.group.ShowGroup;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
@@ -28,25 +30,30 @@ public class EditEntitlementsForm extends Form {
 
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
-    private List<Csoporttagsag> datas;
+    private List<ExtendedGroup> lines = new ArrayList<ExtendedGroup>();
+    private boolean activePanel;
 
-    public EditEntitlementsForm(String name, List<Csoporttagsag> active) {
+    public EditEntitlementsForm(String name, List<Csoporttagsag> active, boolean isActivePanel) {
         super(name);
-        datas = active;
+        activePanel = isActivePanel;
+        for (Csoporttagsag tagsag : active) {
+            lines.add(new ExtendedGroup(tagsag));
+        }
 
         WebMarkupContainer table = new WebMarkupContainer("table");
-        ListView members = new ListView("members", datas) {
+        ListView members = new ListView("members", lines) {
 
             @Override
             protected void populateItem(ListItem item) {
-                Csoporttagsag cs = (Csoporttagsag) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(cs));
-                item.add(new FelhasznaloLink("felhlink", cs.getFelhasznalo()));
-                item.add(new Label("becenev", cs.getFelhasznalo().getBecenev()));
+                ExtendedGroup ext = (ExtendedGroup) item.getModelObject();
+                Csoporttagsag cst = ext.getTagsag();
+                item.setModel(new CompoundPropertyModel(ext));
+                item.add(new FelhasznaloLink("felhlink", cst.getFelhasznalo()));
+                item.add(new Label("becenev", cst.getFelhasznalo().getBecenev()));
                 item.add(new Label("jogok",
-                        getConverter(TagsagTipus.class).convertToString(cs.getJogokString(), getLocale())));
-                item.add(new ChangePostLink("postLink", cs));
-                item.add(new CheckBox("check", new PropertyModel(cs.getFelhasznalo(), "selected")));
+                        getConverter(TagsagTipus.class).convertToString(cst.getJogokString(), getLocale())));
+                item.add(new ChangePostLink("postLink", ext.getTagsag()));
+                item.add(new CheckBox("check", new PropertyModel(ext, "selected")));
             }
         };
         members.setReuseItems(true);
@@ -57,12 +64,17 @@ public class EditEntitlementsForm extends Form {
     @Override
     public void onSubmit() {
         try {
-            for (Csoporttagsag csoporttagsag : datas) {
-                if (csoporttagsag.getFelhasznalo().getSelected()) {
-                    if (csoporttagsag.getJogok() == 0) {
-                        userManager.setMemberToOldBoy(csoporttagsag);
+            for (ExtendedGroup extendedGroup : lines) {
+                Csoporttagsag cst = extendedGroup.getTagsag();
+                if (extendedGroup.getSelected()) {
+                    if (activePanel) {
+                        if (cst.getJogok() == 0 || cst.getJogok() == 2) {
+                            userManager.setMemberToOldBoy(cst);
+                        } else {
+                            getSession().error("Jogokkal rendelkező tagot nem lehet törölni");
+                        }
                     } else {
-                        getSession().error("Jogokkal rendelkező tagot nem lehet törölni");
+                        userManager.setOldBoyToActive(cst);
                     }
                 }
             }
@@ -70,7 +82,34 @@ public class EditEntitlementsForm extends Form {
         } catch (Exception ex) {
             getSession().error("Hiba történt a feldolgozás közben");
         }
-        setResponsePage(ShowGroup.class, new PageParameters("id=" + datas.get(0).getCsoport().getId()));
+        //TODO: szebbé tenni
+        setResponsePage(ShowGroup.class, new PageParameters("id=" + lines.get(0).getTagsag().getCsoport().getId()));
         return;
+    }
+
+    private class ExtendedGroup implements Serializable {
+
+        private Csoporttagsag tagsag;
+        private boolean selected;
+
+        public ExtendedGroup(Csoporttagsag cstagsag) {
+            tagsag = cstagsag;
+        }
+
+        public Csoporttagsag getTagsag() {
+            return tagsag;
+        }
+
+        public void setTagsag(Csoporttagsag tagsag) {
+            this.tagsag = tagsag;
+        }
+
+        public boolean getSelected() {
+            return selected;
+        }
+
+        public void setSelected(boolean isSelected) {
+            this.selected = isSelected;
+        }
     }
 }

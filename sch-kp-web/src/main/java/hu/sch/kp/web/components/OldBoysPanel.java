@@ -5,7 +5,6 @@
 package hu.sch.kp.web.components;
 
 import hu.sch.domain.Csoporttagsag;
-import hu.sch.domain.TagsagTipus;
 import java.util.List;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
@@ -18,11 +17,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
  *
  * @author aldaris
  */
-public final class ActiveMembershipsPanel extends Panel {
+public final class OldBoysPanel extends Panel {
 
-    public ActiveMembershipsPanel(String id, List<Csoporttagsag> activeMembers) {
+    public OldBoysPanel(String id, List<Csoporttagsag> inactiveMembers) {
         super(id);
-        ListView csoptagsagok = new ListView("csoptagsag", activeMembers) {
+        ListView oregtagsagok = new ListView("oregtagsag", inactiveMembers) {
 
             @Override
             protected void populateItem(ListItem item) {
@@ -30,11 +29,10 @@ public final class ActiveMembershipsPanel extends Panel {
                 item.setModel(new CompoundPropertyModel(cs));
                 item.add(new FelhasznaloLink("felhlink", cs.getFelhasznalo()));
                 item.add(new Label("becenev", cs.getFelhasznalo().getBecenev()));
-                item.add(new Label("jogok",
-                        getConverter(TagsagTipus.class).convertToString(cs.getJogokString(), getLocale())));
                 item.add(DateLabel.forDatePattern("kezdet", "yyyy.MM.dd."));
+                item.add(DateLabel.forDatePattern("veg", "yyyy.MM.dd."));
             }
         };
-        add(csoptagsagok);
+        add(oregtagsagok);
     }
 }

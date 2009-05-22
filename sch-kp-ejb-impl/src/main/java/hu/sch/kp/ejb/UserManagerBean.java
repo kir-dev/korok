@@ -184,7 +184,7 @@ public class UserManagerBean implements UserManagerLocal {
     public List<PontIgeny> getPontIgenyekForUser(Felhasznalo felhasznalo) {
         Query q = em.createQuery("SELECT p FROM PontIgeny p " +
                 "WHERE p.felhasznalo=:felhasznalo " +
-                "ORDER BY p.ertekeles.szemeszter DESC, p.pont DESC");
+                "ORDER BY p.ertekeles.szemeszter DESC, p.ertekeles.csoport.nev ASC");
         q.setParameter("felhasznalo", felhasznalo);
 
         return q.getResultList();
@@ -281,6 +281,12 @@ public class UserManagerBean implements UserManagerLocal {
                 em.find(Csoporttagsag.class,
                 new CsoporttagsagPK(user.getFelhasznalo().getId(), user.getCsoport().getId()));
         temp.setVeg(new Date());
+    }
+
+    public void setOldBoyToActive(Csoporttagsag cst) {
+        Csoporttagsag temp = em.find(Csoporttagsag.class,
+                new CsoporttagsagPK(cst.getFelhasznalo().getId(), cst.getCsoport().getId()));
+        temp.setVeg(null);
     }
 
     public Felhasznalo findKorvezetoForCsoport(Long csoportId) {

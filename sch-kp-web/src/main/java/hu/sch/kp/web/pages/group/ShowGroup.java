@@ -10,19 +10,17 @@ import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.components.ActiveMembershipsPanel;
 import hu.sch.kp.web.components.AdminMembershipsPanel;
-import hu.sch.kp.web.components.FelhasznaloLink;
+import hu.sch.kp.web.components.AdminOldBoysPanel;
+import hu.sch.kp.web.components.OldBoysPanel;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.List;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
@@ -79,26 +77,18 @@ public class ShowGroup extends SecuredPageTemplate {
         activeMembers.removeAll(inactiveMembers);
         AdminMembershipsPanel adminPanel = new AdminMembershipsPanel("admin", activeMembers);
         ActiveMembershipsPanel activePanel = new ActiveMembershipsPanel("user", activeMembers);
+        AdminOldBoysPanel adminOldPanel = new AdminOldBoysPanel("oldAdmin", inactiveMembers);
+        OldBoysPanel inactivePanel = new OldBoysPanel("oldUser", inactiveMembers);
         add(adminPanel);
+        add(adminOldPanel);
         add(activePanel);
+        add(inactivePanel);
         if (user != null && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO)) {
             activePanel.setVisible(false);
+            inactivePanel.setVisible(false);
         } else {
             adminPanel.setVisible(false);
+            adminOldPanel.setVisible(false);
         }
-
-        ListView oregtagsagok = new ListView("oregtagsag", inactiveMembers) {
-
-            @Override
-            protected void populateItem(ListItem item) {
-                Csoporttagsag cs = (Csoporttagsag) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(cs));
-                item.add(new FelhasznaloLink("felhlink", cs.getFelhasznalo()));
-                item.add(new Label("becenev", cs.getFelhasznalo().getBecenev()));
-                item.add(DateLabel.forDatePattern("kezdet", "yyyy.MM.dd."));
-                item.add(DateLabel.forDatePattern("veg", "yyyy.MM.dd."));
-            }
-        };
-        add(oregtagsagok);
     }
 }

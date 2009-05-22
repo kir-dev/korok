@@ -65,5 +65,7 @@ public interface UserManagerLocal {
 
     void setMemberToOldBoy(Csoporttagsag user);
 
+    void setOldBoyToActive(Csoporttagsag cst);
+
     Felhasznalo findKorvezetoForCsoport(Long csoportId);
 }

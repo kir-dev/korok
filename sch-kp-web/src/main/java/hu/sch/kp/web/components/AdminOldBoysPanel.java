@@ -12,10 +12,10 @@ import org.apache.wicket.markup.html.panel.Panel;
  *
  * @author aldaris
  */
-public final class AdminMembershipsPanel extends Panel {
+public final class AdminOldBoysPanel extends Panel {
 
-    public AdminMembershipsPanel(String id, List<Csoporttagsag> activeMembers) {
+    public AdminOldBoysPanel(String id, List<Csoporttagsag> inactiveMembers) {
         super(id);
-        add(new EditEntitlementsForm("form", activeMembers, true));
+        add(new EditEntitlementsForm("oldForm", inactiveMembers, false));
     }
 }
