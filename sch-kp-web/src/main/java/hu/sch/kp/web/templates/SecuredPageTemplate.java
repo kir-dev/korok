@@ -63,7 +63,7 @@ public class SecuredPageTemplate extends WebPage {
             add(new BookmarkablePageLink("elbiralas", OsszesErtekeles.class).setVisible(false));
             add(new BookmarkablePageLink("editsettings", EditSettings.class).setVisible(false));
         }
-        add(new BookmarkablePageLink("logoutPageLink", Logout.class));
+        //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 
     protected void loadFelhasznalo() {
