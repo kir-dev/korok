@@ -362,6 +362,46 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         uz.setDatum(new Date());
 
         add(e, uz);
+        
+        // e-mail küldés a jetinek vagy az adott kör vezetőjének
+        String emailTo;
+        
+        if (isJETi(felado))
+        {
+            // a JETI a feladó
+
+            // az értékelt csoport körvezetőjének a mail címének kikeresése
+            emailTo = userManager.findKorvezetoForCsoport(e.getCsoport().getId()).getEmailcim();
+        }
+        else
+        {
+            // nem a JETI a feladó
+
+            // jeti körvezetőjének a mail címének kikeresése
+            Csoport jeti = (Csoport) userManager.findGroupById(156L);   // JETi csoport id
+            emailTo = userManager.findKorvezetoForCsoport(jeti.getId()).getEmailcim();
+        }
+
+        String emailText = uzenet.toString() + "\n\n\n" +
+                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
+                "Ez egy automatikusan generált e-mail.";
+
+        System.out.println(emailTo);
+        sendEmail("halacs@sch.bme.hu", emailText); // emailTo
+    }
+
+    // megmondja, hogy az adott felhasznalo JETis-e
+    public boolean isJETi(Felhasznalo felhasznalo)
+    {
+        List<Csoport> csoportok = felhasznalo.getCsoportok();
+
+        for (Csoport csoport : csoportok)
+        {
+            if (csoport.getId() == 156L)
+                return true;
+        }
+
+        return false;
     }
 
     public void pontIgenyekLeadasa(Long ertekelesId, List<PontIgeny> igenyek) {
