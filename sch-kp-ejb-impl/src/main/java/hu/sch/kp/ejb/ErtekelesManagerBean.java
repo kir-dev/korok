@@ -365,29 +365,28 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         
         // e-mail küldés a jetinek vagy az adott kör vezetőjének
         String emailTo;
+	String emailText;
         
-        if (isJETi(felado))
-        {
+        if (isJETi(felado)) {
             // a JETI a feladó
 
             // az értékelt csoport körvezetőjének a mail címének kikeresése
             emailTo = userManager.findKorvezetoForCsoport(e.getCsoport().getId()).getEmailcim();
-        }
-        else
-        {
+       	    emailText = "Kedves Körvezető!\n\nA JETi a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n" +
+                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n" +
+                "Ez egy automatikusan generált e-mail.";
+        } else {
             // nem a JETI a feladó
 
             // jeti körvezetőjének a mail címének kikeresése
-            Csoport jeti = (Csoport) userManager.findGroupById(156L);   // JETi csoport id
-            emailTo = userManager.findKorvezetoForCsoport(jeti.getId()).getEmailcim();
+            emailTo = userManager.findKorvezetoForCsoport(156L).getEmailcim();
+       	    emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getCsoport().getNev() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n" +
+                "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
+                "Ez egy automatikusan generált e-mail.";
         }
 
-        String emailText = uzenet.toString() + "\n\n\n" +
-                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
-                "Ez egy automatikusan generált e-mail.";
-
         System.out.println(emailTo);
-        sendEmail("halacs@sch.bme.hu", emailText); // emailTo
+        sendEmail("majorpetya@sch.bme.hu", emailText); // emailTo
     }
 
     // megmondja, hogy az adott felhasznalo JETis-e
