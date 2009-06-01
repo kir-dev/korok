@@ -151,8 +151,10 @@ public class Felhasznalo implements Serializable, Comparable<Felhasznalo> {
 
     private void loadCsoportok() {
         csoportok = new ArrayList<Csoport>();
-        for (Csoporttagsag m : csoporttagsagok) {
-            csoportok.add(m.getCsoport());
+        if (csoporttagsagok != null) {
+            for (Csoporttagsag m : csoporttagsagok) {
+                csoportok.add(m.getCsoport());
+            }
         }
     }
 
