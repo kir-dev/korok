@@ -6,6 +6,7 @@ package hu.sch.kp.ejb;
 
 import hu.sch.domain.BelepoIgeny;
 import hu.sch.domain.BelepoTipus;
+import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.ElbiraltErtekeles;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.ErtekelesStatusz;
@@ -17,6 +18,7 @@ import hu.sch.domain.ElfogadottBelepo;
 import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.ErtekelesStatisztika;
 import hu.sch.domain.Felhasznalo;
+import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
@@ -237,10 +239,19 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
                 "Ez egy automatikusan generált e-mail.";
 
         // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
-        Felhasznalo groupLeader = userManager.findKorvezetoForCsoport(ertekeles.getCsoport().getId());
-        System.out.println(groupLeader.getEmailcim());
-        // ezt át kell írni az előző getemailcim-re, most csak teszt célból megy
-        sendEmail("majorpetya@sch.bme.hu", emailText);
+        Felhasznalo groupLeader = null;
+        List<Csoporttagsag> tagsag = ertekeles.getCsoport().getActiveMembers();
+        for (Csoporttagsag cst : tagsag) {
+            if (TagsagTipus.hasJogCsoportban(cst, TagsagTipus.KORVEZETO)) {
+                groupLeader = cst.getFelhasznalo();
+                break;
+            }
+        }
+        if (groupLeader != null) {
+            System.out.println(groupLeader.getEmailcim());
+            // ezt át kell írni az előző getemailcim-re, most csak teszt célból megy
+            sendEmail("majorpetya@sch.bme.hu", emailText);
+        }
     }
 
     // E-mailt küld
@@ -362,27 +373,27 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         uz.setDatum(new Date());
 
         add(e, uz);
-        
+
         // e-mail küldés a jetinek vagy az adott kör vezetőjének
         String emailTo;
-	String emailText;
-        
+        String emailText;
+
         if (isJETi(felado)) {
             // a JETI a feladó
 
             // az értékelt csoport körvezetőjének a mail címének kikeresése
             emailTo = userManager.findKorvezetoForCsoport(e.getCsoport().getId()).getEmailcim();
-       	    emailText = "Kedves Körvezető!\n\nA JETi a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n" +
-                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n" +
-                "Ez egy automatikusan generált e-mail.";
+            emailText = "Kedves Körvezető!\n\nA JETi a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n" +
+                    "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n" +
+                    "Ez egy automatikusan generált e-mail.";
         } else {
             // nem a JETI a feladó
 
             // jeti körvezetőjének a mail címének kikeresése
             emailTo = userManager.findKorvezetoForCsoport(156L).getEmailcim();
-       	    emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getCsoport().getNev() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n" +
-                "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
-                "Ez egy automatikusan generált e-mail.";
+            emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getCsoport().getNev() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n" +
+                    "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
+                    "Ez egy automatikusan generált e-mail.";
         }
 
         System.out.println(emailTo);
@@ -390,14 +401,13 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
     }
 
     // megmondja, hogy az adott felhasznalo JETis-e
-    public boolean isJETi(Felhasznalo felhasznalo)
-    {
+    public boolean isJETi(Felhasznalo felhasznalo) {
         List<Csoport> csoportok = felhasznalo.getCsoportok();
 
-        for (Csoport csoport : csoportok)
-        {
-            if (csoport.getId() == 156L)
+        for (Csoport csoport : csoportok) {
+            if (csoport.getId() == 156L) {
                 return true;
+            }
         }
 
         return false;
