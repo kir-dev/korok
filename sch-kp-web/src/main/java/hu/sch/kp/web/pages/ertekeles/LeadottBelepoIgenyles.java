@@ -9,7 +9,6 @@ import hu.sch.domain.BelepoTipus;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.kp.services.ErtekelesManagerLocal;
-import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
@@ -58,6 +57,7 @@ public class LeadottBelepoIgenyles extends SecuredPageTemplate {
                 };
                 felhasznaloLink.add(new Label("felhNev", new PropertyModel(b, "felhasznalo.nev")));
                 item.add(felhasznaloLink);
+                item.add(new Label("nickname", new PropertyModel(b, "felhasznalo.becenev")));
                 item.add(new Label("belepotipus"));
                 item.add(new Label("szovegesErtekeles"));
             }
