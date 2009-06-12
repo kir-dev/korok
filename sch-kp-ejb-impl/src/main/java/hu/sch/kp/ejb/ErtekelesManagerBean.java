@@ -483,8 +483,9 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
     @SuppressWarnings({"unchecked"})
     public List<PontIgeny> findPontIgenyekForErtekeles(Long ertekelesId) {
         Query q = em.createQuery("SELECT i FROM PontIgeny i JOIN FETCH i.felhasznalo " +
-                "JOIN i.ertekeles WHERE i.ertekeles.id=:ertekelesId " +
-                "ORDER BY i.felhasznalo.vezeteknev ASC, i.felhasznalo.keresztnev ASC");
+                "JOIN i.ertekeles " +
+                "WHERE i.ertekeles.id=:ertekelesId " +
+                "ORDER BY i.pont DESC");
         q.setParameter("ertekelesId", ertekelesId);
 
         return q.getResultList();
