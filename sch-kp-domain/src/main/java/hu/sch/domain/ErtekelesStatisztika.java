@@ -14,13 +14,16 @@ public class ErtekelesStatisztika implements Serializable {
 
     protected Ertekeles ertekeles;
     protected Double atlagPont;
+    protected Long summaPoint;
     protected Long kiosztottKDO;
     protected Long kiosztottKB;
     protected Long kiosztottAB;
 
-    public ErtekelesStatisztika(Ertekeles ertekeles, Double atlagPont, Long kiosztottKDO, Long kiosztottKB, Long kiosztottAB) {
+    public ErtekelesStatisztika(Ertekeles ertekeles, Double atlagPont, Long summaPoint,
+            Long kiosztottKDO, Long kiosztottKB, Long kiosztottAB) {
         this.ertekeles = ertekeles;
         this.atlagPont = atlagPont;
+        this.summaPoint = summaPoint;
         this.kiosztottKDO = kiosztottKDO;
         this.kiosztottKB = kiosztottKB;
         this.kiosztottAB = kiosztottAB;
@@ -32,6 +35,14 @@ public class ErtekelesStatisztika implements Serializable {
 
     public void setAtlagPont(Double atlagPont) {
         this.atlagPont = atlagPont;
+    }
+
+    public Long getSummaPoint() {
+        return summaPoint;
+    }
+
+    public void setSummaPoint(Long summaPoint) {
+        this.summaPoint = summaPoint;
     }
 
     public Ertekeles getErtekeles() {

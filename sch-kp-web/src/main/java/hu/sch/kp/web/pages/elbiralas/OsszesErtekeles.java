@@ -187,14 +187,23 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                     }
                 };
 
-
                 pontozasLink.add(new Label("atlagPont"));
+
+                Link summaPointLink = new Link("summaPointLink") {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new LeadottPontIgenyles(ert));
+                    }
+                };
+                summaPointLink.add(new Label("summaPoint"));
 
                 item.add(szinesKDOLink);
                 item.add(szinesKBLink);
                 item.add(szinesABLink);
 
                 item.add(pontozasLink);
+                item.add(summaPointLink);
                 Link uzenetekLink = new Link("uzeneteklink") {
 
                     @Override

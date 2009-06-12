@@ -57,6 +57,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
     private static final Map<String, String> sortMapForErtekelesLista;
     private static final String statisztikaQuery = "SELECT new hu.sch.domain.ErtekelesStatisztika(e, " +
             "(SELECT avg(p.pont) FROM PontIgeny p WHERE p.ertekeles = e AND p.pont > 0) as atlagpont, " +
+            "(SELECT sum(p.pont) FROM PontIgeny p WHERE p.ertekeles = e AND p.pont > 0) as summapoint, " +
             "(SELECT count(*) as numKDO FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KDO\') as igenyeltkdo, " +
             "(SELECT count(*) as numKB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'KB\') as igenyeltkb, " +
             "(SELECT count(*) as numAB FROM BelepoIgeny as b WHERE b.ertekeles = e AND b.belepotipus=\'AB\') as igenyeltab" +

@@ -41,13 +41,13 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
         setModel(model);
         /*Link backlink = new Link("backlink") {
 
-            @Override
-            public void onClick() {
-                setResponsePage(prevPage);
-            }
+        @Override
+        public void onClick() {
+        setResponsePage(prevPage);
+        }
         };
         if (prevPage == null) {
-            backlink.setVisible(false);
+        backlink.setVisible(false);
         }
         add(backlink);*/
         add(new Label("csoport.nev", ertekeles.getCsoport().getNev()));
@@ -81,6 +81,7 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
         List<ErtekelesStatisztika> statList = ertekelesManager.getStatisztikaForErtekelesek(ids);
         ErtekelesStatisztika stat = statList.iterator().next();
         add(new Label("stat.atlagPont", new Model(stat.getAtlagPont())));
+        add(new Label("stat.sustatmmaPoint", new Model(stat.getSummaPoint())));
         add(new Label("stat.kiosztottKDO", new Model(stat.getKiosztottKDO())));
         add(new Label("stat.kiosztottKB", new Model(stat.getKiosztottKB())));
         add(new Label("stat.kiosztottAB", new Model(stat.getKiosztottAB())));
