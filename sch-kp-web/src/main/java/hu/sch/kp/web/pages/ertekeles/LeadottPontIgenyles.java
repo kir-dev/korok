@@ -9,7 +9,6 @@ import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.PontIgeny;
 import hu.sch.kp.services.ErtekelesManagerLocal;
-import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.util.List;
@@ -55,6 +54,8 @@ public class LeadottPontIgenyles extends SecuredPageTemplate {
                                 new PageParameters("id=" + p.getFelhasznalo().getId().toString()));
                     }
                 };
+                Label nicknameLabel = new Label("nickname", p.getFelhasznalo().getBecenev());
+                item.add(nicknameLabel);
                 felhasznaloLink.add(new Label("felhNev", new PropertyModel(p, "felhasznalo.nev")));
                 item.add(felhasznaloLink);
                 item.add(new Label("pont"));
