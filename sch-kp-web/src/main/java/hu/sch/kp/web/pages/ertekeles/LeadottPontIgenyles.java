@@ -76,17 +76,11 @@ public class LeadottPontIgenyles extends SecuredPageTemplate {
         } else {
             // TODO tényleges összefésülés
             if (igenyek.size() != csoporttagok.size()) {
-                boolean bentvan;
                 for (Felhasznalo felh : csoporttagok) {
-                    bentvan = false;
                     for (PontIgeny igeny : igenyek) {
                         if (felh.getId().equals(igeny.getFelhasznalo().getId())) {
-                            bentvan = true;
                             break;
                         }
-                    }
-                    if (!bentvan) {
-                        igenyek.add(new PontIgeny(felh, 0));
                     }
                 }
             }
