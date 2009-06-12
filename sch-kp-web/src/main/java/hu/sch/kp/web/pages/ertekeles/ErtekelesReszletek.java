@@ -81,7 +81,7 @@ public class ErtekelesReszletek extends SecuredPageTemplate {
         List<ErtekelesStatisztika> statList = ertekelesManager.getStatisztikaForErtekelesek(ids);
         ErtekelesStatisztika stat = statList.iterator().next();
         add(new Label("stat.atlagPont", new Model(stat.getAtlagPont())));
-        add(new Label("stat.sustatmmaPoint", new Model(stat.getSummaPoint())));
+        add(new Label("stat.summaPoint", new Model(stat.getSummaPoint())));
         add(new Label("stat.kiosztottKDO", new Model(stat.getKiosztottKDO())));
         add(new Label("stat.kiosztottKB", new Model(stat.getKiosztottKB())));
         add(new Label("stat.kiosztottAB", new Model(stat.getKiosztottAB())));
