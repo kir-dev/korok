@@ -485,7 +485,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         Query q = em.createQuery("SELECT i FROM PontIgeny i JOIN FETCH i.felhasznalo " +
                 "JOIN i.ertekeles " +
                 "WHERE i.ertekeles.id=:ertekelesId " +
-                "ORDER BY i.pont DESC");
+                "ORDER BY i.pont DESC, i.felhasznalo.vezeteknev ASC, i.felhasznalo.keresztnev ASC");
         q.setParameter("ertekelesId", ertekelesId);
 
         return q.getResultList();
