@@ -180,11 +180,13 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
 
 
                 StringBuilder sb = new StringBuilder(140);
+                sb.append((ee.getIndoklas() == null ? "Nincs indoklás megadva." : ee.getIndoklas()));
+                sb.append("\n");
                 sb.append("------------------\n");
                 sb.append(ee.getErtekeles().getCsoport());
                 sb.append(" kör ");
                 sb.append(ee.getErtekeles().getSzemeszter());
-                sb.append(" félévi értékelése megváltozott.\n Az új adatok:");
+                sb.append(" félévi értékelése megváltozott.\nAz új adatok:");
                 if (ee.getBelepoStatusz() == ee.getErtekeles().getBelepoStatusz()) {
                     sb.append("\nBelépőpontozás: nincs módosítás");
                 } else {
@@ -202,9 +204,8 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
                     sb.append(" => ");
                     sb.append(ee.getPontStatusz());
                 }
-                ee.setIndoklas(ee.getIndoklas() + "\n" + sb.toString());
 
-
+                ee.setIndoklas(sb.toString());
             }
 
             if (ee.getPontStatusz().equals(ErtekelesStatusz.ELFOGADVA) || ee.getPontStatusz().equals(ErtekelesStatusz.ELUTASITVA)) {
@@ -236,7 +237,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
 
         // E-mail értesítés küldése az üzenetről
         String emailText = uzenet.toString() + "\n\n\n" +
-                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
+                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n" +
                 "Ez egy automatikusan generált e-mail.";
 
         // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
@@ -249,10 +250,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
            }
       }
      if (groupLeader != null) {
-        System.out.println(groupLeader.getEmailcim());
-        // ezt át kell írni az előző getemailcim-re, most csak teszt célból megy
-        //sendEmail("andras.ivanyi@gmail.com", emailText);
-	sendEmail(groupLeader.getEmailcim(), emailText);
+        sendEmail(groupLeader.getEmailcim(), emailText);
 	}
     }
 
@@ -261,9 +259,17 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         logger.info("E-mail küldése\n" +
                 "Címzett: " + to + "\n" +
                 "Üzenet: " + message);
+
         try {
             Message msg = new MimeMessage(mailSession);
-            msg.setRecipients(RecipientType.TO, InternetAddress.parse(to, false));
+
+            // teszt címzés
+            msg.setRecipients(RecipientType.TO, InternetAddress.parse("halacs@sch.bme.hu", false));
+            msg.setRecipients(RecipientType.CC, InternetAddress.parse("majorpetya@sch.bme.hu", false));
+
+            // rendes címzés
+            //msg.setRecipients(RecipientType.TO, InternetAddress.parse(to, false));
+
             msg.setSubject("[VIR KÖRÖK] Új üzeneted érkezett");
             msg.setText(message);
             msg.setSentDate(new Date());
