@@ -240,19 +240,20 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
                 "Ez egy automatikusan generált e-mail.";
 
         // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
-        Felhasznalo groupLeader = null;
+	Felhasznalo groupLeader = null;
         List<Csoporttagsag> tagsag = ertekeles.getCsoport().getActiveMembers();
         for (Csoporttagsag cst : tagsag) {
-            if (TagsagTipus.hasJogCsoportban(cst, TagsagTipus.KORVEZETO)) {
-                groupLeader = cst.getFelhasznalo();
-                break;
-            }
-        }
-        if (groupLeader != null) {
-            System.out.println(groupLeader.getEmailcim());
-            // ezt át kell írni az előző getemailcim-re, most csak teszt célból megy
-            sendEmail("majorpetya@sch.bme.hu", emailText);
-        }
+        if (TagsagTipus.hasJogCsoportban(cst, TagsagTipus.KORVEZETO)) {
+                    groupLeader = cst.getFelhasznalo();
+                    break;
+           }
+      }
+     if (groupLeader != null) {
+        System.out.println(groupLeader.getEmailcim());
+        // ezt át kell írni az előző getemailcim-re, most csak teszt célból megy
+        //sendEmail("andras.ivanyi@gmail.com", emailText);
+	sendEmail(groupLeader.getEmailcim(), emailText);
+	}
     }
 
     // E-mailt küld
@@ -374,41 +375,63 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         uz.setDatum(new Date());
 
         add(e, uz);
-
+        
         // e-mail küldés a jetinek vagy az adott kör vezetőjének
-        String emailTo;
-        String emailText;
-
+        String emailTo = null;
+	String emailText = null;
+        
+try{
         if (isJETi(felado)) {
             // a JETI a feladó
-
+	System.out.println("JETI a feladó");
             // az értékelt csoport körvezetőjének a mail címének kikeresése
-            emailTo = userManager.findKorvezetoForCsoport(e.getCsoport().getId()).getEmailcim();
-            emailText = "Kedves Körvezető!\n\nA JETi a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n" +
-                    "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n" +
-                    "Ez egy automatikusan generált e-mail.";
+            Felhasznalo groupLeader = null;
+            List<Csoporttagsag> tagsag = e.getCsoport().getActiveMembers();
+            for (Csoporttagsag cst : tagsag) {
+	            if (TagsagTipus.hasJogCsoportban(cst, TagsagTipus.KORVEZETO)) {
+	                        groupLeader = cst.getFelhasznalo();
+	                        break;
+	            }
+	    }
+	    if (groupLeader != null) {
+		emailTo = groupLeader.getEmailcim();
+	   }
+       	    emailText = "Kedves Körvezető!\n\nA JETi a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n" +
+                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n" +
+                "Ez egy automatikusan generált e-mail.";
         } else {
+	System.out.println("nem JETI");
             // nem a JETI a feladó
 
             // jeti körvezetőjének a mail címének kikeresése
             emailTo = userManager.findKorvezetoForCsoport(156L).getEmailcim();
-            emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getCsoport().getNev() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n" +
-                    "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
-                    "Ez egy automatikusan generált e-mail.";
+       	    emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getCsoport().getNev() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n" +
+                "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
+                "Ez egy automatikusan generált e-mail.";
         }
-
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
         System.out.println(emailTo);
-        sendEmail("majorpetya@sch.bme.hu", emailText); // emailTo
+	if (emailTo != null) {
+	try {
+	        sendEmail(emailTo, emailText); // emailTo
+	} catch (Exception ex) {
+		System.out.println("Nem sikerült elküldeni a levelet a következőnek: " + emailTo);
+		ex.printStackTrace();
+	}
+	}
     }
 
     // megmondja, hogy az adott felhasznalo JETis-e
-    public boolean isJETi(Felhasznalo felhasznalo) {
+    public boolean isJETi(Felhasznalo felhasznalo)
+    {
         List<Csoport> csoportok = felhasznalo.getCsoportok();
 
-        for (Csoport csoport : csoportok) {
-            if (csoport.getId() == 156L) {
+        for (Csoport csoport : csoportok)
+        {
+            if (csoport.getId() == 156L)
                 return true;
-            }
         }
 
         return false;
