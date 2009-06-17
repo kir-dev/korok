@@ -53,6 +53,7 @@ import org.apache.log4j.Logger;
 @Stateless
 public class ErtekelesManagerBean implements ErtekelesManagerLocal {
 
+    private static final Logger logger = Logger.getLogger(ErtekelesManagerBean.class);
     private static final String defaultSortColumnForErtekelesLista = "csoportNev";
     private static final Map<String, String> sortMapForErtekelesLista;
     private static final String statisztikaQuery = "SELECT new hu.sch.domain.ErtekelesStatisztika(e, " +
@@ -70,7 +71,6 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
     UserManagerLocal userManager;
     @EJB
     SystemManagerLocal systemManager;
-    Logger logger = Logger.getLogger(getClass());
 
 
     static {
@@ -259,13 +259,13 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         logger.info("E-mail küldése\n" +
                 "Címzett: " + to + "\n" +
                 "Üzenet: " + message);
-
+	System.out.println("E-mail küldése " + to + "-nak.");
         try {
             Message msg = new MimeMessage(mailSession);
 
             // teszt címzés
             msg.setRecipients(RecipientType.TO, InternetAddress.parse("halacs@sch.bme.hu", false));
-            msg.setRecipients(RecipientType.CC, InternetAddress.parse("majorpetya@sch.bme.hu", false));
+            msg.setRecipients(RecipientType.TO, InternetAddress.parse("majorpetya@sch.bme.hu", false));
 
             // rendes címzés
             //msg.setRecipients(RecipientType.TO, InternetAddress.parse(to, false));
