@@ -45,12 +45,10 @@ public enum TagsagTipus {
     }
 
     static TagsagTipus[] getTagsagTipusByJogok(Long jogok) {
-        ArrayList<TagsagTipus> retList = new ArrayList<TagsagTipus>();
-        TagsagTipus[] ret = new TagsagTipus[1];
         if (jogok == 0) {
-            retList.add(TAG);
-            return retList.toArray(ret);
+            return new TagsagTipus[] { TAG };
         }
+        ArrayList<TagsagTipus> retList = new ArrayList<TagsagTipus>(8);
         for (TagsagTipus t : values()) {
             if ((jogok & t.value) != 0) {
                 retList.add(t);
@@ -59,7 +57,7 @@ public enum TagsagTipus {
         if (retList.isEmpty()) {
             retList.add(JELENTKEZO);
         }
-        return retList.toArray(ret);
+        return retList.toArray(new TagsagTipus[retList.size()]);
     }
 
     public static TagsagTipus fromEntitlement(String entitlement) {
