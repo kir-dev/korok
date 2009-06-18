@@ -11,10 +11,13 @@ import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.pages.ertekeles.ErtekelesDetailPanel;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -55,17 +58,16 @@ public class GroupHistory extends SecuredPageTemplate {
         ertekelesList.clear();
         ertekelesList.addAll(ertekelesManager.findApprovedValuations(csoport));
         final List<Szemeszter> szemeszterek = new ArrayList<Szemeszter>();
-        Iterator iterator = ertekelesList.iterator();
-        while (iterator.hasNext()) {
-            szemeszterek.add(((Ertekeles) iterator.next()).getSzemeszter());
+        for (Ertekeles ertekeles : ertekelesList) {
+            szemeszterek.add(ertekeles.getSzemeszter());
         }
         Form idoszakForm = new Form("idoszakForm") {
 
             @Override
             public void onSubmit() {
-                Iterator iterator = ertekelesList.iterator();
+                Iterator<Ertekeles> iterator = ertekelesList.iterator();
                 while (iterator.hasNext()) {
-                    selectedErtekeles = (Ertekeles) iterator.next();
+                    selectedErtekeles = iterator.next();
                     szemeszter = selectedErtekeles.getSzemeszter();
                     if (szemeszter.toString().equals(selected)) {
                         setHeaderLabelText("A kör részletes pontozásai");

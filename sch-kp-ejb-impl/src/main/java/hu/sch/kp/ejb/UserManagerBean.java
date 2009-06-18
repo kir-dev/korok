@@ -4,11 +4,19 @@
  */
 package hu.sch.kp.ejb;
 
-import hu.sch.domain.*;
+import hu.sch.domain.BelepoIgeny;
+import hu.sch.domain.Csoport;
+import hu.sch.domain.Csoporttagsag;
+import hu.sch.domain.CsoporttagsagPK;
+import hu.sch.domain.Felhasznalo;
+import hu.sch.domain.PontIgeny;
+import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.UserManagerLocal;
+
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
+
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -21,12 +29,12 @@ import javax.persistence.Query;
  * @author hege
  */
 @Stateless()
+@SuppressWarnings("unchecked")
 public class UserManagerBean implements UserManagerLocal {
 
     @PersistenceContext
     EntityManager em;
 
-    @SuppressWarnings({"unchecked"})
     public List<Felhasznalo> getAllUsers() {
         throw new UnsupportedOperationException();
     }
@@ -85,7 +93,6 @@ public class UserManagerBean implements UserManagerLocal {
         em.flush();
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Csoport> getAllGroups() {
         Query q = em.createNamedQuery(Csoport.findAll);
 
@@ -144,7 +151,6 @@ public class UserManagerBean implements UserManagerLocal {
         em.clear(); //???*/
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Felhasznalo> getCsoporttagokWithoutOregtagok(Long csoportId) {
         //Csoport cs = em.find(Csoport.class, csoportId);
         Query q =
@@ -158,7 +164,6 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Felhasznalo> getCsoporttagok(Long csoportId) {
         //Csoport cs = em.find(Csoport.class, csoportId);
         Query q =
@@ -194,13 +199,13 @@ public class UserManagerBean implements UserManagerLocal {
         Query q = em.createNamedQuery("groupHierarchy");
         List<Csoport> csoportok = q.getResultList();
         Csoport rootCsoport = new Csoport();
-        List<Csoport> rootCsoportok = new LinkedList<Csoport>();
+        List<Csoport> rootCsoportok = new ArrayList<Csoport>();
         rootCsoport.setAlcsoportok(rootCsoportok);
 
         for (Csoport cs : csoportok) {
             if (cs.getSzulo() != null) {
                 if (cs.getSzulo().getAlcsoportok() == null) {
-                    cs.getSzulo().setAlcsoportok(new LinkedList<Csoport>());
+                    cs.getSzulo().setAlcsoportok(new ArrayList<Csoport>());
                 }
                 cs.getSzulo().getAlcsoportok().add(cs);
             } else {

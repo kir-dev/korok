@@ -4,16 +4,19 @@ import hu.sch.domain.Csoport;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.components.SearchAutoCompleteTextField;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.io.Serializable;
-import java.util.Enumeration;
-import java.util.Vector;
-import javax.ejb.EJB;
-import java.util.Locale;
 import java.text.Collator;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.Vector;
+
+import javax.ejb.EJB;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
@@ -71,7 +74,8 @@ public class GroupHierarchy extends SecuredPageTemplate {
 
         field.add(new AjaxFormSubmitBehavior(form, "onchange") {
 
-            protected void onSubmit(AjaxRequestTarget target) {
+            @Override
+			protected void onSubmit(AjaxRequestTarget target) {
                 try {
                     target.addComponent(label);
                     Long id = userManager.getGroupByName(label.getModelObjectAsString()).getId();
@@ -98,7 +102,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
 
             @Override
             protected void onNodeLinkClicked(
-                    TreeNode node, BaseTree tree, AjaxRequestTarget target) {
+                    TreeNode node, BaseTree baseTree, AjaxRequestTarget target) {
                 Long csoportId = ((CsoportTreeNode) node).getCsoport().getId();
                 setResponsePage(ShowGroup.class,
                         new PageParameters("id=" + csoportId.toString()));
@@ -122,7 +126,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
             this.csoport = csoport;
             this.parent = parent;
 
-            this.children = new Vector();
+            children = new Vector<TreeNode>();
             if (csoport.getAlcsoportok() != null) {
                 for (Csoport cs : csoport.getAlcsoportok()) {
                     children.add(new CsoportTreeNode(cs, this));
@@ -158,7 +162,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
             return children.isEmpty();
         }
 
-        public Enumeration children() {
+        public Enumeration<TreeNode> children() {
             return children.elements();
         }
     }

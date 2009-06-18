@@ -9,9 +9,12 @@ import hu.sch.domain.Ertekeles;
 import hu.sch.domain.PontIgeny;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.pages.user.ShowUser;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -33,7 +36,7 @@ public class ErtekelesDetailPanel extends Panel {
 
     @EJB(name = "ErtekelesManagerBean")
     ErtekelesManagerLocal ertekelesManager;
-    private Ertekeles selectedErtekeles = null;
+    //private Ertekeles selectedErtekeles = null;
     private List<PontIgeny> pontIgenyek = new ArrayList<PontIgeny>();
     private List<BelepoIgeny> belepoIgenyek = new ArrayList<BelepoIgeny>();
     private MultiLineLabel ertekelesSzoveg;

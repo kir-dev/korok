@@ -10,7 +10,6 @@ import hu.sch.domain.Ertekeles;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
-import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
 import java.util.ArrayList;

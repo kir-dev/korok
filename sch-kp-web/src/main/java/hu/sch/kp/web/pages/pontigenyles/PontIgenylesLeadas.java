@@ -10,21 +10,24 @@ import hu.sch.domain.PontIgeny;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.apache.wicket.validation.validator.NumberValidator.RangeValidator;
+import org.apache.wicket.validation.validator.NumberValidator;
 
 /**
  *
@@ -73,9 +76,9 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
         ListView listView = new ListView("igenyek", requestList) {
 
             // QPA csoport pontozásvalidátora
-            final IValidator QpaPontValidator = RangeValidator.range(0, 100);
+            final IValidator QpaPontValidator = NumberValidator.range(0, 100);
             // A többi csoport pontozásvalidátora
-            final IValidator pontValidator = RangeValidator.range(0, 50);
+            final IValidator pontValidator = NumberValidator.range(0, 50);
             // QPA csoport ID-ja
             private final long SCH_QPA_ID = 27L;
 
@@ -100,8 +103,9 @@ public class PontIgenylesLeadas extends SecuredPageTemplate {
                 pont.add(new IValidator() {
 
                     public void validate(IValidatable arg0) {
+                        @SuppressWarnings("hiding")
                         final Integer pont = (Integer) arg0.getValue();
-                        if (pont.compareTo(5) < 0 && pont.compareTo(0) > 0) {
+                        if (0 < pont && pont < 5) {
                             arg0.error(validationError);
                         }
                     }

@@ -19,10 +19,13 @@ import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.pages.pontigenyles.PontIgenylesLeadas;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -94,10 +97,8 @@ public class Ertekelesek extends SecuredPageTemplate {
 
         // megkeresem mire nem adott még le értékelést vagy belépőigényt az aktuális félévben
         final ArrayList<Csoport> hatravan = new ArrayList<Csoport>();
-        Iterator iterator = cstag.iterator();
-        Csoport cs = null;
-        while (iterator.hasNext()) {
-            cs = ((Csoporttagsag) iterator.next()).getCsoport();
+        for (Csoporttagsag tagsag : cstag) {
+            Csoport cs = tagsag.getCsoport();
 
             Ertekeles ert = ertekelesManager.findErtekeles(cs, systemManager.getSzemeszter());
             if ((ert == null || ert.getPontStatusz() == ErtekelesStatusz.NINCS || ert.getBelepoStatusz() == ErtekelesStatusz.NINCS) && hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) && systemManager.getErtekelesIdoszak() == ErtekelesIdoszak.ERTEKELESLEADAS) {
@@ -114,6 +115,7 @@ public class Ertekelesek extends SecuredPageTemplate {
 
             @Override
             protected void populateItem(ListItem item) {
+                @SuppressWarnings("hiding")
                 final Csoport csoport = (Csoport) item.getModelObject();
                 final Ertekeles ert = ertekelesManager.findErtekeles(csoport, systemManager.getSzemeszter());
 
@@ -187,15 +189,15 @@ public class Ertekelesek extends SecuredPageTemplate {
 
             @Override
             public void onSubmit() {
-                Iterator iterator = cstag.iterator();
+                Iterator<Csoporttagsag> iterator = cstag.iterator();
                 Csoport cs = null;
                 while (iterator.hasNext()) {
                     //TODO simplify this
-                    cs = ((Csoporttagsag) iterator.next()).getCsoport();
+                    cs = (iterator.next()).getCsoport();
                     if (cs.getNev().equals(selected)) {
                         ((VirSession) getSession()).setCsoport(cs);
                         updateErtekelesList();
-                        if ((ertekelesList.size() == 0) ||
+                        if ((ertekelesList.isEmpty()) ||
                                 (!ertekelesManager.isErtekelesLeadhato(csoport))) {
                             ujertekeles.setVisible(false);
                         } else {
@@ -291,7 +293,7 @@ public class Ertekelesek extends SecuredPageTemplate {
         };
         add(ujertekeles);
 
-        if ((ertekelesList.size() == 0) ||
+        if ((ertekelesList.isEmpty()) ||
                 (!ertekelesManager.isErtekelesLeadhato(csoport))) {
             ujertekeles.setVisible(false);
         } else {

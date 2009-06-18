@@ -18,7 +18,6 @@ import hu.sch.kp.web.pages.admin.EditSettings;
 import hu.sch.kp.web.pages.elbiralas.OsszesErtekeles;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
-import hu.sch.kp.web.pages.logout.Logout;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.session.VirSession;
 import javax.ejb.EJB;

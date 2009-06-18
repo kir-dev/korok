@@ -13,8 +13,11 @@ import hu.sch.kp.web.components.BelepoTipusValaszto;
 import hu.sch.kp.web.pages.ertekeles.Ertekelesek;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
+
 import java.util.List;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -79,7 +82,7 @@ public class BelepoIgenylesLeadas extends SecuredPageTemplate {
         List<BelepoIgeny> igenyek = ertekelesManager.findBelepoIgenyekForErtekeles(ert.getId());
 
         //tagok és igények összefésülése
-        if (igenyek.size() == 0) {
+        if (igenyek.isEmpty()) {
             for (Felhasznalo f : csoporttagok) {
                 igenyek.add(new BelepoIgeny(f, BelepoTipus.KDO));
             }

@@ -7,7 +7,7 @@ import org.apache.wicket.model.IModel;
 
 public class ListDataProviderCompoundPropertyModelImpl extends ListDataProvider {
 
-    public ListDataProviderCompoundPropertyModelImpl(List list) {
+    public ListDataProviderCompoundPropertyModelImpl(List<?> list) {
         super(list);
     }
 

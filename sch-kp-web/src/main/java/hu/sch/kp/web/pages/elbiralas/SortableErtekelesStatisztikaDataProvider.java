@@ -31,7 +31,7 @@ public class SortableErtekelesStatisztikaDataProvider extends SortableDataProvid
         setSort(new SortParam("csoportNev", true));
     }
     
-    public Iterator iterator(int first, int count) {
+    public Iterator<?> iterator(int first, int count) {
         // cache-elt példány
         //statList = null;
         return getStatList().iterator();

@@ -9,8 +9,11 @@ import hu.sch.domain.ErtekelesUzenet;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.components.FelhasznaloLink;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.util.List;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.link.Link;
@@ -32,7 +35,7 @@ public class ErtekelesUzenetek extends SecuredPageTemplate {
         Ertekeles ertekeles = ertekelesManager.getErtekelesWithUzenetek(ertekelesId);
         ertekeles.sortUzenetek();
         List<ErtekelesUzenet> uzenetek = ertekeles.getUzenetek();
-        if (uzenetek.size() == 0) {
+        if (uzenetek.isEmpty()) {
             info(getLocalizer().getString("info.NincsUzenet", this));
         }
 

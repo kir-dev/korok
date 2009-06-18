@@ -8,11 +8,9 @@
  */
 package hu.sch.kp.web;
 
-import hu.sch.domain.BelepoIgeny;
 import hu.sch.kp.web.util.BelepoTipusConverter;
 import hu.sch.domain.BelepoTipus;
 import hu.sch.domain.ErtekelesStatusz;
-import hu.sch.domain.PontIgeny;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.pages.error.InternalServerError;
 import hu.sch.kp.web.pages.error.PageExpiredError;
@@ -51,7 +49,8 @@ public class SchKpApplication extends WebApplication {
     private static final String AUTHZ_COMPONENT_PARAM = "authorizationComponent";
     private UserAuthorization authorizationComponent;
 
-    public Class getHomePage() {
+    @Override
+	public Class<GroupHierarchy> getHomePage() {
         return GroupHierarchy.class;
     }
 

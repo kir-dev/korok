@@ -4,15 +4,18 @@
  */
 package hu.sch.kp.web.pages.ertekeles;
 
-import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.domain.Ertekeles;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.PontIgeny;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.pages.user.ShowUser;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+import hu.sch.kp.web.util.ListDataProviderCompoundPropertyModelImpl;
+
 import java.util.List;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -70,7 +73,7 @@ public class LeadottPontIgenyles extends SecuredPageTemplate {
         List<PontIgeny> igenyek = ertekelesManager.findPontIgenyekForErtekeles(ert.getId());
 
         //tagok és igények összefésülése
-        if (igenyek.size() == 0) {
+        if (igenyek.isEmpty()) {
             for (Felhasznalo f : csoporttagok) {
                 igenyek.add(new PontIgeny(f, 0));
             }

@@ -10,9 +10,11 @@ import hu.sch.domain.Felhasznalo;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -33,7 +35,7 @@ public class SelectGroup extends SecuredPageTemplate {
         setHeaderLabelText("Csoportválasztás");
         add(new FeedbackPanel("feedback"));
 
-        /*        List<Csoport> csoportok = 
+        /*        List<Csoport> csoportok =
         getSession().getUser().getCsoportok();*/
 
         if (id == null) {
@@ -72,19 +74,18 @@ public class SelectGroup extends SecuredPageTemplate {
 //        add(groups);
 
         final List<Csoporttagsag> cstag = user.getCsoporttagsagok();
-        Iterator iterator = cstag.iterator();
         final ArrayList<String> csoportok = new ArrayList<String>();
-        while (iterator.hasNext()) {
-            csoportok.add(((Csoporttagsag) iterator.next()).getCsoport().getNev());
+        for (Csoporttagsag tagsag : cstag) {
+            csoportok.add(tagsag.getCsoport().getNev());
         }
         Form csoportForm = new Form("csoportform") {
 
             @Override
             protected void onSubmit() {
-                Iterator iterator = cstag.iterator();
+                Iterator<Csoporttagsag> iterator = cstag.iterator();
                 Csoport cs = null;
                 while (iterator.hasNext()) {
-                    cs = ((Csoporttagsag) iterator.next()).getCsoport();
+                    cs = (iterator.next()).getCsoport();
                     if (cs.getNev().equals(selected)) {
                         ((VirSession)getSession()).setCsoport(cs);
                         break;

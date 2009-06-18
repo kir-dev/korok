@@ -7,13 +7,14 @@ package hu.sch.kp.web.pages.group;
 import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
-import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.components.Input;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
@@ -41,7 +42,8 @@ public final class ChangePost extends SecuredPageTemplate {
             setResponsePage(GroupHierarchy.class);
             return;
         }
-        if (user == null || group == null) {
+        //if (user == null || group == null) { // group == null always false
+        if (user == null) {
             getSession().info("Hibás adatok");
             setResponsePage(ShowGroup.class, new PageParameters("id=" + groupid));
             return;

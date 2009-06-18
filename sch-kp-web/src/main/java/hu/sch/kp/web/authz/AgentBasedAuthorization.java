@@ -3,13 +3,16 @@ package hu.sch.kp.web.authz;
 import hu.sch.domain.Csoport;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.TagsagTipus;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
 import org.apache.wicket.Request;
@@ -46,7 +49,7 @@ public class AgentBasedAuthorization implements UserAuthorization {
     public Long getUserid(Request wicketRequest) {
         HttpServletRequest servletRequest =
                 ((WebRequest) wicketRequest).getHttpServletRequest();
-        Set viridSet = (Set) servletRequest.getAttribute(VIRID_ATTRNAME);
+        Set<?> viridSet = (Set<?>) servletRequest.getAttribute(VIRID_ATTRNAME);
 
         if (viridSet != null) {
             for (Object virid : viridSet) {
@@ -90,7 +93,8 @@ public class AgentBasedAuthorization implements UserAuthorization {
         return tagsagok.values().contains(tagsagTipus);
     }
 
-    private Map<Long, TagsagTipus> parseEntitlements(Request wicketRequest) {
+    @SuppressWarnings("unchecked")
+	private Map<Long, TagsagTipus> parseEntitlements(Request wicketRequest) {
         HttpServletRequest servletRequest =
                 ((WebRequest) wicketRequest).getHttpServletRequest();
 
@@ -105,8 +109,8 @@ public class AgentBasedAuthorization implements UserAuthorization {
         tagsag = new HashMap<Long, TagsagTipus>();
         servletRequest.setAttribute(ENTITLEMENT_CACHE, tagsag);
 
-        Set entitlementSet =
-                (Set) servletRequest.getAttribute(ENTITLEMENT_ATTRNAME);
+        Set<?> entitlementSet =
+                (Set<?>) servletRequest.getAttribute(ENTITLEMENT_ATTRNAME);
 
         if (entitlementSet != null) {
             for (Object entitlement : entitlementSet) {
@@ -171,10 +175,10 @@ public class AgentBasedAuthorization implements UserAuthorization {
     }
 
     private String getSingleValuedStringAttribute(HttpServletRequest request, String attrName) {
-        Set attrSet = (Set) request.getAttribute(attrName);
+        Set<?> attrSet = (Set<?>) request.getAttribute(attrName);
 
         if (attrSet != null) {
-            Iterator it = attrSet.iterator();
+            Iterator<?> it = attrSet.iterator();
             if (it.hasNext()) {
                 return it.next().toString();
             }

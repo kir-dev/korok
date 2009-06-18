@@ -8,9 +8,11 @@ import hu.sch.domain.ElbiraltErtekeles;
 import hu.sch.domain.ErtekelesStatusz;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
-import java.util.Iterator;
+
 import java.util.List;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -36,8 +38,6 @@ public class ElbiralasIndoklas extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                Iterator<ElbiraltErtekeles> it = elbiralasAlatt.iterator();
-
                 if (ertekelesManager.ErtekeleseketElbiral(elbiralasAlatt, getFelhasznalo())) {
                     getSession().info("Az elbírálás sikeres volt.");
                     setResponsePage(OsszesErtekeles.class);

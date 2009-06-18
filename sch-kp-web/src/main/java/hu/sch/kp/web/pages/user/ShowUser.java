@@ -11,10 +11,11 @@ import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.pages.group.ShowGroup;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
@@ -100,7 +101,7 @@ public class ShowUser extends SecuredPageTemplate {
         } else {
             csoportok = getFelhasznalo().getCsoportok();
         }
-        List<Csoport> korvezetoicsoportok = new LinkedList<Csoport>();
+        List<Csoport> korvezetoicsoportok = new ArrayList<Csoport>();
         for (Csoport cs : csoportok) {
             if (hasUserRoleInGroup(cs, TagsagTipus.KORVEZETO) &&
                     !user.getCsoportok().contains(cs)) {
@@ -121,7 +122,7 @@ public class ShowUser extends SecuredPageTemplate {
         };
         csoportbaFelvetel.add(csoport);
         add(csoportbaFelvetel);
-        csoportbaFelvetel.setVisible(korvezetoicsoportok.size() > 0 &&
+        csoportbaFelvetel.setVisible(!korvezetoicsoportok.isEmpty() &&
                 hasUserRoleInSomeGroup(TagsagTipus.KORVEZETO));
     }
 

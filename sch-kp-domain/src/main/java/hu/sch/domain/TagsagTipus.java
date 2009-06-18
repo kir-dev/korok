@@ -56,7 +56,7 @@ public enum TagsagTipus {
                 retList.add(t);
             }
         }
-        if (retList.size() == 0) {
+        if (retList.isEmpty()) {
             retList.add(JELENTKEZO);
         }
         return retList.toArray(ret);

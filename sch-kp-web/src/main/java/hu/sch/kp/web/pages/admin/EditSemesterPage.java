@@ -68,7 +68,8 @@ public class EditSemesterPage extends SecuredPageTemplate {
         add(editSemesterForm);
     }
     
-    public Szemeszter getSzemeszter() {
+    @Override
+	public Szemeszter getSzemeszter() {
         return szemeszter;
     }
 

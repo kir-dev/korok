@@ -4,11 +4,11 @@
  */
 package hu.sch.kp.web.components;
 
-import hu.sch.domain.Csoport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.string.Strings;
@@ -26,12 +26,14 @@ public class SearchAutoCompleteTextField extends AutoCompleteTextField {
         this.csoportok = csoportok;
     }
 
-    protected Iterator getChoices(String input) {
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Iterator<String> getChoices(String input) {
         if (Strings.isEmpty(input)) {
             return Collections.EMPTY_LIST.iterator();
         }
 
-        List choices = new ArrayList(10);
+        List<String> choices = new ArrayList<String>(10);
 
         for (int i = 0; i < csoportok.length; i++) {
             final String csoport = csoportok[i];

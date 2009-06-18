@@ -6,44 +6,47 @@ package hu.sch.kp.ejb;
 
 import hu.sch.domain.BelepoIgeny;
 import hu.sch.domain.BelepoTipus;
+import hu.sch.domain.Csoport;
 import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.ElbiraltErtekeles;
-import hu.sch.domain.Ertekeles;
-import hu.sch.domain.ErtekelesStatusz;
-import hu.sch.domain.ErtekelesUzenet;
-import hu.sch.domain.PontIgeny;
-import hu.sch.domain.Szemeszter;
-import hu.sch.domain.Csoport;
 import hu.sch.domain.ElfogadottBelepo;
+import hu.sch.domain.Ertekeles;
 import hu.sch.domain.ErtekelesIdoszak;
 import hu.sch.domain.ErtekelesStatisztika;
+import hu.sch.domain.ErtekelesStatusz;
+import hu.sch.domain.ErtekelesUzenet;
 import hu.sch.domain.Felhasznalo;
+import hu.sch.domain.PontIgeny;
+import hu.sch.domain.Szemeszter;
 import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.services.ErtekelesManagerLocal;
 import hu.sch.kp.services.SystemManagerLocal;
 import hu.sch.kp.services.UserManagerLocal;
 import hu.sch.kp.services.exceptions.NoSuchAttributeException;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.Message.RecipientType;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.mail.Message.RecipientType;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -51,6 +54,7 @@ import org.apache.log4j.Logger;
  * @author hege
  */
 @Stateless
+@SuppressWarnings("unchecked")
 public class ErtekelesManagerBean implements ErtekelesManagerLocal {
 
     private static final Logger logger = Logger.getLogger(ErtekelesManagerBean.class);
@@ -104,20 +108,18 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<ErtekelesStatisztika> getStatisztikaForErtekelesek(List<Long> ertekelesId) {
         String ids = Arrays.toString(ertekelesId.toArray());
         ids = ids.substring(1, ids.length() - 1);
         Query q = em.createQuery(statisztikaQuery + "WHERE e.id in (" + ids + ")");
 
-        return (List<ErtekelesStatisztika>) q.getResultList();
+        return q.getResultList();
     }
 
     public List<ErtekelesStatisztika> findErtekelesStatisztikaForSzemeszter(Szemeszter szemeszter) {
         return findErtekelesStatisztikaForSzemeszter(szemeszter, defaultSortColumnForErtekelesLista);
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<ErtekelesStatisztika> findErtekelesStatisztikaForSzemeszter(Szemeszter szemeszter, String sortColumn) {
         String sc = sortMapForErtekelesLista.get(sortColumn);
         if (sc == null) {
@@ -126,10 +128,9 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         Query q = em.createQuery(statisztikaQuery + "WHERE e.szemeszter=:szemeszter ORDER BY " + sc);
         q.setParameter("szemeszter", systemManager.getSzemeszter());
 
-        return (List<ErtekelesStatisztika>) q.getResultList();
+        return q.getResultList();
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<ErtekelesStatisztika> findElbiralatlanErtekelesStatisztika() {
         Query q = em.createQuery(statisztikaQuery + "WHERE e.szemeszter=:szemeszter " +
                 "AND (e.pontStatusz=:pontStatusz OR e.belepoStatusz=:belepoStatusz)");
@@ -138,7 +139,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         q.setParameter("pontStatusz", ErtekelesStatusz.ELBIRALATLAN);
         q.setParameter("belepoStatusz", ErtekelesStatusz.ELBIRALATLAN);
 
-        return (List<ErtekelesStatisztika>) q.getResultList();
+        return q.getResultList();
     }
 
     protected Ertekeles elbiralastElokeszit(Ertekeles ertekeles, Felhasznalo elbiralo) {
@@ -316,12 +317,11 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         em.persist(pontIgeny);
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Ertekeles> findErtekeles(Csoport csoport) {
         Query q = em.createNamedQuery(Ertekeles.findByCsoport);
         q.setParameter("csoport", csoport);
 
-        return (List<Ertekeles>) q.getResultList();
+        return q.getResultList();
     }
 
     public List<Ertekeles> findApprovedValuations(Csoport group) {
@@ -333,7 +333,7 @@ public class ErtekelesManagerBean implements ErtekelesManagerLocal {
         q.setParameter("elfogadva", ErtekelesStatusz.ELFOGADVA);
         q.setParameter("nincs", ErtekelesStatusz.NINCS);
 
-        return (List<Ertekeles>) q.getResultList();
+        return q.getResultList();
     }
 
     public void ujErtekeles(Csoport csoport, Felhasznalo felado, String szovegesErtekeles) {
@@ -500,7 +500,6 @@ try{
         return em.find(Ertekeles.class, ertekelesId);
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<BelepoIgeny> findBelepoIgenyekForErtekeles(Long ertekelesId) {
         Query q = em.createQuery("SELECT i FROM BelepoIgeny i JOIN FETCH i.felhasznalo " +
                 "JOIN i.ertekeles WHERE i.ertekeles.id=:ertekelesId " +
@@ -510,7 +509,6 @@ try{
         return q.getResultList();
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<PontIgeny> findPontIgenyekForErtekeles(Long ertekelesId) {
         Query q = em.createQuery("SELECT i FROM PontIgeny i JOIN FETCH i.felhasznalo " +
                 "JOIN i.ertekeles " +

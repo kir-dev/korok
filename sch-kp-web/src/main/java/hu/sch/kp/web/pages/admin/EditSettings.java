@@ -113,7 +113,8 @@ public class EditSettings extends SecuredPageTemplate {
         this.ertekelesIdoszak = idoszak;
     }
 
-    public Szemeszter getSzemeszter() {
+    @Override
+	public Szemeszter getSzemeszter() {
         return szemeszter;
     }
 }

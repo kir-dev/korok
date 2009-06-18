@@ -10,9 +10,10 @@ import hu.sch.domain.TagsagTipus;
 import hu.sch.kp.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.kp.web.components.ValidationStyleBehavior;
 import hu.sch.kp.web.pages.index.Index;
-import hu.sch.kp.web.session.VirSession;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
 import java.util.Calendar;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -25,7 +26,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.NumberValidator;
-import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.apache.wicket.validation.validator.UrlValidator;
 
 /**
@@ -48,7 +49,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
         add(new FeedbackPanel("pagemessages"));
 
         csoport = userManager.findGroupById(id);
-        Felhasznalo user = userManager.findUserWithCsoporttagsagokById(((VirSession) getSession()).getUser().getId());
+        Felhasznalo user = userManager.findUserWithCsoporttagsagokById((getSession()).getUser().getId());
         if (user == null || !hasUserRoleInGroup(csoport, TagsagTipus.KORVEZETO)) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
             setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
@@ -72,7 +73,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
         };
 
         RequiredTextField nevTF = new RequiredTextField("nev");
-        nevTF.add(LengthBetweenValidator.lengthBetween(2, 255));
+        nevTF.add(StringValidator.lengthBetween(2, 255));
         nevTF.add(new ValidationStyleBehavior());
         editInfoForm.add(nevTF);
         nevTF.setLabel(new Model("Név *"));

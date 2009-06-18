@@ -18,11 +18,14 @@ import hu.sch.kp.web.pages.ertekeles.LeadottBelepoIgenyles;
 import hu.sch.kp.web.pages.ertekeles.LeadottPontIgenyles;
 import hu.sch.kp.web.pages.group.GroupHierarchy;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.ejb.EJB;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
@@ -77,7 +80,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                List<ElbiraltErtekeles> list = new LinkedList<ElbiraltErtekeles>();
+                List<ElbiraltErtekeles> list = new ArrayList<ElbiraltErtekeles>();
 
                 for (ElbiraltErtekeles elbiraltertekeles : getElbiralasAlatt().values()) {
                     //if ((elbiraltertekeles.getPontStatusz().equals(ErtekelesStatusz.ELBIRALATLAN) && (elbiraltertekele)
@@ -216,7 +219,8 @@ public class OsszesErtekeles extends SecuredPageTemplate {
                 Component pontStatusz = new ErtekelesStatuszValaszto("pontStatusz");
                 Component belepoStatusz = new ErtekelesStatuszValaszto("belepoStatusz");
                 pontStatusz.setVisible(!ert.getPontStatusz().equals(ErtekelesStatusz.NINCS));
-                if (belepoStatusz != null && ert != null && ert.getBelepoStatusz() != null) {
+                //if (belepoStatusz != null && ert != null && ert.getBelepoStatusz() != null) { // null check always false
+                if (ert.getBelepoStatusz() != null) {
                     belepoStatusz.setVisible(!ert.getBelepoStatusz().equals(ErtekelesStatusz.NINCS));
                 }
                 //System.out.println("abba: " + ert.getPontStatusz() + " " + ert.getBelepoStatusz());
@@ -261,6 +265,7 @@ public class OsszesErtekeles extends SecuredPageTemplate {
 //        form.add(new OrderByBorderImpl("orderByBelepoStatusz", "belepoStatusz", dp));
     }
 
+    @SuppressWarnings("unused")
     private class OrderByBorderImpl extends OrderByBorder {
 
         public OrderByBorderImpl(String id, String property, ISortStateLocator stateLocator) {
