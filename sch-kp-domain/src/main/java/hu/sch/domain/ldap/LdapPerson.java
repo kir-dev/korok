@@ -4,7 +4,8 @@
  */
 package hu.sch.domain.ldap;
 
-import java.util.ArrayList;
+import hu.sch.util.LazyList;
+
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -53,10 +54,10 @@ public class LdapPerson {
      * Az schacPersonalUniqueCode ldap attributum neptun kod resze.
      */
     private String neptun;
-    private List<String> eduPersonEntitlement = new ArrayList<String>();
-//    private List<Entitlement> entitlements = new ArrayList<Entitlement>();
-    private List<LdapMembership> activeMemberships = new ArrayList<LdapMembership>();
-    private List<LdapMembership> inactiveMemberships = new ArrayList<LdapMembership>();
+    private List<String> eduPersonEntitlement = new LazyList<String>();
+//    private List<Entitlement> entitlements = new LazyList<Entitlement>();
+    private List<LdapMembership> activeMemberships = new LazyList<LdapMembership>();
+    private List<LdapMembership> inactiveMemberships = new LazyList<LdapMembership>();
 
     public String getUid() {
         return uid;
@@ -173,12 +174,12 @@ public class LdapPerson {
 
         if (personalUniqueCode != null) {
             String[] personalUniqueCodeArray = personalUniqueCode.split(":");
-            this.neptun = personalUniqueCodeArray[personalUniqueCodeArray.length - 1];
+            neptun = personalUniqueCodeArray[personalUniqueCodeArray.length - 1];
         }
 
         if (personalUniqueID != null) {
             String[] personalUniqueIDArray = personalUniqueID.split(":");
-            this.virId = personalUniqueIDArray[personalUniqueIDArray.length - 1];
+            virId = personalUniqueIDArray[personalUniqueIDArray.length - 1];
         }
     }
 
@@ -243,7 +244,7 @@ public class LdapPerson {
 //    }
 //
 //    public List<Entitlement> getEntitlementsByEntitlementType(EntitlementType entitlementType) {
-//        List<Entitlement> entList = new ArrayList<Entitlement>();
+//        List<Entitlement> entList = new LazyList<Entitlement>();
 //
 //        for (Entitlement e : entitlements) {
 //            if (e.entitlementType.equals(entitlementType)) {
@@ -255,7 +256,7 @@ public class LdapPerson {
 //    }
 //
 //    public List<Group> getGroupsByEntitlementType(EntitlementType entitlementType) {
-//        List<Group> groupList = new ArrayList<Group>();
+//        List<Group> groupList = new LazyList<Group>();
 //
 //        for (Entitlement e : entitlements) {
 //            if (e.entitlementType.equals(entitlementType)) {
