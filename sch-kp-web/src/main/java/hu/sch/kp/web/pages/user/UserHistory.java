@@ -90,9 +90,11 @@ public class UserHistory extends SecuredPageTemplate {
             int pont = 0;
             for (PontIgeny szemeszterPont : pontIgenyek) {
                 if (szemeszterPont.getErtekeles().getSzemeszter().toString().equals(szemeszter.toString())) {
-                    pont = pont + szemeszterPont.getPont();
+                    pont = pont + ( szemeszterPont.getPont()*szemeszterPont.getPont() );
                 }
             }
+
+            pont = (int) java.lang.Math.sqrt(pont);
 
             // az eredményt berakom egy listába
             szemeszterPontok.add(new SzemeszterPont(szemeszter, pont));
