@@ -66,45 +66,94 @@ public class UserHistory extends SecuredPageTemplate {
         List<PontIgeny> pontIgenyek = userManager.getPontIgenyekForUser(user);
 
         // Szemeszterenkénti pontigények táblázat
+        ArrayList<SzemeszterKorPont> Skp = new ArrayList<SzemeszterKorPont>();
+
+        // minden kör minden pontjához hozzáadom az előző évben adott pontot (ha volt előző féléves pont is)
+        for (PontIgeny pontIgeny : pontIgenyek)
+            Skp.add(new SzemeszterKorPont(pontIgeny.getErtekeles().getSzemeszter(), pontIgeny.getPont(), pontIgeny.getErtekeles().getCsoport().getId()));
+
+        for (SzemeszterKorPont skp1 : Skp)
+        {
+            for (SzemeszterKorPont skp2 : Skp)
+            {
+                if (skp1.getKorId().equals(skp2.getKorId()) &&
+                    skp1.getSzemeszter().getElozo().getId().equals(skp2.getSzemeszter().getId()))
+                {
+                    skp1.Add(skp2.getPont());
+                }
+            }
+        }
+
+        // a csak előző félévben pontozott köröket is hozzá kell majd számolni a jelenlegi féléves pontokhoz
+        for (SzemeszterKorPont skp : (ArrayList<SzemeszterKorPont>) Skp.clone())
+        {
+            boolean nincs = true;
+            for (SzemeszterKorPont skp2 : Skp)
+            {
+                if (skp2.getKorId().equals(skp.getKorId()) &&
+                    skp2.getSzemeszter().equals(skp.getSzemeszter().getKovetkezo()))
+                {
+                    nincs = false;
+                    break;
+                }
+            }
+
+            if (nincs)
+            {   // ebből a körből nincs most pont csak az előző félévben,
+                // viszont nekem azt is összegeznem kell majd
+                if (!skp.getSzemeszter().equals(systemManager.getSzemeszter())) // jövőbe nem pontozunk :)
+                    Skp.add(new SzemeszterKorPont(skp.getSzemeszter().getKovetkezo(), skp.getPont(), skp.getKorId()));
+            }
+        }
+
         ArrayList<SzemeszterPont> szemeszterPontok = new ArrayList<SzemeszterPont>();
 
-        // szummázás félévente...
         Szemeszter szemeszter = null;
+        
+        // négyzetösszegek...
+        for (SzemeszterKorPont skp : Skp)
+        {
 
-        for (PontIgeny pontIgeny : pontIgenyek) {
-            szemeszter = pontIgeny.getErtekeles().getSzemeszter(); // ezt a szemesztert fogom most számolni
+            if (!skp.getSzemeszter().equals(szemeszter))
+                szemeszter = skp.getSzemeszter();
+            else
+                continue;
 
-            // megnézem megszámoltam-e már ezt a szemesztert
+            // megnézem számoltam-e már ezt a félévet
             boolean next = false;
-            for (SzemeszterPont szemeszterPont : szemeszterPontok) {
-                if (szemeszterPont.getSzemeszter().toString().equals(szemeszter.toString())) {
+            for (SzemeszterPont szemeszterPont : szemeszterPontok)
+            {
+                if (szemeszterPont.getSzemeszter().equals(szemeszter))
+                {
                     next = true;
                     break;
                 }
             }
-            if (next) {
-                continue;
-            }
 
-            // az aktuális szemeszterre kapott pontokat összegzem
+            if (next)
+                continue;   // már számoltam ezt a félévet
+
+            // négyzetösszeg...
             int pont = 0;
-            for (PontIgeny szemeszterPont : pontIgenyek) {
-                if (szemeszterPont.getErtekeles().getSzemeszter().toString().equals(szemeszter.toString())) {
-                    pont = pont + ( szemeszterPont.getPont()*szemeszterPont.getPont() );
-                }
+
+            for (SzemeszterKorPont p : Skp)
+            {
+                if (p.getSzemeszter().equals(szemeszter))
+                    pont = pont + p.getPont()*p.getPont();
             }
 
-            pont = (int) java.lang.Math.sqrt(pont);
+            pont = (int) java.lang.Math.sqrt(pont); // nem szabályos kerekítés! (egészrész)
 
-            // az eredményt berakom egy listába
             szemeszterPontok.add(new SzemeszterPont(szemeszter, pont));
         }
 
-        // megjelenítés...
-        ListView splv = new ListView("szemeszterPont", szemeszterPontok) {
 
+        // megjelenítés...
+        ListView splv = new ListView("szemeszterPont", szemeszterPontok)
+        {
             @Override
-            protected void populateItem(ListItem item) {
+            protected void populateItem(ListItem item)
+            {
                 SzemeszterPont p = (SzemeszterPont) item.getModelObject();
                 item.add(new Label("szemeszterPont.szemeszter", p.getSzemeszter().toString()));
                 item.add(new Label("szemeszterPont.pont", String.valueOf(p.getPont())));
@@ -142,21 +191,58 @@ public class UserHistory extends SecuredPageTemplate {
     }
 }
 
-class SzemeszterPont {
-
+class SzemeszterKorPont
+{
     private Szemeszter szemeszter;
-    private int pont;
+    private Long korId;
+    private Integer pont;
 
-    public SzemeszterPont(Szemeszter szemeszter, int pont) {
+    public SzemeszterKorPont(Szemeszter szemeszter, Integer pont, Long korId)
+    {
+        this.szemeszter = szemeszter;
+        this.pont = pont;
+        this.korId = korId;
+    }
+
+    public Szemeszter getSzemeszter()
+    {
+        return szemeszter;
+    }
+
+    public Integer getPont()
+    {
+        return pont;
+    }
+
+    public Long getKorId()
+    {
+        return korId;
+    }
+
+    public void Add(Integer i)
+    {
+        pont = pont + i;
+    }
+}
+
+class SzemeszterPont
+{
+    private Szemeszter szemeszter;
+    private Integer pont;
+
+    public SzemeszterPont(Szemeszter szemeszter, Integer pont)
+    {
         this.szemeszter = szemeszter;
         this.pont = pont;
     }
 
-    public int getPont() {
-        return pont;
+    public Szemeszter getSzemeszter()
+    {
+        return szemeszter;
     }
 
-    public Szemeszter getSzemeszter() {
-        return szemeszter;
+    public Integer getPont()
+    {
+        return pont;
     }
 }

@@ -5,6 +5,8 @@
 package hu.sch.domain;
 
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -33,6 +35,50 @@ public class Szemeszter implements Serializable {
         }
 
         setId(elsoEv.toString() + masodikEv.toString() + (osziFelev ? "1" : "2"));
+    }
+
+    @Transient
+    public Szemeszter getElozo()
+    {
+        Szemeszter ret = new Szemeszter();
+
+        if (this.isOsziFelev())
+        {
+            ret.setElsoEv(this.getElsoEv()-1);
+            ret.setMasodikEv(this.getMasodikEv()-1);
+        }
+        else
+        {
+            ret.setElsoEv(this.getElsoEv());
+            ret.setMasodikEv(this.getMasodikEv());
+        }
+
+        // őszi félév előtt tavaszi és viszont
+        ret.setOsziFelev(!this.isOsziFelev());
+
+        return ret;
+    }
+
+    @Transient
+    public Szemeszter getKovetkezo()
+    {
+        Szemeszter ret = new Szemeszter();
+
+        if (!this.isOsziFelev())
+        {
+            ret.setElsoEv(this.getElsoEv()+1);
+            ret.setMasodikEv(this.getMasodikEv()+1);
+        }
+        else
+        {
+            ret.setElsoEv(this.getElsoEv());
+            ret.setMasodikEv(this.getMasodikEv());
+        }
+
+        // őszi félév előtt tavaszi és viszont
+        ret.setOsziFelev(!this.isOsziFelev());
+
+        return ret;
     }
 
     @Column(name = "semester", length = 9, columnDefinition = "character(9)", nullable = false)
@@ -107,6 +153,14 @@ public class Szemeszter implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public boolean equals(Szemeszter szemeszter)
+    {
+        if (szemeszter == null)
+            return false;
+        
+        return this.getId().equals(szemeszter.getId());
     }
 
     @Override
