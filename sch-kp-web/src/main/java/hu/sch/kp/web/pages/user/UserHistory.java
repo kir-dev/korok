@@ -12,15 +12,20 @@ import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  *
@@ -29,9 +34,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 public class UserHistory extends SecuredPageTemplate {
 
     Long id;
-    boolean filtered = false;
-    String csoport = "";
+    final String OSSZES_KOR = "Összes kör";
+    public String selected = OSSZES_KOR;
     private boolean own_profile = false;
+
+    
 
     public UserHistory() {
         own_profile = true;
@@ -41,8 +48,7 @@ public class UserHistory extends SecuredPageTemplate {
     public UserHistory(PageParameters parameters) {
         try {
             id = parameters.getLong("id");
-            csoport = parameters.getString("csoport", "");
-            filtered = parameters.getBoolean("filtered");
+            selected = parameters.getString("csoport", "");
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -65,11 +71,67 @@ public class UserHistory extends SecuredPageTemplate {
         } else {
             add(new BookmarkablePageLink("simpleView", ShowUser.class, new PageParameters("id=" + user.getId().toString())));
         }
-        add(new ExternalLink("profilelink",
-                "/profile/show/virid/" + id.toString()));
+        add(new ExternalLink("profilelink", "/profile/show/virid/" + id.toString()));
         setModel(new CompoundPropertyModel(user));
 
+        // kigyűjtöm a pontitényekből a körök neveit
+        final List<String> groups = new ArrayList<String>();
+        groups.add(OSSZES_KOR);
+
         List<PontIgeny> pontIgenyek = userManager.getPontIgenyekForUser(user);
+
+        for (PontIgeny p : pontIgenyek)
+        {
+            boolean van = false;
+
+            for (String s : groups)
+            {
+                if (s.equals(p.getErtekeles().getCsoport().getNev()))
+                    van = true;
+            }
+
+            if (!van)
+                groups.add(p.getErtekeles().getCsoport().getNev());
+        }
+
+        // kigyűjtöm a belépőigényekből a körök neveit
+        List<BelepoIgeny> belepoIgenyek = userManager.getBelepoIgenyekForUser(user);
+
+        for (BelepoIgeny p : belepoIgenyek)
+        {
+            boolean van = false;
+
+            for (String s : groups)
+            {
+                if (s.equals(p.getErtekeles().getCsoport().getNev()))
+                    van = true;
+            }
+
+            if (!van)
+                groups.add(p.getErtekeles().getCsoport().getNev());
+        }
+
+        DropDownChoice ddc = new DropDownChoice("group", new PropertyModel(this, "selected"), groups)
+        {
+            @Override
+            protected boolean wantOnSelectionChangedNotifications()
+            {
+                return true;
+            }
+
+            @Override
+            protected void onSelectionChanged(final Object newSelection)
+            {
+                String selected = groups.get(Integer.valueOf(this.getInput()));
+
+                PageParameters pp = new PageParameters();
+                pp.add("csoport", selected);
+                pp.add("id", String.valueOf(id));
+                setResponsePage(new UserHistory(pp));
+            }
+        };
+
+        add(ddc);
 
         // Szemeszterenkénti pontigények táblázat
         ArrayList<SzemeszterKorPont> Skp = new ArrayList<SzemeszterKorPont>();
@@ -168,14 +230,14 @@ public class UserHistory extends SecuredPageTemplate {
         add(splv);
 
         // Pontigények táblázat
-        if (filtered)
+        if (!selected.equals(OSSZES_KOR))
         {
             // szűrés adott csoportra
 
             ArrayList<PontIgeny> obj = new ArrayList<PontIgeny>();
             for (PontIgeny pontIgeny : pontIgenyek)
             {
-                if (pontIgeny.getErtekeles().getCsoport().getNev().equals(csoport))
+                if (pontIgeny.getErtekeles().getCsoport().getNev().equals(selected))
                 {
                     obj.add(pontIgeny);
                 }
@@ -190,40 +252,24 @@ public class UserHistory extends SecuredPageTemplate {
             {
                 item.setModel(new CompoundPropertyModel(item.getModelObject()));
 
-                Link link = new Link("link")
-                {
-                    @Override
-                    public void onClick()
-                    {
-                        PontIgeny pi = (PontIgeny)this.getParent().getModelObject();
-                        PageParameters pp = new PageParameters();
-                        pp.add("csoport", pi.getErtekeles().getCsoport().getNev());
-                        pp.add("id", String.valueOf(id));
-                        pp.add("filtered", String.valueOf(!filtered));
-                        setResponsePage(new UserHistory(pp));
-                    }
-                };
-
-                item.add(link);
-
-                link.add(new Label("ertekeles.szemeszter"));
-                link.add(new Label("ertekeles.csoport.nev"));
-                link.add(new Label("pont"));
+                item.add(new Label("ertekeles.szemeszter"));
+                item.add(new Label("ertekeles.csoport.nev"));
+                item.add(new Label("pont"));
             }
         };
         add(plv);
 
         // Belépő igények táblázat
-        List<BelepoIgeny> belepoIgenyek = userManager.getBelepoIgenyekForUser(user);
+        //List<BelepoIgeny> belepoIgenyek = userManager.getBelepoIgenyekForUser(user);
 
-        if (filtered)
+        if (!selected.equals(OSSZES_KOR))
         {
             // szűrés adott csoportra
             
             ArrayList<BelepoIgeny> obj = new ArrayList<BelepoIgeny>();
             for (BelepoIgeny belepoIgeny : belepoIgenyek)
             {
-                if (belepoIgeny.getErtekeles().getCsoport().getNev().equals(csoport))
+                if (belepoIgeny.getErtekeles().getCsoport().getNev().equals(selected))
                 {
                     obj.add(belepoIgeny);
                 }
@@ -238,26 +284,10 @@ public class UserHistory extends SecuredPageTemplate {
             {
                 item.setModel(new CompoundPropertyModel(item.getModelObject()));
 
-                Link link = new Link("link2")
-                {
-                    @Override
-                    public void onClick()
-                    {
-                         BelepoIgeny bi = (BelepoIgeny)this.getParent().getModelObject();
-                         PageParameters pp = new PageParameters();
-                         pp.add("csoport", bi.getErtekeles().getCsoport().getNev());
-                         pp.add("id", String.valueOf(id));
-                         pp.add("filtered", String.valueOf(!filtered));
-                         setResponsePage(new UserHistory(pp));
-                    }
-                };
-
-                item.add(link);
-
-                link.add(new Label("ertekeles.szemeszter"));
-                link.add(new Label("ertekeles.csoport.nev"));
-                link.add(new Label("belepotipus"));
-                link.add(new Label("szovegesErtekeles"));
+                item.add(new Label("ertekeles.szemeszter"));
+                item.add(new Label("ertekeles.csoport.nev"));
+                item.add(new Label("belepotipus"));
+                item.add(new Label("szovegesErtekeles"));
             }
         };
         add(blv);
