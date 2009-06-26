@@ -31,9 +31,9 @@
                 <th style="width: 80px;">Pontszám</th>
             </tr>
             <tr wicket:id="pontigeny">
-                <td><span wicket:id="ertekeles.szemeszter" /></td>
-                <td><span wicket:id="ertekeles.csoport.nev" /></td>
-                <td><span wicket:id="pont" /></td>
+                <td><a wicket:id="link" title="Szűrés be/ki"><span wicket:id="ertekeles.szemeszter" /></a></td>
+                <td><a wicket:id="link" title="Szűrés be/ki"><span wicket:id="ertekeles.csoport.nev" /></a></td>
+                <td><a wicket:id="link" title="Szűrés be/ki"><span wicket:id="pont" /></a></td>
             </tr>
         </table>
     </div>
@@ -48,11 +48,13 @@
                 <th style="width: 400px;">Szöveges indoklás</th>
             </tr>
             <tr wicket:id="belepoigeny">
-                <td><span wicket:id="ertekeles.szemeszter" /></td>
-                <td><span wicket:id="ertekeles.csoport.nev" /></td>
-                <td><span wicket:id="belepotipus" /></td>
-                <td><span wicket:id="szovegesErtekeles" /></td>
+                <td><a wicket:id="link2" title="Szűrés be/ki"><span wicket:id="ertekeles.szemeszter" /></a></td>
+                <td><a wicket:id="link2" title="Szűrés be/ki"><span wicket:id="ertekeles.csoport.nev" /></a></td>
+                <td><a wicket:id="link2" title="Szűrés be/ki"><span wicket:id="belepotipus" /></a></td>
+                <td><a wicket:id="link2" title="Szűrés be/ki"><span wicket:id="szovegesErtekeles" /></a></td>
             </tr>
         </table>
     </div>
+
+    <p align="right">Körre szűréshez kattints az egyik sorra!</p>
 </wicket:extend>

@@ -10,12 +10,14 @@ import hu.sch.domain.PontIgeny;
 import hu.sch.domain.Szemeszter;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -27,6 +29,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 public class UserHistory extends SecuredPageTemplate {
 
     Long id;
+    boolean filtered = false;
+    String csoport = "";
     private boolean own_profile = false;
 
     public UserHistory() {
@@ -37,6 +41,8 @@ public class UserHistory extends SecuredPageTemplate {
     public UserHistory(PageParameters parameters) {
         try {
             id = parameters.getLong("id");
+            csoport = parameters.getString("csoport", "");
+            filtered = parameters.getBoolean("filtered");
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -162,29 +168,96 @@ public class UserHistory extends SecuredPageTemplate {
         add(splv);
 
         // Pontigények táblázat
-        ListView plv = new ListView("pontigeny", pontIgenyek) {
+        if (filtered)
+        {
+            // szűrés adott csoportra
 
+            ArrayList<PontIgeny> obj = new ArrayList<PontIgeny>();
+            for (PontIgeny pontIgeny : pontIgenyek)
+            {
+                if (pontIgeny.getErtekeles().getCsoport().getNev().equals(csoport))
+                {
+                    obj.add(pontIgeny);
+                }
+            }
+            pontIgenyek = obj;
+        }
+
+        ListView plv = new ListView("pontigeny", pontIgenyek)
+        {
             @Override
-            protected void populateItem(ListItem item) {
+            protected void populateItem(ListItem item)
+            {
                 item.setModel(new CompoundPropertyModel(item.getModelObject()));
-                item.add(new Label("ertekeles.szemeszter"));
-                item.add(new Label("ertekeles.csoport.nev"));
-                item.add(new Label("pont"));
+
+                Link link = new Link("link")
+                {
+                    @Override
+                    public void onClick()
+                    {
+                        PontIgeny pi = (PontIgeny)this.getParent().getModelObject();
+                        PageParameters pp = new PageParameters();
+                        pp.add("csoport", pi.getErtekeles().getCsoport().getNev());
+                        pp.add("id", String.valueOf(id));
+                        pp.add("filtered", String.valueOf(!filtered));
+                        setResponsePage(new UserHistory(pp));
+                    }
+                };
+
+                item.add(link);
+
+                link.add(new Label("ertekeles.szemeszter"));
+                link.add(new Label("ertekeles.csoport.nev"));
+                link.add(new Label("pont"));
             }
         };
         add(plv);
 
         // Belépő igények táblázat
         List<BelepoIgeny> belepoIgenyek = userManager.getBelepoIgenyekForUser(user);
-        ListView blv = new ListView("belepoigeny", belepoIgenyek) {
 
+        if (filtered)
+        {
+            // szűrés adott csoportra
+            
+            ArrayList<BelepoIgeny> obj = new ArrayList<BelepoIgeny>();
+            for (BelepoIgeny belepoIgeny : belepoIgenyek)
+            {
+                if (belepoIgeny.getErtekeles().getCsoport().getNev().equals(csoport))
+                {
+                    obj.add(belepoIgeny);
+                }
+            }
+            belepoIgenyek = obj;
+        }
+
+        ListView blv = new ListView("belepoigeny", belepoIgenyek)
+        {
             @Override
-            protected void populateItem(ListItem item) {
+            protected void populateItem(ListItem item)
+            {
                 item.setModel(new CompoundPropertyModel(item.getModelObject()));
-                item.add(new Label("ertekeles.szemeszter"));
-                item.add(new Label("ertekeles.csoport.nev"));
-                item.add(new Label("belepotipus"));
-                item.add(new Label("szovegesErtekeles"));
+
+                Link link = new Link("link2")
+                {
+                    @Override
+                    public void onClick()
+                    {
+                         BelepoIgeny bi = (BelepoIgeny)this.getParent().getModelObject();
+                         PageParameters pp = new PageParameters();
+                         pp.add("csoport", bi.getErtekeles().getCsoport().getNev());
+                         pp.add("id", String.valueOf(id));
+                         pp.add("filtered", String.valueOf(!filtered));
+                         setResponsePage(new UserHistory(pp));
+                    }
+                };
+
+                item.add(link);
+
+                link.add(new Label("ertekeles.szemeszter"));
+                link.add(new Label("ertekeles.csoport.nev"));
+                link.add(new Label("belepotipus"));
+                link.add(new Label("szovegesErtekeles"));
             }
         };
         add(blv);
@@ -225,7 +298,7 @@ class SzemeszterKorPont
     }
 }
 
-class SzemeszterPont
+class SzemeszterPont implements Serializable
 {
     private Szemeszter szemeszter;
     private Integer pont;
