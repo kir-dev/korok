@@ -11,9 +11,7 @@ import hu.sch.kp.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.kp.web.components.ValidationStyleBehavior;
 import hu.sch.kp.web.pages.index.Index;
 import hu.sch.kp.web.templates.SecuredPageTemplate;
-
 import java.util.Calendar;
-
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -26,6 +24,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.apache.wicket.validation.validator.UrlValidator;
 
@@ -74,6 +73,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
 
         RequiredTextField nevTF = new RequiredTextField("nev");
         nevTF.add(StringValidator.lengthBetween(2, 255));
+        nevTF.add(new PatternValidator("[^|:]*"));
         nevTF.add(new ValidationStyleBehavior());
         editInfoForm.add(nevTF);
         nevTF.setLabel(new Model("Név *"));
