@@ -5,6 +5,7 @@
 package hu.sch.kp.web.pages.user;
 
 import hu.sch.domain.BelepoIgeny;
+import hu.sch.domain.Csoporttagsag;
 import hu.sch.domain.Felhasznalo;
 import hu.sch.domain.PontIgeny;
 import hu.sch.domain.Szemeszter;
@@ -74,42 +75,16 @@ public class UserHistory extends SecuredPageTemplate {
         add(new ExternalLink("profilelink", "/profile/show/virid/" + id.toString()));
         setModel(new CompoundPropertyModel(user));
 
-        // kigyűjtöm a pontitényekből a körök neveit
         final List<String> groups = new ArrayList<String>();
         groups.add(OSSZES_KOR);
 
+        List<Csoporttagsag> cst = user.getCsoporttagsagok();
+        for (Csoporttagsag csoporttagsag : cst)
+        {
+            groups.add(csoporttagsag.getCsoport().getNev());
+        }
+
         List<PontIgeny> pontIgenyek = userManager.getPontIgenyekForUser(user);
-
-        for (PontIgeny p : pontIgenyek)
-        {
-            boolean van = false;
-
-            for (String s : groups)
-            {
-                if (s.equals(p.getErtekeles().getCsoport().getNev()))
-                    van = true;
-            }
-
-            if (!van)
-                groups.add(p.getErtekeles().getCsoport().getNev());
-        }
-
-        // kigyűjtöm a belépőigényekből a körök neveit
-        List<BelepoIgeny> belepoIgenyek = userManager.getBelepoIgenyekForUser(user);
-
-        for (BelepoIgeny p : belepoIgenyek)
-        {
-            boolean van = false;
-
-            for (String s : groups)
-            {
-                if (s.equals(p.getErtekeles().getCsoport().getNev()))
-                    van = true;
-            }
-
-            if (!van)
-                groups.add(p.getErtekeles().getCsoport().getNev());
-        }
 
         DropDownChoice ddc = new DropDownChoice("group", new PropertyModel(this, "selected"), groups)
         {
@@ -127,7 +102,7 @@ public class UserHistory extends SecuredPageTemplate {
                 PageParameters pp = new PageParameters();
                 pp.add("csoport", selected);
                 pp.add("id", String.valueOf(id));
-                setResponsePage(new UserHistory(pp));
+                setResponsePage(UserHistory.class, pp);
             }
         };
 
@@ -260,7 +235,7 @@ public class UserHistory extends SecuredPageTemplate {
         add(plv);
 
         // Belépő igények táblázat
-        //List<BelepoIgeny> belepoIgenyek = userManager.getBelepoIgenyekForUser(user);
+        List<BelepoIgeny> belepoIgenyek = userManager.getBelepoIgenyekForUser(user);
 
         if (!selected.equals(OSSZES_KOR))
         {
