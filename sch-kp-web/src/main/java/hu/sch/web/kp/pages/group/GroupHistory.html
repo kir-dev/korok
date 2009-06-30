@@ -1,0 +1,20 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+    <div id="ViewNavigation">
+        <span>Korábbi értékelések</span>
+        <ul >
+            <li><a wicket:id="simpleView">Adatlap nézet</a></li>
+        </ul>
+    </div>
+
+    <h2><span wicket:id="name"/></h2>
+    <div id="ertekelesCont">
+        <form wicket:id="periodForm" style="margin-top: 15px;">
+            <select wicket:id="semesters" style="width: 250px;">
+                <option>site 1</option>
+                <option>site 2</option>
+            </select>
+            <input class="btn" type="submit" value="Küldés"/>
+        </form>
+        <span wicket:id="valuationInfo"></span>
+    </div>
+</wicket:extend>

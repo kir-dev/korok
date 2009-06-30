@@ -1,0 +1,28 @@
+<wicket:extend>
+    <span id="pagemessages">
+        <ul>
+            <li class="feedbackPanelINFO">
+                <span class="feedbackPanelINFO">
+                    A belépőigénylés leadása előtt minden színes belépő igényléséhez szöveges indoklást kell fűznöd!
+                </span>
+            </li>
+        </ul>
+    </span>
+
+
+    <span wicket:id="pagemessages" id="pagemessages"></span>
+    <div id="belepoIgenylesIndoklasCont">
+
+
+        <form wicket:id="indoklasform" style="margin-top: 10px;">
+            <div wicket:id="indoklas">
+                <h3><span wicket:id="felhasznalo.nev" /> [<span wicket:id="felhasznalo.becenev" />]</h3>
+                <div class="subdata"><i>Belépőtípus:</i> <span wicket:id="belepotipus"></span><br />
+                    <i>Indoklás:</i><br />
+                    <textarea class="textinput" style="height: 100px;" wicket:id="szovegesErtekeles"></textarea>
+                </div>
+            </div>
+            <input type="submit" class="btn" value="Mentés"/>
+        </form>
+    </div>
+</wicket:extend>

@@ -1,0 +1,48 @@
+<wicket:panel>
+    <h2>Félév szöveges értékelése</h2>
+    <div class="subdata">
+        <span wicket:id="valuationText">ert</span>
+    </div>
+    <h2>Kiosztott pontok</h2>
+    <div class="subdata">
+        <table wicket:id="pointTable" class="withheader">
+            <tr class="headers">
+                <th style="width: 170px;">Név</th>
+                <th style="width: 130px;">Pontszám</th>
+            </tr>
+            <tr wicket:id="points">
+                <td>
+                    <a wicket:id="userLink">
+                        <span wicket:id="userName"></span>
+                    </a>
+                </td>
+                <td>
+                    <span wicket:id="point"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h2>Kiosztott belépők</h2>
+    <div class="subdata">
+        <table wicket:id="entrantTable" class="withheader">
+            <tr class="headers">
+                <th style="width: 170px;">Név</th>
+                <th style="width: 130px;">Belépő típusa</th>
+                <th>Szöveges indoklás</th>
+            </tr>
+            <tr wicket:id="entrants">
+                <td>
+                    <a wicket:id="userLink">
+                        <span wicket:id="userName"></span>
+                    </a>
+                </td>
+                <td>
+                    <span wicket:id="entrantType"></span>
+                </td>
+                <td>
+                    <span wicket:id="valuationText"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</wicket:panel>

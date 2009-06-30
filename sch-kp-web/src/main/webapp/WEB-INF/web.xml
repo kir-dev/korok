@@ -18,7 +18,7 @@
         <servlet-class>org.apache.wicket.protocol.http.WicketServlet</servlet-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>hu.sch.kp.web.SchKpApplication</param-value>
+            <param-value>hu.sch.web.PhoenixApplication</param-value>
         </init-param>
 	<!--init-param>
 	    <param-name>configuration</param-name>
@@ -26,7 +26,8 @@
 	</init-param-->
         <init-param>
             <param-name>authorizationComponent</param-name>
-            <param-value>hu.sch.kp.web.authz.AgentBasedAuthorization</param-value>
+            <!--param-value>hu.sch.kp.web.authz.AgentBasedAuthorization</param-value-->
+            <param-value>hu.sch.web.authz.DummyAuthorization</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

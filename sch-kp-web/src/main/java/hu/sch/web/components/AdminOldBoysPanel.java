@@ -1,0 +1,21 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package hu.sch.web.components;
+
+import hu.sch.domain.Membership;
+import java.util.List;
+import org.apache.wicket.markup.html.panel.Panel;
+
+/**
+ *
+ * @author aldaris
+ */
+public final class AdminOldBoysPanel extends Panel {
+
+    public AdminOldBoysPanel(String id, List<Membership> inactiveMembers) {
+        super(id);
+        add(new EditEntitlementsForm("oldForm", inactiveMembers, false));
+    }
+}

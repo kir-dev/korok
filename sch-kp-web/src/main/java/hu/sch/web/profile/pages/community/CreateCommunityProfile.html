@@ -1,0 +1,41 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+
+    <span wicket:id="feedbackPanel" id="feedbackPanel" style="display:block; margin-bottom: 20px"></span>
+    <div id="communitycont">
+        <h2>Kedves Villanykari Hallgató!</h2>
+        <div class="subdata">
+            <p>
+                Te azért jársz ezen az oldalon, mert jelenleg nincs közösségi profilod
+                a Körök alkalmazásban. <br />Amennyiben volt régi VIR accountod, a közösségi
+                profilt létrehozhatod az alapján, ha nem, létrehozhatod az új profilod.
+            </p>
+            <p style="color: red; font-size: 15px;">
+                Amennyiben a Kollégiumi felvételihez szeretnéd
+                beszámíttatni a közösségi pontjaid, <strong>MINDENKÉPPEN</strong> meg kell
+                adnod a NEPTUN kódod!
+            </p>
+            <p>
+                A megerősítő kódot VIR account használatakor a VIR-ben lévő, Neptun kóddal
+                történő regisztrációkor pedig a Neptun-ban megadott e-mail címedre küldjük ki. <br />
+                Új kód igénylésekor, az előző kódod automatikusan felülíródik (ha már volt).
+            </p>
+            <br />
+
+            <p>Közösségi profilod létrehozása a következő módok egyikén lehetséges:</p>
+            <div class="subdata">
+                <p><a wicket:id="importVIRProfile">Meglevő VIR profil használata</a></p>
+                <p><a wicket:id="requestNEPTUNConfirmation">Villanykaros vagyok, van NEPTUN kódom</a></p>
+                <p><a wicket:id="createProfileWithoutNEPTUN">Külsős vagyok, nincs NEPTUN kódom</a></p>
+                <p><a wicket:id="createCommunityProfile">Közösségi profil létrehozása</a></p>
+                <p><a wicket:id="enterConfirmationCode">Megerősítő kód beírása</a></p>
+                <form wicket:id="dataForm">
+                    <p><span wicket:id="inputKey" /></p>
+                    <p><input class="textinput" style="width: 300px;" wicket:id="inputData" /></p>
+                    <p><input type="submit" class="btn" value="OK"></p>
+                </form>
+            </div>
+            <br/>
+
+        </div>
+    </div>
+</wicket:extend>

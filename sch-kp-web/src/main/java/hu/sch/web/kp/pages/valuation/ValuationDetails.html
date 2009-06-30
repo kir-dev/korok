@@ -1,0 +1,34 @@
+<wicket:extend>
+    <h2 wicket:id="group.name" />
+    <div class="subdata">
+        <table class="ertekelesReszletek">
+            <tr><td class="col1">Feladó:</td> <td wicket:id="sender">felado</td></tr>
+            <tr><td class="col1">Szemeszter:</td> <td wicket:id="semester">szemeszter</td></tr>
+            <tr><td class="col1">Utolsó módosítás:</td> <td wicket:id="lastModified"></td></tr>
+            <tr><td class="col1">Utolsó elbírálás:</td> <td wicket:id="lastConsidered"></td></tr>
+        </table>
+    </div>
+    <h3>Belépők</h3>
+    <div class="subdata">
+        <table class="ertekelesReszletek">
+            <tr><td class="col1">Kérelmek státusza: </td> <td wicket:id="entrantStatus">bs</td></tr>
+            <tr><td colspan="2" class="col1" style="text-align: left;">Kiosztott belépők:</td></tr>
+            <tr><td class="col1"> KDO: </td><td wicket:id="stat.givenKDO" /></tr>
+            <tr><td class="col1"> KB: </td><td wicket:id="stat.givenKB" /></tr>
+            <tr><td class="col1"> ÁB: </td><td wicket:id="stat.givenAB" /></tr>
+            <tr><td colspan="2"><a wicket:id="entrantLink">Belépőkérelmek megtekintése</a></td></tr>
+        </table>
+    </div>
+    <h3>Pontok</h3>
+    <div class="subdata">
+        <table class="ertekelesReszletek">
+            <tr><td class="col1">Kérelmek státusza:</td> <td wicket:id="pointStatus">ps</td></tr>
+            <tr><td class="col1">Pontok átlaga:</td><td wicket:id="stat.averagePont">0.0</td></tr>
+            <tr><td class="col1">Pontok összesen:</td><td wicket:id="stat.summaPoint">0</td></tr>
+            <tr><td colspan="2"><a wicket:id="pointLink">Pontkérelmek megtekintése</a></td></tr>
+        </table>
+    </div>
+    <h3>Szöveges értékelés</h3>
+    <div class="subdata" wicket:id="valuationText">ert</div>
+
+</wicket:extend>

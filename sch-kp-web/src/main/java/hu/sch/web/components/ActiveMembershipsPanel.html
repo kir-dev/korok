@@ -1,0 +1,20 @@
+<wicket:panel wicket:id="user">
+    <div class="subdata">
+        <table class="withheader">
+            <tr class="headers">
+                <th style="width: 250px;">Felhasználó neve</th>
+                <th>Becenév</th>
+                <th style="width: 160px">Betöltött poszt</th>
+                <th style="width: 180px">Tagság kezdete</th>
+            </tr>
+            <tr wicket:id="memberships">
+                <td>
+                    <span wicket:id="userLink" />
+                </td>
+                <td wicket:id="nickName" />
+                <td wicket:id="rights" />
+                <td><span wicket:id="start" /></td>
+            </tr>
+        </table>
+    </div>
+</wicket:panel>

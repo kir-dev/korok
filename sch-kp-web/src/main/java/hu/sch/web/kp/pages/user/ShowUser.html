@@ -1,0 +1,36 @@
+<wicket:extend>
+    <div id="ViewNavigation">
+        <span>Egyszerű nézet</span>
+        <ul >
+            <li><a wicket:id="detailView">Részletes nézet</a></li>
+            <li><a wicket:id="profilelink">Teljes profil</a></li>
+        </ul>
+    </div>
+
+    <span wicket:id="pagemessages" id="pagemessages"></span>
+
+    <h2>Tagságok</h2>
+    <div class="subdata">
+        <table class="withheader">
+            <tr class="headers">
+                <th>Kör neve</th>
+                <th>Betöltött poszt</th>
+                <th>Tagsági idő</th>
+            </tr>
+            <tr wicket:id="csoptagsag">
+                <td>
+                    <a href="#" wicket:id="csoplink">
+                        <span wicket:id="group.name"/>
+                    </a>
+                </td>
+                <td wicket:id="rights" />
+                <td><span wicket:id="start"/> - <span wicket:id="end"/></td>
+            </tr>
+        </table>
+    </div>
+    <form wicket:id="csoportbaFelvetel">
+        <h2>Felvétel körbe</h2>
+        <select wicket:id="group" />
+        <input class="btn" type="submit" value="Felvétel" />
+    </form>
+</wicket:extend>

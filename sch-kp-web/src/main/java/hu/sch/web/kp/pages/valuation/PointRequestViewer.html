@@ -1,0 +1,25 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+    <div id="pontIgenylesLeadasCont">
+        <h2><span wicket:id="group.name"></span></h2>
+        <h3>Szemeszter: <span wicket:id="semester"></span></h3>
+        <div class="subdata">
+            <table class="withheader">
+                <tr class="headers">
+                    <th style="width: 250px;">Név</th>
+                    <th>Becenév</th>
+                    <th>Pont</th>
+                </tr>
+                <tr wicket:id="requests">
+                    <td>
+                        <a wicket:id="userLink">
+                            <span wicket:id="user.name"></span>
+                        </a>
+                    </td>
+                    <td><span wicket:id="user.nickName"></span></td>
+                    <td><span wicket:id="point"/></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</wicket:extend>
