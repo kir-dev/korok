@@ -4,27 +4,27 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>jdbc/sch</jta-data-source>
     <!-- ez fontos, mert a kulon .jar csomag miatt nem talalja meg magatol -->
-    <class>hu.sch.domain.BelepoIgeny</class>
-    <class>hu.sch.domain.BelepoTipus</class>
-    <class>hu.sch.domain.Csoport</class>
-    <class>hu.sch.domain.CsoportStatusz</class>
-    <class>hu.sch.domain.Csoporttagsag</class>
-    <class>hu.sch.domain.Ertekeles</class>
-    <class>hu.sch.domain.ErtekelesStatisztika</class>
-    <class>hu.sch.domain.ErtekelesStatusz</class>
-    <class>hu.sch.domain.ErtekelesUzenet</class>
-    <class>hu.sch.domain.Felhasznalo</class>
-    <class>hu.sch.domain.PontIgeny</class>
+    <class>hu.sch.domain.EntrantRequest</class>
+    <class>hu.sch.domain.EntrantType</class>
+    <class>hu.sch.domain.Group</class>
+    <class>hu.sch.domain.GroupStatus</class>
+    <class>hu.sch.domain.Membership</class>
+    <class>hu.sch.domain.Valuation</class>
+    <class>hu.sch.domain.ValuationStatistic</class>
+    <class>hu.sch.domain.ValuationStatus</class>
+    <class>hu.sch.domain.ValuationMessage</class>
+    <class>hu.sch.domain.User</class>
+    <class>hu.sch.domain.PointRequest</class>
     <class>hu.sch.domain.SystemAttribute</class>
-    <class>hu.sch.domain.Szemeszter</class>
-    
+    <class>hu.sch.domain.Semester</class>
+
     <properties>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.bytecode.use_reflection_optimizer" value="true"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
-        <property name="hibernate.cache.use_query_cache" value="true"/>
-        <!--property name="hibernate.hbm2ddl.auto" value="validate"/-->
+      <property name="hibernate.cache.use_query_cache" value="true"/>
+      <!--property name="hibernate.hbm2ddl.auto" value="validate"/-->
     </properties>
   </persistence-unit>
 </persistence>
