@@ -136,6 +136,6 @@
         </dependency>
     </dependencies>
     <properties>
-        <wicket.version>1.4-rc5</wicket.version>
+        <wicket.version>1.4-rc6</wicket.version>
     </properties>
 </project>
