@@ -40,5 +40,5 @@ public class ValidationSimpleFormComponentLabel extends SimpleFormComponentLabel
             tag.getAttributes().put("class", "labelError");
         }
     }
-};
+}
         

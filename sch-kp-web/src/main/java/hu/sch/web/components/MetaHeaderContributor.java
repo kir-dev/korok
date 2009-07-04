@@ -16,6 +16,7 @@
  */
 package hu.sch.web.components;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.IHeaderContributor;
@@ -31,7 +32,7 @@ public class MetaHeaderContributor extends HeaderContributor {
         super(headerContributor);
     }
 
-    public static final MetaHeaderContributor forMeta(final Class scope) {
+    public static final MetaHeaderContributor forMeta(final Class<? extends Page> scope) {
 
         return new MetaHeaderContributor(new IHeaderContributor() {
 

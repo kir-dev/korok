@@ -21,12 +21,12 @@ public final class OldBoysPanel extends Panel {
 
     public OldBoysPanel(String id, List<Membership> inactiveMembers) {
         super(id);
-        ListView oldBoys = new ListView("oldBoy", inactiveMembers) {
+        ListView<Membership> oldBoys = new ListView<Membership>("oldBoy", inactiveMembers) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                Membership cs = (Membership) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(cs));
+            protected void populateItem(ListItem<Membership> item) {
+                Membership cs = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<Membership>(cs));
                 item.add(new UserLink("userLink", cs.getUser()));
                 item.add(new Label("nickName", cs.getUser().getNickName()));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));

@@ -42,13 +42,13 @@ public class EditEntitlementsForm extends Form {
         }
 
         WebMarkupContainer table = new WebMarkupContainer("table");
-        ListView members = new ListView("members", lines) {
+        ListView<ExtendedGroup> members = new ListView<ExtendedGroup>("members", lines) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                ExtendedGroup ext = (ExtendedGroup) item.getModelObject();
+            protected void populateItem(ListItem<ExtendedGroup> item) {
+                ExtendedGroup ext = item.getModelObject();
                 Membership ms = ext.getMembership();
-                item.setModel(new CompoundPropertyModel(ext));
+                item.setModel(new CompoundPropertyModel<ExtendedGroup>(ext));
                 item.add(new UserLink("userLink", ms.getUser()));
                 item.add(new Label("nickName", ms.getUser().getNickName()));
                 if (activePanel) {
@@ -59,7 +59,7 @@ public class EditEntitlementsForm extends Form {
                     item.add(DateLabel.forDatePattern("membership.start", "yyyy.MM.dd."));
                     item.add(DateLabel.forDatePattern("membership.end", "yyyy.MM.dd."));
                 }
-                item.add(new CheckBox("check", new PropertyModel(ext, "selected")));
+                item.add(new CheckBox("check", new PropertyModel<Boolean>(ext, "selected")));
             }
         };
         members.setReuseItems(true);

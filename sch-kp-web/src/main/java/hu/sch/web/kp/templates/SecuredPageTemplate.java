@@ -4,6 +4,8 @@
  */
 package hu.sch.web.kp.templates;
 
+import java.io.Serializable;
+
 import hu.sch.domain.Group;
 import hu.sch.domain.MembershipType;
 import hu.sch.domain.Semester;
@@ -45,7 +47,7 @@ public class SecuredPageTemplate extends WebPage {
         WebMarkupContainer headerLabelContainer =
                 new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
-        headerLabelContainer.add(new Label("headerLabel", new Model()));
+        headerLabelContainer.add(new Label("headerLabel", new Model<Serializable>()));
 
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
@@ -129,10 +131,10 @@ public class SecuredPageTemplate extends WebPage {
     }
 
     public void setHeaderLabelText(String text) {
-        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model(text));
+        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model<Serializable>(text));
     }
 
-    public void setHeaderLabelModel(IModel model) {
+    public void setHeaderLabelModel(IModel<?> model) {
         ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(model);
     }
 

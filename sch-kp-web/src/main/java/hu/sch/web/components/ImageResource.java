@@ -55,4 +55,4 @@ public class ImageResource extends DynamicImageResource {
     protected int getCacheDuration() {
         return 3600*24;
     }
-};
+}

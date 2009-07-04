@@ -13,18 +13,18 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
  *
  * @author hege
  */
-public class EntrantTypeChooser extends DropDownChoice {
+public class EntrantTypeChooser extends DropDownChoice<EntrantType> {
 
     public EntrantTypeChooser(String id) {
         super(id, Arrays.asList(EntrantType.values()));
 
-        setChoiceRenderer(new IChoiceRenderer() {
+        setChoiceRenderer(new IChoiceRenderer<EntrantType>() {
 
-            public Object getDisplayValue(Object object) {
+            public Object getDisplayValue(EntrantType object) {
                 return getConverter(EntrantType.class).convertToString(object, getLocale());
             }
 
-            public String getIdValue(Object object, int index) {
+            public String getIdValue(EntrantType object, int index) {
                 return object.toString();
             }
         });

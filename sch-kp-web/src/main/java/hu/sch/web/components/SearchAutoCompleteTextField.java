@@ -17,11 +17,11 @@ import org.apache.wicket.util.string.Strings;
  *
  * @author aldaris
  */
-public class SearchAutoCompleteTextField extends AutoCompleteTextField {
+public class SearchAutoCompleteTextField extends AutoCompleteTextField<String> {
 
     final String[] csoportok;
 
-    public SearchAutoCompleteTextField(String id, IModel object, String[] csoportok) {
+    public SearchAutoCompleteTextField(String id, IModel<String> object, String[] csoportok) {
         super(id, object);
         this.csoportok = csoportok;
     }

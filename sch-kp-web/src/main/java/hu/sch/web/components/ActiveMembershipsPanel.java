@@ -22,12 +22,12 @@ public final class ActiveMembershipsPanel extends Panel {
 
     public ActiveMembershipsPanel(String id, List<Membership> activeMembers) {
         super(id);
-        ListView membershipsList = new ListView("memberships", activeMembers) {
+        ListView<Membership> membershipsList = new ListView<Membership>("memberships", activeMembers) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                Membership ms = (Membership) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(ms));
+            protected void populateItem(ListItem<Membership> item) {
+                Membership ms = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<Membership>(ms));
                 item.add(new UserLink("userLink", ms.getUser()));
                 item.add(new Label("nickName", ms.getUser().getNickName()));
                 item.add(new Label("rights",
