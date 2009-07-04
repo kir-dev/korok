@@ -8,7 +8,6 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.Semester;
 import hu.sch.web.kp.pages.valuation.ValuationDetailPanel;
-import hu.sch.web.kp.pages.index.Index;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;
@@ -30,8 +29,8 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class GroupHistory extends SecuredPageTemplate {
 
-    @EJB(name = "ErtekelesManagerBean")
-    ValuationManagerLocal ertekelesManager;
+    @EJB(name = "ValuationManagerBean")
+    private ValuationManagerLocal valuationManager;
     private List<Valuation> valuationList = new ArrayList<Valuation>();
     private Long id;
     private Group group;
@@ -39,6 +38,11 @@ public class GroupHistory extends SecuredPageTemplate {
     private String selected = "";
     private Valuation selectedValuation = null;
     private ValuationDetailPanel valuationPanel;
+
+    public GroupHistory() {
+        getSession().error("Túl kevés paraméter!");
+        throw new RestartResponseException(GroupHierarchy.class);
+    }
 
     public GroupHistory(PageParameters parameters) {
         Object p = parameters.get("id");
@@ -55,7 +59,7 @@ public class GroupHistory extends SecuredPageTemplate {
 
         group = userManager.findGroupById(id);
         valuationList.clear();
-        valuationList.addAll(ertekelesManager.findApprovedValuations(group));
+        valuationList.addAll(valuationManager.findApprovedValuations(group));
         final List<Semester> semesters = new ArrayList<Semester>();
         for (Valuation valuation : valuationList) {
             semesters.add(valuation.getSemester());
