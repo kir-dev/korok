@@ -33,7 +33,8 @@ public class UserManagerBean implements UserManagerLocal {
     EntityManager em;
 
     public List<User> getAllUsers() {
-        throw new UnsupportedOperationException();
+        Query q = em.createNamedQuery(User.findAll);
+        return q.getResultList();
     }
 
     public void updateUserAttributes(User user) {

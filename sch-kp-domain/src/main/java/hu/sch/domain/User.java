@@ -34,10 +34,13 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "users")
 @NamedQueries({
+    @NamedQuery(name = "findAllUser",
+    query = "SELECT u FROM User u"),
     @NamedQuery(name = "findUserWithMemberships",
     query = "SELECT u FROM User u LEFT OUTER JOIN FETCH u.memberships WHERE u.id = :id"),
     @NamedQuery(name = "findUserByNeptunCode",
     query = "SELECT u FROM User u WHERE u.neptunCode = :neptun")})
+
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
 public class User implements Serializable, Comparable<User> {
 
