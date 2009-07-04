@@ -52,6 +52,7 @@ import org.apache.log4j.Logger;
  * @author hege
  */
 @Stateless
+@SuppressWarnings("unchecked")
 public class ValuationManagerBean implements ValuationManagerLocal {
 
     private static final Logger logger = Logger.getLogger(ValuationManagerBean.class);

@@ -26,7 +26,8 @@ import javax.persistence.Query;
  *
  * @author hege
  */
-@Stateless()
+@Stateless
+@SuppressWarnings("unchecked")
 public class UserManagerBean implements UserManagerLocal {
 
     @PersistenceContext

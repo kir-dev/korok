@@ -13,7 +13,6 @@ import hu.sch.services.exceptions.PersonNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +22,6 @@ import javax.naming.NamingException;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -47,12 +45,13 @@ import org.springframework.ldap.filter.OrFilter;
 /**
  * Az Ldap-ban levo emberekhez tartozo bejegyzeseket kezelo Session Bean.
  */
+@SuppressWarnings("unchecked")
 public class LdapManagerBean implements LdapManagerLocal {
 
     /**
      * A logolashoz szukseges objektum.
      */
-    private Logger log = Logger.getLogger(getClass());
+    //private static final Logger log = Logger.getLogger(LdapManagerBean.class);
     /**
      * Bean objektum, letrehozasakor jon letre maga az ldapTemplate.
      */
@@ -114,7 +113,8 @@ public class LdapManagerBean implements LdapManagerLocal {
 
     private static class PersonContextMapper extends AbstractContextMapper {
 
-        public Object doMapFromContext(DirContextOperations context) {
+        @Override
+		public Object doMapFromContext(DirContextOperations context) {
             Person person = new Person();
             person.setUid(context.getStringAttribute("uid"));
             person.setLastName(context.getStringAttribute("sn"));
@@ -134,7 +134,7 @@ public class LdapManagerBean implements LdapManagerLocal {
             person.setConfirmationCode(context.getStringAttribute("sch-vir-confirmationCodes"));
 
             // im lista összeállítása
-            List<IMAccount> ims = new LinkedList<IMAccount>();
+            List<IMAccount> ims = new ArrayList<IMAccount>();
             person.setIMAccounts(ims);
             String[] im = context.getStringAttributes("schacUserPresenceID");
             if (im != null) {
@@ -174,7 +174,8 @@ public class LdapManagerBean implements LdapManagerLocal {
 
     private static class PersonForSearchContextMapper extends AbstractContextMapper {
 
-        public Object doMapFromContext(DirContextOperations context) {
+        @Override
+		public Object doMapFromContext(DirContextOperations context) {
             Person person = new Person();
             person.setUid(context.getStringAttribute("uid"));
             person.setFullName(context.getStringAttribute("cn"));
@@ -269,12 +270,12 @@ public class LdapManagerBean implements LdapManagerLocal {
         return p;
     }
 
-    public Person getPersonByVirId(String virId) throws PersonNotFoundException {
+	public Person getPersonByVirId(String virId) throws PersonNotFoundException {
         EqualsFilter equalsFilter = new EqualsFilter("schacPersonalUniqueID", "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:" + virId);
 
-        List<Person> searchResult = (List<Person>) getLdapTemplate().search("", equalsFilter.encode(), getContextMapper());
+        List<Person> searchResult = getLdapTemplate().search("", equalsFilter.encode(), getContextMapper());
 
-        if (searchResult.size() == 0) {
+        if (searchResult.isEmpty()) {
             throw new PersonNotFoundException();
         }
         return searchResult.get(0);
@@ -321,13 +322,13 @@ public class LdapManagerBean implements LdapManagerLocal {
     public List<Person> search(List<String> searchWords) {
         AndFilter andFilter = setUpAndFilter(searchWords);
         //andFilter.and(new EqualsFilter("inetUserStatus", "active"));
-        return (List<Person>) getLdapTemplate().search("",
+        return getLdapTemplate().search("",
                 andFilter.encode(), getSearchContextMapper());
     }
 
     public List<Person> searchByAdmin(List<String> searchWords) {
         AndFilter andFilter = setUpAndFilter(searchWords);
-        return (List<Person>) getLdapTemplate().search("",
+        return getLdapTemplate().search("",
                 andFilter.encode(), getSearchContextMapper());
     }
 
@@ -336,14 +337,14 @@ public class LdapManagerBean implements LdapManagerLocal {
         andFilter.and(
                 new NotFilter(new EqualsFilter("schacUserPrivateAttribute", "schacDateOfBirth"))).and(
                 new LikeFilter("schacDateOfBirth", "*" + searchDate));
-        return (List<Person>) getLdapTemplate().search("",
+        return getLdapTemplate().search("",
                 andFilter.encode(), getSearchContextMapper());
     }
 
     public List<Person> searchsomething(String searchDate) {
         AndFilter andFilter = new AndFilter();
         andFilter.and(new NotFilter(new EqualsFilter("schacUserPrivateAttribute", "schacDateOfBirth"))).and(new LikeFilter("schacDateOfBirth", "*" + searchDate));
-        return (List<Person>) getLdapTemplate().search("", andFilter.encode(), getContextMapper());
+        return getLdapTemplate().search("", andFilter.encode(), getContextMapper());
     }
 
     public List<Person> getPersonByDn(List<String> dnList) {
