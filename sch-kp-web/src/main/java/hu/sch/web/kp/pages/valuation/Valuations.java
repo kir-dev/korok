@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -45,7 +46,7 @@ public class Valuations extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     ValuationManagerLocal valuationManager;
-    public String selected = "";
+    private String selected = "";
     List<Valuation> valuationList = new ArrayList<Valuation>();
     private Long id;
     private Group group;
@@ -178,11 +179,19 @@ public class Valuations extends SecuredPageTemplate {
 
         // Ha mar korabban volt group kivalasztva.
         updateErtekelesList();
-        Form csoportForm = new Form("groupForm") {
+
+        DropDownChoice ddc = new DropDownChoice("groups", new PropertyModel(this, "selected"), groups)
+        {
+            @Override
+            protected boolean wantOnSelectionChangedNotifications() {
+                return true;
+            }
 
             @Override
-            public void onSubmit() {
+            protected void onSelectionChanged(final Object newSelection)
+            {
                 Iterator<Membership> iterator = ms.iterator();
+
                 Group cs = null;
                 while (iterator.hasNext()) {
                     //TODO simplify this
@@ -200,14 +209,11 @@ public class Valuations extends SecuredPageTemplate {
                         break;
                     }
                 }
+
+                setResponsePage(Valuations.class);
             }
         };
-        DropDownChoice<String> ddc = new DropDownChoice<String>("groups", groups);
-
-        ddc.setModel(new PropertyModel(this, "selected"));
-
-        csoportForm.add(ddc);
-        add(csoportForm);
+        add(ddc);
 
         WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
         ListView<Valuation> ertekelesListView = new ListView<Valuation>("valuationList", valuationList) {
@@ -278,7 +284,6 @@ public class Valuations extends SecuredPageTemplate {
         add(table);
 
         newValuation = new Link("newValuation") {
-
             @Override
             public void onClick() {
                 setResponsePage(NewValuation.class);
