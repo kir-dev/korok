@@ -5,6 +5,7 @@
 package hu.sch.web.kp.pages.user;
 
 import hu.sch.domain.EntrantRequest;
+import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
@@ -30,8 +31,10 @@ import org.apache.wicket.model.PropertyModel;
 public class UserHistory extends SecuredPageTemplate {
 
     Long id;
+    final Long EVERY_GROUP_L = -1L;
+    public Long selected = EVERY_GROUP_L;
     final String EVERY_GROUP = "Összes kör";
-    public String selected = EVERY_GROUP;
+    public String selected_text = EVERY_GROUP;
     private boolean own_profile = false;
 
     public UserHistory() {
@@ -42,7 +45,8 @@ public class UserHistory extends SecuredPageTemplate {
     public UserHistory(PageParameters parameters) {
         try {
             id = parameters.getLong("id");
-            selected = parameters.getString("group", "");
+            selected = parameters.getLong("group", EVERY_GROUP_L);
+            selected_text = userManager.findGroupById(selected).getName();
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -77,7 +81,8 @@ public class UserHistory extends SecuredPageTemplate {
 
         List<PointRequest> pointRequests = userManager.getPontIgenyekForUser(user);
 
-        DropDownChoice<String> ddc = new DropDownChoice<String>("group", new PropertyModel<String>(this, "selected"), groups) {
+        DropDownChoice ddc = new DropDownChoice("group", new PropertyModel(this, "selected_text"), groups)
+        {
 
             @Override
             protected boolean wantOnSelectionChangedNotifications() {
@@ -85,11 +90,25 @@ public class UserHistory extends SecuredPageTemplate {
             }
 
             @Override
-            protected void onSelectionChanged(final String newSelection) {
-                String selected = groups.get(Integer.valueOf(this.getInput()));
-
+            protected void onSelectionChanged(final Object newSelection)
+            {
                 PageParameters pp = new PageParameters();
-                pp.add("group", selected);
+
+                // Ez van a legördülő menüben kiválasztva
+                String Lselected = groups.get(Integer.valueOf(this.getInput()));
+
+                if (Lselected.equals(EVERY_GROUP))
+                {
+                    // minden kört megjelenítek
+                    pp.add("group", EVERY_GROUP_L.toString());
+                }
+                else
+                {
+                    // csak a kiválasztott kört jelenítem meg
+                    Group group = userManager.findGroupByName(Lselected).get(0);
+                    pp.add("group", group.getId().toString());
+                }
+
                 pp.add("id", String.valueOf(id));
                 setResponsePage(UserHistory.class, pp);
             }
@@ -188,12 +207,12 @@ public class UserHistory extends SecuredPageTemplate {
         add(splv);
 
         // Pontigények táblázat
-        if (!selected.equals(EVERY_GROUP)) {
+        if (!selected.equals(EVERY_GROUP_L)) {
             // szűrés adott csoportra
 
             ArrayList<PointRequest> obj = new ArrayList<PointRequest>();
             for (PointRequest pontIgeny : pointRequests) {
-                if (pontIgeny.getValuation().getGroup().getName().equals(selected)) {
+                if (pontIgeny.getValuation().getGroup().getId().equals(selected)) {
                     obj.add(pontIgeny);
                 }
             }
@@ -216,12 +235,12 @@ public class UserHistory extends SecuredPageTemplate {
         // Belépő igények táblázat
         List<EntrantRequest> entrantRequests = userManager.getBelepoIgenyekForUser(user);
 
-        if (!selected.equals(EVERY_GROUP)) {
+        if (!selected.equals(EVERY_GROUP_L)) {
             // szűrés adott csoportra
 
             ArrayList<EntrantRequest> obj = new ArrayList<EntrantRequest>();
             for (EntrantRequest belepoIgeny : entrantRequests) {
-                if (belepoIgeny.getValuation().getGroup().getName().equals(selected)) {
+                if (belepoIgeny.getValuation().getGroup().getId().equals(selected)) {
                     obj.add(belepoIgeny);
                 }
             }

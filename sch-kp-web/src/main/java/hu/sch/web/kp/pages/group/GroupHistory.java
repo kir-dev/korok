@@ -60,38 +60,74 @@ public class GroupHistory extends SecuredPageTemplate {
         group = userManager.findGroupById(id);
         valuationList.clear();
         valuationList.addAll(valuationManager.findApprovedValuations(group));
-        final List<Semester> semesters = new ArrayList<Semester>();
+        final List<String> semesters = new ArrayList<String>();
         for (Valuation valuation : valuationList) {
-            semesters.add(valuation.getSemester());
+            semesters.add(valuation.getSemester().toString());
         }
-        Form periodForm = new Form("periodForm") {
+        
+        add(new Label("name", group.getName()));
+        DropDownChoice ddc = new DropDownChoice("semesters", new PropertyModel(this, "selected"), semesters)
+        {
+            @Override
+            protected boolean wantOnSelectionChangedNotifications() {
+                return true;
+            }
 
             @Override
-            public void onSubmit() {
+            protected void onSelectionChanged(final Object newSelection)
+            {
                 Iterator<Valuation> iterator = valuationList.iterator();
-                while (iterator.hasNext()) {
+                while (iterator.hasNext())
+                {
                     selectedValuation = iterator.next();
                     semester = selectedValuation.getSemester();
-                    if (semester.toString().equals(selected)) {
-                        setHeaderLabelText("A kör részletes pontozásai");
-                        valuationPanel.updateDatas(selectedValuation);
-                        valuationPanel.setVisible(true);
+                    if (semester.toString().equals(selected))
+                    {
+//                        setHeaderLabelText("A kör részletes pontozásai");
+//                        valuationPanel.updateDatas(selectedValuation);
+//                        valuationPanel.setVisible(true);
                         break;
                     }
                 }
+
+                PageParameters pp = new PageParameters();
+                pp.add("id", id.toString());
+                pp.add("sid", semester.getId());
+                setResponsePage(GroupHistory.class, pp);
             }
         };
-        add(new Label("name", group.getName()));
-        DropDownChoice<Semester> ddc = new DropDownChoice<Semester>("semesters", semesters);
-        ddc.setModel(new PropertyModel<Semester>(this, "selected"));
 
-        periodForm.add(ddc);
-        add(periodForm);
-        setDefaultModel(new CompoundPropertyModel<Valuation>(selectedValuation));
+        add(ddc);
+
+        setDefaultModel(new CompoundPropertyModel(selectedValuation));
 
         valuationPanel = new ValuationDetailPanel("valuationInfo");
         valuationPanel.updateDatas(selectedValuation);
         valuationPanel.setVisible(false);
         add(valuationPanel);
+
+        try
+        {
+            Semester s = new Semester();
+            s.setId(parameters.getString("sid", ""));
+            selected = s.toString();
+
+            Iterator<Valuation> iterator = valuationList.iterator();
+            while (iterator.hasNext())
+            {
+                selectedValuation = iterator.next();
+                semester = selectedValuation.getSemester();
+                if (semester.toString().equals(selected))
+                {
+                    setHeaderLabelText("A kör részletes pontozásai");
+                    valuationPanel.updateDatas(selectedValuation);
+                    valuationPanel.setVisible(true);
+                    break;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+        }
     }
 }
