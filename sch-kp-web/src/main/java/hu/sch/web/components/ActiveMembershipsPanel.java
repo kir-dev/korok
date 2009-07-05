@@ -31,7 +31,7 @@ public final class ActiveMembershipsPanel extends Panel {
                 item.add(new UserLink("userLink", ms.getUser()));
                 item.add(new Label("nickName", ms.getUser().getNickName()));
                 item.add(new Label("rights",
-                        getConverter(MembershipType.class).convertToString(ms.getRightsAsString(), getLocale())));
+                        getConverter(MembershipType[].class).convertToString(ms.getRightsAsString(), getLocale())));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
             }
         };

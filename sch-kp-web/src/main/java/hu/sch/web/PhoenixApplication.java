@@ -105,6 +105,7 @@ public class PhoenixApplication extends WebApplication {
         locator.set(EntrantType.class, new EntrantTypeConverter());
         locator.set(ValuationStatus.class, new ValuationStatusConverter());
         locator.set(MembershipType.class, new MembershipTypeConverter());
+        locator.set(MembershipType[].class, new MembershipTypeConverter());
 
         return locator;
     }

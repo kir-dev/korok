@@ -53,7 +53,7 @@ public class EditEntitlementsForm extends Form {
                 item.add(new Label("nickName", ms.getUser().getNickName()));
                 if (activePanel) {
                     item.add(new Label("rights",
-                            getConverter(MembershipType.class).convertToString(ms.getRightsAsString(), getLocale())));
+                            getConverter(MembershipType[].class).convertToString(ms.getRightsAsString(), getLocale())));
                     item.add(new ChangePostLink("postLink", ext.getMembership()));
                 } else {
                     item.add(DateLabel.forDatePattern("membership.start", "yyyy.MM.dd."));

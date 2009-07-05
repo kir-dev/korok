@@ -5,6 +5,7 @@
 package hu.sch.web.kp.util;
 
 import hu.sch.domain.MembershipType;
+
 import java.util.Locale;
 
 import org.apache.wicket.util.convert.ConversionException;
@@ -21,6 +22,9 @@ public class MembershipTypeConverter implements IConverter {
     }
 
     public String convertToString(Object value, Locale locale) {
+        if (value instanceof MembershipType)
+            return actualConverter((MembershipType)value);
+        
         MembershipType[] values = (MembershipType[])value;
         StringBuilder ret = new StringBuilder(values.length * 16);
         for (MembershipType membershipType : values) {

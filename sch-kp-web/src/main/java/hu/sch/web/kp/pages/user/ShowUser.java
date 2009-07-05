@@ -86,7 +86,7 @@ public class ShowUser extends SecuredPageTemplate {
                         cs.getGroup().getId().toString()));
                 csoplink.add(new Label("group.name"));
                 item.add(csoplink);
-                item.add(new Label("rights", getConverter(MembershipType.class).convertToString(cs.getRightsAsString(), getLocale())));
+                item.add(new Label("rights", getConverter(MembershipType[].class).convertToString(cs.getRightsAsString(), getLocale())));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
             }
