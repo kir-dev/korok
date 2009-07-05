@@ -49,7 +49,7 @@ public class EditSettings extends SecuredPageTemplate {
 
         setValuationPeriod(systemManager.getErtekelesIdoszak());
 
-        Form beallitasForm = new Form("settingsForm") {
+        Form<Semester> beallitasForm = new Form<Semester>("settingsForm") {
 
             @Override
             public void onSubmit() {
@@ -63,37 +63,37 @@ public class EditSettings extends SecuredPageTemplate {
                 }
             }
         };
-        beallitasForm.setModel(new CompoundPropertyModel(semester));
-        final TextField firstYear = new TextField("firstYear");
-        beallitasForm.add(firstYear.add(new RangeValidator(2000, 2030)));
-        final TextField secondYear = new TextField("secondYear");
-        beallitasForm.add(secondYear.add(new RangeValidator(2000, 2030)));
+        beallitasForm.setModel(new CompoundPropertyModel<Semester>(semester));
+        final TextField<Integer> firstYear = new TextField<Integer>("firstYear");
+        beallitasForm.add(firstYear.add(new RangeValidator<Integer>(2000, 2030)));
+        final TextField<Integer> secondYear = new TextField<Integer>("secondYear");
+        beallitasForm.add(secondYear.add(new RangeValidator<Integer>(2000, 2030)));
         beallitasForm.add(new CheckBox("isAutumn"));
         beallitasForm.add(new AbstractFormValidator() {
 
-            public FormComponent[] getDependentFormComponents() {
+			public FormComponent<?>[] getDependentFormComponents() {
                 return new FormComponent[]{firstYear, secondYear};
             }
 
-            public void validate(Form form) {
+            public void validate(Form<?> form) {
                 if (Integer.parseInt(firstYear.getValue()) + 1 !=
                         Integer.parseInt(secondYear.getValue())) {
                     error(firstYear, "err.SzemeszterEvKulonbseg");
                 }
             }
         });
-        DropDownChoice ddc1 = new DropDownChoice("periodSelector",
+        DropDownChoice<ValuationPeriod> ddc1 = new DropDownChoice<ValuationPeriod>("periodSelector",
                 Arrays.asList(ValuationPeriod.values()));
         ddc1.setRequired(true);
-        ddc1.setModel(new PropertyModel(this, "valuationPeriod"));
+        ddc1.setModel(new PropertyModel<ValuationPeriod>(this, "valuationPeriod"));
 
-        ddc1.setChoiceRenderer(new IChoiceRenderer() {
+        ddc1.setChoiceRenderer(new IChoiceRenderer<ValuationPeriod>() {
 
-            public Object getDisplayValue(Object object) {
+            public Object getDisplayValue(ValuationPeriod object) {
                 return getLocalizer().getString("ertekelesidoszak." + object.toString(), getParent());
             }
 
-            public String getIdValue(Object object, int index) {
+            public String getIdValue(ValuationPeriod object, int index) {
                 return object.toString();
             }
         });

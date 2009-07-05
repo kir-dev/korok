@@ -62,7 +62,7 @@ public class UserHistory extends SecuredPageTemplate {
         if (own_profile) {
             add(new BookmarkablePageLink("simpleView", ShowUser.class));
         } else {
-            add(new BookmarkablePageLink("simpleView", ShowUser.class, new PageParameters("id=" + user.getId().toString())));
+            add(new BookmarkablePageLink("simpleView", ShowUser.class, new PageParameters("id=" + user.getId())));
         }
         add(new ExternalLink("profilelink", "/profile/show/virid/" + id.toString()));
         setDefaultModel(new CompoundPropertyModel(user));
@@ -77,7 +77,7 @@ public class UserHistory extends SecuredPageTemplate {
 
         List<PointRequest> pointRequests = userManager.getPontIgenyekForUser(user);
 
-        DropDownChoice ddc = new DropDownChoice("group", new PropertyModel(this, "selected"), groups) {
+        DropDownChoice<String> ddc = new DropDownChoice<String>("group", new PropertyModel<String>(this, "selected"), groups) {
 
             @Override
             protected boolean wantOnSelectionChangedNotifications() {
@@ -85,7 +85,7 @@ public class UserHistory extends SecuredPageTemplate {
             }
 
             @Override
-            protected void onSelectionChanged(final Object newSelection) {
+            protected void onSelectionChanged(final String newSelection) {
                 String selected = groups.get(Integer.valueOf(this.getInput()));
 
                 PageParameters pp = new PageParameters();
@@ -116,7 +116,7 @@ public class UserHistory extends SecuredPageTemplate {
         }
 
         // a csak előző félévben pontozott köröket is hozzá kell majd számolni a jelenlegi féléves pontokhoz
-        for (SemesterGroupPoint skp : (ArrayList<SemesterGroupPoint>) sgp.clone()) {
+        for (SemesterGroupPoint skp : sgp.toArray(new SemesterGroupPoint[sgp.size()])) {
             boolean isNot = true;
             for (SemesterGroupPoint skp2 : sgp) {
                 if (skp2.getGroupId().equals(skp.getGroupId()) &&
@@ -176,11 +176,11 @@ public class UserHistory extends SecuredPageTemplate {
 
 
         // megjelenítés...
-        ListView splv = new ListView("semesterPointList", semesterPoints) {
+        ListView<SemesterPoint> splv = new ListView<SemesterPoint>("semesterPointList", semesterPoints) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                SemesterPoint p = (SemesterPoint) item.getModelObject();
+            protected void populateItem(ListItem<SemesterPoint> item) {
+                SemesterPoint p = item.getModelObject();
                 item.add(new Label("semesterPoint.semester", p.getSemester().toString()));
                 item.add(new Label("semesterPoint.point", String.valueOf(p.getPoint())));
             }
@@ -200,11 +200,11 @@ public class UserHistory extends SecuredPageTemplate {
             pointRequests = obj;
         }
 
-        ListView plv = new ListView("pointRequestList", pointRequests) {
+        ListView<PointRequest> plv = new ListView<PointRequest>("pointRequestList", pointRequests) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                item.setModel(new CompoundPropertyModel(item.getModelObject()));
+            protected void populateItem(ListItem<PointRequest> item) {
+                item.setModel(new CompoundPropertyModel<PointRequest>(item.getModelObject()));
 
                 item.add(new Label("valuation.semester"));
                 item.add(new Label("valuation.group.name"));
@@ -228,11 +228,10 @@ public class UserHistory extends SecuredPageTemplate {
             entrantRequests = obj;
         }
 
-        ListView blv = new ListView("entrantRequestList", entrantRequests) {
-
+        ListView<EntrantRequest> blv = new ListView<EntrantRequest>("entrantRequestList", entrantRequests) {
             @Override
-            protected void populateItem(ListItem item) {
-                item.setModel(new CompoundPropertyModel(item.getModelObject()));
+            protected void populateItem(ListItem<EntrantRequest> item) {
+                item.setModel(new CompoundPropertyModel<EntrantRequest>(item.getModelObject()));
 
                 item.add(new Label("valuation.semester"));
                 item.add(new Label("valuation.group.name"));

@@ -41,7 +41,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
         add(new FeedbackPanel("pagemessages"));
         final String[] csoportok = sort(userManager.getEveryGroupName().toArray(new String[0]));
         final SearchAutoCompleteTextField field =
-                new SearchAutoCompleteTextField("ac", new Model(""), csoportok);
+                new SearchAutoCompleteTextField("ac", new Model<String>(""), csoportok);
         final Label label = new Label("selectedValue", field.getModel());
         Form form = new Form("form") {
 
@@ -89,12 +89,13 @@ public class GroupHierarchy extends SecuredPageTemplate {
         LinkTree tree = new LinkTree("hierarchyTree", model) {
 
             @Override
-            protected IModel getNodeTextModel(IModel nodeModel) {
-                return new PropertyModel(nodeModel, "group.name");
+            protected IModel<Object> getNodeTextModel(IModel<Object> nodeModel) {
+                return new PropertyModel<Object>(nodeModel, "group.name");
             }
-
+            
+            @Override
             protected void onNodeLinkClicked(
-                    TreeNode node, BaseTree baseTree, AjaxRequestTarget target) {
+                    Object node, BaseTree baseTree, AjaxRequestTarget target) {
                 Long csoportId = ((CsoportTreeNode) node).getGroup().getId();
                 setResponsePage(ShowGroup.class,
                         new PageParameters("id=" + csoportId.toString()));

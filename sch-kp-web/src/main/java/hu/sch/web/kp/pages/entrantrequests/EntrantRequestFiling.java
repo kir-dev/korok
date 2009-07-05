@@ -16,7 +16,6 @@ import hu.sch.services.ValuationManagerLocal;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -37,7 +36,7 @@ public class EntrantRequestFiling extends SecuredPageTemplate {
         //TODO jogosultság?!
         final List<EntrantRequest> igenylista = igenyeketElokeszit(ert);
 
-        setDefaultModel(new CompoundPropertyModel(ert));
+        setDefaultModel(new CompoundPropertyModel<Valuation>(ert));
         add(new Label("csoport.nev"));
         add(new Label("szemeszter"));
 
@@ -57,14 +56,14 @@ public class EntrantRequestFiling extends SecuredPageTemplate {
                 setResponsePage(Valuations.class);
             }
         };
-        IDataProvider provider = new ListDataProviderCompoundPropertyModelImpl(igenylista);
-        DataView dview = new DataView("igenyek", provider) {
+        IDataProvider<EntrantRequest> provider = new ListDataProviderCompoundPropertyModelImpl<EntrantRequest>(igenylista);
+        DataView<EntrantRequest> dview = new DataView<EntrantRequest>("igenyek", provider) {
 
             @Override
-            protected void populateItem(Item item) {
+            protected void populateItem(Item<EntrantRequest> item) {
                 item.add(new Label("felhasznalo.nev"));
                 item.add(new Label("felhasznalo.becenev"));
-                DropDownChoice bt = new EntrantTypeChooser("belepotipus");
+                EntrantTypeChooser bt = new EntrantTypeChooser("belepotipus");
                 bt.setRequired(true);
                 item.add(bt);
             }

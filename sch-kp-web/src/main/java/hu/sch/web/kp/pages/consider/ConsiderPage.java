@@ -15,7 +15,6 @@ import hu.sch.web.kp.pages.valuation.ValuationDetails;
 import hu.sch.web.kp.pages.valuation.ValuationMessages;
 import hu.sch.web.kp.pages.valuation.EntrantRequestViewer;
 import hu.sch.web.kp.pages.valuation.PointRequestViewer;
-import hu.sch.web.kp.pages.valuation.ShowValuation;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
@@ -71,7 +70,7 @@ public class ConsiderPage extends SecuredPageTemplate {
         setHeaderLabelText("Leadott értékelések elbírálása");
         add(new FeedbackPanel("pagemessages"));
         add(new Label("semester", new PropertyModel(this, "semester")));
-        SortableDataProvider dp = new SortableValuationStatisticDataProvider(valuationManager, getSemester());
+        SortableDataProvider<ValuationStatistic> dp = new SortableValuationStatisticDataProvider(valuationManager, getSemester());
 
         Form form = new Form("considerForm") {
 
@@ -99,11 +98,11 @@ public class ConsiderPage extends SecuredPageTemplate {
         };
         add(form);
 
-        form.add(new DataView("valuationList", dp) {
+        form.add(new DataView<ValuationStatistic>("valuationList", dp) {
 
             @Override
-            protected void populateItem(Item item) {
-                final Valuation val = ((ValuationStatistic) item.getModelObject()).getValuation();
+            protected void populateItem(Item<ValuationStatistic> item) {
+                final Valuation val = item.getModelObject().getValuation();
 
                 ConsideredValuation cv = null;
                 if (!getUnderConsidering().containsKey(val.getId())) {
@@ -190,8 +189,8 @@ public class ConsiderPage extends SecuredPageTemplate {
                 if (val.getEntrantStatus() != null) {
                     entrantStatus.setVisible(!val.getEntrantStatus().equals(ValuationStatus.NINCS));
                 }
-                pointStatus.setDefaultModel(new PropertyModel(cv, "pointStatus"));
-                entrantStatus.setDefaultModel(new PropertyModel(cv, "entrantStatus"));
+                pointStatus.setDefaultModel(new PropertyModel<ConsideredValuation>(cv, "pointStatus"));
+                entrantStatus.setDefaultModel(new PropertyModel<ConsideredValuation>(cv, "entrantStatus"));
                 item.add(pointStatus);
                 item.add(entrantStatus);
             }

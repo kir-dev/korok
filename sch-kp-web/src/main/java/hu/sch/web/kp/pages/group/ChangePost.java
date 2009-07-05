@@ -108,10 +108,10 @@ public final class ChangePost extends SecuredPageTemplate {
         tomb.add(MembershipType.PRMENEDZSER);
 
 
-        CheckBoxMultipleChoice choices = new CheckBoxMultipleChoice("choices", tomb) {
+        CheckBoxMultipleChoice<MembershipType> choices = new CheckBoxMultipleChoice<MembershipType>("choices", tomb) {
 
             @Override
-            protected boolean isDisabled(Object object, int index, String selected) {
+            protected boolean isDisabled(MembershipType object, int index, String selected) {
                 if (index == 1) {
                     return true;
                 }

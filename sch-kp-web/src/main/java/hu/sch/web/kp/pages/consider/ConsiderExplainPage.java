@@ -47,12 +47,12 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
         };
 
         add(considerForm);
-        considerForm.add(new ListView("consideredValuation", underConsider) {
+        considerForm.add(new ListView<ConsideredValuation>("consideredValuation", underConsider) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                final ConsideredValuation cv = (ConsideredValuation) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(cv));
+            protected void populateItem(ListItem<ConsideredValuation> item) {
+                final ConsideredValuation cv = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<ConsideredValuation>(cv));
                 item.add(new Label("valuation.group.name"));
                 item.add(new Label("pointStatus"));
                 item.add(new Label("entrantStatus"));

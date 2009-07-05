@@ -19,7 +19,7 @@ import org.apache.wicket.model.IModel;
  *
  * @author hege
  */
-public class SortableValuationStatisticDataProvider extends SortableDataProvider {
+public class SortableValuationStatisticDataProvider extends SortableDataProvider<ValuationStatistic> {
     ValuationManagerLocal ertekelesManager;
     
     private List<ValuationStatistic> statList;
@@ -31,7 +31,7 @@ public class SortableValuationStatisticDataProvider extends SortableDataProvider
         setSort(new SortParam("csoportNev", true));
     }
     
-    public Iterator<?> iterator(int first, int count) {
+    public Iterator<ValuationStatistic> iterator(int first, int count) {
         // cache-elt példány
         //statList = null;
         return getStatList().iterator();
@@ -48,7 +48,7 @@ public class SortableValuationStatisticDataProvider extends SortableDataProvider
         return statList;
     }
 
-    public IModel model(Object object) {
-        return new CompoundPropertyModel(object);
+    public IModel<ValuationStatistic> model(ValuationStatistic object) {
+        return new CompoundPropertyModel<ValuationStatistic>(object);
     }
 }

@@ -54,14 +54,14 @@ public class EntrantRequestExplanation extends SecuredPageTemplate {
             }
         };
 
-        DataView dview = new DataView("indoklas", new ListDataProviderCompoundPropertyModelImpl(indoklando)) {
+        DataView<EntrantRequest> dview = new DataView<EntrantRequest>("indoklas", new ListDataProviderCompoundPropertyModelImpl<EntrantRequest>(indoklando)) {
 
             @Override
-            protected void populateItem(Item item) {
+            protected void populateItem(Item<EntrantRequest> item) {
                 item.add(new Label("felhasznalo.nev"));
                 item.add(new Label("felhasznalo.becenev"));
                 item.add(new Label("belepotipus"));
-                TextArea textArea = new TextArea("szovegesErtekeles");
+                TextArea<String> textArea = new TextArea<String>("szovegesErtekeles");
                 
                 item.add(textArea);
             }

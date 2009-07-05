@@ -82,12 +82,12 @@ public class GroupHistory extends SecuredPageTemplate {
             }
         };
         add(new Label("name", group.getName()));
-        DropDownChoice ddc = new DropDownChoice("semesters", semesters);
-        ddc.setModel(new PropertyModel(this, "selected"));
+        DropDownChoice<Semester> ddc = new DropDownChoice<Semester>("semesters", semesters);
+        ddc.setModel(new PropertyModel<Semester>(this, "selected"));
 
         periodForm.add(ddc);
         add(periodForm);
-        setDefaultModel(new CompoundPropertyModel(selectedValuation));
+        setDefaultModel(new CompoundPropertyModel<Valuation>(selectedValuation));
 
         valuationPanel = new ValuationDetailPanel("valuationInfo");
         valuationPanel.updateDatas(selectedValuation);

@@ -98,9 +98,9 @@ public class SelectGroup extends SecuredPageTemplate {
                 }
             }
         };
-        DropDownChoice ddc = new DropDownChoice("groups", csoportok);
+        DropDownChoice<String> ddc = new DropDownChoice<String>("groups", csoportok);
 
-        ddc.setModel(new PropertyModel(this, "selected"));
+        ddc.setModel(new PropertyModel<String>(this, "selected"));
         csoportForm.add(ddc);
         add(csoportForm);
 

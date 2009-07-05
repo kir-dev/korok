@@ -7,7 +7,6 @@ package hu.sch.web.kp.pages.group;
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
 import hu.sch.domain.MembershipType;
-import hu.sch.web.kp.pages.index.Index;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
@@ -24,7 +23,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -56,8 +54,8 @@ public class EditGroupInfo extends SecuredPageTemplate {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
             throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + id.toString()));
         }
-        IModel model = new CompoundPropertyModel(group);
-        Form editInfoForm = new Form("editInfoForm", model) {
+        IModel<Group> model = new CompoundPropertyModel<Group>(group);
+        Form<Group> editInfoForm = new Form<Group>("editInfoForm", model) {
 
             @Override
             protected void onSubmit() {
@@ -73,38 +71,38 @@ public class EditGroupInfo extends SecuredPageTemplate {
             }
         };
 
-        RequiredTextField nameTF = new RequiredTextField("name");
+        RequiredTextField<String> nameTF = new RequiredTextField<String>("name");
         nameTF.add(StringValidator.lengthBetween(2, 255));
         nameTF.add(new PatternValidator("[^|:]*"));
         nameTF.add(new ValidationStyleBehavior());
         editInfoForm.add(nameTF);
-        nameTF.setLabel(new Model("Név *"));
+        nameTF.setLabel(new Model<String>("Név *"));
         editInfoForm.add(new ValidationSimpleFormComponentLabel("nameLabel", nameTF));
 
         TextField<Integer> foundedTF = new TextField<Integer>("founded");
-        foundedTF.add(new RangeValidator(1960, Calendar.getInstance().get(java.util.Calendar.YEAR)));
+        foundedTF.add(new RangeValidator<Integer>(1960, Calendar.getInstance().get(Calendar.YEAR)));
         foundedTF.add(new ValidationStyleBehavior());
         editInfoForm.add(foundedTF);
-        foundedTF.setLabel(new Model("Alapítás éve"));
+        foundedTF.setLabel(new Model<String>("Alapítás éve"));
         editInfoForm.add(new ValidationSimpleFormComponentLabel("foundedLabel", foundedTF));
 
-        TextField webPageTF = new TextField("webPage");
+        TextField<String> webPageTF = new TextField<String>("webPage");
         webPageTF.add(new UrlValidator());
         webPageTF.add(new ValidationStyleBehavior());
         editInfoForm.add(webPageTF);
-        webPageTF.setLabel(new Model("Weboldal"));
+        webPageTF.setLabel(new Model<String>("Weboldal"));
         editInfoForm.add(new ValidationSimpleFormComponentLabel("webPageLabel", webPageTF));
 
-        TextField mailingListTF = new TextField("mailingList");
+        TextField<String> mailingListTF = new TextField<String>("mailingList");
         mailingListTF.add(EmailAddressValidator.getInstance());
         mailingListTF.add(new ValidationStyleBehavior());
         editInfoForm.add(mailingListTF);
-        mailingListTF.setLabel(new Model("Levelezőlista"));
+        mailingListTF.setLabel(new Model<String>("Levelezőlista"));
         editInfoForm.add(new ValidationSimpleFormComponentLabel("mailingListLabel", mailingListTF));
 
-        TextArea introductionTA = new TextArea("introduction");
+        TextArea<String> introductionTA = new TextArea<String>("introduction");
         editInfoForm.add(introductionTA);
-        introductionTA.setLabel(new Model("Bemutatkozás"));
+        introductionTA.setLabel(new Model<String>("Bemutatkozás"));
         editInfoForm.add(new SimpleFormComponentLabel("introductionLabel", introductionTA));
 
         add(editInfoForm);

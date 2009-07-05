@@ -70,25 +70,25 @@ public class PointRequestFiling extends SecuredPageTemplate {
         };
 
         // Bevitelhez táblázat létrehozása
-        ListView listView = new ListView("requestList", requestList) {
+        ListView<PointRequest> listView = new ListView<PointRequest>("requestList", requestList) {
 
             // QPA group pontozásvalidátora
-            final IValidator QpaPontValidator = new RangeValidator(0, 100);
+            final IValidator<Integer> QpaPontValidator = new RangeValidator<Integer>(0, 100);
             // A többi group pontozásvalidátora
-            final IValidator pontValidator = new RangeValidator(0, 50);
+            final IValidator<Integer> pontValidator = new RangeValidator<Integer>(0, 50);
             // QPA group ID-ja
             private final long SCH_QPA_ID = 27L;
 
             @Override
-            protected void populateItem(ListItem item) {
-                PointRequest pontIgeny = (PointRequest) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(pontIgeny));
+            protected void populateItem(ListItem<PointRequest> item) {
+                PointRequest pontIgeny = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<PointRequest>(pontIgeny));
                 final ValidationError validationError = new ValidationError();
                 validationError.addMessageKey("err.MinimumPontHiba");
 
                 item.add(new Label("user.name"));
                 item.add(new Label("user.nickName"));
-                TextField pont = new TextField("point");
+                TextField<Integer> pont = new TextField<Integer>("point");
                 //csoportfüggő validátor hozzácsatolása
                 if (ert.getGroup().getId().equals(SCH_QPA_ID)) {
                     pont.add(QpaPontValidator);
@@ -97,10 +97,10 @@ public class PointRequestFiling extends SecuredPageTemplate {
                 }
 
                 //olyan validátor, ami akkor dob hibát ha 0 és 5 pont között adott meg
-                pont.add(new IValidator() {
+                pont.add(new IValidator<Integer>() {
 
-                    public void validate(IValidatable arg0) {
-                        final Integer pont = (Integer) arg0.getValue();
+                    public void validate(IValidatable<Integer> arg0) {
+                        final Integer pont = arg0.getValue();
                         if (0 < pont && pont < 5) {
                             arg0.error(validationError);
                         }
@@ -122,7 +122,7 @@ public class PointRequestFiling extends SecuredPageTemplate {
 
         if (pointRequests.size() != members.size()) {
             Set<Long> alreadyAdded =
-                    new HashSet<Long>(members.size());
+                    new HashSet<Long>(pointRequests.size());
 
             for (PointRequest p : pointRequests) {
                 alreadyAdded.add(p.getUser().getId());

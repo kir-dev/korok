@@ -74,12 +74,12 @@ public class ShowUser extends SecuredPageTemplate {
         add(new ExternalLink("profilelink",
                 "/profile/show/virid/" + id.toString()));
         user.sortMemberships();
-        ListView csoptagsagok = new ListView("csoptagsag", user.getMemberships()) {
+        ListView<Membership> csoptagsagok = new ListView<Membership>("csoptagsag", user.getMemberships()) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                Membership cs = (Membership) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(cs));
+            protected void populateItem(ListItem<Membership> item) {
+                Membership cs = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<Membership>(cs));
                 BookmarkablePageLink csoplink =
                         new BookmarkablePageLink("csoplink", ShowGroup.class,
                         new PageParameters("id=" +
