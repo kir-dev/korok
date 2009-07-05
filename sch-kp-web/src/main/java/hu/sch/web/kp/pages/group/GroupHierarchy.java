@@ -7,11 +7,13 @@ import java.io.Serializable;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
@@ -30,7 +32,8 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class GroupHierarchy extends SecuredPageTemplate {
 
-    private String[] sort(String[] items) {
+    private String[] sort(List<String> list) {
+        String[] items = list.toArray(new String[list.size()]);
         Collator huCollator = Collator.getInstance(new Locale("hu"));
         Arrays.sort(items, huCollator);
         return items;
@@ -39,7 +42,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
     public GroupHierarchy() {
         setHeaderLabelText("Csoportok listája");
         add(new FeedbackPanel("pagemessages"));
-        final String[] csoportok = sort(userManager.getEveryGroupName().toArray(new String[0]));
+        final String[] csoportok = sort(userManager.getEveryGroupName());
         final SearchAutoCompleteTextField field =
                 new SearchAutoCompleteTextField("ac", new Model<String>(""), csoportok);
         final Label label = new Label("selectedValue", field.getModel());

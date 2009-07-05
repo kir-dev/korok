@@ -71,23 +71,26 @@ public final class SearchResultPage extends ProfilePage {
 
         Boolean hasLessThanThreeCharacterSearchWord = false;
         StringBuilder quotedExpression = null;
+        StringBuilder backup = null;
         while (tok.hasMoreTokens()) {
             String s = tok.nextToken();
             if (s.equals("\"")) {
                 if (quotedExpression != null) {
-                    String expr = quotedExpression.toString();
-                    if (expr.length() > 1) {
+                    if (quotedExpression.length() > 1) {
 
-                        if (expr.length() >= 3) {
-                            searchWords.add(expr);
+                        if (quotedExpression.length() >= 3) {
+                            searchWords.add(quotedExpression.toString());
                         } else {
                             hasLessThanThreeCharacterSearchWord = true;
                         }
 
                     }
+                    quotedExpression.setLength(0);
                     quotedExpression = null;
                 } else {
-                    quotedExpression = new StringBuilder();
+                    if (backup == null)
+                        backup = new StringBuilder();
+                    quotedExpression = backup;
                 }
             } else {
                 if (quotedExpression != null) {

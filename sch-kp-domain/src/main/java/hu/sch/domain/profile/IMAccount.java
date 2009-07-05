@@ -37,7 +37,6 @@ public class IMAccount implements Serializable {
      */
     @Override
     public String toString() {
-        return new StringBuilder(protocol.toString()).
-                append(":").append(presenceID).toString();
+        return protocol.toString() + ":" + presenceID;
     }
 }

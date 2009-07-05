@@ -401,7 +401,7 @@ public class Person implements Serializable {
     }
 
     public void setToSave() {
-        this.schacPrivateAttribute = privateAttributes.toArray(new String[0]);
+        this.schacPrivateAttribute = privateAttributes.toArray(new String[privateAttributes.size()]);
 
         if (lastName != null && firstName != null) {
             fullName = lastName + " " + firstName;

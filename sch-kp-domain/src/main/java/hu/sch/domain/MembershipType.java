@@ -13,37 +13,35 @@ import java.util.ArrayList;
 public enum MembershipType {
 
     TAG(0),
-    KORVEZETO(1) {
-
-        @Override
-        public String toString() {
-            return "körvezető";
-        }
-    },
+    KORVEZETO(1, "körvezető"),
     VOLTKORVEZETO(2),
-    GAZDASAGIS(4) {
-
-        @Override
-        public String toString() {
-            return "gazdaságis";
-        }
-    },
-    PRMENEDZSER(8) {
-
-        @Override
-        public String toString() {
-            return "PR menedzser";
-        }
-    },
+    GAZDASAGIS(4, "gazdaságis"),
+    PRMENEDZSER(8, "PR menedzser"),
     VENDEGFOGADAS(16),
     OREGTAG(16384),
     JELENTKEZO(32768);
+    
     private final int value;
+    private final String name;
 
     private MembershipType(int value) {
         this.value = value;
+        this.name = null;
     }
-
+    
+    private MembershipType(int value, String name) {
+        this.value = value;
+        this.name = name;
+    }
+    
+    @Override
+    public String toString() {
+        if (name != null)
+            return name;
+        
+        return super.toString();
+    }
+    
     static MembershipType[] getMembershipTypeFromRights(Long rights) {
         if (rights == 0) {
             return new MembershipType[]{TAG};

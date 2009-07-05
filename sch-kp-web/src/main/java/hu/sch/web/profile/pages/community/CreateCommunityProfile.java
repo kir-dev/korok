@@ -386,7 +386,7 @@ public class CreateCommunityProfile extends ProfilePage {
         } else {
             throw new RuntimeException("Hibás kulcs a formban");
         }
-        StringBuilder message = new StringBuilder();
+        StringBuilder message = new StringBuilder(500);
         message.append("Kedves ");
         message.append(person.getFullName());
         message.append("!\n\n");

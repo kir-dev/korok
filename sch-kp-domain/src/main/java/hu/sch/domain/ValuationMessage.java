@@ -92,12 +92,9 @@ public class ValuationMessage implements Serializable {
 
     @Override
     public String toString() {
-        Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy. MMMMM dd. HH:mm:ss", new Locale("hu"));
-        String result = "Feladó: " + sender.getName() + "\n" +
-                "Dátum: " + dateFormat.format(date) + "\n" +
+        return "Feladó: " + sender.getName() + "\n" +
+                "Dátum: " + dateFormat.format(new Date()) + "\n" +
                 "Üzenet szövege:\n\n" + message;
-
-        return result;
     }
 }

@@ -23,7 +23,6 @@ import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,6 +44,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -107,10 +107,9 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     public List<ValuationStatistic> getStatisztikaForErtekelesek(List<Long> ertekelesId) {
-        String ids = Arrays.toString(ertekelesId.toArray());
-        ids = ids.substring(1, ids.length() - 1);
+        String ids = StringUtils.join(ertekelesId.iterator(), ", ");
         Query q = em.createQuery(statisztikaQuery + "WHERE v.id in (" + ids + ")");
-
+        
         return q.getResultList();
     }
 
