@@ -23,7 +23,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 
 /**
  *
@@ -51,12 +50,12 @@ public class ValuationDetailPanel extends Panel {
 
     public void generatePointTable() {
         WebMarkupContainer pointTable = new WebMarkupContainer("pointTable");
-        ListView pontListView = new ListView("points", pointRequests) {
+        ListView<PointRequest> pontListView = new ListView<PointRequest>("points", pointRequests) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                final PointRequest p = (PointRequest) item.getModelObject();
-                IModel model = new CompoundPropertyModel(p);
+            protected void populateItem(ListItem<PointRequest> item) {
+                final PointRequest p = item.getModelObject();
+                IModel<PointRequest> model = new CompoundPropertyModel<PointRequest>(p);
                 item.setModel(model);
                 Link userLink = new Link("userLink") {
 
@@ -77,12 +76,12 @@ public class ValuationDetailPanel extends Panel {
 
     public void generateEntrantTable() {
         WebMarkupContainer entrantTable = new WebMarkupContainer("entrantTable");
-        ListView entrantList = new ListView("entrants", entrantRequests) {
+        ListView<EntrantRequest> entrantList = new ListView<EntrantRequest>("entrants", entrantRequests) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                final EntrantRequest b = (EntrantRequest) item.getModelObject();
-                IModel model = new CompoundPropertyModel(b);
+            protected void populateItem(ListItem<EntrantRequest> item) {
+                final EntrantRequest b = item.getModelObject();
+                IModel<EntrantRequest> model = new CompoundPropertyModel<EntrantRequest>(b);
                 item.setModel(model);
                 Link userLink = new Link("userLink") {
 
@@ -108,7 +107,7 @@ public class ValuationDetailPanel extends Panel {
             pointRequests.addAll(valuationManager.findPontIgenyekForErtekeles(ertekeles.getId()));
             entrantRequests.clear();
             entrantRequests.addAll(valuationManager.findBelepoIgenyekForErtekeles(ertekeles.getId()));
-            valuationText.setDefaultModel(new Model(ertekeles.getValuationText()));
+            valuationText.setDefaultModel(new Model<String>(ertekeles.getValuationText()));
         }
     }
 }

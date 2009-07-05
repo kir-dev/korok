@@ -25,6 +25,7 @@ import hu.sch.web.components.ImageResource;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,14 +61,14 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.apache.wicket.validation.validator.UrlValidator;
 
 /**
  *
  * @author konvergal
  */
-public class PersonForm extends Form {
+public class PersonForm extends Form<Person> {
 
     @EJB(name = "LdapManagerBean")
     private LdapManagerLocal ldapManager;
@@ -75,14 +76,14 @@ public class PersonForm extends Form {
     public Date dob;
     public FileUploadField fileUploadField;
 
-    class genderRadioChoiceRenderer implements IChoiceRenderer {
+    class genderRadioChoiceRenderer implements IChoiceRenderer<KeyValuePairInForm> {
 
-        public Object getDisplayValue(Object object) {
-            KeyValuePairInForm gender = (KeyValuePairInForm) object;
+        public Object getDisplayValue(KeyValuePairInForm object) {
+            KeyValuePairInForm gender = object;
             return gender.getValue();
         }
 
-        public String getIdValue(Object object, int index) {
+        public String getIdValue(KeyValuePairInForm object, int index) {
             return object.toString();
         }
     }
@@ -94,14 +95,14 @@ public class PersonForm extends Form {
     public PersonForm(String componentName, Person person) {
         super(componentName);
         setPerson(person);
-        setModel(new CompoundPropertyModel(person));
+        setModel(new CompoundPropertyModel<Person>(person));
 
         initFormComponents();
     }
 
     public PersonForm(String componentName) {
         super(componentName);
-        setModel(new CompoundPropertyModel(person));
+        setModel(new CompoundPropertyModel<Person>(person));
 
         initFormComponents();
     }
@@ -109,67 +110,67 @@ public class PersonForm extends Form {
     public void initFormComponents() {
         setMultiPart(true);
 
-        RequiredTextField lastNameTF = new RequiredTextField("lastName");
-        lastNameTF.add(LengthBetweenValidator.lengthBetween(2, 40));
+        RequiredTextField<String> lastNameTF = new RequiredTextField<String>("lastName");
+        lastNameTF.add(StringValidator.lengthBetween(2, 40));
         lastNameTF.add(new ValidationStyleBehavior());
         add(lastNameTF);
-        lastNameTF.setLabel(new Model("Vezetéknév *"));
+        lastNameTF.setLabel(new Model<String>("Vezetéknév *"));
         add(new ValidationSimpleFormComponentLabel("lastNameLabel", lastNameTF));
 
-        RequiredTextField firstNameTF = new RequiredTextField("firstName");
-        firstNameTF.add(LengthBetweenValidator.lengthBetween(2, 40));
+        RequiredTextField<String> firstNameTF = new RequiredTextField<String>("firstName");
+        firstNameTF.add(StringValidator.lengthBetween(2, 40));
         firstNameTF.add(new ValidationStyleBehavior());
         add(firstNameTF);
-        firstNameTF.setLabel(new Model("Keresztnév *"));
+        firstNameTF.setLabel(new Model<String>("Keresztnév *"));
         add(new ValidationSimpleFormComponentLabel("firstNameLabel", firstNameTF));
 
-        TextField nickNameTF = new TextField("nickName");
-        nickNameTF.add(LengthBetweenValidator.lengthBetween(2, 40));
+        TextField<String> nickNameTF = new TextField<String>("nickName");
+        nickNameTF.add(StringValidator.lengthBetween(2, 40));
         nickNameTF.add(new ValidationStyleBehavior());
         add(nickNameTF);
-        nickNameTF.setLabel(new Model("Becenév"));
+        nickNameTF.setLabel(new Model<String>("Becenév"));
         add(new ValidationSimpleFormComponentLabel("nickNameLabel", nickNameTF));
 
-        RequiredTextField mailTF = new RequiredTextField("mail");
+        RequiredTextField<String> mailTF = new RequiredTextField<String>("mail");
         mailTF.add(EmailAddressValidator.getInstance());
         mailTF.add(new ValidationStyleBehavior());
         add(mailTF);
-        mailTF.setLabel(new Model("E-mail *"));
+        mailTF.setLabel(new Model<String>("E-mail *"));
         add(new ValidationSimpleFormComponentLabel("mailLabel", mailTF));
 
-        TextField mobileTF = new TextField("mobile");
+        TextField<String> mobileTF = new TextField<String>("mobile");
         add(mobileTF);
-        mobileTF.setLabel(new Model("Mobil"));
+        mobileTF.setLabel(new Model<String>("Mobil"));
         add(new SimpleFormComponentLabel("mobileLabel", mobileTF));
 
-        TextField homePhoneTF = new TextField("homePhone");
+        TextField<String> homePhoneTF = new TextField<String>("homePhone");
         add(homePhoneTF);
-        homePhoneTF.setLabel(new Model("Vezetékes"));
+        homePhoneTF.setLabel(new Model<String>("Vezetékes"));
         add(new SimpleFormComponentLabel("homePhoneLabel", homePhoneTF));
 
-        TextField homePostalAddressTF = new TextField("homePostalAddress");
+        TextField<String> homePostalAddressTF = new TextField<String>("homePostalAddress");
         add(homePostalAddressTF);
-        homePostalAddressTF.setLabel(new Model("Cím"));
+        homePostalAddressTF.setLabel(new Model<String>("Cím"));
         add(new SimpleFormComponentLabel("homePostalAddressLabel", homePostalAddressTF));
 
-        TextField rNumberTF = new TextField("rNumber");
+        TextField<String> rNumberTF = new TextField<String>("rNumber");
         add(rNumberTF);
-        rNumberTF.setLabel(new Model("Szobaszám"));
+        rNumberTF.setLabel(new Model<String>("Szobaszám"));
         add(new SimpleFormComponentLabel("rNumberLabel", rNumberTF));
 
-        TextField webpageTF = new TextField("webpage");
+        TextField<String> webpageTF = new TextField<String>("webpage");
         webpageTF.add(new UrlValidator());
         webpageTF.add(new ValidationStyleBehavior());
         add(webpageTF);
-        webpageTF.setLabel(new Model("Weboldal"));
+        webpageTF.setLabel(new Model<String>("Weboldal"));
         add(new ValidationSimpleFormComponentLabel("webpageLabel", webpageTF));
 
-        List dormitories =
+        List<String> dormitories =
                 Arrays.asList(new String[]{"Schönherz", "Tétény", "Kármán", "Vásárhelyi"});
-        DropDownChoice dormitory = new DropDownChoice("dormitory", dormitories);
+        DropDownChoice<String> dormitory = new DropDownChoice<String>("dormitory", dormitories);
         dormitory.setNullValid(true);
         add(dormitory);
-        dormitory.setLabel(new Model("Kollégium"));
+        dormitory.setLabel(new Model<String>("Kollégium"));
         add(new SimpleFormComponentLabel("dormitoryLabel", dormitory));
 
 
@@ -180,7 +181,7 @@ public class PersonForm extends Form {
             } catch (ParseException ex) {
             }
         }
-        DateTextField dateTF = new DateTextField("dateOfBirth", new PropertyModel(this, "dob"), new StyleDateConverter("S-", true)) {
+        DateTextField dateTF = new DateTextField("dateOfBirth", new PropertyModel<Date>(this, "dob"), new StyleDateConverter("S-", true)) {
 
             @Override
             public Locale getLocale() {
@@ -189,25 +190,26 @@ public class PersonForm extends Form {
         };
 
         dateTF.add(new ValidationStyleBehavior());
-        dateTF.setLabel(new Model("Születési dátum"));
+        dateTF.setLabel(new Model<String>("Születési dátum"));
         add(new ValidationSimpleFormComponentLabel("dateOfBirthLabel", dateTF));
         add(dateTF);
 
 
-        IModel genders = new LoadableDetachableModel() {
+        IModel<List<KeyValuePairInForm>> genders = new LoadableDetachableModel<List<KeyValuePairInForm>>() {
 
-            public Object load() {
-                List l = new ArrayList();
+            @Override
+			public List<KeyValuePairInForm> load() {
+                List<KeyValuePairInForm> l = new ArrayList<KeyValuePairInForm>();
                 l.add(new KeyValuePairInForm("2", "Nő"));
                 l.add(new KeyValuePairInForm("1", "Férfi"));
                 return l;
             }
         };
-        RadioChoice genderRadioChoice = new RadioChoice("gender", genders);
-        IChoiceRenderer renderer = new genderRadioChoiceRenderer();
+        RadioChoice<KeyValuePairInForm> genderRadioChoice = new RadioChoice<KeyValuePairInForm>("gender", genders);
+        IChoiceRenderer<KeyValuePairInForm> renderer = new genderRadioChoiceRenderer();
         genderRadioChoice.setChoiceRenderer(renderer);
         add(genderRadioChoice);
-        genderRadioChoice.setLabel(new Model("Nem"));
+        genderRadioChoice.setLabel(new Model<String>("Nem"));
         add(new SimpleFormComponentLabel("genderLabel", genderRadioChoice));
 
         add(new ListView("ims", new PropertyModel(person, "IMAccounts")) {
@@ -291,12 +293,12 @@ public class PersonForm extends Form {
         }
 
 
-        final NonCachingImage photo = new NonCachingImage("photo", new AbstractReadOnlyModel() {
+        final NonCachingImage photo = new NonCachingImage("photo", new AbstractReadOnlyModel<ImageResource>() {
 
             @Override
-            public Object getObject() {
+            public ImageResource getObject() {
                 // TODO Auto-generated method stub
-                return new ImageResource((byte[]) person.getPhoto(), "png");
+                return new ImageResource(person.getPhoto(), "png");
             }
         });
         photo.setOutputMarkupId(true);

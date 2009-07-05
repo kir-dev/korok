@@ -36,12 +36,12 @@ public class ValuationMessages extends SecuredPageTemplate {
             info(getLocalizer().getString("info.NincsUzenet", this));
         }
 
-        ListView uzenetekView = new ListView("uzenetek", messages) {
+        ListView<ValuationMessage> uzenetekView = new ListView<ValuationMessage>("uzenetek", messages) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                ValuationMessage u = (ValuationMessage) item.getModelObject();
-                item.setModel(new CompoundPropertyModel(u));
+            protected void populateItem(ListItem<ValuationMessage> item) {
+                ValuationMessage u = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<ValuationMessage>(u));
                 item.add(new UserLink("sender", u.getSender()));
                 item.add(DateLabel.forDatePattern("date", "yyyy.MM.dd. kk:mm"));
                 item.add(new MultiLineLabel("message"));

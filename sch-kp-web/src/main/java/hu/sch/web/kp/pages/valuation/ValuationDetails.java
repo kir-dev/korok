@@ -36,7 +36,7 @@ public class ValuationDetails extends SecuredPageTemplate {
 
     public ValuationDetails(final Valuation valuation, final Page prevPage) {
         setHeaderLabelText("Leadott értékelés - részletes nézet");
-        IModel model = new CompoundPropertyModel(valuation);
+        IModel<Valuation> model = new CompoundPropertyModel<Valuation>(valuation);
 
         setDefaultModel(model);
         /*Link backlink = new Link("backlink") {
@@ -60,14 +60,14 @@ public class ValuationDetails extends SecuredPageTemplate {
         add(new Label("entrantStatus"));
         add(new Label("pointStatus"));
 
-        add(new Link("entrantLink") {
+        add(new Link<Object>("entrantLink") {
 
             @Override
             public void onClick() {
                 setResponsePage(new EntrantRequestViewer(valuation));
             }
         });
-        add(new Link("pointLink") {
+        add(new Link<Object>("pointLink") {
 
             @Override
             public void onClick() {
@@ -79,11 +79,11 @@ public class ValuationDetails extends SecuredPageTemplate {
         ids.add(valuation.getId());
         List<ValuationStatistic> statList = valuationManager.getStatisztikaForErtekelesek(ids);
         ValuationStatistic stat = statList.iterator().next();
-        add(new Label("stat.averagePont", new Model(stat.getAveragePoint())));
-        add(new Label("stat.summaPoint", new Model(stat.getSummaPoint())));
-        add(new Label("stat.givenKDO", new Model(stat.getGivenKDO())));
-        add(new Label("stat.givenKB", new Model(stat.getGivenKB())));
-        add(new Label("stat.givenAB", new Model(stat.getGivenAB())));
+        add(new Label("stat.averagePont", new Model<Double>(stat.getAveragePoint())));
+        add(new Label("stat.summaPoint", new Model<Long>(stat.getSummaPoint())));
+        add(new Label("stat.givenKDO", new Model<Long>(stat.getGivenKDO())));
+        add(new Label("stat.givenKB", new Model<Long>(stat.getGivenKB())));
+        add(new Label("stat.givenAB", new Model<Long>(stat.getGivenAB())));
 
         add(new MultiLineLabel("valuationText"));
         add(DateLabel.forDatePattern("lastModified", "yyyy.MM.dd. kk:mm"));

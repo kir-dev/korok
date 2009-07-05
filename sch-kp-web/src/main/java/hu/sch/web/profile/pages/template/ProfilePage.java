@@ -1,5 +1,7 @@
 package hu.sch.web.profile.pages.template;
 
+import java.io.Serializable;
+
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import hu.sch.web.profile.pages.search.SearchPage;
 import hu.sch.services.LdapManagerLocal;
@@ -36,7 +38,7 @@ public abstract class ProfilePage extends WebPage {
 //        add(new BookmarkablePageLink("listGroupsLink", ListGroupsPage.class));
         WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
-        headerLabelContainer.add(new Label("headerLabel", new Model()));
+        headerLabelContainer.add(new Label("headerLabel", new Model<Serializable>()));
         headerLabelContainer.setVisible(false);
     }
 
@@ -52,10 +54,10 @@ public abstract class ProfilePage extends WebPage {
 
     public void setHeaderLabelText(String text) {
         get("headerLabelContainer").setVisible(true);
-        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model(text));
+        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model<Serializable>(text));
     }
 
-    public void setHeaderLabelModel(IModel model) {
+    public void setHeaderLabelModel(IModel<?> model) {
         get("headerLabelContainer").setVisible(true);
         ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(model);
     }

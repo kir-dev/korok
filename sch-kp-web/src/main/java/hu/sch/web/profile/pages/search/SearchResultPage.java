@@ -104,7 +104,7 @@ public final class SearchResultPage extends ProfilePage {
             }
         }
 
-        if (searchWords.size() > 0) {
+        if (!searchWords.isEmpty()) {
             if (isCurrentUserAdmin()) {
                 //persons.addAll(LdapPersonManager.getInstance().searchByAdmin(searchWords));
                 personsTable.getPersonDataProvider().setPersons(ldapManager.searchByAdmin(searchWords));
@@ -119,11 +119,11 @@ public final class SearchResultPage extends ProfilePage {
             info("A kereső a 3 karakternél rövidebb kifejezéseket nem veszi figyelembe.");
         }
 
-        if ((personsTable.getPersonDataProvider().getPersons().size() == 0) && (searchWords.size() > 0)) {
+        if (personsTable.getPersonDataProvider().getPersons().isEmpty() && !searchWords.isEmpty()) {
             info("Nincs találat :(");
         }
 
-        if (personsTable.getPersonDataProvider().getPersons().size() == 0) {
+        if (personsTable.getPersonDataProvider().getPersons().isEmpty()) {
             personsTable.setVisible(false);
         } else {
             personsTable.setVisible(true);

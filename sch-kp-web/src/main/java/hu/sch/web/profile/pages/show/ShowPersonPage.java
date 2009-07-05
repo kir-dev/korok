@@ -26,9 +26,6 @@ import hu.sch.web.profile.pages.community.CreateCommunityProfile;
 import hu.sch.web.profile.pages.search.DormitoryRoomNumberLinkPanel;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.link.IPageLink;
 import org.apache.wicket.markup.html.link.Link;
 
 /**
@@ -38,7 +35,7 @@ public class ShowPersonPage extends ProfilePage {
 
     @EJB(name = "foo", mappedName = "EntitlementManager")
     EntitlementManagerRemote entitlementManager;
-    private static Logger log = Logger.getLogger(ShowPersonPage.class);
+    //private static final Logger log = Logger.getLogger(ShowPersonPage.class);
     private Person person;
 
     public void setPerson(Person person) {
@@ -50,8 +47,8 @@ public class ShowPersonPage extends ProfilePage {
     }
 
     private void bindPerson() {
-        setDefaultModel(new CompoundPropertyModel(person));
-        setHeaderLabelModel(new PropertyModel(person, "fullName"));
+        setDefaultModel(new CompoundPropertyModel<Person>(person));
+        setHeaderLabelModel(new PropertyModel<Person>(person, "fullName"));
         //add(new Label("uid"));
         //add(new Label("fullName"));
 
@@ -89,15 +86,15 @@ public class ShowPersonPage extends ProfilePage {
         add(mailWMC);
 
         add(
-                new ListView("ims", person.getIMAccounts()) {
+                new ListView<IMAccount>("ims", person.getIMAccounts()) {
 
                     @Override
-                    protected void populateItem(ListItem item) {
-                        final IMAccount acc = (IMAccount) item.getModelObject();
+                    protected void populateItem(ListItem<IMAccount> item) {
+                        final IMAccount acc = item.getModelObject();
                         item.add(new Label("imProtocol",
-                                new PropertyModel(acc, "protocol")));
+                                new PropertyModel<IMAccount>(acc, "protocol")));
                         item.add(new Label("imPresenceID",
-                                new PropertyModel(acc, "presenceID")));
+                                new PropertyModel<IMAccount>(acc, "presenceID")));
                     }
                 });
 
@@ -198,12 +195,12 @@ public class ShowPersonPage extends ProfilePage {
 
 //        add(new Label("image", person.getImage().getClass().getCanonicalName()));
 
-        NonCachingImage photo = new NonCachingImage("photo", new AbstractReadOnlyModel() {
+        NonCachingImage photo = new NonCachingImage("photo", new AbstractReadOnlyModel<ImageResource>() {
 
             @Override
-            public Object getObject() {
+            public ImageResource getObject() {
                 // TODO Auto-generated method stub
-                return new ImageResource((byte[]) person.getPhoto(), "png");
+                return new ImageResource(person.getPhoto(), "png");
             }
         });
         photo.setVisible(person.getPhoto() != null);

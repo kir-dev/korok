@@ -37,16 +37,16 @@ public class EntrantRequestViewer extends SecuredPageTemplate {
         setHeaderLabelText("Kiosztott belépők");
         final List<EntrantRequest> igenylista = igenyeketElokeszit(ert);
 
-        setDefaultModel(new CompoundPropertyModel(ert));
+        setDefaultModel(new CompoundPropertyModel<Valuation>(ert));
         add(new Label("group.name"));
         add(new Label("semester"));
 
-        IDataProvider provider = new ListDataProviderCompoundPropertyModelImpl(igenylista);
-        DataView dview = new DataView("requests", provider) {
+        IDataProvider<EntrantRequest> provider = new ListDataProviderCompoundPropertyModelImpl<EntrantRequest>(igenylista);
+        DataView<EntrantRequest> dview = new DataView<EntrantRequest>("requests", provider) {
 
             @Override
-            protected void populateItem(Item item) {
-                final EntrantRequest b = (EntrantRequest) item.getModelObject();
+            protected void populateItem(Item<EntrantRequest> item) {
+                final EntrantRequest b = item.getModelObject();
                 Link felhasznaloLink = new Link("userLink") {
 
                     @Override
@@ -55,9 +55,9 @@ public class EntrantRequestViewer extends SecuredPageTemplate {
                                 new PageParameters("id=" + b.getUser().getId().toString()));
                     }
                 };
-                felhasznaloLink.add(new Label("userName", new PropertyModel(b, "user.name")));
+                felhasznaloLink.add(new Label("userName", new PropertyModel<String>(b, "user.name")));
                 item.add(felhasznaloLink);
-                item.add(new Label("nickName", new PropertyModel(b, "user.nickName")));
+                item.add(new Label("nickName", new PropertyModel<String>(b, "user.nickName")));
                 item.add(new Label("entrantType"));
                 item.add(new Label("valuationText"));
             }

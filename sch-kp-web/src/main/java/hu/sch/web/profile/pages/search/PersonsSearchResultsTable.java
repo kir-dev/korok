@@ -19,6 +19,8 @@ package hu.sch.web.profile.pages.search;
 import hu.sch.domain.profile.Person;
 import hu.sch.web.profile.pages.show.PersonDataProvider;
 import java.util.ArrayList;
+
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -36,32 +38,33 @@ public class PersonsSearchResultsTable extends Panel {
 
     private PersonDataProvider personDataProvider = new PersonDataProvider(new ArrayList<Person>());
 
-    public PersonsSearchResultsTable(String id) {
+	public PersonsSearchResultsTable(String id) {
         super(id);
 
         //this.personDataProvider = personDataProvider;
-        IColumn[] columns = new IColumn[3];
-        columns[0] = new TextFilteredPropertyColumn(new Model("Név"), "fullName", "fullName") {
+        @SuppressWarnings("unchecked")
+        IColumn<Person>[] columns = new IColumn[3];
+        columns[0] = new TextFilteredPropertyColumn<Person, Object>(new Model<String>("Név"), "fullName", "fullName") {
 
             @Override
-            public void populateItem(Item item, String componentId, IModel model) {
-                final Person person = (Person) model.getObject();
+            public void populateItem(Item<ICellPopulator<Person>> item, String componentId, IModel<Person> model) {
+                final Person person = model.getObject();
                 item.add(new PersonLinkPanel(componentId, person));
             }
         };
-        columns[1] = new PropertyColumn(
-                new Model("Becenév"), "nickName", "nickName");
-        columns[2] = new TextFilteredPropertyColumn(
-                new Model("Kollégium"), "roomNumber", "roomNumber") {
+        columns[1] = new PropertyColumn<Person>(
+                new Model<String>("Becenév"), "nickName", "nickName");
+        columns[2] = new TextFilteredPropertyColumn<Person, Object>(
+                new Model<String>("Kollégium"), "roomNumber", "roomNumber") {
 
             @Override
-            public void populateItem(Item item, String componentId, IModel model) {
-                final Person person = (Person) model.getObject();
+            public void populateItem(Item<ICellPopulator<Person>> item, String componentId, IModel<Person> model) {
+                final Person person = model.getObject();
                 item.add(new DormitoryRoomNumberLinkPanel(componentId, person).setVisible(!person.isPrivateAttribute("roomNumber")));
             }
         };
 
-        add(new DefaultDataTable("personsTable", columns,getPersonDataProvider(), 50));
+        add(new DefaultDataTable<Person>("personsTable", columns,getPersonDataProvider(), 50));
     }
 
     /**

@@ -36,7 +36,7 @@ import org.apache.wicket.model.Model;
  */
 public class BirthDayPage extends ProfilePage {
 
-    public List<Person> persons = new ArrayList();
+    public List<Person> persons = new ArrayList<Person>();
     PersonDataProvider personDataProvider;
 
     public BirthDayPage() {
@@ -46,10 +46,11 @@ public class BirthDayPage extends ProfilePage {
         personDataProvider = new PersonDataProvider(persons);
         birthDaySearch();
 
-        final DataView dataView = new DataView("simple", personDataProvider) {
+        final DataView<Person> dataView = new DataView<Person>("simple", personDataProvider) {
 
-            public void populateItem(final Item item) {
-                final Person user = (Person) item.getModelObject();
+            @Override
+			public void populateItem(final Item<Person> item) {
+                final Person user = item.getModelObject();
                 item.add(new PersonLinkPanel("id", user));
             }
         };
@@ -62,7 +63,7 @@ public class BirthDayPage extends ProfilePage {
         String date2 = new SimpleDateFormat("MMdd").format(date);
         persons.addAll(ldapManager.getPersonsWhoHasBirthday(date2));
         personDataProvider.setPersons(persons);
-        if (persons.size() == 0) {
+        if (persons.isEmpty()) {
             info("Ma senki se ünnepel:(");
         }
     }

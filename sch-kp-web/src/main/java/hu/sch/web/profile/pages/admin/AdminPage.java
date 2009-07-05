@@ -36,14 +36,14 @@ public class AdminPage extends ProfilePage {
 
     public Person person;
 
-    class DropDownChoiceRenderer implements IChoiceRenderer {
+    class DropDownChoiceRenderer implements IChoiceRenderer<KeyValuePairInForm> {
 
-        public Object getDisplayValue(Object object) {
-            KeyValuePairInForm status = (KeyValuePairInForm) object;
+        public Object getDisplayValue(KeyValuePairInForm object) {
+            KeyValuePairInForm status = object;
             return status.getValue();
         }
 
-        public String getIdValue(Object object, int index) {
+        public String getIdValue(KeyValuePairInForm object, int index) {
             return object.toString();
         }
     }
@@ -76,7 +76,7 @@ public class AdminPage extends ProfilePage {
             return;
         }
 
-        add(new Label("uid", new Model(person.getFullName() + " szerkesztése")));
+        add(new Label("uid", new Model<String>(person.getFullName() + " szerkesztése")));
 
         Link deletePersonLink = new Link("deletePersonLink") {
 
@@ -104,46 +104,48 @@ public class AdminPage extends ProfilePage {
                 TextField neptunTF = (TextField) new TextField("neptun").setRequired(true);
                 neptunTF.add(new ValidationStyleBehavior());
                 add(neptunTF);
-                neptunTF.setLabel(new Model("Neptun *"));
+                neptunTF.setLabel(new Model<String>("Neptun *"));
                 add(new ValidationSimpleFormComponentLabel("neptunInputLabel", neptunTF));
 
                 TextField virIdTF = new TextField("virId");
                 add(virIdTF);
-                virIdTF.setLabel(new Model("Vir ID"));
+                virIdTF.setLabel(new Model<String>("Vir ID"));
                 add(new SimpleFormComponentLabel("virIdLabel", virIdTF));
 
-                IModel status = new LoadableDetachableModel() {
+                IModel<List<KeyValuePairInForm>> status = new LoadableDetachableModel<List<KeyValuePairInForm>>() {
 
-                    public Object load() {
-                        List l = new ArrayList();
+                    @Override
+					public List<KeyValuePairInForm> load() {
+                        List<KeyValuePairInForm> l = new ArrayList<KeyValuePairInForm>();
                         l.add(new KeyValuePairInForm("Active", "Aktív"));
                         l.add(new KeyValuePairInForm("Inactive", "Inaktív"));
                         return l;
                     }
                 };
-                DropDownChoice statusDropDownChoice = new DropDownChoice("status", status);
-                IChoiceRenderer statusRenderer = new DropDownChoiceRenderer();
+                DropDownChoice<KeyValuePairInForm> statusDropDownChoice = new DropDownChoice<KeyValuePairInForm>("status", status);
+                IChoiceRenderer<KeyValuePairInForm> statusRenderer = new DropDownChoiceRenderer();
                 statusDropDownChoice.setChoiceRenderer(statusRenderer);
                 add(statusDropDownChoice);
-                statusDropDownChoice.setLabel(new Model("Státusz *"));
+                statusDropDownChoice.setLabel(new Model<String>("Státusz *"));
                 add(new SimpleFormComponentLabel("statusLabel", statusDropDownChoice));
 
-                IModel studentStatus = new LoadableDetachableModel() {
+                IModel<List<KeyValuePairInForm>> studentStatus = new LoadableDetachableModel<List<KeyValuePairInForm>>() {
 
-                    public Object load() {
-                        List l = new ArrayList();
+                    @Override
+					public List<KeyValuePairInForm> load() {
+                    	List<KeyValuePairInForm> l = new ArrayList<KeyValuePairInForm>();
                         l.add(new KeyValuePairInForm("active", "Aktív"));
                         l.add(new KeyValuePairInForm("other", "Egyéb"));
                         l.add(new KeyValuePairInForm("graduated", "Végzett"));
                         return l;
                     }
                 };
-                DropDownChoice studentStatusDropDownChoice = new DropDownChoice("studentStatus", studentStatus);
+                DropDownChoice<KeyValuePairInForm> studentStatusDropDownChoice = new DropDownChoice<KeyValuePairInForm>("studentStatus", studentStatus);
                 studentStatusDropDownChoice.setNullValid(true);
-                IChoiceRenderer studentStatusRenderer = new DropDownChoiceRenderer();
+                IChoiceRenderer<KeyValuePairInForm> studentStatusRenderer = new DropDownChoiceRenderer();
                 studentStatusDropDownChoice.setChoiceRenderer(studentStatusRenderer);
                 add(studentStatusDropDownChoice);
-                studentStatusDropDownChoice.setLabel(new Model("Hallgatói státusz"));
+                studentStatusDropDownChoice.setLabel(new Model<String>("Hallgatói státusz"));
                 add(new SimpleFormComponentLabel("studentStatusLabel", studentStatusDropDownChoice));
             }
 

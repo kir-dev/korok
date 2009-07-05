@@ -34,6 +34,8 @@ public class ChangePasswordPage extends ProfilePage {
 
     private String oldPassword;
     private String newPassword;
+    //FIXME: currently not used
+    @SuppressWarnings("unused")
     private String newPasswordConfirmation;
     private PasswordTextField oldPw;
     private PasswordTextField newPw;

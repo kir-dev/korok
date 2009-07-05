@@ -18,7 +18,6 @@ import hu.sch.web.kp.pages.pointrequests.PointRequestFiling;
 import hu.sch.web.kp.session.VirSession;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
-import hu.sch.services.SystemManagerLocal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -105,12 +104,12 @@ public class Valuations extends SecuredPageTemplate {
         this.add(warningContainer);
         warningContainer.setVisible(!left.isEmpty());
 
-        ListView leftListView = new ListView("warningList", left) {
+        ListView<Group> leftListView = new ListView<Group>("warningList", left) {
 
             @Override
-            protected void populateItem(ListItem item) {
+            protected void populateItem(ListItem<Group> item) {
                 @SuppressWarnings("hiding")
-                final Group group = (Group) item.getModelObject();
+                final Group group = item.getModelObject();
                 final Valuation val = valuationManager.findErtekeles(group, systemManager.getSzemeszter());
 
                 // group név kijelés
@@ -203,7 +202,7 @@ public class Valuations extends SecuredPageTemplate {
                 }
             }
         };
-        DropDownChoice ddc = new DropDownChoice("groups", groups);
+        DropDownChoice<String> ddc = new DropDownChoice<String>("groups", groups);
 
         ddc.setModel(new PropertyModel(this, "selected"));
 
@@ -211,11 +210,11 @@ public class Valuations extends SecuredPageTemplate {
         add(csoportForm);
 
         WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
-        ListView ertekelesListView = new ListView("valuationList", valuationList) {
+        ListView<Valuation> ertekelesListView = new ListView<Valuation>("valuationList", valuationList) {
 
             @Override
-            protected void populateItem(ListItem item) {
-                final Valuation v = (Valuation) item.getModelObject();
+            protected void populateItem(ListItem<Valuation> item) {
+                final Valuation v = item.getModelObject();
                 Link ert = new Link("valuationLink") {
 
                     @Override

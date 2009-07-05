@@ -30,7 +30,7 @@ public class EditPage extends ProfilePage {
             return;
         }
 
-        setHeaderLabelModel(new PropertyModel(person, "uid"));
+        setHeaderLabelModel(new PropertyModel<Person>(person, "uid"));
         
         add(new PersonForm("personForm", person));
     }

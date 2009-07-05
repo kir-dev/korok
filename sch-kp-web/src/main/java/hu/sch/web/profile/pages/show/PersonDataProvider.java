@@ -33,10 +33,10 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author konvergal
  */
-public class PersonDataProvider extends SortableDataProvider {
+public class PersonDataProvider extends SortableDataProvider<Person> {
 
-    List<Person> persons = new ArrayList<Person>();
-    //List<Person> sortedPersons = new ArrayList<Person>();
+    private final List<Person> persons = new ArrayList<Person>();
+    //private final List<Person> sortedPersons = new ArrayList<Person>();
 
     public PersonDataProvider(List<Person> personList) {
         super();
@@ -45,8 +45,8 @@ public class PersonDataProvider extends SortableDataProvider {
         setPersons(personList);
     }
 
-    public Iterator iterator(int first, int count) {
-        List newList = new ArrayList();
+    public Iterator<Person> iterator(int first, int count) {
+        List<Person> newList = new ArrayList<Person>();
         sortPersons();
         //newList.addAll(sortedPersons.subList(first, first + count));
         newList.addAll(persons.subList(first, first + count));
@@ -72,11 +72,11 @@ public class PersonDataProvider extends SortableDataProvider {
         final String sortColumn = this.getSort().getProperty();
         final boolean ascending = this.getSort().isAscending();
 
-        Collections.sort(persons, new Comparator() {
+        Collections.sort(persons, new Comparator<Person>() {
 
-            public int compare(Object obj1, Object obj2) {
-                PropertyModel model1 = new PropertyModel(obj1, sortColumn);
-                PropertyModel model2 = new PropertyModel(obj2, sortColumn);
+            public int compare(Person obj1, Person obj2) {
+                PropertyModel<Person> model1 = new PropertyModel<Person>(obj1, sortColumn);
+                PropertyModel<Person> model2 = new PropertyModel<Person>(obj2, sortColumn);
 
                 Object modelObject1 = model1.getObject();
                 Object modelObject2 = model2.getObject();
@@ -109,9 +109,10 @@ public class PersonDataProvider extends SortableDataProvider {
         return persons.size();
     }
 
-    public IModel model(final Object object) {
-        return new AbstractReadOnlyModel() {
-            public Object getObject() {
+    public IModel<Person> model(final Person object) {
+        return new AbstractReadOnlyModel<Person>() {
+            @Override
+			public Person getObject() {
                 return object;
             }
         };

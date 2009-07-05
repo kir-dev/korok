@@ -35,16 +35,16 @@ public class PointRequestViewer extends SecuredPageTemplate {
         setHeaderLabelText("Kiosztott pontok");
         final List<PointRequest> pointRequests = prepareRequests(val);
 
-        setDefaultModel(new CompoundPropertyModel(val));
+        setDefaultModel(new CompoundPropertyModel<Valuation>(val));
         add(new Label("group.name"));
         add(new Label("semester"));
 
-        IDataProvider provider = new ListDataProviderCompoundPropertyModelImpl(pointRequests);
-        DataView dview = new DataView("requests", provider) {
+        IDataProvider<PointRequest> provider = new ListDataProviderCompoundPropertyModelImpl<PointRequest>(pointRequests);
+        DataView<PointRequest> dview = new DataView<PointRequest>("requests", provider) {
 
             @Override
-            protected void populateItem(Item item) {
-                final PointRequest p = (PointRequest) item.getModelObject();
+            protected void populateItem(Item<PointRequest> item) {
+                final PointRequest p = item.getModelObject();
                 Link felhasznaloLink = new Link("userLink") {
 
                     @Override
