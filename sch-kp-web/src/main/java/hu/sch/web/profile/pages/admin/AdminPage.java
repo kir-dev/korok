@@ -36,14 +36,14 @@ public class AdminPage extends ProfilePage {
 
     public Person person;
 
-    class DropDownChoiceRenderer implements IChoiceRenderer<KeyValuePairInForm> {
+    private static class DropDownChoiceRenderer implements IChoiceRenderer<Object> {
 
-        public Object getDisplayValue(KeyValuePairInForm object) {
-            KeyValuePairInForm status = object;
+        public Object getDisplayValue(Object object) {
+            KeyValuePairInForm status = (KeyValuePairInForm)object;
             return status.getValue();
         }
 
-        public String getIdValue(KeyValuePairInForm object, int index) {
+        public String getIdValue(Object object, int index) {
             return object.toString();
         }
     }
@@ -123,8 +123,7 @@ public class AdminPage extends ProfilePage {
                     }
                 };
                 DropDownChoice<KeyValuePairInForm> statusDropDownChoice = new DropDownChoice<KeyValuePairInForm>("status", status);
-                IChoiceRenderer<KeyValuePairInForm> statusRenderer = new DropDownChoiceRenderer();
-                statusDropDownChoice.setChoiceRenderer(statusRenderer);
+                statusDropDownChoice.setChoiceRenderer(new DropDownChoiceRenderer());
                 add(statusDropDownChoice);
                 statusDropDownChoice.setLabel(new Model<String>("Státusz *"));
                 add(new SimpleFormComponentLabel("statusLabel", statusDropDownChoice));
@@ -142,8 +141,7 @@ public class AdminPage extends ProfilePage {
                 };
                 DropDownChoice<KeyValuePairInForm> studentStatusDropDownChoice = new DropDownChoice<KeyValuePairInForm>("studentStatus", studentStatus);
                 studentStatusDropDownChoice.setNullValid(true);
-                IChoiceRenderer<KeyValuePairInForm> studentStatusRenderer = new DropDownChoiceRenderer();
-                studentStatusDropDownChoice.setChoiceRenderer(studentStatusRenderer);
+                studentStatusDropDownChoice.setChoiceRenderer(new DropDownChoiceRenderer());
                 add(studentStatusDropDownChoice);
                 studentStatusDropDownChoice.setLabel(new Model<String>("Hallgatói státusz"));
                 add(new SimpleFormComponentLabel("studentStatusLabel", studentStatusDropDownChoice));

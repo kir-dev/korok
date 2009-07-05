@@ -76,14 +76,14 @@ public class PersonForm extends Form<Person> {
     public Date dob;
     public FileUploadField fileUploadField;
 
-    class genderRadioChoiceRenderer implements IChoiceRenderer<KeyValuePairInForm> {
+    private static class genderRadioChoiceRenderer implements IChoiceRenderer<Object> {
 
-        public Object getDisplayValue(KeyValuePairInForm object) {
-            KeyValuePairInForm gender = object;
+        public Object getDisplayValue(Object object) {
+            KeyValuePairInForm gender = (KeyValuePairInForm)object;
             return gender.getValue();
         }
 
-        public String getIdValue(KeyValuePairInForm object, int index) {
+        public String getIdValue(Object object, int index) {
             return object.toString();
         }
     }
@@ -206,8 +206,7 @@ public class PersonForm extends Form<Person> {
             }
         };
         RadioChoice<KeyValuePairInForm> genderRadioChoice = new RadioChoice<KeyValuePairInForm>("gender", genders);
-        IChoiceRenderer<KeyValuePairInForm> renderer = new genderRadioChoiceRenderer();
-        genderRadioChoice.setChoiceRenderer(renderer);
+        genderRadioChoice.setChoiceRenderer(new genderRadioChoiceRenderer());
         add(genderRadioChoice);
         genderRadioChoice.setLabel(new Model<String>("Nem"));
         add(new SimpleFormComponentLabel("genderLabel", genderRadioChoice));
