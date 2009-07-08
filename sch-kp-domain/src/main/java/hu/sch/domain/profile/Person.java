@@ -17,124 +17,156 @@ import java.util.regex.Pattern;
  */
 public class Person implements Serializable {
 
-    private final String NEPTUN_PREFIX =
+    private static final String NEPTUN_PREFIX =
             "urn:mace:terena.org:schac:personalUniqueCode:hu:BME-NEPTUN:";
-    private final String STUDENTSTATUS_PREFIX =
+    private static final String STUDENTSTATUS_PREFIX =
             "urn:mace:terena.org:schac:status:sch.hu:student_status:";
-    private final String VIRID_PREFIX =
+    private static final String VIRID_PREFIX =
             "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:";
     /**
-     * Cimtar megfelelo: uid.
+     * Címtár megfelelő: uid
+     * A felhasználó egyedi azonosítója a címtárban.
      */
     private String uid;
     /**
-     * Cimtar megfelelo displayName:
+     * Címtár megfelelő: displayName
+     * A felhasználó beceneve.
      */
     private String nickName;
     /**
-     * Cimtar megfelelo: givenName.
+     * Címtár megfelelő: givenName
+     * A felhasználó keresztneve.
      */
     private String firstName;
     /**
-     * Cimtar megfelelo: sn.
+     * Címtár megfelelő: sn
+     * A felhasználó vezetékneve.
      */
     private String lastName;
     /**
-     * Cimtar megfelelo: cn.
+     * Címtár megfelelő: cn
+     * A felhasználó teljes neve.
      */
     private String fullName;
     /**
-     * Cimtar megfelelo: schacUserPresenceID.
+     * Címtár megfelelő: schacUserPresenceID
+     * Az IM címeket tartalmazó lista.
      */
     private List<IMAccount> IMAccounts;
     /**
-     * Cimtar megfelelo: schacPersonalUniqueID.
+     * Címtár megfelelő: schacPersonalUniqueID
+     * A felhasználó VIRID-jét tartalmazó sztring.
      */
     private String personalUniqueID;
     /**
-     * Cimtar megfelelo: nincs!
-     * A regi VIR adatbazisban levo user id-ja.
-     * Az schacPersonalUniqueId ldap attributum virID resze.
+     * Származtatott érték, a régi VIR adatbázisban lévő user id-ja.
+     * A schacPersonalUniqueId ldap attribútum virID része.
      */
     private Long virId;
     /**
-     * Cimtar megfelelo: schacPersonalUniqueCode.
+     * Címtár megfelelő: schacPersonalUniqueCode
+     * A felhasználó neptun kódját tartalmazó sztring.
      */
     private String personalUniqueCode;
     /**
-     * Cimtar megfelelo: nincs!
-     * Az schacPersonalUniqueCode ldap attributum neptun kod resze.
+     * Származtatott érték, a felhasználó neptun kódja.
+     * A schacPersonalUniqueCode ldap attribútum neptun kód része.
      */
     private String neptun;
     /**
-     * Cimtar megfelelo: mail.
+     * Címtár megfelelő: mail
+     * A felhasználó e-mail címe.
      */
     private String mail;
     /**
-     * Cimtar megfelelo: mobile.
+     * Címtár megfelelő: mobile
+     * A felhasználó mobilszáma.
      */
     private String mobile;
     /**
-     * Cimtar megfelelo: homePhone.
+     * Címtár megfelelő: homePhone
+     * A felhasználó vezetékes telefonszáma.
      */
     private String homePhone;
     /**
-     * Cimtar megfelelo: nincs!
-     * Kenyelmes editalo form keszitesehez szukseges.
-     * Ugyelni kell a konzisztenciajara!
+     * Címtár megfelelő: nincs!
+     * Kényelmes editáló form készítéséhez szükséges.
+     * Ügyelni kell a konzisztenciájára!
      */
     private String dormitory;
     /**
-     * Szobaszam.
-     * Cimtar megfelelo: nincs!
-     * Kenyelmes editalo form keszitesehez szukseges.
-     * Ugyelni kell a konzisztenciajara!
+     * Szobaszám.
+     * Címtár megfelelő: nincs!
+     * Kényelmes editáló form készítéséhez szükséges.
+     * Ügyelni kell a konzisztenciájára!
      */
     private String rNumber;
     /**
-     * Cimtar megfelelo: roomNumber.
-     * Nem csak a szobaszamot tarolja, hanem a kollegiumot is!
-     * Formatum: <Kollegium> <Szobaszam>
+     * Címtár megfelelő: roomNumber
+     * Nem csak a szobaszámot tárolja, hanem a kollégiumot is!
+     * Formátum: <Kollégium> <Szobaszám>
      */
     private String roomNumber;
     /**
-     * Cimtar megfelelo: homePostalAddress.
+     * Címtár megfelelő: homePostalAddress
+     * A felhasználó lakcíme.
      */
     private String homePostalAddress;
     /**
-     * Cimtar megfelelo: labeledURI.
+     * Címtár megfelelő: labeledURI
+     * A felhasználó weboldala.
      */
     private String webpage;
     /**
-     * Cimtar megfelelo: schacGender.
-     * ISO-5218 szerint: 0-nem ismert, 1-ferfi, 2-no, 9-nem specifikalt.
+     * Címtár megfelelő: schacGender
+     * A felhasználó neme.
+     * ISO-5218 szerint: 0-nem ismert, 1-férfi, 2-nő, 9-nem specifikált.
      */
     private String gender;
     /**
-     * Cimtar megfelelo: schacDateOfBirth.
-     * RFC-3339 "YYYYMMDD" formatumban.
+     * Címtár megfelelő: schacDateOfBirth
+     * A felhasználó születési dátuma.
+     * RFC-3339 "YYYYMMDD" formátumban.
      */
     private String dateOfBirth;
     /**
-     * Cimtar megfelelo: schacUserStatus.
+     * Címtár megfelelő: schacUserStatus
+     * A felhasználó hallgatói státusza. Ezek lehetnek:
      * 'akt': urn:mace:terena.org:schac:status:sch.hu:student_status:active
      * 'egy': urn:mace:terena.org:schac:status:sch.hu:student_status:other
      * 'veg': urn:mace:terena.org:schac:status:sch.hu:student_status:graduated 
      */
     private String studentUserStatus;
     /**
-     * Cimtar megfelelo: nincs!
-     * Az schacUserStatus veget tarolja.
+     * Címtár megfelelő: nincs!
+     * Származtatott érték, a hallgatói státuszt tárolja.
      */
     private String studentStatus;
     /**
-     * Cimtar megfelelo: inetUserStatus.
-     * active / inactive
+     * Címtár megfelelő: inetUserStatus
+     * Az SSO felhasználó státusza.
+     * Active / Inactive
      */
     private String status;
+    /**
+     * Címtár megfelelő: schacUserPrivateAttribute
+     * A felhasználó privát attribútumai sztringtömbben.
+     */
     private String[] schacPrivateAttribute = {};
+    /**
+     * Címtár megfelelő: nincs!
+     * A felhasználó privát attribútumai sztringlistában.
+     */
     private List<String> privateAttributes = new ArrayList<String>();
+    /**
+     * Címtár megfelelő: jpegPhoto
+     * A felhasználói kép byte-tömbben.
+     */
     private byte[] photo;
+    /**
+     * Címtár megfelelő: nincs!
+     * A felhasználó által megadott adatokból van származtatva.
+     */
     private String confirmationCode;
 
     public String getUid() {
@@ -337,13 +369,6 @@ public class Person implements Serializable {
         this.confirmationCode = confirmationCode;
     }
 
-    /*    public Object[] getPrivateAttributes() {
-    return (Object[]) privateAttributes.toArray();
-    }
-    
-    public void setPrivateAttributes(String[] privateAttributes) {
-    this.privateAttributes.addAll(new ArrayList<String>(Arrays.asList(privateAttributes)));
-    }*/
     public Boolean isPrivateAttribute(String attribute) {
         return privateAttributes.contains(attribute);
     }
@@ -356,6 +381,12 @@ public class Person implements Serializable {
         return photo;
     }
 
+    /**
+     * Ez a függvény az eddigi privát adatot publikussá, a publikusat pedig
+     * privát adattá teszi.
+     * @param attribute Melyik attribútumot szeretnénk priváttá / publikussá
+     * tenni.
+     */
     public void inversePrivateAttribute(String attribute) {
         if (isPrivateAttribute(attribute)) {
             privateAttributes.remove(attribute);
@@ -364,25 +395,33 @@ public class Person implements Serializable {
         }
     }
 
+    /**
+     * A felhasználó objektumnak a származtatott értékeit ez a függvény határozza
+     * meg. A felhasználó objektum létrehozásakor hívódik meg a ContextMapper által.
+     */
     public void setToUse() {
-        this.privateAttributes.addAll(new ArrayList<String>(Arrays.asList(schacPrivateAttribute)));
+        //a privát attribútomok tömbjének listává alakítása
+        privateAttributes.addAll(Arrays.asList(schacPrivateAttribute));
 
+        //TODO: szebbé tenni
         if (personalUniqueCode != null) {
             String[] personalUniqueCodeArray = personalUniqueCode.split(":");
-            this.neptun =
+            neptun =
                     personalUniqueCodeArray[personalUniqueCodeArray.length - 1];
         }
 
+        //TODO: szebbé tenni
         if (personalUniqueID != null) {
             String[] personalUniqueIDArray = personalUniqueID.split(":");
             try {
-                this.virId = Long.parseLong(
+                virId = Long.parseLong(
                         personalUniqueIDArray[personalUniqueIDArray.length - 1]);
             } catch (NumberFormatException ex) {
                 //TODO log
             }
         }
 
+        //TODO: szebbé tenni
         if (studentUserStatus != null) {
             String[] studentUserStatusArray = studentUserStatus.split(":");
             this.studentStatus =
@@ -400,8 +439,13 @@ public class Person implements Serializable {
         }
     }
 
+    /**
+     * A címtárba történő visszamentés előtt szükség van a származtatott értékek
+     * változásának visszakövetésére a ContextMapper mapToContext függvényében
+     * hívódik meg.
+     */
     public void setToSave() {
-        this.schacPrivateAttribute = privateAttributes.toArray(new String[privateAttributes.size()]);
+        schacPrivateAttribute = privateAttributes.toArray(new String[privateAttributes.size()]);
 
         if (lastName != null && firstName != null) {
             fullName = lastName + " " + firstName;
