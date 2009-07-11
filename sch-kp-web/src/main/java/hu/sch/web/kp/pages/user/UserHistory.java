@@ -10,11 +10,14 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
+import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -30,6 +33,7 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class UserHistory extends SecuredPageTemplate {
 
+    private static final Logger log = Logger.getLogger(UserHistory.class);
     Long id;
     final Long EVERY_GROUP_L = -1L;
     public Long selected = EVERY_GROUP_L;
@@ -48,18 +52,21 @@ public class UserHistory extends SecuredPageTemplate {
             selected = parameters.getLong("group", EVERY_GROUP_L);
             selected_text = userManager.findGroupById(selected).getName();
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn("Error while loading parameters.", t);
         }
         initComponents();
     }
 
     private void initComponents() {
-        User user = getSession().getUser();
+        User user;
         if (id == null) {
-            id = user.getId();
+            id = getSession().getUserId();
         }
+        user = userManager.findUserWithCsoporttagsagokById(id);
         if (user == null) {
-            throw new IllegalStateException();
+            log.warn("Not founded user for UserHistory page with id: " + id);
+            error("A megadott felhasználóhoz nem tartozik közösségi történet!");
+            throw new RestartResponseException(GroupHierarchy.class);
         }
 
         setHeaderLabelText(user.getName() + " közösségi története");
@@ -81,8 +88,7 @@ public class UserHistory extends SecuredPageTemplate {
 
         List<PointRequest> pointRequests = userManager.getPontIgenyekForUser(user);
 
-        DropDownChoice ddc = new DropDownChoice("group", new PropertyModel(this, "selected_text"), groups)
-        {
+        DropDownChoice ddc = new DropDownChoice("group", new PropertyModel(this, "selected_text"), groups) {
 
             @Override
             protected boolean wantOnSelectionChangedNotifications() {
@@ -90,20 +96,16 @@ public class UserHistory extends SecuredPageTemplate {
             }
 
             @Override
-            protected void onSelectionChanged(final Object newSelection)
-            {
+            protected void onSelectionChanged(final Object newSelection) {
                 PageParameters pp = new PageParameters();
 
                 // Ez van a legördülő menüben kiválasztva
                 String Lselected = groups.get(Integer.valueOf(this.getInput()));
 
-                if (Lselected.equals(EVERY_GROUP))
-                {
+                if (Lselected.equals(EVERY_GROUP)) {
                     // minden kört megjelenítek
                     pp.add("group", EVERY_GROUP_L.toString());
-                }
-                else
-                {
+                } else {
                     // csak a kiválasztott kört jelenítem meg
                     Group group = userManager.findGroupByName(Lselected).get(0);
                     pp.add("group", group.getId().toString());
@@ -248,6 +250,7 @@ public class UserHistory extends SecuredPageTemplate {
         }
 
         ListView<EntrantRequest> blv = new ListView<EntrantRequest>("entrantRequestList", entrantRequests) {
+
             @Override
             protected void populateItem(ListItem<EntrantRequest> item) {
                 item.setModel(new CompoundPropertyModel<EntrantRequest>(item.getModelObject()));

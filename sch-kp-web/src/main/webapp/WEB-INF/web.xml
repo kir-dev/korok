@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<web-app version="2.5"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <filter>
         <filter-name>Agent</filter-name>
         <filter-class>com.sun.identity.agents.filter.AmAgentFilter</filter-class>
@@ -13,29 +16,29 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
     
-    <servlet>
-        <servlet-name>Wicket</servlet-name>
-        <servlet-class>org.apache.wicket.protocol.http.WicketServlet</servlet-class>
+    <filter>
+        <filter-name>Wicket</filter-name>
+        <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
             <param-value>hu.sch.web.PhoenixApplication</param-value>
         </init-param>
-	<!--init-param>
-	    <param-name>configuration</param-name>
-	    <param-value>deployment</param-value>
-	</init-param-->
+        <init-param>
+            <param-name>wicket.configuration</param-name>
+	    <!--<param-value>deployment</param-value>-->
+            <param-value>development</param-value>
+        </init-param>
         <init-param>
             <param-name>authorizationComponent</param-name>
-            <!--param-value>hu.sch.kp.web.authz.AgentBasedAuthorization</param-value-->
-            <param-value>hu.sch.web.authz.DummyAuthorization</param-value>
+            <param-value>hu.sch.web.authz.AgentBasedAuthorization</param-value>
+            <!--<param-value>hu.sch.web.authz.DummyAuthorization</param-value>-->
         </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+    </filter>
     
-    <servlet-mapping>
-        <servlet-name>Wicket</servlet-name>
+    <filter-mapping>
+        <filter-name>Wicket</filter-name>
         <url-pattern>/*</url-pattern>
-    </servlet-mapping>
+    </filter-mapping>
 
     <error-page>
         <error-code>404</error-code>
@@ -47,6 +50,7 @@
             30
         </session-timeout>
     </session-config>
+    
     <security-role>
         <role-name>ADMIN</role-name>
     </security-role>

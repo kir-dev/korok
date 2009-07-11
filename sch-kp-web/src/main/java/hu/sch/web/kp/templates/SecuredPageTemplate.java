@@ -5,12 +5,10 @@
 package hu.sch.web.kp.templates;
 
 import java.io.Serializable;
-
 import hu.sch.domain.Group;
 import hu.sch.domain.MembershipType;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
-import hu.sch.domain.ValuationPeriod;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.kp.pages.admin.EditSettings;
@@ -18,11 +16,12 @@ import hu.sch.web.kp.pages.consider.ConsiderPage;
 import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.user.ShowUser;
-import hu.sch.web.kp.session.VirSession;
+import hu.sch.web.session.VirSession;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;
 import javax.ejb.EJB;
+import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -40,6 +39,9 @@ public class SecuredPageTemplate extends WebPage {
     protected SystemManagerLocal systemManager;
     @EJB(name = "UserManagerBean")
     protected UserManagerLocal userManager;
+    private static final Logger log = Logger.getLogger(SecuredPageTemplate.class);
+    private static final String adminRoleName = "ADMIN";
+    private static final String jetiRoleName = "JETI";
 
     public SecuredPageTemplate() {
         loadUser();
@@ -63,27 +65,41 @@ public class SecuredPageTemplate extends WebPage {
             add(new BookmarkablePageLink("elbiralas", ConsiderPage.class).setVisible(false));
             add(new BookmarkablePageLink("editsettings", EditSettings.class).setVisible(false));
         }
-    //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
+        //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 
     protected void loadUser() {
-        Long virID = getAuthorizationComponent().getUserid(getRequest());
-        if (this.getSession().getUser() == null ||
-                this.getSession().getUser().getId() != virID) {
+        Long virId = getAuthorizationComponent().getUserid(getRequest());
+        if (getSession().getUserId() != virId) {
 
-            if (virID != null) {
-                User user =
-                        userManager.findUserWithCsoporttagsagokById(virID);
+            if (virId != null) {
                 User userAttrs =
                         getAuthorizationComponent().getUserAttributes(getRequest());
                 if (userAttrs != null) {
-                    userAttrs.setId(virID);
+                    userAttrs.setId(virId);
                     userManager.updateUserAttributes(userAttrs);
                 }
-                getSession().setUser(user);
+                getSession().setUserId(virId);
             } else {
-                getSession().setUser(new User());
+                getSession().setUserId(0L);
             }
+        }
+    }
+
+    protected User getUser() {
+        Long virId = getAuthorizationComponent().getUserid(getRequest());
+        if (getSession().getUserId() != virId) {
+            loadUser();
+        }
+        return userManager.findUserWithCsoporttagsagokById(getSession().getUserId());
+    }
+
+    protected Group getGroup() {
+        Long groupId = getSession().getGroupId();
+        if (groupId != null) {
+            return userManager.findGroupById(getSession().getGroupId());
+        } else {
+            return null;
         }
     }
 
@@ -97,29 +113,17 @@ public class SecuredPageTemplate extends WebPage {
         try {
             sz = systemManager.getSzemeszter();
         } catch (NoSuchAttributeException ex) {
+            log.warn("Attribute for semester isn't setted in the database.", ex);
         }
         return sz;
     }
 
-    public Group getGroup() {
-        Group cs = getSession().getCsoport();
-        return cs;
-    }
-
-    public ValuationPeriod getPeriod() {
-        return systemManager.getErtekelesIdoszak();
-    }
-
-    public User getUser() {
-        return getSession().getUser();
-    }
-
     public boolean isCurrentUserAdmin() {
-        return getAuthorizationComponent().hasAbstractRole(getRequest(), "ADMIN");
+        return getAuthorizationComponent().hasAbstractRole(getRequest(), adminRoleName);
     }
 
     public boolean isCurrentUserJETI() {
-        return getAuthorizationComponent().hasAbstractRole(getRequest(), "JETI");
+        return getAuthorizationComponent().hasAbstractRole(getRequest(), jetiRoleName);
     }
 
     public boolean hasUserRoleInGroup(Group group, MembershipType type) {

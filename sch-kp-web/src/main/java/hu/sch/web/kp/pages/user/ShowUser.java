@@ -34,18 +34,18 @@ import org.apache.wicket.model.PropertyModel;
 public class ShowUser extends SecuredPageTemplate {
 
     Long id;
-    private boolean own_profile = false;
+    private boolean ownProfile = false;
     private Group addToCsoportSelected;
 
     public ShowUser() {
-        own_profile = true;
+        ownProfile = true;
         initComponents();
     }
 
     public void initComponents() {
         try {
             if (id == null) {
-                id = getSession().getUser().getId();
+                id = getSession().getUserId();
             }
         } catch (Exception e) {
             id = null;
@@ -64,7 +64,7 @@ public class ShowUser extends SecuredPageTemplate {
         }
         setDefaultModel(new CompoundPropertyModel(user));
         setHeaderLabelText(user.getName() + " felhasználó lapja");
-        if (own_profile) {
+        if (ownProfile) {
             add(new BookmarkablePageLink("detailView", UserHistory.class));
         } else {
             add(new BookmarkablePageLink("detailView", UserHistory.class,

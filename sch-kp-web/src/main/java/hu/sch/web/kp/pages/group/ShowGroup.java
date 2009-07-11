@@ -12,7 +12,6 @@ import hu.sch.web.components.ActiveMembershipsPanel;
 import hu.sch.web.components.AdminMembershipsPanel;
 import hu.sch.web.components.AdminOldBoysPanel;
 import hu.sch.web.components.OldBoysPanel;
-import hu.sch.web.kp.pages.index.Index;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.List;
@@ -38,11 +37,12 @@ public class ShowGroup extends SecuredPageTemplate {
         try {
             id = Long.parseLong(p.toString());
         } catch (NumberFormatException e) {
-            setResponsePage(Index.class);
+            error("Hibás paraméter");
+            throw new RestartResponseException(GroupHierarchy.class);
         }
 
         Group g = userManager.findGroupWithCsoporttagsagokById(id);
-        User user = userManager.findUserWithCsoporttagsagokById(getSession().getUser().getId());
+        User user = userManager.findUserWithCsoporttagsagokById(getSession().getUserId());
         if (g == null) {
             getSession().info("Ilyen kör nem létezik");
             throw new RestartResponseException(GroupHierarchy.class);

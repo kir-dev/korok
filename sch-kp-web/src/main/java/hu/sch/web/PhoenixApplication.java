@@ -14,7 +14,6 @@ import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.pages.group.EditGroupInfo;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.pages.group.ShowGroup;
-import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.group.GroupHistory;
 import hu.sch.web.kp.pages.logout.Logout;
 import hu.sch.web.kp.pages.user.UserHistory;
@@ -27,11 +26,14 @@ import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.pages.valuation.NewValuation;
 import hu.sch.web.kp.pages.group.AddGroupMember;
 import hu.sch.web.kp.pages.group.ChangePost;
-import hu.sch.web.kp.session.VirSession;
+import hu.sch.web.kp.pages.group.GroupHierarchy;
+import hu.sch.web.session.VirSession;
 import hu.sch.web.kp.util.EntrantTypeConverter;
 import hu.sch.web.kp.util.ValuationStatusConverter;
 import hu.sch.web.kp.util.MembershipTypeConverter;
+import hu.sch.web.kp.util.ServerTimerFilter;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
+import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
@@ -48,11 +50,12 @@ import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
 public class PhoenixApplication extends WebApplication {
 
     private static final String AUTHZ_COMPONENT_PARAM = "authorizationComponent";
+    private static Logger log = Logger.getLogger(PhoenixApplication.class);
     private UserAuthorization authorizationComponent;
 
     @Override
-    public Class<GroupHierarchy> getHomePage() {
-        return GroupHierarchy.class;
+    public Class<ShowUser> getHomePage() {
+        return ShowUser.class;
     }
 
     @Override
@@ -63,6 +66,7 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/userhistory", UserHistory.class);
 
         mountBookmarkablePage("/showgroup", ShowGroup.class);
+        mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
         mountBookmarkablePage("/grouphistory", GroupHistory.class);
         mountBookmarkablePage("/addgroupmember", AddGroupMember.class);
         mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
@@ -82,16 +86,21 @@ public class PhoenixApplication extends WebApplication {
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
         getMarkupSettings().setStripWicketTags(true);
         getPageSettings().setAutomaticMultiWindowSupport(false);
-
+        if (getConfigurationType().equals(DEVELOPMENT)) {
+            getRequestCycleSettings().addResponseFilter(new ServerTimerFilter());
+            log.info("Successfully enabled ServerTimerFilter");
+        }
         String classname = getInitParameter(AUTHZ_COMPONENT_PARAM);
         try {
             authorizationComponent = Class.forName(classname).
                     asSubclass(UserAuthorization.class).newInstance();
             authorizationComponent.init(this);
         } catch (Exception ex) {
+            log.fatal("Failed to initialize authorization", ex);
             throw new IllegalStateException("Cannot instantiate authorization component" +
                     classname, ex);
         }
+        log.warn("Application has been successfully initiated");
     }
 
     @Override

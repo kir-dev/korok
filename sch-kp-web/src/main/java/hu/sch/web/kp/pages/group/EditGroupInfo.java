@@ -49,7 +49,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
         add(new FeedbackPanel("pagemessages"));
 
         group = userManager.findGroupById(id);
-        User user = userManager.findUserWithCsoporttagsagokById((getSession()).getUser().getId());
+        User user = userManager.findUserWithCsoporttagsagokById((getSession()).getUserId());
         if (user == null || !hasUserRoleInGroup(group, MembershipType.KORVEZETO)) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
             throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + id.toString()));

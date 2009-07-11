@@ -13,17 +13,19 @@ import org.apache.wicket.Request;
 public interface UserAuthorization {
 
     /**
-     * Autorizációs mód inicializálása.
+     * Autorizációs mód inicializálása. DummyAuthorization használatakor ellenőrzi,
+     * hogy az alkalmazás development módban fut-e, ha nem abban van, kivételt dob.
      * 
-     * @param wicketApplication
+     * @param wicketApplication Az alkalmazás objektumára mutató referencia.
      */
     void init(Application wicketApplication);
 
     /**
      * Az aktuálisan bejelentkezett felhasználó VIRID-ja.
      * 
-     * @param wicketRequest
-     * @return
+     * @param wicketRequest A Request objektum, amiből ki tudjuk nyerni a HTTP
+     * változókat.
+     * @return A távoli felhasználó VIRID-ja.
      */
     Long getUserid(Request wicketRequest);
 

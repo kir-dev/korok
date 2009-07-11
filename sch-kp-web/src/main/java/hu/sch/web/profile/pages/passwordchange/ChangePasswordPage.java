@@ -42,7 +42,7 @@ public class ChangePasswordPage extends ProfilePage {
     private PasswordTextField newPw2;
 
     public ChangePasswordPage() {
-        setHeaderLabelModel(new Model("Jelszó"));
+        setHeaderLabelText("Jelszóváltoztatás");
         add(new FeedbackPanel("feedbackPanel"));
         Form form = new Form("changePasswordForm",
                 new CompoundPropertyModel(this)) {
@@ -52,9 +52,9 @@ public class ChangePasswordPage extends ProfilePage {
                 try {
                     ldapManager.changePassword(getUid(),
                             oldPassword, newPassword);
-                    info("Sikeres jelszóváltoztatás");
+                    getSession().info("Sikeres jelszóváltoztatás");
                 } catch (InvalidPasswordException ex) {
-                    error("Hibás jelszó");
+                    getSession().error("Hibás jelszó");
                 }
             }
         };

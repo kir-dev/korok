@@ -3,18 +3,5 @@
 <sun-web-app error-url="">
     <parameter-encoding default-charset="UTF-8"/>
     <context-root>/korok</context-root>
-    <security-role-mapping>
-        <role-name>ADMIN</role-name>
-        <group-name>urn:geant:niif.hu:sch.bme.hu:entitlement:tag:KIR fejlesztők és üzemeltetők:106</group-name>
-    </security-role-mapping>
-    <security-role-mapping>
-        <role-name>JETI</role-name>
-        <group-name>urn:geant:niif.hu:sch.bme.hu:entitlement:tag:Jutalmazást Elbíráló Testület:156</group-name>
-    </security-role-mapping>
     <class-loader delegate="true"/>
-    <jsp-config>
-        <property name="keepgenerated" value="true">
-            <description>Keep a copy of the generated servlet class' java code.</description>
-        </property>
-    </jsp-config>
 </sun-web-app>

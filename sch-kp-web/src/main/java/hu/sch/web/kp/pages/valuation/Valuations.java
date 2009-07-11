@@ -13,22 +13,19 @@ import hu.sch.domain.User;
 import hu.sch.domain.MembershipType;
 import hu.sch.web.kp.pages.entrantrequests.EntrantRequestFiling;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
-import hu.sch.web.kp.pages.index.Index;
 import hu.sch.web.kp.pages.pointrequests.PointRequestFiling;
-import hu.sch.web.kp.session.VirSession;
+import hu.sch.web.session.VirSession;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -44,7 +41,7 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class Valuations extends SecuredPageTemplate {
 
-    @EJB(name = "ErtekelesManagerBean")
+    @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
     private String selected = "";
     List<Valuation> valuationList = new ArrayList<Valuation>();
@@ -56,11 +53,11 @@ public class Valuations extends SecuredPageTemplate {
     public Valuations() {
         setHeaderLabelText("Értékelések");
         if (id == null) {
-            id = getSession().getUser().getId();
+            id = getSession().getUserId();
         }
         if (id == null) {
-            setResponsePage(Index.class);
-            return;
+            error("Hiba, ismeretlen felhasználó!");
+            throw new RestartResponseException(GroupHierarchy.class);
         }
         add(new FeedbackPanel("pagemessages"));
         groupName = new Label("name", "");
@@ -122,7 +119,7 @@ public class Valuations extends SecuredPageTemplate {
                     @Override
                     public void onClick() {
                         // group kiválasztása (mert nem feltétlen volt legördülővel...)
-                        ((VirSession) getSession()).setCsoport(group);
+                        ((VirSession) getSession()).setGroupId(group.getId());
 
                         if (val == null) {
                             /*
@@ -151,7 +148,7 @@ public class Valuations extends SecuredPageTemplate {
                     @Override
                     public void onClick() {
                         // group kiválasztása (mert nem feltétlen volt legördülővel...)
-                        ((VirSession) getSession()).setCsoport(group);
+                        ((VirSession) getSession()).setGroupId(group.getId());
 
                         if (val == null) {
                             /*
@@ -180,24 +177,23 @@ public class Valuations extends SecuredPageTemplate {
         // Ha mar korabban volt group kivalasztva.
         updateErtekelesList();
 
-        DropDownChoice ddc = new DropDownChoice("groups", new PropertyModel(this, "selected"), groups)
-        {
+        DropDownChoice ddc = new DropDownChoice("groups", new PropertyModel(this, "selected"), groups) {
+
             @Override
             protected boolean wantOnSelectionChangedNotifications() {
                 return true;
             }
 
             @Override
-            protected void onSelectionChanged(final Object newSelection)
-            {
+            protected void onSelectionChanged(final Object newSelection) {
                 Iterator<Membership> iterator = ms.iterator();
 
-                Group cs = null;
+                Group g = null;
                 while (iterator.hasNext()) {
                     //TODO simplify this
-                    cs = (iterator.next()).getGroup();
-                    if (cs.getName().equals(selected)) {
-                        ((VirSession) getSession()).setCsoport(cs);
+                    g = (iterator.next()).getGroup();
+                    if (g.getName().equals(selected)) {
+                        ((VirSession) getSession()).setGroupId(g.getId());
                         updateErtekelesList();
                         if ((valuationList.isEmpty()) ||
                                 (!valuationManager.isErtekelesLeadhato(group))) {
@@ -284,6 +280,7 @@ public class Valuations extends SecuredPageTemplate {
         add(table);
 
         newValuation = new Link("newValuation") {
+
             @Override
             public void onClick() {
                 setResponsePage(NewValuation.class);
@@ -302,7 +299,7 @@ public class Valuations extends SecuredPageTemplate {
     }
 
     public void updateErtekelesList() {
-        group = getSession().getCsoport();
+        group = getGroup();
         if (group != null) {
             valuationList.clear();
             valuationList.addAll(valuationManager.findErtekeles(group));

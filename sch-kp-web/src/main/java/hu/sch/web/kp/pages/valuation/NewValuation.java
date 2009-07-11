@@ -25,15 +25,15 @@ public class NewValuation extends SecuredPageTemplate {
     String valuationText = "";
 
     public NewValuation() {
-        Group cs = getGroup();
-        if (cs == null) {
+        final Group group = getGroup();
+        if (group == null) {
             getSession().error("Nincs csoport kiválasztva");
             throw new RestartResponseException(Valuations.class);
         }
-        setHeaderLabelText(getGroup().getName());
+        setHeaderLabelText(group.getName());
         FeedbackPanel feedbackPanel = new FeedbackPanel("pagemessages");
         add(feedbackPanel);
-        if (!valuationManager.isErtekelesLeadhato(getGroup())) {
+        if (!valuationManager.isErtekelesLeadhato(group)) {
             getSession().info(getLocalizer().getString("err.UjErtekelesNemAdhatoLe", this));
             setResponsePage(Valuations.class);
             return;
@@ -46,7 +46,7 @@ public class NewValuation extends SecuredPageTemplate {
                     getSession().error(getLocalizer().getString("err.NincsBeszamolo", this));
                     return;
                 }
-                valuationManager.ujErtekeles(getGroup(), getUser(), getValuationText());
+                valuationManager.ujErtekeles(group, getUser(), getValuationText());
                 getSession().info(getLocalizer().getString("info.ErtekelesMentve", this));
                 setResponsePage(Valuations.class);
                 return;
