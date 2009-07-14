@@ -15,5 +15,4 @@ import javax.ejb.Local;
 public interface MailManagerLocal {
 
     boolean sendEmail(String to, String subject, String message);
-    
 }

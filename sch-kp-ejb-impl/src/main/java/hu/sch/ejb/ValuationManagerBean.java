@@ -19,6 +19,7 @@ import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
 import hu.sch.domain.MembershipType;
+import hu.sch.services.MailManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
@@ -73,7 +74,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     UserManagerLocal userManager;
     @EJB
     SystemManagerLocal systemManager;
-
+    @EJB
+    MailManagerLocal mailManager;
 
     static {
         /* Hibernate BUG:
@@ -248,36 +250,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             }
         }
         if (groupLeader != null) {
-            sendEmail(groupLeader.getEmailAddress(), emailText);
+            mailManager.sendEmail(groupLeader.getEmailAddress(), "Módosult értékelés", emailText);
         }
-    }
-
-    // E-mailt küld
-    private void sendEmail(String to, String message) {
-        logger.info("E-mail küldése\n" +
-                "Címzett: " + to + "\n" +
-                "Üzenet: " + message);
-        System.out.println("E-mail küldése " + to + "-nak.");
-        try {
-            Message msg = new MimeMessage(mailSession);
-
-            // teszt címzés
-            msg.setRecipients(RecipientType.TO, InternetAddress.parse("halacs@sch.bme.hu", false));
-            msg.setRecipients(RecipientType.TO, InternetAddress.parse("majorpetya@sch.bme.hu", false));
-
-            // rendes címzés
-            //msg.setRecipients(RecipientType.TO, InternetAddress.parse(to, false));
-
-            msg.setSubject("[VIR KÖRÖK] Új üzeneted érkezett");
-            msg.setText(message);
-            msg.setSentDate(new Date());
-            Transport.send(msg, msg.getRecipients(Message.RecipientType.TO));
-            logger.info("Levél sikeresen elküldve.");
-        } catch (Exception ex) {
-            logger.error("Hiba az e-mail elküldése közben.");
-            ex.printStackTrace();
-        }
-
     }
 
     public Valuation getErtekelesWithUzenetek(Long ertekelesId) {
@@ -418,7 +392,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         System.out.println(emailTo);
         if (emailTo != null) {
             try {
-                sendEmail(emailTo, emailText); // emailTo
+                mailManager.sendEmail(emailTo, "Új üzeneted érkezett", emailText); // emailTo
             } catch (Exception ex) {
                 System.out.println("Nem sikerült elküldeni a levelet a következőnek: " + emailTo);
                 ex.printStackTrace();

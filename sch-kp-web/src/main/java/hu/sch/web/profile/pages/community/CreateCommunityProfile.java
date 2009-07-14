@@ -379,10 +379,10 @@ public class CreateCommunityProfile extends ProfilePage {
         String subject;
         if (inputKey.equals(VIR_PROFILE)) {
             to = getEmailForVirID(virid);
-            subject = new String("VIR Profil megerősítő kód");
+            subject = new String("Profil megerősítő kód");
         } else if (inputKey.equals(NEPTUN)) {
             to = inputData + "@nc.hszk.bme.hu";
-            subject = new String("VIR NEPTUN kód megerősítése");
+            subject = new String("NEPTUN kód megerősítése");
         } else {
             throw new RuntimeException("Hibás kulcs a formban");
         }
