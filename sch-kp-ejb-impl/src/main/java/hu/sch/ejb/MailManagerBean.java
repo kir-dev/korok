@@ -21,23 +21,35 @@ import org.apache.log4j.Logger;
  */
 @Stateless
 public class MailManagerBean implements MailManagerLocal {
-    private static final Logger logger = Logger.getLogger(ValuationManagerBean.class);
+    private static final Logger logger = Logger.getLogger(MailManagerBean.class);
     
     @Resource(name = "mail/korokMail")
     private Session mailSession;
 
     public boolean sendEmail(String to, String subject, String message) {
-        System.out.println("E-mail küldése " + to + "-nak.");
+        StringBuilder sb = new StringBuilder();
+        sb.append("E-mail küldése ");
+        sb.append(to);
+        sb.append("-nak.");
+        logger.info(sb.toString());
 
-        logger.info("E-mail küldése\n" +
-                "Címzett: " + to + "\n" +
-                "Üzenet: " + message);
+        if (logger.isDebugEnabled())
+        {
+           StringBuilder sbd = new StringBuilder();
+
+           sbd.append("E-mail küldése\n");
+           sbd.append("Címzett: ");
+           sbd.append(to);
+           sbd.append("\nÜzenet: ");
+           sbd.append(message);
+
+           logger.debug(sbd.toString());
+        }
 
         Message msg = new MimeMessage(mailSession);
         try {
             // teszt címzés
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("halacs@sch.bme.hu", false));
-//            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("majorpetya@sch.bme.hu", false));
 
             // rendes címzés
             //msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
@@ -50,8 +62,7 @@ public class MailManagerBean implements MailManagerLocal {
             logger.info("Levél sikeresen elküldve.");
 
         } catch (Exception ex) {
-            logger.error("Hiba az e-mail elküldése közben.");
-            ex.printStackTrace();
+            logger.error("Hiba az e-mail elküldése közben.", ex);
             return false;
         }
 
