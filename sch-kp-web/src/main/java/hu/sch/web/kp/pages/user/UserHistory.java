@@ -10,6 +10,7 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
+import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.io.Serializable;
@@ -86,8 +87,17 @@ public class UserHistory extends SecuredPageTemplate {
             groups.add(csoporttagsag.getGroup().getName());
         }
 
-        List<PointRequest> pointRequests = userManager.getPontIgenyekForUser(user);
+        List<PointRequest> origPointRequests = userManager.getPontIgenyekForUser(user);
+                
+        // csak az elfogadott pontok legyenek megjelenítve
+        ArrayList<PointRequest> pointRequests = new ArrayList();
+        for (PointRequest pointRequest : origPointRequests)
+        {
+            if (pointRequest.getValuation().getPointStatus().equals(ValuationStatus.ELFOGADVA))
+                pointRequests.add(pointRequest);
+        }
 
+        //
         DropDownChoice ddc = new DropDownChoice("group", new PropertyModel(this, "selected_text"), groups) {
 
             @Override
@@ -235,7 +245,15 @@ public class UserHistory extends SecuredPageTemplate {
         add(plv);
 
         // Belépő igények táblázat
-        List<EntrantRequest> entrantRequests = userManager.getBelepoIgenyekForUser(user);
+        List<EntrantRequest> origEntrantRequests = userManager.getBelepoIgenyekForUser(user);
+
+        // csak az elfogadott belépők legyenek megjelenítve
+        ArrayList<EntrantRequest> entrantRequests = new ArrayList();
+        for (EntrantRequest entrantRequest : origEntrantRequests)
+        {
+            if (entrantRequest.getValuation().getEntrantStatus().equals(ValuationStatus.ELFOGADVA))
+                entrantRequests.add(entrantRequest);
+        }
 
         if (!selected.equals(EVERY_GROUP_L)) {
             // szűrés adott csoportra
