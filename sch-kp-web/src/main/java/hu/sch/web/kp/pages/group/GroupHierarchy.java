@@ -13,7 +13,7 @@ import java.util.Vector;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
-
+import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
@@ -31,6 +31,8 @@ import org.apache.wicket.model.PropertyModel;
  * @author Adam Lantos
  */
 public class GroupHierarchy extends SecuredPageTemplate {
+
+    private static Logger log = Logger.getLogger(GroupHierarchy.class);
 
     private String[] sort(List<String> list) {
         String[] items = list.toArray(new String[list.size()]);
@@ -52,12 +54,14 @@ public class GroupHierarchy extends SecuredPageTemplate {
             protected void onSubmit() {
                 super.onSubmit();
                 try {
-                    Long id = userManager.getGroupByName(field.getDefaultModelObjectAsString()).getId();
+                    if (log.isDebugEnabled()) {
+                        log.debug("Autocomplete modelobject: " + field.getModelObject());
+                    }
+                    Long id = userManager.getGroupByName(field.getModelObject()).getId();
                     setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
                 } catch (Exception ex) {
-                    error("A megadott keresési feltételeknek egyetlen kör sem felelt meg.");
+                    log.warn("Autocomplete keresésnél hiba történt: ", ex);
                 }
-                return;
             }
         };
 
@@ -78,7 +82,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
                     setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
                     return;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.warn("AJAX hívásnál hiba történt: ", e);
                 }
             }
 
@@ -88,18 +92,18 @@ public class GroupHierarchy extends SecuredPageTemplate {
         });
 
         TreeModel model = new DefaultTreeModel(
-                new CsoportTreeNode(userManager.getGroupHierarchy()));
+                new GroupTreeNode(userManager.getGroupHierarchy()));
         LinkTree tree = new LinkTree("hierarchyTree", model) {
 
             @Override
             protected IModel<Object> getNodeTextModel(IModel<Object> nodeModel) {
                 return new PropertyModel<Object>(nodeModel, "group.name");
             }
-            
+
             @Override
             protected void onNodeLinkClicked(
                     Object node, BaseTree baseTree, AjaxRequestTarget target) {
-                Long csoportId = ((CsoportTreeNode) node).getGroup().getId();
+                Long csoportId = ((GroupTreeNode) node).getGroup().getId();
                 setResponsePage(ShowGroup.class,
                         new PageParameters("id=" + csoportId.toString()));
             }
@@ -108,24 +112,24 @@ public class GroupHierarchy extends SecuredPageTemplate {
         add(tree);
     }
 
-    class CsoportTreeNode implements TreeNode, Serializable {
+    private class GroupTreeNode implements TreeNode, Serializable {
 
         private Group group;
         private Vector<TreeNode> children;
         private TreeNode parent;
 
-        public CsoportTreeNode(Group csoport) {
+        public GroupTreeNode(Group csoport) {
             this(csoport, null);
         }
 
-        private CsoportTreeNode(Group group, TreeNode parent) {
+        private GroupTreeNode(Group group, TreeNode parent) {
             this.group = group;
             this.parent = parent;
 
             children = new Vector<TreeNode>();
             if (group.getSubGroups() != null) {
                 for (Group g : group.getSubGroups()) {
-                    children.add(new CsoportTreeNode(g, this));
+                    children.add(new GroupTreeNode(g, this));
                 }
             }
         }
