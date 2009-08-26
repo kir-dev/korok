@@ -8,6 +8,8 @@ import hu.sch.services.MailManagerLocal;
 import java.util.Date;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -19,6 +21,7 @@ import org.apache.log4j.Logger;
  *
  * @author aldaris
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class MailManagerBean implements MailManagerLocal {
     private static final Logger logger = Logger.getLogger(MailManagerBean.class);
@@ -26,7 +29,8 @@ public class MailManagerBean implements MailManagerLocal {
     @Resource(name = "mail/korokMail")
     private Session mailSession;
 
-    public boolean sendEmail(String to, String subject, String message) {
+    public boolean sendEmail(String to, String subject, String message)
+    {
         StringBuilder sb = new StringBuilder();
         sb.append("E-mail küldése ");
         sb.append(to);
@@ -47,12 +51,19 @@ public class MailManagerBean implements MailManagerLocal {
         }
 
         Message msg = new MimeMessage(mailSession);
-        try {
-            // teszt címzés
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("halacs@sch.bme.hu", false));
-
-            // rendes címzés
-            //msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+        try
+        {   /*
+            if (logger.isDebugEnabled())
+            {
+            */    // teszt címzés
+                msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("halacs@sch.bme.hu", false));
+            /*}
+            else
+            {
+                // rendes címzés
+                msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            }
+            */
 
             msg.setSubject("[VIR] "+subject);
             msg.setText(message);
@@ -60,12 +71,13 @@ public class MailManagerBean implements MailManagerLocal {
 
             Transport.send(msg);
             logger.info("Levél sikeresen elküldve.");
-
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             logger.error("Hiba az e-mail elküldése közben.", ex);
             return false;
         }
 
         return true;
-    }
+   }
 }
