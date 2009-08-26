@@ -98,7 +98,7 @@ public class User implements Serializable, Comparable<User> {
      * SVIE elsődleges kör
      * Rendes tagsága kell legyen a körben
      */
-    private Group sviePrimaryGroup;
+    private Membership sviePrimaryGroup;
     /**
      * Csoporttagságok - tagsági idővel kiegészítve
      */
@@ -192,12 +192,12 @@ public class User implements Serializable, Comparable<User> {
 
     @ManyToOne
     @JoinColumn(name = "usr_svie_primary_group", insertable = false, updatable = false)
-    public Group getSviePrimaryGroup() {
+    public Membership getSviePrimaryGroup() {
         return sviePrimaryGroup;
     }
 
-    public void setSviePrimaryGroup(Group sviePrimaryGroup) {
-        this.sviePrimaryGroup = sviePrimaryGroup;
+    public void setSviePrimaryGroup(Membership sviePrimaryMembership) {
+        this.sviePrimaryGroup = sviePrimaryMembership;
     }
 
     @Transient
