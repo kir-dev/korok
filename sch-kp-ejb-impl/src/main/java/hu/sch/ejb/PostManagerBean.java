@@ -8,15 +8,16 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
+import hu.sch.domain.User;
 import hu.sch.services.PostManagerLocal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -27,6 +28,7 @@ public class PostManagerBean implements PostManagerLocal {
 
     @PersistenceContext
     private EntityManager em;
+    private static Logger log = Logger.getLogger(PostManagerBean.class);
 
     public List<PostType> getAvailablePostTypesForGroup(Group group) {
         Query q = em.createNamedQuery(PostType.availablePostsQuery);
@@ -92,5 +94,17 @@ public class PostManagerBean implements PostManagerLocal {
             return true;
         }
         return false;
+    }
+
+    public User getGroupLeaderForGroup(Long groupId) {
+        Query q = em.createNamedQuery(Post.getGroupLeaderForGroup);
+        q.setParameter("id", groupId);
+        try {
+            User ret = (User) q.getSingleResult();
+            return ret;
+        } catch (NoResultException nre) {
+            log.error("Nem találtam meg ennek a körnek a körvezetőjét: " + groupId, nre);
+            return null;
+        }
     }
 }

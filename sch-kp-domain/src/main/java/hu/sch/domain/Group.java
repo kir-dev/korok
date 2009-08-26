@@ -8,6 +8,7 @@
  */
 package hu.sch.domain;
 
+import hu.sch.domain.logging.Log;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -135,6 +136,7 @@ public class Group implements Serializable, Comparable<Group> {
      * Öregtagok
      */
     private List<Membership> inactiveMembers;
+    private List<Log> logs;
 
     @Id
     @GeneratedValue(generator = "groups_seq")
@@ -318,6 +320,15 @@ public class Group implements Serializable, Comparable<Group> {
                         }
                     });
         }
+    }
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    public List<Log> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<Log> logs) {
+        this.logs = logs;
     }
 
     @Override

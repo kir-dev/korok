@@ -19,6 +19,8 @@
         <class>hu.sch.domain.Semester</class>
         <class>hu.sch.domain.Post</class>
         <class>hu.sch.domain.PostType</class>
+        <class>hu.sch.domain.logging.Log</class>
+        <class>hu.sch.domain.logging.Event</class>
 
         <properties>
             <property name="hibernate.show_sql" value="true"/>

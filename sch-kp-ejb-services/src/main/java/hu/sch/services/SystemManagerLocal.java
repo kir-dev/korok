@@ -7,6 +7,7 @@ package hu.sch.services;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.exceptions.NoSuchAttributeException;
+import java.util.Date;
 import javax.ejb.Local;
 
 /**
@@ -63,4 +64,15 @@ public interface SystemManagerLocal {
      * @param idoszak
      */
     void setErtekelesIdoszak(ValuationPeriod idoszak);
+
+    /**
+     * Visszaadja az utolsó logküldési időt
+     * @return
+     */
+    Date getLastLogsDate();
+
+    /**
+     * Beállítja az utolsó logküldési időt
+     */
+    void setLastLogsDate();
 }

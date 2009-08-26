@@ -102,9 +102,9 @@ public class ShowUser extends SecuredPageTemplate {
                     }
                 };
                 eraseLink.add(new ConfirmationBoxRenderer("Biztosan meg szeretnéd szüntetni a tagságodat?"));
-                if (!ownProfile) {
-                    eraseLink.setVisible(false);
-                }
+//                if (!ownProfile) {
+//                    eraseLink.setVisible(false);
+//                }
                 item.add(eraseLink);
             }
         };

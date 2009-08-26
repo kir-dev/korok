@@ -12,10 +12,15 @@ import hu.sch.domain.PointRequest;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
 import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.logging.Event;
+import hu.sch.domain.logging.EventType;
+import hu.sch.services.LogManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -32,6 +37,21 @@ public class UserManagerBean implements UserManagerLocal {
 
     @PersistenceContext
     EntityManager em;
+    @EJB(name = "LogManagerBean")
+    LogManagerLocal logManager;
+    private static Event DELETEMEMBERSHIP_EVENT;
+    private static Event CREATEMEMBERSHIP_EVENT;
+
+    @PostConstruct
+    public void initialize() {
+        if (DELETEMEMBERSHIP_EVENT == null) {
+            Query q = em.createNamedQuery(Event.getEventForEventType);
+            q.setParameter("evt", EventType.TAGSAGTORLES);
+            DELETEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
+            q.setParameter("evt", EventType.JELENTKEZES);
+            CREATEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
+        }
+    }
 
     public List<User> getAllUsers() {
         Query q = em.createNamedQuery(User.findAll);
@@ -91,6 +111,7 @@ public class UserManagerBean implements UserManagerLocal {
         em.merge(_user);
         em.merge(_group);
         em.flush();
+        logManager.createLogEntry(group, user, CREATEMEMBERSHIP_EVENT);
     }
 
     public List<Group> getAllGroups() {
@@ -157,6 +178,7 @@ public class UserManagerBean implements UserManagerLocal {
                 temp2.setSvieMembershipType(SvieMembershipType.PARTOLOTAG);
             }
         }
+        logManager.createLogEntry(ms.getGroup(), ms.getUser(), DELETEMEMBERSHIP_EVENT);
     }
 
     public List<User> getCsoporttagokWithoutOregtagok(Long csoportId) {

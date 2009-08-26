@@ -48,9 +48,12 @@ public class MailManagerBean implements MailManagerLocal {
         Message msg = new MimeMessage(mailSession);
         try {
             // teszt címzés
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("halacs@sch.bme.hu", false));
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("majorpetya@sch.bme.hu", false));
             // rendes címzés
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            if (log.isDebugEnabled()) {
+                log.debug("Eredeti cím: " + to);
+            }
+//            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
 
             msg.setSubject("[VIR] " + subject);
             msg.setText(message);

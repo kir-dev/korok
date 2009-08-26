@@ -24,14 +24,17 @@ import javax.persistence.Table;
 @Table(name = "poszt")
 @NamedQueries({
     @NamedQuery(name = "currentPostsForGroup",
-    query = "SELECT p FROM Post p WHERE p.membership.id = :id")
+    query = "SELECT p FROM Post p WHERE p.membership.id = :id"),
+    @NamedQuery(name = "findGroupLeader",
+    query = "SELECT p.membership.user FROM Post p " +
+    "WHERE p.postType.postName = 'körvezető' AND p.membership.group.id = :id")
 })
 @SequenceGenerator(name = "poszt_seq", sequenceName = "poszt_seq")
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1l;
     public static final String currentPostsForGroup = "currentPostsForGroup";
-
+    public static final String getGroupLeaderForGroup = "findGroupLeader";
     /*
     id            | integer | not null default nextval('poszt_seq'::regclass)
     grp_member_id | integer |

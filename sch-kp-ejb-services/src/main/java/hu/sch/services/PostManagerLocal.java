@@ -8,6 +8,7 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
+import hu.sch.domain.User;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -27,4 +28,6 @@ public interface PostManagerLocal {
     void changeGroupLeader(Membership membership, PostType groupLeaderType);
 
     boolean createPostType(String postName, Group group);
+
+    User getGroupLeaderForGroup(Long groupId);
 }

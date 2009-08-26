@@ -10,6 +10,7 @@ package hu.sch.web;
 
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.ValuationStatus;
+import hu.sch.services.TimerServiceLocal;
 import hu.sch.web.kp.pages.group.EditGroupInfo;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.pages.group.ShowGroup;
@@ -33,6 +34,12 @@ import hu.sch.web.kp.util.ValuationStatusConverter;
 import hu.sch.web.kp.util.ServerTimerFilter;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import java.util.List;
+import java.util.logging.Level;
+import javax.naming.Binding;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Request;
@@ -84,7 +91,7 @@ public class PhoenixApplication extends WebApplication {
 
         mountBookmarkablePage("/profile", ShowPersonPage.class);
 //        mountBookmarkablePage("profile/edit", EditPage.class);
-        
+
         //alkalmazás beállítások
         getApplicationSettings().setInternalErrorPage(InternalServerError.class);
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
@@ -109,6 +116,10 @@ public class PhoenixApplication extends WebApplication {
             throw new IllegalStateException("Cannot instantiate authorization component" +
                     classname, ex);
         }
+
+        //TimerService-ek inicializálása
+        TimerServiceLocal timerService = lookupTimerServiceBean();
+        timerService.scheduleTimers();
         log.warn("Application has been successfully initiated");
     }
 
@@ -129,5 +140,15 @@ public class PhoenixApplication extends WebApplication {
 
     public UserAuthorization getAuthorizationComponent() {
         return authorizationComponent;
+    }
+
+    private TimerServiceLocal lookupTimerServiceBean() {
+        try {
+            Context c = new InitialContext();
+            return (TimerServiceLocal) c.lookup("java:comp/env/TimerServiceLocal");
+        } catch (NamingException ne) {
+            log.error("Exception caught", ne);
+            throw new RuntimeException(ne);
+        }
     }
 }

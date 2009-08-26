@@ -9,7 +9,8 @@ import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Semester;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import javax.annotation.security.DeclareRoles;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -21,11 +22,11 @@ import javax.persistence.Query;
  * @author hege
  */
 @Stateless
-@DeclareRoles({"ADMIN", "JETI"})
 public class SystemManagerBean implements SystemManagerLocal {
 
     @PersistenceContext
     EntityManager em;
+    private static final String LAST_LOG = "utolso_log_kuldve";
 
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {
         try {
@@ -81,5 +82,19 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     public void setErtekelesIdoszak(ValuationPeriod idoszak) {
         setAttributeValue("ertekeles_idoszak", idoszak.toString());
+    }
+
+    public Date getLastLogsDate() {
+        Date date;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(getAttributeValue(LAST_LOG));
+        } catch (Exception ex) {
+            date = null;
+        }
+        return date;
+    }
+
+    public void setLastLogsDate() {
+        setAttributeValue(LAST_LOG, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
     }
 }
