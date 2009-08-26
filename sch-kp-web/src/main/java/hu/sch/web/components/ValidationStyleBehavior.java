@@ -1,11 +1,3 @@
-package hu.sch.web.components;
-
-
-import org.apache.wicket.Component;
-import org.apache.wicket.behavior.AbstractBehavior;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.form.FormComponent;
-
 /*
  *  Copyright 2008 konvergal.
  * 
@@ -22,6 +14,12 @@ import org.apache.wicket.markup.html.form.FormComponent;
  *  limitations under the License.
  *  under the License.
  */
+package hu.sch.web.components;
+
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.form.FormComponent;
 
 /**
  *

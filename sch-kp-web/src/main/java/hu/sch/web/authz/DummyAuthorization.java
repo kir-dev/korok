@@ -2,7 +2,6 @@ package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.domain.MembershipType;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
 import org.apache.wicket.Request;
@@ -21,6 +20,10 @@ public class DummyAuthorization implements UserAuthorization {
      */
     private static Logger log = Logger.getLogger(DummyAuthorization.class);
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void init(Application wicketApplication) {
         if (wicketApplication.getConfigurationType().equals(WebApplication.DEPLOYMENT)) {
             throw new IllegalStateException("Do not use dummy authz module in production environment!");
@@ -28,19 +31,31 @@ public class DummyAuthorization implements UserAuthorization {
         log.warn("Dummy authorization mode initiated successfully");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Long getUserid(Request wicketRequest) {
         return 18925L;
     }
 
-    public boolean hasRoleInGroup(Request wicketRequest, Group group, MembershipType membershipType) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isGroupLeaderInGroup(Request wicketRequest, Group group) {
         // Kir-Dev, Teaház és 17.szint körvezetői tagsága
-        if ((group.getId().equals(331L) || group.getId().equals(106L) || group.getId().equals(21L)) &&
-                membershipType.equals(MembershipType.KORVEZETO)) {
+        if ((group.getId().equals(331L) || group.getId().equals(106L) ||
+                group.getId().equals(21L) || group.getId().equals(369L))) {
             return true;
         }
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean hasAbstractRole(Request wicketRequest, String role) {
         if (role.equals("ADMIN")) {
             return true;
@@ -49,17 +64,20 @@ public class DummyAuthorization implements UserAuthorization {
         } else {
             return false;
         }
-
     }
 
-    public boolean hasRoleInSomeGroup(Request wicketRequest, MembershipType membershipType) {
-        if (membershipType.equals(MembershipType.KORVEZETO)) {
-            return true;
-        } else {
-            return false;
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isGroupLeaderInSomeGroup(Request wicketRequest) {
+        return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public User getUserAttributes(Request wicketRequest) {
         return null;
     }

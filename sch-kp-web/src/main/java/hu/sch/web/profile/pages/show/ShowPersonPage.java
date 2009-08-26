@@ -85,8 +85,7 @@ public class ShowPersonPage extends ProfilePage {
                 person.getMail() != null);
         add(mailWMC);
 
-        add(
-                new ListView<IMAccount>("ims", person.getIMAccounts()) {
+        add(new ListView<IMAccount>("ims", person.getIMAccounts()) {
 
                     @Override
                     protected void populateItem(ListItem<IMAccount> item) {

@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package hu.sch.web.components;
 
 import java.awt.image.BufferedImage;
@@ -53,6 +52,6 @@ public class ImageResource extends DynamicImageResource {
      */
     @Override
     protected int getCacheDuration() {
-        return 3600*24;
+        return 3600 * 24;
     }
 }

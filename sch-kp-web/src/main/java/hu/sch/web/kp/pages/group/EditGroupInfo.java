@@ -50,7 +50,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
 
         group = userManager.findGroupById(id);
         User user = userManager.findUserWithCsoporttagsagokById((getSession()).getUserId());
-        if (user == null || !hasUserRoleInGroup(group, MembershipType.KORVEZETO)) {
+        if (user == null || !isUserGroupLeader(group)) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
             throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + id.toString()));
         }

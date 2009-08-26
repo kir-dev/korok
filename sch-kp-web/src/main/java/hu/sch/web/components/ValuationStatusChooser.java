@@ -14,12 +14,14 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
  * @author hege
  */
 public class ValuationStatusChooser extends DropDownChoice<ValuationStatus> {
+
     private static ValuationStatus[] valaszthatoLista = {ValuationStatus.ELBIRALATLAN, ValuationStatus.ELFOGADVA, ValuationStatus.ELUTASITVA};
-    
+
     public ValuationStatusChooser(String id) {
         super(id, Arrays.asList(valaszthatoLista));
 
         setChoiceRenderer(new IChoiceRenderer<ValuationStatus>() {
+
             public Object getDisplayValue(ValuationStatus object) {
                 return getConverter(ValuationStatus.class).convertToString(object, getLocale());
             }

@@ -47,7 +47,7 @@ public interface UserManagerLocal {
 
     void modifyMembership(User user, Group group, Date start, Date end);
 
-    void deleteMembership(User user, Group group);
+    void deleteMembership(Membership ms);
 
     List<User> getCsoporttagok(Long csoportId);
 
@@ -59,13 +59,11 @@ public interface UserManagerLocal {
 
     void groupInfoUpdate(Group cs);
 
-    Membership getCsoporttagsag(Long userId, Long groupId);
+    Membership getCsoporttagsag(Long memberId);
 
     void updateMemberRights(Membership oldOne, Membership newOne, MembershipType type);
 
     void setMemberToOldBoy(Membership user);
 
     void setOldBoyToActive(Membership cst);
-
-    User findKorvezetoForCsoport(Long csoportId);
 }

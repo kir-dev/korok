@@ -16,14 +16,14 @@
  */
 package hu.sch.web.error;
 
-import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.kp.templates.SecuredPageTemplate;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 
 /**
  *
  * @author aldaris
  */
-public final class InternalServerError extends ProfilePage {
+public final class InternalServerError extends SecuredPageTemplate {
 
     public InternalServerError() {
         super();

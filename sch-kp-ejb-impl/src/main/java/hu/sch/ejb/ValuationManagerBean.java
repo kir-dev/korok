@@ -34,12 +34,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.mail.Message;
 import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.Message.RecipientType;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -381,7 +376,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 // nem a JETI a feladó
 
                 // jeti körvezetőjének a mail címének kikeresése
-                emailTo = userManager.findKorvezetoForCsoport(156L).getEmailAddress();
+//                emailTo = userManager.findKorvezetoForCsoport(156L).getEmailAddress();
                 emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getGroup().getName() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n" +
                         "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
                         "Ez egy automatikusan generált e-mail.";

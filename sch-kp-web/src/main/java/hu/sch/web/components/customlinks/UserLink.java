@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package hu.sch.web.components;
+package hu.sch.web.components.customlinks;
 
-import hu.sch.domain.Group;
-import hu.sch.web.kp.pages.group.ShowGroup;
+import hu.sch.domain.User;
+import hu.sch.web.kp.pages.user.ShowUser;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -17,16 +17,16 @@ import org.apache.wicket.model.CompoundPropertyModel;
  *
  * @author hege
  */
-public class GroupLink extends Panel {
+public class UserLink extends Panel {
 
-    public GroupLink(String id, Group csoport) {
-        super(id, new CompoundPropertyModel(csoport));
+    public UserLink(String id, User user) {
+        super(id, new CompoundPropertyModel(user));
         init();
     }
 
     private void init() {
-        final Group csop = (Group) getDefaultModelObject();
-        Link fl = new BookmarkablePageLink("csopLink", ShowGroup.class, new PageParameters("id=" + csop.getId()));
+        final User felh = (User) getDefaultModelObject();
+        Link fl = new BookmarkablePageLink("felhLink", ShowUser.class, new PageParameters("id=" + felh.getId()));
         fl.setModel(getDefaultModel());
         fl.add(new Label("name"));
         add(fl);

@@ -4,8 +4,8 @@
  */
 package hu.sch.web.components;
 
+import hu.sch.web.components.customlinks.UserLink;
 import hu.sch.domain.Membership;
-import hu.sch.domain.MembershipType;
 import java.util.List;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
@@ -29,9 +29,9 @@ public final class ActiveMembershipsPanel extends Panel {
                 Membership ms = item.getModelObject();
                 item.setModel(new CompoundPropertyModel<Membership>(ms));
                 item.add(new UserLink("userLink", ms.getUser()));
-                item.add(new Label("nickName", ms.getUser().getNickName()));
+                item.add(new Label("user.nickName"));
                 item.add(new Label("rights",
-                        getConverter(MembershipType[].class).convertToString(ms.getRightsAsString(), getLocale())));
+                        getConverter(List.class).convertToString(ms.getPosts(), getLocale())));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
             }
         };

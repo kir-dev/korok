@@ -40,6 +40,7 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author hege
  */
+//TODO
 public class ConsiderPage extends SecuredPageTemplate {
 
     @EJB(name = "ValuationManagerBean")

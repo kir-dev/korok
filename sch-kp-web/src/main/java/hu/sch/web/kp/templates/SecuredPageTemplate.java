@@ -53,7 +53,7 @@ public class SecuredPageTemplate extends WebPage {
 
         add(new BookmarkablePageLink("showuserlink", ShowUser.class));
         add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
-        if (hasUserRoleInSomeGroup(MembershipType.KORVEZETO)) {
+        if (isUserGroupLeaderInSomeGroup()) {
             add(new BookmarkablePageLink("ertekeleseklink", Valuations.class).setVisible(true));
         } else {
             add(new BookmarkablePageLink("ertekeleseklink", Valuations.class).setVisible(false));
@@ -126,12 +126,12 @@ public class SecuredPageTemplate extends WebPage {
         return getAuthorizationComponent().hasAbstractRole(getRequest(), jetiRoleName);
     }
 
-    public boolean hasUserRoleInGroup(Group group, MembershipType type) {
-        return getAuthorizationComponent().hasRoleInGroup(getRequest(), group, type);
+    public boolean isUserGroupLeader(Group group) {
+        return getAuthorizationComponent().isGroupLeaderInGroup(getRequest(), group);
     }
 
-    public boolean hasUserRoleInSomeGroup(MembershipType type) {
-        return getAuthorizationComponent().hasRoleInSomeGroup(getRequest(), type);
+    public boolean isUserGroupLeaderInSomeGroup() {
+        return getAuthorizationComponent().isGroupLeaderInSomeGroup(getRequest());
     }
 
     public void setHeaderLabelText(String text) {

@@ -34,10 +34,9 @@ public interface UserAuthorization {
      * 
      * @param wicketRequest
      * @param csoport
-     * @param tagsagTipus
      * @return
      */
-    boolean hasRoleInGroup(Request wicketRequest, Group csoport, MembershipType tagsagTipus);
+    boolean isGroupLeaderInGroup(Request wicketRequest, Group csoport);
 
     /**
      * Az aktuálisan bejelentkezett felhasználó rendelkezik-e valamelyik csoportban
@@ -47,7 +46,7 @@ public interface UserAuthorization {
      * @param tagsagTipus
      * @return
      */
-    boolean hasRoleInSomeGroup(Request wicketRequest, MembershipType tagsagTipus);
+    boolean isGroupLeaderInSomeGroup(Request wicketRequest);
 
     /**
      * A felhasználó tagja-e az absztrakt szerepnek.

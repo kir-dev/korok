@@ -9,7 +9,6 @@
 package hu.sch.web;
 
 import hu.sch.domain.EntrantType;
-import hu.sch.domain.MembershipType;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.pages.group.EditGroupInfo;
 import hu.sch.web.kp.pages.user.ShowUser;
@@ -29,10 +28,11 @@ import hu.sch.web.kp.pages.group.ChangePost;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.kp.util.EntrantTypeConverter;
+import hu.sch.web.kp.util.PostTypeConverter;
 import hu.sch.web.kp.util.ValuationStatusConverter;
-import hu.sch.web.kp.util.MembershipTypeConverter;
 import hu.sch.web.kp.util.ServerTimerFilter;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
+import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Request;
@@ -61,6 +61,7 @@ public class PhoenixApplication extends WebApplication {
     @Override
     protected void init() {
         addComponentInstantiationListener(new JavaEEComponentInjector(this));
+
         //körök linkek
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);
@@ -78,18 +79,26 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/consider", ConsiderPage.class);
         mountBookmarkablePage("/editsettings", EditSettings.class);
         mountBookmarkablePage("/logout", Logout.class);
+
         mount("/error", PackageName.forClass(InternalServerError.class));
 
         mountBookmarkablePage("/profile", ShowPersonPage.class);
-
+//        mountBookmarkablePage("profile/edit", EditPage.class);
+        
+        //alkalmazás beállítások
         getApplicationSettings().setInternalErrorPage(InternalServerError.class);
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
         getMarkupSettings().setStripWicketTags(true);
         getPageSettings().setAutomaticMultiWindowSupport(false);
+
+        //Ha dev módban vagyunk, akkor hozzáteszünk egy új filtert, ami mutatja
+        //a render időket a log fájlban.
         if (getConfigurationType().equals(DEVELOPMENT)) {
             getRequestCycleSettings().addResponseFilter(new ServerTimerFilter());
             log.info("Successfully enabled ServerTimerFilter");
         }
+
+        //autorizációs komponens inicializálása
         String classname = getInitParameter(AUTHZ_COMPONENT_PARAM);
         try {
             authorizationComponent = Class.forName(classname).
@@ -113,8 +122,7 @@ public class PhoenixApplication extends WebApplication {
         ConverterLocator locator = new ConverterLocator();
         locator.set(EntrantType.class, new EntrantTypeConverter());
         locator.set(ValuationStatus.class, new ValuationStatusConverter());
-        locator.set(MembershipType.class, new MembershipTypeConverter());
-        locator.set(MembershipType[].class, new MembershipTypeConverter());
+        locator.set(List.class, new PostTypeConverter());
 
         return locator;
     }

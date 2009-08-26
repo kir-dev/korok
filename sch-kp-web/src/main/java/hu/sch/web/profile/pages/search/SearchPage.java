@@ -1,5 +1,6 @@
 package hu.sch.web.profile.pages.search;
 
+import hu.sch.web.components.FocusOnLoadBehavior;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
@@ -19,9 +20,9 @@ public class SearchPage extends ProfilePage {
 
         public SearchForm(String componentName) {
             super(componentName);
-            TextField sf = new TextField("searchString",
+            TextField<String> sf = new TextField<String>("searchString",
                     new PropertyModel(this, "searchString"));
-            sf.add(new SimpleAttributeModifier("autofocus", "autofocus"));
+            sf.add(new FocusOnLoadBehavior());
             add(sf);
         }
 
@@ -37,20 +38,20 @@ public class SearchPage extends ProfilePage {
         setHeaderLabelText("Keresés");
         add(new SearchForm("searchForm"));
 
-    /*        DataView personsDataView = new DataView("personsDataView", new ListDataProvider(persons)) {
+        /*        DataView personsDataView = new DataView("personsDataView", new ListDataProvider(persons)) {
 
-    @Override
-    protected void populateItem(Item item) {
-    Person person = (Person) item.getModelObject();
-    item.add(new Label("nickName", person.getNickName()));
-    BookmarkablePageLink bpl = new BookmarkablePageLink("profilePageLink", HomePage.class, new PageParameters("uid=" + person.getUid()));
-    bpl.add(new Label("fullName", person.getFullName()));
-    item.add(new Label("mail", person.getMail()));
-    item.add(new Label("roomNumber", person.getRoomNumber()));
-    item.add(bpl);
-    }
-    };
-    add(personsDataView);*/
+        @Override
+        protected void populateItem(Item item) {
+        Person person = (Person) item.getModelObject();
+        item.add(new Label("nickName", person.getNickName()));
+        BookmarkablePageLink bpl = new BookmarkablePageLink("profilePageLink", HomePage.class, new PageParameters("uid=" + person.getUid()));
+        bpl.add(new Label("fullName", person.getFullName()));
+        item.add(new Label("mail", person.getMail()));
+        item.add(new Label("roomNumber", person.getRoomNumber()));
+        item.add(bpl);
+        }
+        };
+        add(personsDataView);*/
     }
 
     public SearchPage(PageParameters params) {

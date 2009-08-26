@@ -40,10 +40,18 @@ public class AgentBasedAuthorization implements UserAuthorization {
     private static final String NICNKAME_ATTRNAME = "displayName";
     private static final String EMAIL_ATTRNAME = "mail";
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void init(Application wicketApplication) {
         log.warn("Agent based authorization mode successfully initiated.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Long getUserid(Request wicketRequest) {
         HttpServletRequest servletRequest =
                 ((WebRequest) wicketRequest).getHttpServletRequest();
@@ -63,6 +71,10 @@ public class AgentBasedAuthorization implements UserAuthorization {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean hasAbstractRole(Request wicketRequest, String role) {
         HttpServletRequest servletRequest =
                 ((WebRequest) wicketRequest).getHttpServletRequest();
@@ -75,22 +87,37 @@ public class AgentBasedAuthorization implements UserAuthorization {
         return inRole;
     }
 
-    public boolean hasRoleInGroup(Request wicketRequest, Group group, MembershipType membershipType) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isGroupLeaderInGroup(Request wicketRequest, Group group) {
         Map<Long, MembershipType> memberships = parseEntitlements(wicketRequest);
         MembershipType msType = memberships.get(group.getId());
         if (msType == null) {
             return false;
         }
 
-        return msType.equals(membershipType);
+        //Mivel csak körvezetői tagságokat tárolunk, így ha volt találat, akkor az
+        //biztosan körvezetői tagság volt.
+        return true;
     }
 
-    public boolean hasRoleInSomeGroup(Request wicketRequest, MembershipType membershipType) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isGroupLeaderInSomeGroup(Request wicketRequest) {
         Map<Long, MembershipType> memberships = parseEntitlements(wicketRequest);
 
-        return memberships.values().contains(membershipType);
+        return !memberships.isEmpty();
     }
 
+    /**
+     * A kérésben található entitlement-ek feldolgozását elvégző függvény.
+     * @param wicketRequest Wicket kérés
+     * @return CsoportId-Tagságtípus párok
+     */
     @SuppressWarnings("unchecked")
     private Map<Long, MembershipType> parseEntitlements(Request wicketRequest) {
         HttpServletRequest servletRequest =
@@ -105,7 +132,6 @@ public class AgentBasedAuthorization implements UserAuthorization {
         }
 
         memberships = new HashMap<Long, MembershipType>();
-        servletRequest.setAttribute(ENTITLEMENT_CACHE, memberships);
 
         Set<String> entitlementSet =
                 (Set<String>) servletRequest.getAttribute(ENTITLEMENT_ATTRNAME);
@@ -125,32 +151,26 @@ public class AgentBasedAuthorization implements UserAuthorization {
                                     " ,tagsagTipus: " + membershipType +
                                     " , csoportId: " + groupId.toString());
                         }
-                        MembershipType mst =
-                                MembershipType.fromEntitlement(membershipType);
-                        if (mst == null) {
-                            log.warn("Cannot map entitlement " + membershipType);
-                            continue;
-                        }
-                        MembershipType temp = memberships.get(groupId);
-                        if (temp != null) {
-                            if (temp != MembershipType.KORVEZETO && mst ==
-                                    MembershipType.KORVEZETO) {
-                                memberships.put(groupId, mst);
-                            }
+                        if (membershipType.equalsIgnoreCase("korvezeto")) {
+                            memberships.put(groupId, MembershipType.KORVEZETO);
                         } else {
-                            //FIXME: itt bajok lehetnek azzal, hogy csak a körvezetői
-                            //tagságok vannak tárolva, egy Map<groupId, List<mst>>
-                            //megoldaná valószínűleg a problémát.
-                            memberships.put(groupId, mst);
+                            //Az olvashatóság érdekében, csak a körvezetői tagságokkal
+                            //foglalkozunk az autorizáció folyamán.
+                            continue;
                         }
                     }
                 }
             }
         }
+        servletRequest.setAttribute(ENTITLEMENT_CACHE, memberships);
 
         return memberships;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public User getUserAttributes(Request wicketRequest) {
         HttpServletRequest servletRequest =
                 ((WebRequest) wicketRequest).getHttpServletRequest();
@@ -174,6 +194,10 @@ public class AgentBasedAuthorization implements UserAuthorization {
         return user;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
     private String getSingleValuedStringAttribute(HttpServletRequest request, String attrName) {
         Set<String> attrSet = (Set<String>) request.getAttribute(attrName);
 

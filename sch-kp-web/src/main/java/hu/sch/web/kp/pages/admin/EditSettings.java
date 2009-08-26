@@ -7,9 +7,9 @@ package hu.sch.web.kp.pages.admin;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.Arrays;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,18 +26,19 @@ import org.apache.wicket.validation.validator.RangeValidator;
  *
  * @author aldaris
  */
+//TODO
 public class EditSettings extends SecuredPageTemplate {
 
     private Semester semester;
     ValuationPeriod valuationPeriod;
 
     public EditSettings() {
-        super();
+        //Jogosultságellenőrzés
         if (!isCurrentUserJETI()) {
-            info("Nincs jogod a megadott művelethez");
-            setResponsePage(GroupHierarchy.class);
-            return;
+            error("Nincs jogod a megadott művelethez");
+            throw new RestartResponseException(getApplication().getHomePage());
         }
+
         setHeaderLabelText("Beállítások");
         add(new FeedbackPanel("pagemessages"));
         try {
@@ -45,7 +46,6 @@ public class EditSettings extends SecuredPageTemplate {
         } catch (NoSuchAttributeException e) {
             semester = new Semester();
         }
-
 
         setValuationPeriod(systemManager.getErtekelesIdoszak());
 
@@ -71,7 +71,7 @@ public class EditSettings extends SecuredPageTemplate {
         beallitasForm.add(new CheckBox("isAutumn"));
         beallitasForm.add(new AbstractFormValidator() {
 
-			public FormComponent<?>[] getDependentFormComponents() {
+            public FormComponent<?>[] getDependentFormComponents() {
                 return new FormComponent[]{firstYear, secondYear};
             }
 

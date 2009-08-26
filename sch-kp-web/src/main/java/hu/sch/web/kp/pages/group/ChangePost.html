@@ -1,18 +1,28 @@
 <wicket:extend>
+    <span wicket:id="pagemessages" id="pagemessages"></span>
     <h2>
         <span wicket:id="groupname" /> - <span wicket:id="username" />
     </h2>
     <form wicket:id="changePost">
         <div class="subdata">
-        <table>
-            <tr>
-                <td>
-                    <span wicket:id="choices" stlye="">
-                    </span>
-                </td>
-            </tr>
-        </table>
+            <table>
+                <tr>
+                    <td>
+                        <span wicket:id="choices" style="">
+                        </span>
+                    </td>
+                </tr>
+            </table>
         </div>
         <input class="btn" type="submit" value="OK"/>
+    </form>
+    <h2>
+        Új poszt felvétele
+    </h2>
+    <form wicket:id="postTypeForm">
+        <div class="subdata">
+            <input class="textinput" style="width: 200px;" type="text" wicket:id="postNameTF" />
+        </div>
+        <input class="btn" type="submit" value="Mentés" />
     </form>
 </wicket:extend>

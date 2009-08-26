@@ -52,24 +52,20 @@ public class Group implements Serializable, Comparable<Group> {
     private static final long serialVersionUID = 1L;
     public static final String findAll = "findAllGroup";
     public static final String findWithMemberships = "findGroupWithMemberships";
-//    public static final String
 
     /*
-    grp_id          | integer                | not null
-    grp_name        | text                   | not null
-    grp_type        | character varying(16)  | not null
-    grp_parent      | integer                | 
-    grp_state       | character(3)           | default 'akt'::bpchar
-    grp_description | text                   | 
-    grp_webpage     | character varying(64)  | 
-    grp_maillist    | character varying(64)  | 
-    grp_head        | character varying(48)  | 
-    grp_founded     | integer                | 
-    grp_flags       | integer                | 
-    grp_acc_cards   | integer                | 
-    grp_acc_points  | integer                | 
-    is_del          | boolean                | default false
-    grp_shortname   | character varying(128) | 
+    grp_id               | integer               | not null default nextval('groups_grp_id_seq'::regclass)
+    grp_name             | text                  | not null
+    grp_type             | character varying(20) | not null
+    grp_parent           | integer               |
+    grp_state            | character(3)          | default 'akt'::bpchar
+    grp_description      | text                  |
+    grp_webpage          | character varying(64) |
+    grp_maillist         | character varying(64) |
+    grp_head             | character varying(48) |
+    grp_founded          | integer               |
+    grp_issvie           | boolean               | not null default false
+    grp_svie_delegate_nr | integer               |
      */
     /**
      * Group azonosító id
@@ -88,33 +84,41 @@ public class Group implements Serializable, Comparable<Group> {
      */
     private Group parent;
     /**
-     * Publikus weboldal címe
+     * Státusz (aktiv / öreg)
      */
-    private String webPage;
+    private GroupStatus status;
     /**
      * Kör bemutatkozása
      */
     private String introduction;
     /**
+     * Publikus weboldal címe
+     */
+    private String webPage;
+    /**
      * Levelezési lista címe
      */
     private String mailingList;
+    /**
+     * A kör vezetőjének egyéni titulusa
+     */
+    private String head;
     /**
      * Alapítás éve
      */
     private Integer founded;
     /**
+     * Az adott kör tagja-e a SVIE-nek
+     */
+    private Boolean isSvie;
+    /**
+     * Az adott kör hány tagot küldhet küldött gyülésre
+     */
+    private Integer delegateNumber;
+    /**
      * Alcsoportok
      */
     private List<Group> subGroups;
-    /**
-     * Státusz (aktiv / öreg)
-     */
-    private GroupStatus status;
-    /**
-     * Oszthat-e pontot/belépőt
-     */
-    private Integer flags;
     /**
      * Csoporttagságok
      */
@@ -132,19 +136,15 @@ public class Group implements Serializable, Comparable<Group> {
      */
     private List<Membership> inactiveMembers;
 
-    /** Creates a new instance of Group */
-    public Group() {
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Id
     @GeneratedValue(generator = "groups_seq")
     @Column(name = "grp_id")
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Column(name = "grp_name", length = 255, columnDefinition = "text")
@@ -156,32 +156,13 @@ public class Group implements Serializable, Comparable<Group> {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    public List<Membership> getMemberships() {
-        return memberships;
+    @Column(name = "grp_type")
+    public String getType() {
+        return type;
     }
 
-    public void setMemberships(List<Membership> memberships) {
-        this.memberships = memberships;
-    }
-
-    @Column(name = "grp_flags")
-    public Integer getFlags() {
-        return flags;
-    }
-
-    public void setFlags(Integer flags) {
-        this.flags = flags;
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "grp_state")
-    public GroupStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(GroupStatus status) {
-        this.status = status;
+    public void setType(String type) {
+        this.type = type;
     }
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
@@ -194,13 +175,14 @@ public class Group implements Serializable, Comparable<Group> {
         this.parent = parent;
     }
 
-    @Column(name = "grp_founded")
-    public Integer getFounded() {
-        return founded;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "grp_state")
+    public GroupStatus getStatus() {
+        return status;
     }
 
-    public void setFounded(Integer founded) {
-        this.founded = founded;
+    public void setStatus(GroupStatus status) {
+        this.status = status;
     }
 
     @Column(name = "grp_description", columnDefinition = "text")
@@ -212,6 +194,15 @@ public class Group implements Serializable, Comparable<Group> {
         this.introduction = introduction;
     }
 
+    @Column(name = "grp_webpage", length = 64)
+    public String getWebPage() {
+        return webPage;
+    }
+
+    public void setWebPage(String webPage) {
+        this.webPage = webPage;
+    }
+
     @Column(name = "grp_maillist", length = 64)
     public String getMailingList() {
         return mailingList;
@@ -221,13 +212,49 @@ public class Group implements Serializable, Comparable<Group> {
         this.mailingList = mailingList;
     }
 
-    @Column(name = "grp_webpage", length = 64)
-    public String getWebPage() {
-        return webPage;
+    @Column(name = "grp_head", length = 48)
+    public String getHead() {
+        return head;
     }
 
-    public void setWebPage(String webPage) {
-        this.webPage = webPage;
+    public void setHead(String head) {
+        this.head = head;
+    }
+
+    @Column(name = "grp_founded")
+    public Integer getFounded() {
+        return founded;
+    }
+
+    public void setFounded(Integer founded) {
+        this.founded = founded;
+    }
+
+    @Column(name = "grp_issvie")
+    public Boolean getIsSvie() {
+        return isSvie;
+    }
+
+    public void setIsSvie(Boolean isSvie) {
+        this.isSvie = isSvie;
+    }
+
+    @Column(name = "grp_svie_delegate_nr")
+    public Integer getDelegateNumber() {
+        return delegateNumber;
+    }
+
+    public void setDelegateNumber(Integer delegateNumber) {
+        this.delegateNumber = delegateNumber;
+    }
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    public List<Membership> getMemberships() {
+        return memberships;
+    }
+
+    public void setMemberships(List<Membership> memberships) {
+        this.memberships = memberships;
     }
 
     @Transient
@@ -239,15 +266,6 @@ public class Group implements Serializable, Comparable<Group> {
         this.subGroups = subGroups;
     }
 
-    @Column(name = "grp_type")
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     @Transient
     public List<User> getMembers() {
         if (members == null) {
@@ -257,6 +275,7 @@ public class Group implements Serializable, Comparable<Group> {
     }
 
     private void loadMembers() {
+        sortMemberships();
         members = new ArrayList<User>();
         activeMembers = new ArrayList<Membership>();
         inactiveMembers = new ArrayList<Membership>();
@@ -287,8 +306,8 @@ public class Group implements Serializable, Comparable<Group> {
     }
 
     public void sortMemberships() {
-        if (this.getMemberships() != null) {
-            Collections.sort(this.getMemberships(),
+        if (getMemberships() != null) {
+            Collections.sort(getMemberships(),
                     new Comparator<Membership>() {
 
                         public int compare(Membership o1, Membership o2) {
@@ -306,6 +325,7 @@ public class Group implements Serializable, Comparable<Group> {
         return getName();
     }
 
+    @Override
     public int compareTo(Group o) {
         Collator huCollator = Collator.getInstance(new Locale("hu"));
         return huCollator.compare(getName(), o.getName());
@@ -321,33 +341,6 @@ public class Group implements Serializable, Comparable<Group> {
         }
         final Group other = (Group) obj;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-            return false;
-        }
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-        if ((this.type == null) ? (other.type != null) : !this.type.equals(other.type)) {
-            return false;
-        }
-        if ((this.webPage == null) ? (other.webPage != null) : !this.webPage.equals(other.webPage)) {
-            return false;
-        }
-        if ((this.introduction == null) ? (other.introduction != null) : !this.introduction.equals(other.introduction)) {
-            return false;
-        }
-        if ((this.mailingList == null) ? (other.mailingList != null) : !this.mailingList.equals(other.mailingList)) {
-            return false;
-        }
-        if (this.founded != other.founded &&
-                (this.founded == null ||
-                !this.founded.equals(other.founded))) {
-            return false;
-        }
-        if (this.status != other.status) {
-            return false;
-        }
-        if (this.flags != other.flags &&
-                (this.flags == null || !this.flags.equals(other.flags))) {
             return false;
         }
         return true;
@@ -368,7 +361,6 @@ public class Group implements Serializable, Comparable<Group> {
                 31 * hash +
                 (this.founded != null ? this.founded.hashCode() : 0);
         hash = 31 * hash + (this.status != null ? this.status.hashCode() : 0);
-        hash = 31 * hash + (this.flags != null ? this.flags.hashCode() : 0);
         return hash;
     }
 }

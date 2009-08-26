@@ -16,6 +16,7 @@
  */
 package hu.sch.web.components;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,14 +38,7 @@ public class ImageResizer {
     BufferedImage resizedImage = null;
     private List<String> validImageContentTypes = Arrays.asList(new String[]{"image/jpeg", "image/png", "image/gif"});
     int maxSize;
-    int scaleHints = java.awt.Image.SCALE_SMOOTH;
-
-    public class NotValidImageException extends Exception {
-    }
-
-    public void setMaxSize(int maxSize) {
-        this.maxSize = maxSize;
-    }
+    int scaleHints = Image.SCALE_SMOOTH;
 
     public ImageResizer(FileUpload fileUpload) throws Exception {
         this.fileUpload = fileUpload;
@@ -57,12 +51,9 @@ public class ImageResizer {
         try {
             is = fileUpload.getInputStream();
             originalImage = ImageIO.read(is);
-        } catch (Exception e) {
-            throw new WicketRuntimeException(e);
-        } /*        catch (ResourceStreamNotFoundException e)
-        {
-        throw new WicketRuntimeException(e);
-        }*/ finally {
+        } catch (Exception ex) {
+            throw new WicketRuntimeException(ex);
+        } finally {
             if (is != null) {
                 try {
                     is.close();
@@ -116,5 +107,12 @@ public class ImageResizer {
         } catch (IOException e) {
             throw new WicketRuntimeException("Unable to convert dynamic image to stream", e);
         }
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    public class NotValidImageException extends Exception {
     }
 }

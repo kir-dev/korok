@@ -98,8 +98,8 @@ public class AdminPage extends ProfilePage {
         add(new PersonForm("personForm", person) {
 
             @Override
-            public void initFormComponents() {
-                super.initFormComponents();
+            public void initAjaxPrivateLinks() {
+                super.initAjaxPrivateLinks();
 
                 TextField neptunTF = (TextField) new TextField("neptun").setRequired(true);
                 neptunTF.add(new ValidationStyleBehavior());

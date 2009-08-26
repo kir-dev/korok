@@ -6,18 +6,29 @@ package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.User;
 import hu.sch.domain.MembershipType;
-import hu.sch.web.components.Input;
+import hu.sch.domain.Post;
+import hu.sch.domain.User;
+import hu.sch.domain.PostType;
+import hu.sch.services.PostManagerLocal;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import javax.ejb.EJB;
+import org.apache.log4j.Logger;
+import org.apache.wicket.IClusterable;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.string.StringValueConversionException;
+import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValidator;
 
 /**
  *
@@ -25,102 +36,147 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public final class ChangePost extends SecuredPageTemplate {
 
-    public ChangePost(PageParameters params) {
-        final Long groupid = new Long(params.getLong("groupid"));
-        final Long userid = new Long(params.getLong("userid"));
+    @EJB(name = "PostManagerBean")
+    private PostManagerLocal postManager;
+    private static Logger log = Logger.getLogger(ChangePost.class);
+    private String postName;
+
+    public ChangePost(final PageParameters params) {
+        Long memberId;
+        try {
+            memberId = new Long(params.getLong("memberid"));
+        } catch (StringValueConversionException svce) {
+            error("Hibás paraméter!");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+
+        final Membership ms = userManager.getCsoporttagsag(memberId);
+        if (ms == null) {
+            error("Hibás paraméter!");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
 
         setHeaderLabelText("Jog megadása");
-        Group group = userManager.findGroupWithCsoporttagsagokById(groupid);
-        User user = userManager.findUserById(userid);
-        final Membership cst = userManager.getCsoporttagsag(userid, groupid);
-        final List<Membership> activeMembers = group.getActiveMemberships();
 
-        if (!hasUserRoleInGroup(group, MembershipType.KORVEZETO)) {
-            getSession().info("Nincs jogod a megadott művelethez");
-            setResponsePage(GroupHierarchy.class);
-            return;
+        add(new FeedbackPanel("pagemessages"));
+        //kell, hogy a csoporttagságok is betöltődjenek
+        Group group = userManager.findGroupWithCsoporttagsagokById(ms.getGroup().getId());
+        User user = ms.getUser();
+
+//        final List<Membership> activeMembers = group.getActiveMemberships();
+
+        if (!isUserGroupLeader(group)) {
+            getSession().error("Nincs jogod a megadott művelethez");
+            throw new RestartResponseException(getApplication().getHomePage());
         }
         //if (user == null || group == null) { // group == null always false
         if (user == null) {
-            getSession().info("Hibás adatok");
-            setResponsePage(ShowGroup.class, new PageParameters("id=" + groupid));
-            return;
+            getSession().error("Hibás adatok");
+            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + group.getId()));
         }
         add(new Label("groupname", group.getName()));
         add(new Label("username", user.getName()));
-        final Input input = new Input(cst);
-        setDefaultModel(new CompoundPropertyModel(input));
+        final Input input = new Input(ms);
+        setDefaultModel(new CompoundPropertyModel<Input>(input));
+
         Form form = new Form("changePost") {
 
             @Override
             protected void onSubmit() {
-                List<MembershipType> memberRights = input.getChoices();
-                List<MembershipType> originalRights = Arrays.asList(cst.getRightsAsString());
-                boolean found = false;
-                try {
-                    //milyen jogok vannak a checkbox-ok alapján
-                    for (MembershipType tagsagTipus : memberRights) {
-                        //Ha az eredeti jogai között nem szerepelt valamelyik jog:
-                        if (!originalRights.contains(tagsagTipus)) {
-                            //végigmegyünk az összes csoporttagon
-                            for (Membership csoporttagsag : activeMembers) {
-                                //megnézzük, hogy van-e neki ugyanilyen joga
-                                if (MembershipType.hasJogInGroup(csoporttagsag, tagsagTipus)) {
-                                    //ha már volt ilyen emberke
-                                    if (found) {
-                                        //akkor ennek már csak elvesszük a jogát
-                                        userManager.updateMemberRights(csoporttagsag, null, tagsagTipus);
-                                    } else {
-                                        //egyébként a kettő user posztot cserél
-                                        userManager.updateMemberRights(csoporttagsag, cst, tagsagTipus);
-                                    }
-                                    found = true;
-                                }
-                            }
-                            //ha nem volt egy emberke se ilyen joggal, akkor ez a user fogja megkapni
-                            if (!found) {
-                                userManager.updateMemberRights(null, cst, tagsagTipus);
-                            }
+                //A formon bevitt adatok
+                List<PostType> newRights = input.getChoices();
+                //Az eltávolítandó posztok
+                List<Post> removedPosts = new ArrayList<Post>();
+                //A körtag eredeti posztjai
+                List<Post> posts = ms.getPosts();
+                Iterator<Post> iterator = posts.iterator();
+                while (iterator.hasNext()) {
+                    Post temp = iterator.next();
+                    if (newRights.contains(temp.getPostType())) {
+                        newRights.remove(temp.getPostType());
+                    } else {
+                        if (temp.getPostType().getPostName().equals(MembershipType.KORVEZETO.toString())) {
+                            getSession().error("A körvezetői posztot nem szüntetheted meg, azt csak átruházni lehet egy másik körtagra.");
+                            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + ms.getGroup().getId()));
                         }
+                        removedPosts.add(temp);
                     }
-                    //végigmegyünk az eredeti jogain
-                    for (MembershipType tagsagTipus : originalRights) {
-                        //ha most elvettünk egy jogot a user-től, akkor tényleg elvesszük :)
-                        if (!memberRights.contains(tagsagTipus)) {
-                            userManager.updateMemberRights(cst, null, tagsagTipus);
-                        }
-                    }
-                } catch (Exception e) {
-                    getSession().info("A mentés során hiba lépett fel");
-                    setResponsePage(ShowGroup.class, new PageParameters("id=" + groupid.toString()));
-                    return;
                 }
-                getSession().info("A változások mentésre kerültek");
-                setResponsePage(ShowGroup.class, new PageParameters("id=" + groupid.toString()));
-                return;
+                Iterator<PostType> it = newRights.iterator();
+                while (it.hasNext()) {
+                    PostType temp = it.next();
+                    if (temp.getPostName().equals(MembershipType.KORVEZETO.toString())) {
+                        it.remove();
+                        postManager.changeGroupLeader(ms, temp);
+                        break;
+                    }
+                }
+
+                postManager.setPostsForMembership(ms, removedPosts, newRights);
+                getSession().info("A beállítások sikeresen mentésre kerültek");
+                setResponsePage(ShowGroup.class, new PageParameters("id=" + ms.getGroup().getId()));
             }
         };
 
         //form.add(checkboxes);
-        List<MembershipType> tomb = new ArrayList<MembershipType>();
-        tomb.add(MembershipType.KORVEZETO);
-        tomb.add(MembershipType.GAZDASAGIS);
-        tomb.add(MembershipType.PRMENEDZSER);
+        List<PostType> postTypes = postManager.getAvailablePostTypesForGroup(group);
 
+        CheckBoxMultipleChoice<PostType> multipleChoice =
+                new CheckBoxMultipleChoice<PostType>("choices", postTypes);
+        form.add(multipleChoice);
+        add(form);
 
-        CheckBoxMultipleChoice<MembershipType> choices = new CheckBoxMultipleChoice<MembershipType>("choices", tomb) {
+        Form createPostTypeForm = new Form("postTypeForm") {
 
             @Override
-            protected boolean isDisabled(MembershipType object, int index, String selected) {
-                if (index == 1) {
-                    return true;
+            protected void onSubmit() {
+                if (postManager.createPostType(postName, ms.getGroup())) {
+                    getSession().info("Az új poszt sikeresen elkészült.");
+                    setResponsePage(ChangePost.class, params);
+                    return;
+                } else {
+                    getSession().error("Az új poszt létrehozása közben hiba lépett fel, " +
+                            "valószínűleg egy már létező posztot szerettél volna újra felvenni.");
+
                 }
-                return super.isDisabled(object, index, selected);
             }
         };
 
-        //checkboxes.add(choices);
-        form.add(choices);
-        add(form);
+        TextField<String> postNameTF =
+                new TextField<String>("postNameTF", new PropertyModel<String>(this, "postName"));
+        postNameTF.add(new LengthBetweenValidator(2, 30));
+        createPostTypeForm.add(postNameTF);
+        add(createPostTypeForm);
+    }
+
+    private class Input implements IClusterable {
+
+        List<PostType> choices = new ArrayList<PostType>();
+        Membership cst = null;
+
+        public Input(Membership ms) {
+            List<Post> posts = postManager.getCurrentPostsForGroup(ms);
+
+            for (Post post : posts) {
+                choices.add(post.getPostType());
+            }
+        }
+
+        public List<PostType> getChoices() {
+            return choices;
+        }
+
+        public void setChoices(List<PostType> temp) {
+            choices = temp;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for (PostType postType : choices) {
+                sb.append(postType.toString());
+            }
+            return sb.toString();
+        }
     }
 }

@@ -7,10 +7,11 @@ package hu.sch.ejb;
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.MembershipPK;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.MembershipType;
+import hu.sch.domain.Post;
+import hu.sch.domain.PostType;
 import hu.sch.services.UserManagerLocal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,28 +68,29 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
-    public void addUserToGroup(User felhasznalo, Group csoport, Date kezdet, Date veg) {
-        MembershipPK cspk =
-                new MembershipPK(felhasznalo.getId(), csoport.getId());
-        Membership m = em.find(Membership.class, cspk);
-        if (m != null) { //már létező csoporttagság
-            return;
-        }
-        User f = em.find(User.class, felhasznalo.getId());
-        Group cs = em.find(Group.class, csoport.getId());
-        m = new Membership();
-        m.setId(cspk);
-        m.setRights(0L);
-        m.setUser(f);
-        m.setGroup(cs);
-        m.setStart(kezdet);
-        m.setEnd(veg);
-        f.getMemberships().add(m);
-        cs.getMemberships().add(m);
-
-        em.merge(m);
-        em.merge(f);
-        em.merge(cs);
+    public void addUserToGroup(User user, Group group, Date start, Date veg) {
+        Membership ms = new Membership();
+        User _user = em.find(User.class, user.getId());
+        Group _group = em.find(Group.class, group.getId());
+        ms.setUser(_user);
+        ms.setGroup(_group);
+        ms.setStart(start);
+        ms.setEnd(null);
+        Post post = new Post();
+        post.setMembership(ms);
+        Query q = em.createNamedQuery(PostType.searchForPostType);
+        q.setParameter("pn", "feldolgozás alatt");
+        PostType postType = (PostType) q.getSingleResult();
+        post.setPostType(postType);
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+        ms.setPosts(posts);
+        _user.getMemberships().add(ms);
+        _group.getMemberships().add(ms);
+        em.persist(post);
+        em.persist(ms);
+        em.merge(_user);
+        em.merge(_group);
         em.flush();
     }
 
@@ -133,21 +135,16 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public void modifyMembership(User user, Group group, Date start, Date end) {
-        Membership m =
-                em.find(Membership.class, new MembershipPK(user.getId(), group.getId()));
-
-        m.setStart(start);
-        m.setEnd(end);
+//        Membership m =
+//                em.find(Membership.class, new MembershipPK(user.getId(), group.getId()));
+//
+//        m.setStart(start);
+//        m.setEnd(end);
     }
 
-    public void deleteMembership(User user, Group group) {
-        /*Query q = em.createNamedQuery(Membership.deleteByUserIdAndGroupId);
-        q.setParameter("userId", user.getId());
-        q.setParameter("groupId", group.getId());
-        
-        q.executeUpdate();
-        em.flush();
-        em.clear(); //???*/
+    public void deleteMembership(Membership ms) {
+        Membership temp = em.find(Membership.class, ms.getId());
+        em.remove(temp);
     }
 
     public List<User> getCsoporttagokWithoutOregtagok(Long csoportId) {
@@ -233,6 +230,7 @@ public class UserManagerBean implements UserManagerLocal {
             Group group = (Group) q.getSingleResult();
             return group;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -246,9 +244,9 @@ public class UserManagerBean implements UserManagerLocal {
         csoport.setMailingList(cs.getMailingList());
     }
 
-    public Membership getCsoporttagsag(Long userId, Long groupId) {
-        Membership cst =
-                em.find(Membership.class, new MembershipPK(userId, groupId));
+    @Override
+    public Membership getCsoporttagsag(Long memberId) {
+        Membership cst = em.find(Membership.class, memberId);
         return cst;
     }
 
@@ -260,59 +258,34 @@ public class UserManagerBean implements UserManagerLocal {
             if (oldOne != null) {
                 Membership oldPersisted =
                         em.find(Membership.class, oldOne.getId());
-                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), type));
-                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), MembershipType.VOLTKORVEZETO));
+//                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), type));
+//                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), MembershipType.VOLTKORVEZETO));
             }
             Membership newPersisted =
                     em.find(Membership.class, newOne.getId());
-            newPersisted.setRights(MembershipType.addOrRemoveEntitlement(newPersisted.getRights(), type));
+//            newPersisted.setRights(MembershipType.addOrRemoveEntitlement(newPersisted.getRights(), type));
         } else {
             if (oldOne != null) {
                 Membership oldPersisted =
                         em.find(Membership.class, oldOne.getId());
-                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), type));
+//                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), type));
             }
             if (newOne != null) {
                 Membership newPersisted =
                         em.find(Membership.class, newOne.getId());
-                newPersisted.setRights(MembershipType.addOrRemoveEntitlement(newPersisted.getRights(), type));
+//                newPersisted.setRights(MembershipType.addOrRemoveEntitlement(newPersisted.getRights(), type));
             }
         }
     }
 
-    public void setMemberToOldBoy(Membership user) {
+    public void setMemberToOldBoy(Membership ms) {
         Membership temp =
-                em.find(Membership.class,
-                new MembershipPK(user.getUser().getId(), user.getGroup().getId()));
+                em.find(Membership.class, ms.getId());
         temp.setEnd(new Date());
     }
 
-    public void setOldBoyToActive(Membership cst) {
-        Membership temp = em.find(Membership.class,
-                new MembershipPK(cst.getUser().getId(), cst.getGroup().getId()));
+    public void setOldBoyToActive(Membership ms) {
+        Membership temp = em.find(Membership.class, ms.getId());
         temp.setEnd(null);
-    }
-
-    /**
-     * Visszaadja az adott körhöz tartozó körvezetőt
-     * @param csoportId amelyik körnek a vezetőjére vagyunk kiváncsiak
-     * @return a csoport körvezetője
-     * @deprecated Nem jó megoldás ez, mert a körvezetőnek lehet más joga is, valahogy
-     * bitművelettel kéne megoldani, elméletben van BIT_AND group by művelete a hibernate-nek.
-     * Amíg ez nincs javítva, addig kénytelen leszel Java-val keresni az aktív felhasználókon.
-     */
-    @Deprecated
-    public User findKorvezetoForCsoport(Long csoportId) {
-
-        Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
-                "ms.user " +
-                "WHERE ms.group.id=:groupId AND ms.rights = 1 ");
-        q.setParameter("groupId", csoportId);
-        try {
-            User user = (User) q.getSingleResult();
-            return user;
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

@@ -114,7 +114,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     private static class PersonContextMapper extends AbstractContextMapper {
 
         @Override
-		public Object doMapFromContext(DirContextOperations context) {
+        public Object doMapFromContext(DirContextOperations context) {
             Person person = new Person();
             person.setUid(context.getStringAttribute("uid"));
             person.setLastName(context.getStringAttribute("sn"));
@@ -128,6 +128,8 @@ public class LdapManagerBean implements LdapManagerLocal {
             person.setHomePostalAddress(context.getStringAttribute("homePostalAddress"));
             person.setWebpage(context.getStringAttribute("labeledURI"));
             person.setGender(context.getStringAttribute("schacGender"));
+            person.setMothersName(context.getStringAttribute("sch-vir-mothersName"));
+            person.setEstimatedGraduationYear(context.getStringAttribute("sch-vir-estimatedGraduationYear"));
             person.setDateOfBirth(context.getStringAttribute("schacDateOfBirth"));
             person.setStatus(context.getStringAttribute("inetUserStatus"));
             person.setPhoto((byte[]) context.getObjectAttribute("jpegPhoto"));
@@ -175,7 +177,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     private static class PersonForSearchContextMapper extends AbstractContextMapper {
 
         @Override
-		public Object doMapFromContext(DirContextOperations context) {
+        public Object doMapFromContext(DirContextOperations context) {
             Person person = new Person();
             person.setUid(context.getStringAttribute("uid"));
             person.setFullName(context.getStringAttribute("cn"));
@@ -270,7 +272,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         return p;
     }
 
-	public Person getPersonByVirId(String virId) throws PersonNotFoundException {
+    public Person getPersonByVirId(String virId) throws PersonNotFoundException {
         EqualsFilter equalsFilter = new EqualsFilter("schacPersonalUniqueID", "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:" + virId);
 
         List<Person> searchResult = getLdapTemplate().search("", equalsFilter.encode(), getContextMapper());

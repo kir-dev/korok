@@ -130,11 +130,22 @@ public class Person implements Serializable {
      */
     private String dateOfBirth;
     /**
+     * Címtár megfelelő: sch-vir-mothersName
+     * A felhasználó édesanyjának neves.
+     */
+    private String mothersName;
+    /**
+     * Címtár megfelelő: sch-vir-
+     * Az egyetem befejezésének várható ideje.
+     * Formátum: YYYYYYYY/[12], pl: 20092010/1
+     */
+    private String estimatedGraduationYear;
+    /**
      * Címtár megfelelő: schacUserStatus
      * A felhasználó hallgatói státusza. Ezek lehetnek:
      * 'akt': urn:mace:terena.org:schac:status:sch.hu:student_status:active
      * 'egy': urn:mace:terena.org:schac:status:sch.hu:student_status:other
-     * 'veg': urn:mace:terena.org:schac:status:sch.hu:student_status:graduated 
+     * 'veg': urn:mace:terena.org:schac:status:sch.hu:student_status:graduated
      */
     private String studentUserStatus;
     /**
@@ -311,6 +322,22 @@ public class Person implements Serializable {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getMothersName() {
+        return mothersName;
+    }
+
+    public void setMothersName(String mothersName) {
+        this.mothersName = mothersName;
+    }
+
+    public String getEstimatedGraduationYear() {
+        return estimatedGraduationYear;
+    }
+
+    public void setEstimatedGraduationYear(String estimatedGraduationYear) {
+        this.estimatedGraduationYear = estimatedGraduationYear;
     }
 
     public String getDateOfBirth() {

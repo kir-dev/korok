@@ -7,7 +7,8 @@ package hu.sch.web.kp.pages.user;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
-import hu.sch.domain.MembershipType;
+import hu.sch.web.components.ConfirmationBoxRenderer;
+import hu.sch.web.components.customlinks.PdfLink;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
@@ -21,6 +22,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -33,7 +35,7 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class ShowUser extends SecuredPageTemplate {
 
-    Long id;
+    private Long id;
     private boolean ownProfile = false;
     private Group addToCsoportSelected;
 
@@ -78,17 +80,30 @@ public class ShowUser extends SecuredPageTemplate {
 
             @Override
             protected void populateItem(ListItem<Membership> item) {
-                Membership cs = item.getModelObject();
-                item.setModel(new CompoundPropertyModel<Membership>(cs));
+                final Membership ms = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<Membership>(ms));
                 BookmarkablePageLink csoplink =
                         new BookmarkablePageLink("csoplink", ShowGroup.class,
                         new PageParameters("id=" +
-                        cs.getGroup().getId().toString()));
+                        ms.getGroup().getId().toString()));
                 csoplink.add(new Label("group.name"));
                 item.add(csoplink);
-                item.add(new Label("rights", getConverter(MembershipType[].class).convertToString(cs.getRightsAsString(), getLocale())));
+                item.add(new Label("rights", getConverter(List.class).convertToString(ms.getPosts(), getLocale())));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
+                Link eraseLink = new Link("deleteMembership") {
+
+                    @Override
+                    public void onClick() {
+                        userManager.deleteMembership(ms);
+                        //TODO: megírni ide a nagy if-et, hogy mikor lesz egy tag pártoló tag!
+                        getSession().info("A tagság törlése sikeresen megtörtént");
+                        setResponsePage(ShowUser.class);
+                        return;
+                    }
+                };
+                eraseLink.add(new ConfirmationBoxRenderer("Biztosan meg szeretnéd szüntetni a tagságodat?"));
+                item.add(eraseLink);
             }
         };
         add(csoptagsagok);
@@ -101,7 +116,7 @@ public class ShowUser extends SecuredPageTemplate {
         }
         List<Group> korvezetoicsoportok = new ArrayList<Group>();
         for (Group cs : csoportok) {
-            if (hasUserRoleInGroup(cs, MembershipType.KORVEZETO) &&
+            if (isUserGroupLeader(cs) &&
                     !user.getGroups().contains(cs)) {
                 korvezetoicsoportok.add(cs);
             }
@@ -121,7 +136,9 @@ public class ShowUser extends SecuredPageTemplate {
         csoportbaFelvetel.add(csoport);
         add(csoportbaFelvetel);
         csoportbaFelvetel.setVisible(!korvezetoicsoportok.isEmpty() &&
-                hasUserRoleInSomeGroup(MembershipType.KORVEZETO));
+                isUserGroupLeaderInSomeGroup());
+
+        add(new PdfLink("pdfLink"));
     }
 
     public ShowUser(PageParameters parameters) {

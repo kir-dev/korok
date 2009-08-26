@@ -10,31 +10,50 @@ package hu.sch.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
+import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 /**
  * Csoporttagságot reprezentáló entity
  * @author hege
  */
 @Entity
-@Table(name = "grp_members")
+@Table(name = "grp_membership")
+@SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq")
 public class Membership implements Serializable {
 
     private static final long serialVersionUID = 1L;
     public static final String find = "findMembership";
-    private MembershipPK id;
-    private User user;
+    /*
+    id               | integer | not null default nextval('grp_members_seq'::regclass)
+    grp_id           | integer |
+    usr_id           | integer |
+    membership_start | date    | default now()
+    membership_end   | date    |
+     */
+    /**
+     * Egy csoporttagság egyéni azonosítója
+     */
+    private Long id;
+    /**
+     * Melyik csoport tagja
+     */
     private Group group;
+    /**
+     * Ki a tagja a csoportnak
+     */
+    private User user;
     /**
      * A csoporttagság idejének kezdete - kötelező
      */
@@ -44,12 +63,23 @@ public class Membership implements Serializable {
      */
     private Date end;
     /**
-     * Jogok tárolására bitmaszk
+     * A csoportban betöltött posztok
      */
-    private Long rights;
+    private List<Post> posts;
+
+    @Id
+    @GeneratedValue(generator = "grp_members_seq")
+    @Column(name = "id")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "grp_id", insertable = false, updatable = false)
+    @JoinColumn(name = "grp_id", insertable = true, updatable = true)
     public Group getGroup() {
         return group;
     }
@@ -59,26 +89,13 @@ public class Membership implements Serializable {
     }
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "usr_id", insertable = false, updatable = false)
+    @JoinColumn(name = "usr_id", insertable = true, updatable = true)
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    @EmbeddedId
-    @AttributeOverrides({
-        @AttributeOverride(name = "userId", column = @Column(name = "usr_id")),
-        @AttributeOverride(name = "groupId", column = @Column(name = "grp_id"))
-    })
-    public MembershipPK getId() {
-        return id;
-    }
-
-    public void setId(MembershipPK id) {
-        this.id = id;
     }
 
     @Column(name = "membership_start", nullable = false, columnDefinition = "date")
@@ -101,22 +118,12 @@ public class Membership implements Serializable {
         this.end = end;
     }
 
-    @Column(name = "member_rights", nullable = false, columnDefinition = "INTEGER")
-    public Long getRights() {
-        return rights;
+    @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER)
+    public List<Post> getPosts() {
+        return posts;
     }
 
-    @Transient
-    public MembershipType[] getRightsAsString() {
-        if (end != null) {
-            MembershipType[] ret = new MembershipType[1];
-            ret[0] = MembershipType.OREGTAG;
-            return ret;
-        }
-        return MembershipType.getMembershipTypeFromRights(rights);
-    }
-
-    public void setRights(Long rights) {
-        this.rights = rights;
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }

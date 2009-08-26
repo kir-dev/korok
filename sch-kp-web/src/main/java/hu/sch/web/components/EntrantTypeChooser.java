@@ -20,10 +20,12 @@ public class EntrantTypeChooser extends DropDownChoice<EntrantType> {
 
         setChoiceRenderer(new IChoiceRenderer<EntrantType>() {
 
+            @Override
             public Object getDisplayValue(EntrantType object) {
                 return getConverter(EntrantType.class).convertToString(object, getLocale());
             }
 
+            @Override
             public String getIdValue(EntrantType object, int index) {
                 return object.toString();
             }

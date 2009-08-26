@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.string.Strings;
@@ -17,6 +16,7 @@ import org.apache.wicket.util.string.Strings;
  *
  * @author aldaris
  */
+//TODO
 public class SearchAutoCompleteTextField extends AutoCompleteTextField<String> {
 
     final String[] csoportok;

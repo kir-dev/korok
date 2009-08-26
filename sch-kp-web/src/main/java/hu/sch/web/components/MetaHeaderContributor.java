@@ -38,8 +38,9 @@ public class MetaHeaderContributor extends HeaderContributor {
 
             private static final long serialVersionUID = 1L;
 
+            @Override
             public void renderHead(IHeaderResponse response) {
-                response.renderString("<META http-equiv=\"refresh\" content=\"5;URL=" +
+                response.renderString("<meta http-equiv=\"refresh\" content=\"5;URL=" +
                         RequestCycle.get().urlFor(scope, null) + "\">");
             }
         });

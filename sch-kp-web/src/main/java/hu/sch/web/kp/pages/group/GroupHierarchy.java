@@ -1,6 +1,7 @@
 package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
+import hu.sch.web.components.FocusOnLoadBehavior;
 import hu.sch.web.components.SearchAutoCompleteTextField;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.io.Serializable;
@@ -47,6 +48,7 @@ public class GroupHierarchy extends SecuredPageTemplate {
         final String[] csoportok = sort(userManager.getEveryGroupName());
         final SearchAutoCompleteTextField field =
                 new SearchAutoCompleteTextField("ac", new Model<String>(""), csoportok);
+        field.add(new FocusOnLoadBehavior());
         final Label label = new Label("selectedValue", field.getModel());
         Form form = new Form("form") {
 

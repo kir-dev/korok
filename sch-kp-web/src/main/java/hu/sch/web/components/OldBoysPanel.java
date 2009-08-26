@@ -4,6 +4,7 @@
  */
 package hu.sch.web.components;
 
+import hu.sch.web.components.customlinks.UserLink;
 import hu.sch.domain.Membership;
 import java.util.List;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
@@ -25,10 +26,10 @@ public final class OldBoysPanel extends Panel {
 
             @Override
             protected void populateItem(ListItem<Membership> item) {
-                Membership cs = item.getModelObject();
-                item.setModel(new CompoundPropertyModel<Membership>(cs));
-                item.add(new UserLink("userLink", cs.getUser()));
-                item.add(new Label("nickName", cs.getUser().getNickName()));
+                Membership ms = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<Membership>(ms));
+                item.add(new UserLink("userLink", ms.getUser()));
+                item.add(new Label("user.nickName"));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
             }

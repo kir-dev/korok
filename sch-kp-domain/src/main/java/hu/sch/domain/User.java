@@ -17,9 +17,13 @@ import java.util.List;
 import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -40,7 +44,6 @@ import javax.persistence.Transient;
     query = "SELECT u FROM User u LEFT OUTER JOIN FETCH u.memberships WHERE u.id = :id"),
     @NamedQuery(name = "findUserByNeptunCode",
     query = "SELECT u FROM User u WHERE u.neptunCode = :neptun")})
-
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
 public class User implements Serializable, Comparable<User> {
 
@@ -48,19 +51,21 @@ public class User implements Serializable, Comparable<User> {
     public static final String findAll = "findAllUser";
     public static final String findByLoginName = "findUserByLoginName";
     public static final String findWithMemberships = "findUserWithMemberships";
+    /*
+    usr_id                 | integer                | not null default nextval('users_usr_id_seq'::regclass)
+    usr_email              | character varying(64)  | 
+    usr_neptun             | character(6)           | 
+    usr_firstname          | text                   | not null
+    usr_lastname           | text                   | not null
+    usr_nickname           | text                   | 
+    usr_svie_state         | character varying(255) | not null default 'NEMTAG'::character varying
+    usr_svie_member_type   | character varying(255) | not null default 'NEMTAG'::character varying
+    usr_svie_primary_group | integer                | 
+     */
     /**
      * Felhasználó azonosítója
      */
     private Long id;
-    /**
-     * Bejelentkezési név
-     */
-    private String nickName;
-    /**
-     * név
-     */
-    private String firstName;
-    private String lastName;
     /**
      * E-mail cím
      */
@@ -70,6 +75,31 @@ public class User implements Serializable, Comparable<User> {
      */
     private String neptunCode;
     /**
+     * Keresztnév
+     */
+    private String firstName;
+    /**
+     * Vezetéknév
+     */
+    private String lastName;
+    /**
+     * Bejelentkezési név
+     */
+    private String nickName;
+    /**
+     * SVIE tagság státusza
+     */
+    private SvieStatus svieStatus;
+    /**
+     * SVIE tagság típusa
+     */
+    private SvieMembershipType svieMembershipType;
+    /**
+     * SVIE elsődleges kör
+     * Rendes tagsága kell legyen a körben
+     */
+    private Group sviePrimaryGroup;
+    /**
      * Csoporttagságok - tagsági idővel kiegészítve
      */
     private List<Membership> memberships;
@@ -77,14 +107,6 @@ public class User implements Serializable, Comparable<User> {
      * Tranziens csoporttagsagok
      */
     private List<Group> groups;
-
-    /** Creates a new instance of User */
-    public User() {
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * A felhasználó egyedi azonosítóját visszaadó függvény
@@ -97,13 +119,28 @@ public class User implements Serializable, Comparable<User> {
         return id;
     }
 
-    @Column(name = "usr_nickname", nullable = true, columnDefinition = "text")
-    public String getNickName() {
-        return nickName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    @Column(name = "usr_email", length = 64, nullable = false, columnDefinition =
+    "varchar(64)")
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6, nullable =
+    true, updatable = false)
+    public String getNeptunCode() {
+        return neptunCode;
+    }
+
+    public void setNeptunCode(String neptunCode) {
+        this.neptunCode = neptunCode;
     }
 
     @Column(name = "usr_firstname", nullable = false, columnDefinition = "text")
@@ -124,24 +161,43 @@ public class User implements Serializable, Comparable<User> {
         this.lastName = lastName;
     }
 
-    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6, nullable =
-    true, updatable = false)
-    public String getNeptunCode() {
-        return neptunCode;
+    @Column(name = "usr_nickname", nullable = true, columnDefinition = "text")
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setNeptunCode(String neptunCode) {
-        this.neptunCode = neptunCode;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    @Column(name = "usr_email", length = 64, nullable = false, columnDefinition =
-    "varchar(64)")
-    public String getEmailAddress() {
-        return emailAddress;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usr_svie_state")
+    public SvieStatus getSvieStatus() {
+        return svieStatus;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setSvieStatus(SvieStatus svieStatus) {
+        this.svieStatus = svieStatus;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usr_svie_member_type")
+    public SvieMembershipType getSvieMembershipType() {
+        return svieMembershipType;
+    }
+
+    public void setSvieMembershipType(SvieMembershipType svieMembershipType) {
+        this.svieMembershipType = svieMembershipType;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "usr_svie_primary_group", insertable = false, updatable = false)
+    public Group getSviePrimaryGroup() {
+        return sviePrimaryGroup;
+    }
+
+    public void setSviePrimaryGroup(Group sviePrimaryGroup) {
+        this.sviePrimaryGroup = sviePrimaryGroup;
     }
 
     @Transient
@@ -199,6 +255,7 @@ public class User implements Serializable, Comparable<User> {
                 ", email=" + getEmailAddress();
     }
 
+    @Override
     public int compareTo(User o) {
         Collator huCollator = Collator.getInstance(new Locale("hu"));
         return huCollator.compare(getName(), o.getName());

@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package hu.sch.web.components;
 
 import org.apache.wicket.markup.ComponentTag;

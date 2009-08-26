@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package hu.sch.web.kp.pages.consider;
 
 import hu.sch.domain.ValuationStatistic;
@@ -20,8 +19,8 @@ import org.apache.wicket.model.IModel;
  * @author hege
  */
 public class SortableValuationStatisticDataProvider extends SortableDataProvider<ValuationStatistic> {
+
     ValuationManagerLocal ertekelesManager;
-    
     private List<ValuationStatistic> statList;
     private Semester szemeszter;
 
@@ -30,7 +29,7 @@ public class SortableValuationStatisticDataProvider extends SortableDataProvider
         this.szemeszter = szemeszter;
         setSort(new SortParam("csoportNev", true));
     }
-    
+
     public Iterator<ValuationStatistic> iterator(int first, int count) {
         // cache-elt példány
         //statList = null;

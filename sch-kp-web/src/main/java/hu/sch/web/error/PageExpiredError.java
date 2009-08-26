@@ -16,20 +16,19 @@
  */
 package hu.sch.web.error;
 
-import hu.sch.web.profile.pages.template.ProfilePage;
-import hu.sch.web.profile.pages.show.ShowPersonPage;
 import hu.sch.web.components.MetaHeaderContributor;
+import hu.sch.web.kp.templates.SecuredPageTemplate;
 
 /**
  *
  * @author aldaris
  */
-public final class PageExpiredError extends ProfilePage {
+public final class PageExpiredError extends SecuredPageTemplate {
 
     public PageExpiredError() {
         super();
         setHeaderLabelText("Hiba!");
-        add(MetaHeaderContributor.forMeta(ShowPersonPage.class));
+        add(MetaHeaderContributor.forMeta(getApplication().getHomePage()));
     }
 }
 

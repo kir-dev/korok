@@ -71,7 +71,7 @@ public class Valuations extends SecuredPageTemplate {
             getSession().info("Nem vagy körtag, mégis értékelést szeretnél leadni? Nono...");
             throw new RestartResponseException(GroupHierarchy.class);
         }
-        if (!hasUserRoleInSomeGroup(MembershipType.KORVEZETO)) {
+        if (!isUserGroupLeaderInSomeGroup()) {
             getSession().info("Nem vagy sehol sem körvezető, mit csinálsz itt?");
             throw new RestartResponseException(GroupHierarchy.class);
         }
@@ -81,7 +81,7 @@ public class Valuations extends SecuredPageTemplate {
         final ArrayList<String> groups = new ArrayList<String>();
         //TODO simplify this
         for (Membership m : ms) {
-            if (hasUserRoleInGroup(m.getGroup(), MembershipType.KORVEZETO)) {
+            if (isUserGroupLeader(m.getGroup())) {
                 groups.add(m.getGroup().getName());
             }
         }
@@ -92,7 +92,10 @@ public class Valuations extends SecuredPageTemplate {
             Group cs = m.getGroup();
 
             Valuation ert = valuationManager.findErtekeles(cs, systemManager.getSzemeszter());
-            if ((ert == null || ert.getPointStatus() == ValuationStatus.NINCS || ert.getEntrantStatus() == ValuationStatus.NINCS) && hasUserRoleInGroup(cs, MembershipType.KORVEZETO) && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESLEADAS) {
+            if ((ert == null || ert.getPointStatus() == ValuationStatus.NINCS ||
+                    ert.getEntrantStatus() == ValuationStatus.NINCS) &&
+                    isUserGroupLeader(cs) &&
+                    systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESLEADAS) {
                 left.add(cs);
             }
         }
@@ -292,7 +295,7 @@ public class Valuations extends SecuredPageTemplate {
                 (!valuationManager.isErtekelesLeadhato(group))) {
             newValuation.setVisible(false);
         } else {
-            if (hasUserRoleInSomeGroup(MembershipType.KORVEZETO)) {
+            if (isUserGroupLeaderInSomeGroup()) {
                 newValuation.setVisible(true);
             }
         }

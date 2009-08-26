@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
-  <persistence-unit name="SCHKP-PU" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <jta-data-source>jdbc/sch</jta-data-source>
+    <persistence-unit name="SCHKP-PU" transaction-type="JTA">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>jdbc/sch</jta-data-source>
     <!-- ez fontos, mert a kulon .jar csomag miatt nem talalja meg magatol -->
-    <class>hu.sch.domain.EntrantRequest</class>
-    <class>hu.sch.domain.EntrantType</class>
-    <class>hu.sch.domain.Group</class>
-    <class>hu.sch.domain.GroupStatus</class>
-    <class>hu.sch.domain.Membership</class>
-    <class>hu.sch.domain.Valuation</class>
-    <class>hu.sch.domain.ValuationStatistic</class>
-    <class>hu.sch.domain.ValuationStatus</class>
-    <class>hu.sch.domain.ValuationMessage</class>
-    <class>hu.sch.domain.User</class>
-    <class>hu.sch.domain.PointRequest</class>
-    <class>hu.sch.domain.SystemAttribute</class>
-    <class>hu.sch.domain.Semester</class>
+        <class>hu.sch.domain.EntrantRequest</class>
+        <class>hu.sch.domain.EntrantType</class>
+        <class>hu.sch.domain.Group</class>
+        <class>hu.sch.domain.GroupStatus</class>
+        <class>hu.sch.domain.Membership</class>
+        <class>hu.sch.domain.Valuation</class>
+        <class>hu.sch.domain.ValuationStatistic</class>
+        <class>hu.sch.domain.ValuationStatus</class>
+        <class>hu.sch.domain.ValuationMessage</class>
+        <class>hu.sch.domain.User</class>
+        <class>hu.sch.domain.PointRequest</class>
+        <class>hu.sch.domain.SystemAttribute</class>
+        <class>hu.sch.domain.Semester</class>
+        <class>hu.sch.domain.Post</class>
+        <class>hu.sch.domain.PostType</class>
 
-    <properties>
-      <property name="hibernate.show_sql" value="true"/>
-      <property name="hibernate.bytecode.use_reflection_optimizer" value="true"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
-      <property name="hibernate.cache.use_query_cache" value="true"/>
+        <properties>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.bytecode.use_reflection_optimizer" value="true"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
+            <property name="hibernate.cache.use_query_cache" value="true"/>
       <!--property name="hibernate.hbm2ddl.auto" value="validate"/-->
-    </properties>
-  </persistence-unit>
+        </properties>
+    </persistence-unit>
 </persistence>

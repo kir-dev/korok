@@ -16,13 +16,13 @@
  */
 package hu.sch.web.error;
 
-import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.kp.templates.SecuredPageTemplate;
 
 /**
  *
  * @author aldaris
  */
-public final class NotFound extends ProfilePage {
+public final class NotFound extends SecuredPageTemplate {
 
     public NotFound() {
         super();

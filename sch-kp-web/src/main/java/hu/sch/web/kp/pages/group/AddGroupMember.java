@@ -21,18 +21,18 @@ public class AddGroupMember extends SecuredPageTemplate {
         Long groupid = new Long(params.getLong("groupid"));
         Long userid = new Long(params.getLong("userid"));
         try {
-            Group csoport = userManager.findGroupById(groupid);
-            if (csoport == null) {
+            Group group = userManager.findGroupById(groupid);
+            if (group == null) {
                 //TODO
                 return;
             }
-            if (hasUserRoleInGroup(csoport, MembershipType.KORVEZETO)) {
+            if (isUserGroupLeader(group)) {
                 User felhasznalo = userManager.findUserById(userid);
                 if (felhasznalo == null) {
                     //TODO
                     return;
                 }
-                userManager.addUserToGroup(felhasznalo, csoport, new Date(), null);
+                userManager.addUserToGroup(felhasznalo, group, new Date(), null);
                 getSession().info("Sikeres csoportba felvétel");
                 setResponsePage(ShowUser.class, new PageParameters("id=" +
                         userid.toString()));

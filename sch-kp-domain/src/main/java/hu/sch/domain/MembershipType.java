@@ -20,7 +20,6 @@ public enum MembershipType {
     VENDEGFOGADAS(16),
     OREGTAG(16384),
     JELENTKEZO(32768);
-    
     private final int value;
     private final String name;
 
@@ -28,20 +27,21 @@ public enum MembershipType {
         this.value = value;
         this.name = null;
     }
-    
+
     private MembershipType(int value, String name) {
         this.value = value;
         this.name = name;
     }
-    
+
     @Override
     public String toString() {
-        if (name != null)
+        if (name != null) {
             return name;
-        
+        }
+
         return super.toString();
     }
-    
+
     static MembershipType[] getMembershipTypeFromRights(Long rights) {
         if (rights == 0) {
             return new MembershipType[]{TAG};
@@ -59,20 +59,16 @@ public enum MembershipType {
     }
 
     public static MembershipType fromEntitlement(String entitlement) {
-        if (entitlement.equalsIgnoreCase("tag")) {
-            return TAG;
-        } else if (entitlement.equalsIgnoreCase("korvezeto")) {
+        if (entitlement.equalsIgnoreCase("korvezeto")) {
             return KORVEZETO;
-        } else if (entitlement.equalsIgnoreCase("gazdasagis")) {
-            return GAZDASAGIS;
         }
-
         return null;
     }
 
     public static boolean hasJogInGroup(Membership membership, MembershipType type) {
-        Long jogok = membership.getRights();
-        return (jogok & type.value) != 0;
+//        Long jogok = membership.getRights();
+//        return (jogok & type.value) != 0;
+        return true;
     }
 
     public static Long addOrRemoveEntitlement(Long current, MembershipType type) {

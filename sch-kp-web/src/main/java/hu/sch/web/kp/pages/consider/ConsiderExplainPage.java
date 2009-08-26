@@ -37,11 +37,9 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
                 if (valuationManager.ErtekeleseketElbiral(underConsider, getUser())) {
                     getSession().info("Az elbírálás sikeres volt.");
                     setResponsePage(ConsiderPage.class);
-
                 } else {
-                    getSession().info("Minden elutasított értékeléshez kell indoklást mellékelni!");
+                    getSession().error("Minden elutasított értékeléshez kell indoklást mellékelni!");
                     setResponsePage(new ConsiderExplainPage(underConsider));
-                    return;
                 }
             }
         };
@@ -60,6 +58,5 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
                 item.add(ta);
             }
         });
-
     }
 }
