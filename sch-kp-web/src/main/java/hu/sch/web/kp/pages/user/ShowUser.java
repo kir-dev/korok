@@ -96,13 +96,15 @@ public class ShowUser extends SecuredPageTemplate {
                     @Override
                     public void onClick() {
                         userManager.deleteMembership(ms);
-                        //TODO: megírni ide a nagy if-et, hogy mikor lesz egy tag pártoló tag!
                         getSession().info("A tagság törlése sikeresen megtörtént");
                         setResponsePage(ShowUser.class);
                         return;
                     }
                 };
                 eraseLink.add(new ConfirmationBoxRenderer("Biztosan meg szeretnéd szüntetni a tagságodat?"));
+                if (!ownProfile) {
+                    eraseLink.setVisible(false);
+                }
                 item.add(eraseLink);
             }
         };

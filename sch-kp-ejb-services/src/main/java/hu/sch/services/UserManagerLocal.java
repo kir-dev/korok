@@ -9,7 +9,6 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
-import hu.sch.domain.MembershipType;
 import javax.ejb.Local;
 import java.util.Date;
 import java.util.List;
@@ -60,8 +59,6 @@ public interface UserManagerLocal {
     void groupInfoUpdate(Group cs);
 
     Membership getCsoporttagsag(Long memberId);
-
-    void updateMemberRights(Membership oldOne, Membership newOne, MembershipType type);
 
     void setMemberToOldBoy(Membership user);
 

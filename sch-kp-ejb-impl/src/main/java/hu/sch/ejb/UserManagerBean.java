@@ -9,14 +9,13 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
-import hu.sch.domain.MembershipType;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
+import hu.sch.domain.SvieMembershipType;
 import hu.sch.services.UserManagerLocal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -145,6 +144,19 @@ public class UserManagerBean implements UserManagerLocal {
     public void deleteMembership(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         em.remove(temp);
+        em.flush();
+        if (ms.getUser().getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
+                ms.getGroup().getIsSvie()) {
+            try {
+                Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
+                        "WHERE ms.user = :user AND ms.group.isSvie = true");
+                q.setParameter("user", ms.getUser());
+                User user = (User) q.getSingleResult();
+            } catch (NoResultException nre) {
+                User temp2 = em.find(User.class, ms.getUser().getId());
+                temp2.setSvieMembershipType(SvieMembershipType.PARTOLOTAG);
+            }
+        }
     }
 
     public List<User> getCsoporttagokWithoutOregtagok(Long csoportId) {
@@ -248,34 +260,6 @@ public class UserManagerBean implements UserManagerLocal {
     public Membership getCsoporttagsag(Long memberId) {
         Membership cst = em.find(Membership.class, memberId);
         return cst;
-    }
-
-    public void updateMemberRights(Membership oldOne, Membership newOne, MembershipType type) {
-        if (type == MembershipType.KORVEZETO) {
-            if (newOne == null) {
-                throw new EJBException();
-            }
-            if (oldOne != null) {
-                Membership oldPersisted =
-                        em.find(Membership.class, oldOne.getId());
-//                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), type));
-//                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), MembershipType.VOLTKORVEZETO));
-            }
-            Membership newPersisted =
-                    em.find(Membership.class, newOne.getId());
-//            newPersisted.setRights(MembershipType.addOrRemoveEntitlement(newPersisted.getRights(), type));
-        } else {
-            if (oldOne != null) {
-                Membership oldPersisted =
-                        em.find(Membership.class, oldOne.getId());
-//                oldPersisted.setRights(MembershipType.addOrRemoveEntitlement(oldPersisted.getRights(), type));
-            }
-            if (newOne != null) {
-                Membership newPersisted =
-                        em.find(Membership.class, newOne.getId());
-//                newPersisted.setRights(MembershipType.addOrRemoveEntitlement(newPersisted.getRights(), type));
-            }
-        }
     }
 
     public void setMemberToOldBoy(Membership ms) {
