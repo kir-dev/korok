@@ -5,7 +5,6 @@
 package hu.sch.ejb;
 
 import hu.sch.domain.User;
-import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.logging.Log;
 import hu.sch.services.MailManagerLocal;
@@ -16,7 +15,6 @@ import hu.sch.util.TimedEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -46,19 +44,6 @@ public class TimerServiceBean implements TimerServiceLocal {
     @PersistenceContext
     EntityManager em;
     private static Logger log = Logger.getLogger(TimerServiceBean.class);
-    private static Event DELETEMEMBERSHIP_EVENT;
-    private static Event CREATEMEMBERSHIP_EVENT;
-
-    @PostConstruct
-    public void initialize() {
-        if (DELETEMEMBERSHIP_EVENT == null) {
-            Query q = em.createNamedQuery(Event.getEventForEventType);
-            q.setParameter("evt", EventType.TAGSAGTORLES);
-            DELETEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
-            q.setParameter("evt", EventType.JELENTKEZES);
-            CREATEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
-        }
-    }
 
     public void scheduleTimers() {
         for (Object timerObj : timerService.getTimers()) {
@@ -81,7 +66,7 @@ public class TimerServiceBean implements TimerServiceLocal {
     @Timeout
     @SuppressWarnings("unchecked")
     public void timerFired(Timer timer) {
-        System.out.println("event fired");
+        log.info("event fired");
         if (timer.getInfo() instanceof TimedEvent) {
             TimedEvent evt = (TimedEvent) timer.getInfo();
             switch (evt) {
@@ -90,7 +75,7 @@ public class TimerServiceBean implements TimerServiceLocal {
                     break;
             }
         }
-        System.out.println("end of event");
+        log.info("end of event");
     }
 
     /**
@@ -123,10 +108,8 @@ public class TimerServiceBean implements TimerServiceLocal {
             EventType evtType = logEntry.getEvent().getEventType();
             if (evtType.equals(EventType.JELENTKEZES)) {
                 newNames.add(logEntry.getUser().getName());
-                System.out.println("new: " + logEntry.getUser().getName());
             } else if (evtType.equals(EventType.TAGSAGTORLES)) {
                 deletedNames.add(logEntry.getUser().getName());
-                System.out.println("deleted: " + logEntry.getUser().getName());
             }
         }
         if (!deletedNames.isEmpty() || !newNames.isEmpty()) {
@@ -155,10 +138,11 @@ public class TimerServiceBean implements TimerServiceLocal {
         sb.append("\nA körtagságokat a https://idp.sch.bme.hu/korok/showgroup/id/").append(groupId);
         sb.append(" oldalon tudod menedzselni.\n\n\nÜdvözlettel:\nKir-Dev");
 
-        System.out.println("Ennek a csoportnak keresem a gazdáját: " + groupId);
+        log.debug("Ennek a csoportnak keresem a gazdáját: " + groupId);
         User user = postManager.getGroupLeaderForGroup(groupId);
         if (user != null) {
             mailManager.sendEmail(user.getEmailAddress(), "Körtagságok megváltozása", sb.toString());
         }
+        systemManager.setLastLogsDate();
     }
 }
