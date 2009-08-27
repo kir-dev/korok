@@ -27,6 +27,7 @@ import hu.sch.web.kp.pages.valuation.NewValuation;
 import hu.sch.web.kp.pages.group.AddGroupMember;
 import hu.sch.web.kp.pages.group.ChangePost;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
+import hu.sch.web.kp.pages.svie.SvieAccount;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.kp.util.EntrantTypeConverter;
 import hu.sch.web.kp.util.PostTypeConverter;
@@ -34,11 +35,8 @@ import hu.sch.web.kp.util.ValuationStatusConverter;
 import hu.sch.web.kp.util.ServerTimerFilter;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import java.util.List;
-import java.util.logging.Level;
-import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
@@ -83,6 +81,7 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/valuation", Valuations.class);
         mountBookmarkablePage("/newvaluation", NewValuation.class);
 
+        mountBookmarkablePage("/svieaccount", SvieAccount.class);
         mountBookmarkablePage("/consider", ConsiderPage.class);
         mountBookmarkablePage("/editsettings", EditSettings.class);
         mountBookmarkablePage("/logout", Logout.class);
@@ -120,6 +119,7 @@ public class PhoenixApplication extends WebApplication {
         //TimerService-ek inicializálása
         TimerServiceLocal timerService = lookupTimerServiceBean();
         timerService.scheduleTimers();
+
         log.warn("Application has been successfully initiated");
     }
 
@@ -147,7 +147,7 @@ public class PhoenixApplication extends WebApplication {
             Context c = new InitialContext();
             return (TimerServiceLocal) c.lookup("java:comp/env/TimerServiceLocal");
         } catch (NamingException ne) {
-            log.error("Exception caught", ne);
+            log.error("Error while lookup for TimerService", ne);
             throw new RuntimeException(ne);
         }
     }

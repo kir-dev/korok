@@ -24,6 +24,8 @@ import hu.sch.services.LdapManagerLocal;
 import hu.sch.web.components.ImageResource;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
+import hu.sch.web.components.customlinks.AttributeAjaxFallbackLink;
+import hu.sch.web.kp.util.PatternHolder;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +37,6 @@ import java.util.List;
 import java.util.Locale;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
@@ -54,7 +55,6 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.image.NonCachingImage;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
@@ -295,14 +295,14 @@ public class PersonForm extends Form<Person> {
 
     private void createSvieFields() {
         TextField<String> mothersNameTF = new TextField<String>("mothersName");
-        mothersNameTF.add(new PatternValidator("[A-ZŰÁÉÚŐÓÜÖÍa-zéáűőúöüóí]+ [A-ZÉÁŰŐÚÖÜÓÍa-zéáűőúöüóí ]*"));
+        mothersNameTF.add(new PatternValidator(PatternHolder.mothersNamePattern));
         mothersNameTF.add(new ValidationStyleBehavior());
         add(mothersNameTF);
         mothersNameTF.setLabel(new Model<String>("Anyja neve"));
         add(new ValidationSimpleFormComponentLabel("mothersNameLabel", mothersNameTF));
 
         TextField<String> estGradTF = new TextField<String>("estimatedGraduationYear");
-        estGradTF.add(new PatternValidator("[0-9]{8}/[0-9]"));
+        estGradTF.add(new PatternValidator(PatternHolder.graduationYearPattern));
         estGradTF.add(new ValidationStyleBehavior());
         add(estGradTF);
         estGradTF.setLabel(new Model<String>("Egyetem várható befejezési ideje"));
@@ -360,6 +360,7 @@ public class PersonForm extends Form<Person> {
     }
 
     public void initAjaxPrivateLinks() {
+        AttributeAjaxFallbackLink.setPerson(person);
         add(new AttributeAjaxFallbackLink("mailAttributeLink", "mailAttributeImg", "mail"));
         add(new AttributeAjaxFallbackLink("mobileAttributeLink", "mobileAttributeImg", "mobile"));
         add(new AttributeAjaxFallbackLink("homePhoneAttributeLink", "homePhoneAttributeImg", "homePhone"));
@@ -368,46 +369,6 @@ public class PersonForm extends Form<Person> {
         add(new AttributeAjaxFallbackLink("webpageAttributeLink", "webpageAttributeImg", "labeledURI"));
         add(new AttributeAjaxFallbackLink("dateOfBirthAttributeLink", "dateOfBirthAttributeImg", "schacDateOfBirth"));
 //            add(new AttributeAjaxFallbackLink("neptunAttributeLink", "neptunAttributeImg", "schacPersonalUniqueCode"));
-    }
-
-    class AttributeAjaxFallbackLink extends AjaxFallbackLink {
-
-        String privateAttr;
-        boolean isPrivateAttr;
-        Image img;
-
-        public AttributeAjaxFallbackLink(String id) {
-            super(id);
-        }
-
-        public AttributeAjaxFallbackLink(String linkId, String imgId, final String privateAttr) {
-            this(linkId);
-            this.privateAttr = privateAttr;
-            isPrivateAttr = person.isPrivateAttribute(privateAttr);
-
-            img = new Image(imgId);
-            img.setOutputMarkupId(true);
-            setImgModel();
-
-            this.add(img);
-        }
-
-        public void setImgModel() {
-            if (isPrivateAttr) {
-                img.setDefaultModel(new Model(new ResourceReference(AttributeAjaxFallbackLink.class, "images/private.gif")));
-            } else {
-                img.setDefaultModel(new Model(new ResourceReference(AttributeAjaxFallbackLink.class, "images/public.gif")));
-            }
-        }
-
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-            person.inversePrivateAttribute(privateAttr);
-            isPrivateAttr = !isPrivateAttr;
-
-            setImgModel();
-            target.addComponent(img);
-        }
     }
 
     private static class GenderRadioChoices implements IChoiceRenderer<Object> {
@@ -419,6 +380,30 @@ public class PersonForm extends Form<Person> {
 
         public String getIdValue(Object object, int index) {
             return object.toString();
+        }
+    }
+
+    public class KeyValuePairInForm {
+
+        private String id;
+        private String value;
+
+        public KeyValuePairInForm(String id, String value) {
+            this.id = id;
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return this.id;
         }
     }
 }

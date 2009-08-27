@@ -17,7 +17,6 @@ public class IMAccount implements Serializable {
         this.protocol = protocol;
         this.presenceID = presenceID;
         uuid = UUID.randomUUID();
-        System.out.println("ez lett a random id:" + uuid);
     }
 
     public IMProtocol getProtocol() {
@@ -25,7 +24,6 @@ public class IMAccount implements Serializable {
     }
 
     public void setProtocol(IMProtocol protocol) {
-        System.out.println("setting protocol to " + protocol);
         this.protocol = protocol;
     }
 

@@ -9,6 +9,8 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
+import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.SvieStatus;
 import javax.ejb.Local;
 import java.util.Date;
 import java.util.List;
@@ -63,4 +65,6 @@ public interface UserManagerLocal {
     void setMemberToOldBoy(Membership user);
 
     void setOldBoyToActive(Membership cst);
+
+    void updateUser(User user);
 }

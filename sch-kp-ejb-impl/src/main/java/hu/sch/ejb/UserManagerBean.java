@@ -12,6 +12,7 @@ import hu.sch.domain.PointRequest;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
 import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.SvieStatus;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.services.LogManagerLocal;
@@ -91,21 +92,25 @@ public class UserManagerBean implements UserManagerLocal {
         Membership ms = new Membership();
         User _user = em.find(User.class, user.getId());
         Group _group = em.find(Group.class, group.getId());
+
         ms.setUser(_user);
         ms.setGroup(_group);
         ms.setStart(start);
         ms.setEnd(null);
         Post post = new Post();
         post.setMembership(ms);
+
         Query q = em.createNamedQuery(PostType.searchForPostType);
         q.setParameter("pn", "feldolgozás alatt");
         PostType postType = (PostType) q.getSingleResult();
+
         post.setPostType(postType);
         List<Post> posts = new ArrayList<Post>();
         posts.add(post);
         ms.setPosts(posts);
         _user.getMemberships().add(ms);
         _group.getMemberships().add(ms);
+
         em.persist(post);
         em.persist(ms);
         em.merge(_user);
@@ -167,6 +172,7 @@ public class UserManagerBean implements UserManagerLocal {
         em.remove(temp);
         em.flush();
         if (ms.getUser().getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
+                ms.getUser().getSvieStatus().equals(SvieStatus.ELFOGADVA) &&
                 ms.getGroup().getIsSvie()) {
             try {
                 Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
@@ -285,13 +291,20 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public void setMemberToOldBoy(Membership ms) {
-        Membership temp =
-                em.find(Membership.class, ms.getId());
+        Membership temp = em.find(Membership.class, ms.getId());
         temp.setEnd(new Date());
     }
 
     public void setOldBoyToActive(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         temp.setEnd(null);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        em.merge(user);
+//        User temp = em.find(User.class, user.getId());
+//        temp.setSvieMembershipType(user.getSvieMembershipType());
+//        temp.setSvieStatus(user.getSvieStatus());
     }
 }

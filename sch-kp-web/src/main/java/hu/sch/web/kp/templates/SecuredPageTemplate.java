@@ -6,9 +6,9 @@ package hu.sch.web.kp.templates;
 
 import java.io.Serializable;
 import hu.sch.domain.Group;
-import hu.sch.domain.MembershipType;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
+import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.kp.pages.admin.EditSettings;
@@ -20,6 +20,7 @@ import hu.sch.web.session.VirSession;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;
+import hu.sch.web.kp.pages.svie.SvieAccount;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -39,6 +40,8 @@ public class SecuredPageTemplate extends WebPage {
     protected SystemManagerLocal systemManager;
     @EJB(name = "UserManagerBean")
     protected UserManagerLocal userManager;
+    @EJB(name = "LdapManagerBean")
+    protected LdapManagerLocal ldapManager;
     private static final Logger log = Logger.getLogger(SecuredPageTemplate.class);
     private static final String adminRoleName = "ADMIN";
     private static final String jetiRoleName = "JETI";
@@ -46,6 +49,7 @@ public class SecuredPageTemplate extends WebPage {
     public SecuredPageTemplate() {
         loadUser();
 
+        ldapManager.initialization();
         WebMarkupContainer headerLabelContainer =
                 new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
@@ -65,6 +69,7 @@ public class SecuredPageTemplate extends WebPage {
             add(new BookmarkablePageLink("elbiralas", ConsiderPage.class).setVisible(false));
             add(new BookmarkablePageLink("editsettings", EditSettings.class).setVisible(false));
         }
+        add(new BookmarkablePageLink("svieaccount", SvieAccount.class));
         //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 

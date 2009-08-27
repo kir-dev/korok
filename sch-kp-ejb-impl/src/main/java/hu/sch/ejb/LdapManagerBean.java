@@ -205,6 +205,8 @@ public class LdapManagerBean implements LdapManagerLocal {
         context.setAttributeValue("labeledURI", p.getWebpage());
         context.setAttributeValue("schacDateOfBirth", p.getDateOfBirth());
         context.setAttributeValue("schacGender", p.getGender());
+        context.setAttributeValue("sch-vir-mothersName", p.getMothersName());
+        context.setAttributeValue("sch-vir-estimatedGraduationYear", p.getEstimatedGraduationYear());
         context.setAttributeValue("inetUserStatus", p.getStatus());
         context.setAttributeValue("jpegPhoto", p.getPhoto());
         context.setAttributeValue("sch-vir-confirmationCodes", p.getConfirmationCode());

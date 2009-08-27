@@ -1,0 +1,29 @@
+<wicket:extend>
+    <h2>Regisztrációs adatok kitöltése</h2>
+    <span wicket:id="pagemessages" id="pagemessages"></span>
+    <form wicket:id="registrationForm">
+        <table>
+            <tr>
+                <td><label wicket:id="mothersNameLabel">Anyja neve *</label></td>
+                <td><input class="textinput" wicket:id="mothersName" /></td>
+            </tr>
+            <tr>
+                <td><label wicket:id="estGradLabel">Egyetem befejezési ideje *</label></td>
+                <td><input class="textinput" wicket:id="estimatedGraduationYear" /></td>
+            </tr>
+            <tr>
+                <td><label wicket:id="homePostalAddressLabel">Cím *</label></td>
+                <td><input class="textinput" wicket:id="homePostalAddress"/>
+                    <a wicket:id="homePostalAddressAttributeLink" class="lockLink">
+                        <img alt="" class="lock" wicket:id="homePostalAddressAttributeImg"/>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td><label wicket:id="radioLabel">Nem</label></td>
+                <td><span class="gender_radios" wicket:id="radiochoice"/></td>
+            </tr>
+        </table>
+        <input class="btn" type="submit" value="Regisztráció" />
+    </form>
+</wicket:extend>
