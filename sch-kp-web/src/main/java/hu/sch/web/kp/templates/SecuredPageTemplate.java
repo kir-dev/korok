@@ -63,14 +63,21 @@ public class SecuredPageTemplate extends WebPage {
         } else {
             add(new BookmarkablePageLink("ertekeleseklink", Valuations.class).setVisible(false));
         }
+
         if (isCurrentUserJETI()) {
             add(new BookmarkablePageLink("elbiralas", ConsiderPage.class));
-            add(new BookmarkablePageLink("editsettings", EditSettings.class));
         } else {
             add(new BookmarkablePageLink("elbiralas", ConsiderPage.class).setVisible(false));
+        }
+
+        if (isCurrentUserJETI() || isCurrentUserSVIE()) {
+            add(new BookmarkablePageLink("editsettings", EditSettings.class));
+        } else {
             add(new BookmarkablePageLink("editsettings", EditSettings.class).setVisible(false));
         }
-        add(new BookmarkablePageLink("svieaccount", SvieAccount.class));
+
+        add(new BookmarkablePageLink(
+                "svieaccount", SvieAccount.class));
     //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 
@@ -119,7 +126,7 @@ public class SecuredPageTemplate extends WebPage {
         try {
             sz = systemManager.getSzemeszter();
         } catch (NoSuchAttributeException ex) {
-            log.warn("Attribute for semester isn't setted in the database.", ex);
+            log.warn("Attribute for semester isn't set in the database.", ex);
         }
         return sz;
     }

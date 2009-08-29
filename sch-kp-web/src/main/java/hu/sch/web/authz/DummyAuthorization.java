@@ -61,6 +61,8 @@ public class DummyAuthorization implements UserAuthorization {
             return true;
         } else if (role.equals("JETI")) {
             return true;
+        } else if (role.equals("SVIE")) {
+            return true;
         } else {
             return false;
         }
@@ -78,7 +80,8 @@ public class DummyAuthorization implements UserAuthorization {
      * {@inheritDoc}
      */
     @Override
-    public User getUserAttributes(Request wicketRequest) {
+    public User getUserAttributes(
+            Request wicketRequest) {
         return null;
     }
 }
