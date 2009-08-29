@@ -45,6 +45,7 @@ public class SecuredPageTemplate extends WebPage {
     private static final Logger log = Logger.getLogger(SecuredPageTemplate.class);
     private static final String adminRoleName = "ADMIN";
     private static final String jetiRoleName = "JETI";
+    private static final String svieRoleName = "SVIE";
 
     public SecuredPageTemplate() {
         loadUser();
@@ -70,7 +71,7 @@ public class SecuredPageTemplate extends WebPage {
             add(new BookmarkablePageLink("editsettings", EditSettings.class).setVisible(false));
         }
         add(new BookmarkablePageLink("svieaccount", SvieAccount.class));
-        //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
+    //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 
     protected void loadUser() {
@@ -129,6 +130,10 @@ public class SecuredPageTemplate extends WebPage {
 
     public boolean isCurrentUserJETI() {
         return getAuthorizationComponent().hasAbstractRole(getRequest(), jetiRoleName);
+    }
+
+    public boolean isCurrentUserSVIE() {
+        return getAuthorizationComponent().hasAbstractRole(getRequest(), svieRoleName);
     }
 
     public boolean isUserGroupLeader(Group group) {
