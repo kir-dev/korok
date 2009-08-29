@@ -200,6 +200,15 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    public List<User> getDelegatedUsersForGroup(Long groupId) {
+        Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
+                "ms.user " + 
+                "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true");
+        q.setParameter("groupId", groupId);
+        return q.getResultList();
+    }
+    
+
     public List<User> getCsoporttagok(Long csoportId) {
         //Group cs = em.find(Group.class, csoportId);
         Query q =

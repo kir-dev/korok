@@ -195,7 +195,7 @@ public class User implements Serializable, Comparable<User> {
     }
 
     @Column(name = "usr_delegated")
-    public boolean isDelegated() {
+    public boolean getDelegated() {
         return delegated;
     }
 
