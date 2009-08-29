@@ -60,7 +60,8 @@ public class User implements Serializable, Comparable<User> {
     usr_nickname           | text                   | 
     usr_svie_state         | character varying(255) | not null default 'NEMTAG'::character varying
     usr_svie_member_type   | character varying(255) | not null default 'NEMTAG'::character varying
-    usr_svie_primary_group | integer                | 
+    usr_svie_primary_group | integer                |
+    usr_delegated          | boolean                |
      */
     /**
      * Felhasználó azonosítója
@@ -103,6 +104,13 @@ public class User implements Serializable, Comparable<User> {
      * Csoporttagságok - tagsági idővel kiegészítve
      */
     private List<Membership> memberships;
+
+    /**
+     * Az illető küldött-e az elsődleges körében
+     */
+
+    private boolean delegated;
+
     /**
      * Tranziens csoporttagsagok
      */
@@ -186,6 +194,14 @@ public class User implements Serializable, Comparable<User> {
         return svieMembershipType;
     }
 
+    @Column(name = "usr_delegated")
+    public boolean isDelegated() {
+        return delegated;
+    }
+
+    public void setDelegated(boolean newValue) {
+        this.delegated = newValue;
+    }
     public void setSvieMembershipType(SvieMembershipType svieMembershipType) {
         this.svieMembershipType = svieMembershipType;
     }
