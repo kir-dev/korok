@@ -90,7 +90,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         synchronized (LdapManagerBean.class) {
             if (INSTANCE == null) {
                 FileSystemResource resource =
-                        new FileSystemResource("/home/aldaris/springldap-kp.xml");
+                        new FileSystemResource("/home/kirdev/sch-opensso/springldap-test.xml");
                 LdapManagerBean.springBeanFactory =
                         new XmlBeanFactory(resource);
                 INSTANCE =
