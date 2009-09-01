@@ -8,7 +8,7 @@ update users set usr_email = trim(both ' ' from usr_email);
 ALTER TABLE users ADD COLUMN usr_svie_state character varying(255) NOT NULL DEFAULT 'NEMTAG';
 ALTER TABLE users ADD COLUMN usr_svie_member_type character varying(255) NOT NULL DEFAULT 'NEMTAG';
 ALTER TABLE users ADD COLUMN usr_svie_primary_group integer;
-ALTER TABLE users ADD COLUMN usr_delegated BOOLEAN;
+ALTER TABLE users ADD COLUMN usr_delegated BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE groups ADD COLUMN grp_issvie boolean NOT NULL DEFAULT false;
 ALTER TABLE groups ADD COLUMN grp_svie_delegate_nr integer;
 
