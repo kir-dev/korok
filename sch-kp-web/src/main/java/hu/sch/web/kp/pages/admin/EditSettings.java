@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -137,14 +138,14 @@ public class EditSettings extends SecuredPageTemplate {
         if (isCurrentUserJETI()) {
             add(new JetiFragment("jetifragment", "jetipanel"));
         } else {
-            add(new Label("jetifragment",""));
+            add(new Label("jetifragment", ""));
         }
 
         if (isCurrentUserSVIE()) {
             add(new SvieFragment("sviefragment", "sviepanel"));
         } else {
-            add(new Label("sviefragment",""));
+            add(new Label("sviefragment", ""));
         }
-        
+
     }
 }

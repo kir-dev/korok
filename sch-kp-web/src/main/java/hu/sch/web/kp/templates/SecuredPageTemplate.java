@@ -50,35 +50,33 @@ public class SecuredPageTemplate extends WebPage {
     public SecuredPageTemplate() {
         loadUser();
 
-        ldapManager.initialization();
         WebMarkupContainer headerLabelContainer =
                 new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
         headerLabelContainer.add(new Label("headerLabel", new Model<Serializable>()));
 
-        add(new BookmarkablePageLink("showuserlink", ShowUser.class));
-        add(new BookmarkablePageLink("grouphierarchylink", GroupHierarchy.class));
+        add(new BookmarkablePageLink<ShowUser>("showuserlink", ShowUser.class));
+        add(new BookmarkablePageLink<GroupHierarchy>("grouphierarchylink", GroupHierarchy.class));
         if (isUserGroupLeaderInSomeGroup()) {
-            add(new BookmarkablePageLink("ertekeleseklink", Valuations.class).setVisible(true));
+            add(new BookmarkablePageLink<Valuations>("ertekeleseklink", Valuations.class).setVisible(true));
         } else {
-            add(new BookmarkablePageLink("ertekeleseklink", Valuations.class).setVisible(false));
+            add(new BookmarkablePageLink<Valuations>("ertekeleseklink", Valuations.class).setVisible(false));
         }
 
         if (isCurrentUserJETI()) {
-            add(new BookmarkablePageLink("elbiralas", ConsiderPage.class));
+            add(new BookmarkablePageLink<ConsiderPage>("elbiralas", ConsiderPage.class));
         } else {
-            add(new BookmarkablePageLink("elbiralas", ConsiderPage.class).setVisible(false));
+            add(new BookmarkablePageLink<ConsiderPage>("elbiralas", ConsiderPage.class).setVisible(false));
         }
 
         if (isCurrentUserJETI() || isCurrentUserSVIE()) {
-            add(new BookmarkablePageLink("editsettings", EditSettings.class));
+            add(new BookmarkablePageLink<EditSettings>("editsettings", EditSettings.class));
         } else {
-            add(new BookmarkablePageLink("editsettings", EditSettings.class).setVisible(false));
+            add(new BookmarkablePageLink<EditSettings>("editsettings", EditSettings.class).setVisible(false));
         }
 
-        add(new BookmarkablePageLink(
-                "svieaccount", SvieAccount.class));
-    //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
+        add(new BookmarkablePageLink<SvieAccount>("svieaccount", SvieAccount.class));
+        //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 
     protected void loadUser() {

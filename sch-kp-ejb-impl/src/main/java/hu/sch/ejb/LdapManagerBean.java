@@ -4,6 +4,7 @@
  */
 package hu.sch.ejb;
 
+import hu.sch.domain.config.Configuration;
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.IMProtocol;
 import hu.sch.domain.profile.Person;
@@ -16,12 +17,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -51,7 +54,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     /**
      * A logolashoz szukseges objektum.
      */
-    //private static final Logger log = Logger.getLogger(LdapManagerBean.class);
+    private static final Logger log = Logger.getLogger(LdapManagerBean.class);
     /**
      * Bean objektum, letrehozasakor jon letre maga az ldapTemplate.
      */
@@ -90,7 +93,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         synchronized (LdapManagerBean.class) {
             if (INSTANCE == null) {
                 FileSystemResource resource =
-                        new FileSystemResource("/home/kirdev/sch-opensso/springldap-test.xml");
+                        new FileSystemResource(Configuration.getSpringLdapPath());
                 LdapManagerBean.springBeanFactory =
                         new XmlBeanFactory(resource);
                 INSTANCE =
@@ -103,10 +106,11 @@ public class LdapManagerBean implements LdapManagerLocal {
     /**
      * Inicializalo fuggveny, segitsegevel keszitjuk el az egyetlen darab Ldap-kezelo objektumunkat
      */
+    @PostConstruct
     public void initialization() {
         //mivel az EJB thread-safe, megtehetjuk ezt
-        LdapManagerBean lpmb = INSTANCE;
-        if (lpmb == null) {
+        LdapManagerBean lmb = INSTANCE;
+        if (lmb == null) {
             tryCreateInstance();
         }
     }
@@ -325,7 +329,7 @@ public class LdapManagerBean implements LdapManagerLocal {
 
     public List<Person> search(List<String> searchWords) {
         AndFilter andFilter = setUpAndFilter(searchWords);
-        //andFilter.and(new EqualsFilter("inetUserStatus", "active"));
+        andFilter.and(new EqualsFilter("inetUserStatus", "active"));
         return getLdapTemplate().search("",
                 andFilter.encode(), getSearchContextMapper());
     }

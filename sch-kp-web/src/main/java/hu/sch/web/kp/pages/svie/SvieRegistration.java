@@ -50,8 +50,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
     public SvieRegistration(final User user) {
         this.user = user;
         try {
-//            person = ldapManager.getPersonByVirId(user.getUserId().toString());
-            person = ldapManager.getPersonByVirId("22003");
+            person = ldapManager.getPersonByVirId(user.getId().toString());
         } catch (PersonNotFoundException pnfe) {
             getSession().error("A felhasználó nem található.");
             throw new RestartResponseException(ShowUser.class);

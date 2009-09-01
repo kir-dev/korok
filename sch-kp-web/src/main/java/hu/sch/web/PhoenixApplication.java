@@ -10,6 +10,7 @@ package hu.sch.web;
 
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.ValuationStatus;
+import hu.sch.domain.config.Configuration;
 import hu.sch.services.TimerServiceLocal;
 import hu.sch.web.kp.pages.group.EditGroupInfo;
 import hu.sch.web.kp.pages.user.ShowUser;
@@ -115,6 +116,9 @@ public class PhoenixApplication extends WebApplication {
             throw new IllegalStateException("Cannot instantiate authorization component" +
                     classname, ex);
         }
+
+        //Beállítások beolvasása az alkalmazás properties fájljából
+        Configuration.init();
 
         //TimerService-ek inicializálása
         TimerServiceLocal timerService = lookupTimerServiceBean();

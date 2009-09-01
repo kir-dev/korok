@@ -27,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -40,6 +41,7 @@ public class UserManagerBean implements UserManagerLocal {
     EntityManager em;
     @EJB(name = "LogManagerBean")
     LogManagerLocal logManager;
+    private static Logger log = Logger.getLogger(UserManagerBean.class);
     private static Event DELETEMEMBERSHIP_EVENT;
     private static Event CREATEMEMBERSHIP_EVENT;
 
@@ -267,7 +269,8 @@ public class UserManagerBean implements UserManagerLocal {
         try {
             User user = (User) q.getSingleResult();
             return user;
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            log.warn("Can't find user with memberships", ex);
             return null;
         }
     }
@@ -278,8 +281,8 @@ public class UserManagerBean implements UserManagerLocal {
         try {
             Group group = (Group) q.getSingleResult();
             return group;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            log.warn("Can't find group with memberships", ex);
             return null;
         }
     }
@@ -312,8 +315,12 @@ public class UserManagerBean implements UserManagerLocal {
     @Override
     public void updateUser(User user) {
         em.merge(user);
-//        User temp = em.find(User.class, user.getId());
-//        temp.setSvieMembershipType(user.getSvieMembershipType());
-//        temp.setSvieStatus(user.getSvieStatus());
+    }
+
+    @Override
+    public List<Membership> getSvieMembershipsForUser(User user) {
+        Query q = em.createQuery("SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true");
+        q.setParameter("user", user);
+        return q.getResultList();
     }
 }

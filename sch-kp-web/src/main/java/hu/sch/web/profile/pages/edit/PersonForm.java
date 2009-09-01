@@ -162,7 +162,7 @@ public class PersonForm extends Form<Person> {
         //van erre a gombra, különben az IM listás Ajax elromlik! A setResponsePage
         //true flag miatt készül ki valamiért.
         //Bővebben: http://osdir.com/ml/users-wicket.apache.org/2009-08/msg00836.html
-        add(new Button("submitButton") {
+        Button submitButton = new Button("submitButton") {
 
             @Override
             public void onSubmit() {
@@ -198,7 +198,9 @@ public class PersonForm extends Form<Person> {
                 }
 
             }
-        });
+        };
+        add(submitButton);
+        setDefaultButton(submitButton);
     }
 
     private void createNameFields() {

@@ -8,14 +8,14 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
 import hu.sch.web.components.ConfirmationBoxRenderer;
-import hu.sch.web.components.customlinks.PdfLink;
-import hu.sch.web.kp.pages.group.GroupHierarchy;
+import hu.sch.web.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -53,23 +53,21 @@ public class ShowUser extends SecuredPageTemplate {
             id = null;
         }
         if (id == null) {
-            info("Egy körben sem vagy tag");
-            setResponsePage(GroupHierarchy.class);
-            return;
+            getSession().info("Egy körben sem vagy tag");
+            throw new RestartResponseException(getApplication().getHomePage());
         }
         add(new FeedbackPanel("pagemessages"));
         final User user = userManager.findUserWithCsoporttagsagokById(id);
         if (user == null) {
-            info("Egy körben sem vagy tag");
-            setResponsePage(GroupHierarchy.class);
-            return;
+            info("A felhasználó nem található");
+            throw new RestartResponseException(getApplication().getHomePage());
         }
-        setDefaultModel(new CompoundPropertyModel(user));
+        setDefaultModel(new CompoundPropertyModel<User>(user));
         setHeaderLabelText(user.getName() + " felhasználó lapja");
         if (ownProfile) {
-            add(new BookmarkablePageLink("detailView", UserHistory.class));
+            add(new BookmarkablePageLink<UserHistory>("detailView", UserHistory.class));
         } else {
-            add(new BookmarkablePageLink("detailView", UserHistory.class,
+            add(new BookmarkablePageLink<UserHistory>("detailView", UserHistory.class,
                     new PageParameters("id=" + user.getId().toString())));
         }
 
@@ -83,7 +81,7 @@ public class ShowUser extends SecuredPageTemplate {
                 final Membership ms = item.getModelObject();
                 item.setModel(new CompoundPropertyModel<Membership>(ms));
                 BookmarkablePageLink csoplink =
-                        new BookmarkablePageLink("csoplink", ShowGroup.class,
+                        new BookmarkablePageLink<ShowGroup>("csoplink", ShowGroup.class,
                         new PageParameters("id=" +
                         ms.getGroup().getId().toString()));
                 csoplink.add(new Label("group.name"));
@@ -124,9 +122,9 @@ public class ShowUser extends SecuredPageTemplate {
             }
         }
 
-        final DropDownChoice csoport = new DropDownChoice("group",
-                new PropertyModel(this, "addToCsoportSelected"), korvezetoicsoportok);
-        Form csoportbaFelvetel = new Form("csoportbaFelvetel") {
+        final DropDownChoice<Group> csoport = new DropDownChoice<Group>("group",
+                new PropertyModel<Group>(this, "addToCsoportSelected"), korvezetoicsoportok);
+        Form<User> csoportbaFelvetel = new Form<User>("csoportbaFelvetel") {
 
             @Override
             protected void onSubmit() {
@@ -139,8 +137,6 @@ public class ShowUser extends SecuredPageTemplate {
         add(csoportbaFelvetel);
         csoportbaFelvetel.setVisible(!korvezetoicsoportok.isEmpty() &&
                 isUserGroupLeaderInSomeGroup());
-
-        add(new PdfLink("pdfLink"));
     }
 
     public ShowUser(PageParameters parameters) {

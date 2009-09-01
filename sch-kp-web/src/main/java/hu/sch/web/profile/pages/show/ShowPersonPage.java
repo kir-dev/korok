@@ -2,22 +2,6 @@ package hu.sch.web.profile.pages.show;
 
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.Person;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.image.NonCachingImage;
-import org.apache.wicket.markup.html.link.ExternalLink;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 import hu.sch.services.EntitlementManagerRemote;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.components.ImageResource;
@@ -25,8 +9,24 @@ import hu.sch.web.error.ErrorPage;
 import hu.sch.web.profile.pages.community.CreateCommunityProfile;
 import hu.sch.web.profile.pages.search.DormitoryRoomNumberLinkPanel;
 import hu.sch.web.profile.pages.template.ProfilePage;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import javax.ejb.EJB;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  * Homepage
@@ -87,15 +87,15 @@ public class ShowPersonPage extends ProfilePage {
 
         add(new ListView<IMAccount>("ims", person.getIMAccounts()) {
 
-                    @Override
-                    protected void populateItem(ListItem<IMAccount> item) {
-                        final IMAccount acc = item.getModelObject();
-                        item.add(new Label("imProtocol",
-                                new PropertyModel<IMAccount>(acc, "protocol")));
-                        item.add(new Label("imPresenceID",
-                                new PropertyModel<IMAccount>(acc, "presenceID")));
-                    }
-                });
+            @Override
+            protected void populateItem(ListItem<IMAccount> item) {
+                final IMAccount acc = item.getModelObject();
+                item.add(new Label("imProtocol",
+                        new PropertyModel<IMAccount>(acc, "protocol")));
+                item.add(new Label("imPresenceID",
+                        new PropertyModel<IMAccount>(acc, "presenceID")));
+            }
+        });
 
         WebMarkupContainer mobileWMC = new WebMarkupContainer("mobileWMC");
 
@@ -138,11 +138,6 @@ public class ShowPersonPage extends ProfilePage {
         nickNameWMC.setVisible(person.getNickName() != null);
         add(nickNameWMC);
 
-        /*        WebMarkupContainer neptunWMC = new WebMarkupContainer("neptunWMC");
-        neptunWMC.add(new Label("neptun"));
-        neptunWMC.setVisible(!person.isPrivateAttribute("schacPersonalUniqueCode"));
-        add(neptunWMC);*/
-
         WebMarkupContainer homePostalAddressWMC =
                 new WebMarkupContainer("homePostalAddressWMC");
 
@@ -152,38 +147,17 @@ public class ShowPersonPage extends ProfilePage {
                 person.getHomePostalAddress() != null);
         add(homePostalAddressWMC);
 
-        /*        add(new Label("gender", new Model() {
-        
-        @Override
-        public Object getObject() {
-        Person p = (Person) getModelObject();
-        if (p.getGender() == null) {
-        return new String("");
-        }
-        
-        if (p.getGender().equals("1")) {
-        return new String("Férfi");
-        } else if (p.getGender().equals("2")) {
-        return new String("Nő");
-        }
-        
-        return new String("");
-        }
-        }));*/
-
         Label dateOfBirth = new Label("dateOfBirth");
         Date dob;
         if (person.getDateOfBirth() != null) {
             try {
-                dob =
-                        new SimpleDateFormat("yyyyMMdd").parse(person.getDateOfBirth());
+                dob = new SimpleDateFormat("yyyyMMdd").parse(person.getDateOfBirth());
                 dateOfBirth = new Label("dateOfBirth", new SimpleDateFormat("yyyy. MMMM dd.",
                         new Locale("hu")).format(dob));
             } catch (ParseException ex) {
             }
         }
-        WebMarkupContainer dateOfBirthWMC =
-                new WebMarkupContainer("dateOfBirthWMC");
+        WebMarkupContainer dateOfBirthWMC = new WebMarkupContainer("dateOfBirthWMC");
 
         dateOfBirthWMC.add(dateOfBirth);
 
@@ -192,19 +166,15 @@ public class ShowPersonPage extends ProfilePage {
                 person.getDateOfBirth() != null);
         add(dateOfBirthWMC);
 
-//        add(new Label("image", person.getImage().getClass().getCanonicalName()));
-
         NonCachingImage photo = new NonCachingImage("photo", new AbstractReadOnlyModel<ImageResource>() {
 
             @Override
             public ImageResource getObject() {
-                // TODO Auto-generated method stub
                 return new ImageResource(person.getPhoto(), "png");
             }
         });
         photo.setVisible(person.getPhoto() != null);
         add(photo);
-    //add(new Label("status"));
     }
 
     public ShowPersonPage() {

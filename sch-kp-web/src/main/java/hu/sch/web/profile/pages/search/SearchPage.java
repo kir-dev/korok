@@ -21,7 +21,7 @@ public class SearchPage extends ProfilePage {
         public SearchForm(String componentName) {
             super(componentName);
             TextField<String> sf = new TextField<String>("searchString",
-                    new PropertyModel(this, "searchString"));
+                    new PropertyModel<String>(this, "searchString"));
             sf.add(new FocusOnLoadBehavior());
             add(sf);
         }

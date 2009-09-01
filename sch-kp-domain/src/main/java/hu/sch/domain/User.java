@@ -207,7 +207,7 @@ public class User implements Serializable, Comparable<User> {
     }
 
     @ManyToOne
-    @JoinColumn(name = "usr_svie_primary_group", insertable = false, updatable = false)
+    @JoinColumn(name = "usr_svie_primary_membership", insertable = true, updatable = true)
     public Membership getSviePrimaryMembership() {
         return sviePrimaryMemberhip;
     }

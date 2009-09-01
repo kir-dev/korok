@@ -27,8 +27,6 @@ public abstract class ProfilePage extends WebPage {
 
     public ProfilePage() {
 
-        ldapManager.initialization();
-
         add(new BookmarkablePageLink("profilePageLink", ShowPersonPage.class));
         add(new BookmarkablePageLink("searchPageLink", SearchPage.class));
         add(new BookmarkablePageLink("editPageLink", EditPage.class));
