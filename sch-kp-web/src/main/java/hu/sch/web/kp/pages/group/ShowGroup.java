@@ -89,6 +89,17 @@ public class ShowGroup extends SecuredPageTemplate {
         }
         add(editPageLink);
 
+        //A kör küldöttjeinek beállításához szükséges link jogosultságellenőrzéssel
+        Link editDelegates = new BookmarkablePageLink("editDelegates", ChangeDelegates.class,
+                new PageParameters("id=" + group.getId().toString()));
+
+        if (user != null && isUserGroupLeader(group) && group.getIsSvie()) {
+            editDelegates.setVisible(true);
+        } else {
+            editDelegates.setVisible(false);
+        }
+        add(editDelegates);
+
         //A kör adatlapjának előállítása (kis táblázat)
         setDefaultModel(new CompoundPropertyModel(group));
         add(new Label("name"));

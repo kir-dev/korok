@@ -202,6 +202,14 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    public List<User> getUsersWithPrimaryMembership(Long groupId) {
+        Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
+                "ms.user " + 
+                "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms");
+        q.setParameter("groupId", groupId);
+        return q.getResultList();
+    }
+    
     public List<User> getDelegatedUsersForGroup(Long groupId) {
         Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
                 "ms.user " + 
@@ -305,6 +313,12 @@ public class UserManagerBean implements UserManagerLocal {
     public void setMemberToOldBoy(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         temp.setEnd(new Date());
+    }
+
+    public void setUserDelegateStatus(User user, boolean isDelegated) {
+        User temp = em.find(User.class, user.getId());
+        
+        temp.setDelegated(isDelegated);
     }
 
     public void setOldBoyToActive(Membership ms) {

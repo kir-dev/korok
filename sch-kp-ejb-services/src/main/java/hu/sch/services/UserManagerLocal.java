@@ -56,6 +56,8 @@ public interface UserManagerLocal {
 
     List<PointRequest> getPontIgenyekForUser(User felhasznalo);
 
+    List<User> getUsersWithPrimaryMembership(Long groupId);
+    
     List<User> getDelegatedUsersForGroup(Long groupId);
 
     void groupInfoUpdate(Group cs);
@@ -63,6 +65,8 @@ public interface UserManagerLocal {
     Membership getCsoporttagsag(Long memberId);
 
     void setMemberToOldBoy(Membership user);
+
+    void setUserDelegateStatus(User user, boolean isDelegated);
 
     void setOldBoyToActive(Membership cst);
 
