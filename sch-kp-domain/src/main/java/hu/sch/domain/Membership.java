@@ -126,4 +126,31 @@ public class Membership implements Serializable {
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Membership other = (Membership) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 29 * hash + (this.group != null ? this.group.hashCode() : 0);
+        hash = 29 * hash + (this.user != null ? this.user.hashCode() : 0);
+        hash = 29 * hash + (this.start != null ? this.start.hashCode() : 0);
+        hash = 29 * hash + (this.end != null ? this.end.hashCode() : 0);
+        hash = 29 * hash + (this.posts != null ? this.posts.hashCode() : 0);
+        return hash;
+    }
 }

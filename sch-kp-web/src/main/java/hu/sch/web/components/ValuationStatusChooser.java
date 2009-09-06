@@ -22,10 +22,12 @@ public class ValuationStatusChooser extends DropDownChoice<ValuationStatus> {
 
         setChoiceRenderer(new IChoiceRenderer<ValuationStatus>() {
 
+            @Override
             public Object getDisplayValue(ValuationStatus object) {
                 return getConverter(ValuationStatus.class).convertToString(object, getLocale());
             }
 
+            @Override
             public String getIdValue(ValuationStatus object, int index) {
                 return object.toString();
             }

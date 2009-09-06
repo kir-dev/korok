@@ -77,10 +77,10 @@ public class ShowGroup extends SecuredPageTemplate {
         add(new FeedbackPanel("pagemessages"));
 
         //A jobb oldali leugró menühöz előállítjuk a csoporttörténetes linket.
-        add(new BookmarkablePageLink("detailView", GroupHistory.class,
+        add(new BookmarkablePageLink<GroupHistory>("detailView", GroupHistory.class,
                 new PageParameters("id=" + group.getId().toString())));
         //A kör admin felületéhez szükséges link jogosultságellenőrzéssel
-        Link editPageLink = new BookmarkablePageLink("editPage", EditGroupInfo.class,
+        Link<EditGroupInfo> editPageLink = new BookmarkablePageLink<EditGroupInfo>("editPage", EditGroupInfo.class,
                 new PageParameters("id=" + group.getId().toString()));
         if (user != null && isUserGroupLeader(group)) {
             editPageLink.setVisible(true);
@@ -90,7 +90,8 @@ public class ShowGroup extends SecuredPageTemplate {
         add(editPageLink);
 
         //A kör küldöttjeinek beállításához szükséges link jogosultságellenőrzéssel
-        Link editDelegates = new BookmarkablePageLink("editDelegates", ChangeDelegates.class,
+        Link<ChangeDelegates> editDelegates = 
+                new BookmarkablePageLink<ChangeDelegates>("editDelegates", ChangeDelegates.class,
                 new PageParameters("id=" + group.getId().toString()));
 
         if (user != null && isUserGroupLeader(group) && group.getIsSvie()) {
@@ -101,7 +102,7 @@ public class ShowGroup extends SecuredPageTemplate {
         add(editDelegates);
 
         //A kör adatlapjának előállítása (kis táblázat)
-        setDefaultModel(new CompoundPropertyModel(group));
+        setDefaultModel(new CompoundPropertyModel<Group>(group));
         add(new Label("name"));
         add(new Label("founded"));
         add(new SmartLinkLabel("webPage"));
@@ -109,7 +110,7 @@ public class ShowGroup extends SecuredPageTemplate {
         add(new MultiLineLabel("introduction"));
 
         //körbe jelentkezéshez a link, JS-es kérdezéssel
-        Link applyLink = new Link("applyToGroup") {
+        Link<Void> applyLink = new Link<Void>("applyToGroup") {
 
             @Override
             public void onClick() {

@@ -7,10 +7,10 @@ package hu.sch.web.kp.pages.admin;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.exceptions.NoSuchAttributeException;
+import hu.sch.web.kp.pages.svie.SvieUserMgmt;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.Arrays;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -32,6 +32,31 @@ import org.apache.wicket.validation.validator.RangeValidator;
 //TODO
 public class EditSettings extends SecuredPageTemplate {
 
+    public EditSettings() {
+        //Jogosultságellenőrzés
+        if (!isCurrentUserJETI() && !isCurrentUserSVIE()) {
+            error("Nincs jogod a megadott művelethez");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+
+        setHeaderLabelText("Adminisztráció");
+        add(new FeedbackPanel("pagemessages"));
+
+        JetiFragment jetiPanel = new JetiFragment("jetifragment", "jetipanel");
+        SvieFragment sviePanel = new SvieFragment("sviefragment", "sviepanel");
+        jetiPanel.setVisible(false);
+        sviePanel.setVisible(false);
+        add(jetiPanel, sviePanel);
+
+        if (isCurrentUserJETI()) {
+            jetiPanel.setVisible(true);
+        }
+
+        if (isCurrentUserSVIE()) {
+            sviePanel.setVisible(true);
+        }
+    }
+
     private class JetiFragment extends Fragment {
 
         private Semester semester;
@@ -50,12 +75,7 @@ public class EditSettings extends SecuredPageTemplate {
         }
 
         public JetiFragment(String id, String markupId) {
-            super(id, markupId);
-            if (!isCurrentUserJETI() && !isCurrentUserSVIE()) {
-                error("Nincs jogod a megadott művelethez");
-                throw new RestartResponseException(getApplication().getHomePage());
-            }
-
+            super(id, markupId, null, null);
 
             try {
                 semester = systemManager.getSzemeszter();
@@ -118,34 +138,11 @@ public class EditSettings extends SecuredPageTemplate {
         }
     }
 
-    public class SvieFragment extends Fragment {
+    private class SvieFragment extends Fragment {
 
         public SvieFragment(String id, String markupId) {
-            super(id, markupId);
+            super(id, markupId, null, null);
+            add(new BookmarkablePageLink<SvieUserMgmt>("userMgmt", SvieUserMgmt.class));
         }
-    }
-
-    public EditSettings() {
-        //Jogosultságellenőrzés
-        if (!isCurrentUserJETI() && !isCurrentUserSVIE()) {
-            error("Nincs jogod a megadott művelethez");
-            throw new RestartResponseException(getApplication().getHomePage());
-        }
-
-        setHeaderLabelText("Adminisztráció");
-        add(new FeedbackPanel("pagemessages"));
-
-        if (isCurrentUserJETI()) {
-            add(new JetiFragment("jetifragment", "jetipanel"));
-        } else {
-            add(new Label("jetifragment", ""));
-        }
-
-        if (isCurrentUserSVIE()) {
-            add(new SvieFragment("sviefragment", "sviepanel"));
-        } else {
-            add(new Label("sviefragment", ""));
-        }
-
     }
 }

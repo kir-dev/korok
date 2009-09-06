@@ -32,6 +32,7 @@ import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.util.resource.IResourceStream;
 
@@ -39,14 +40,14 @@ import org.apache.wicket.util.resource.IResourceStream;
  *
  * @author aldaris
  */
-public class SvieRegPdfLink<T> extends Link<T> {
+public class SvieRegPdfLink extends Panel {
 
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
     private static Logger log = Logger.getLogger(SvieRegPdfLink.class);
     private static final long serialVersionUID = 1L;
     private static Image schLogo;
-    private User user;
+    private final User user;
     private Person person;
     private String cachedmsType;
     private static StringBuilder sb;
@@ -121,34 +122,36 @@ public class SvieRegPdfLink<T> extends Link<T> {
         }
     }
 
-    public SvieRegPdfLink(String id, User user) {
+    public SvieRegPdfLink(String id, User user2) {
         super(id);
-        this.user = user;
+        this.user = user2;
         cachedmsType = user.getSvieMembershipType().toString();
-        try {
-            person = ldapManager.getPersonByVirId(user.getId().toString());
-        } catch (PersonNotFoundException ex) {
-            getSession().error("Hiba a PDF generálása közben.");
-            throw new RestartResponseException(ShowUser.class);
-        }
-    }
+        add(new Link("pdfLink") {
 
-    public void onClick() {
-        try {
-            IResourceStream resourceStream = new ByteArrayResourceStream(
-                    ((ByteArrayOutputStream) generatePdf()).toByteArray(),
-                    "application/pdf");
-            getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
-
-                @Override
-                public String getFileName() {
-                    return ("export.pdf");
+            public void onClick() {
+                try {
+                    person = ldapManager.getPersonByVirId(user.getId().toString());
+                } catch (PersonNotFoundException ex) {
+                    getSession().error("Hiba a PDF generálása közben.");
+                    throw new RestartResponseException(ShowUser.class);
                 }
-            });
-        } catch (Exception ex) {
-            getSession().error("Hiba történt a PDF generálása közben!");
-            ex.printStackTrace();
-        }
+                try {
+                    IResourceStream resourceStream = new ByteArrayResourceStream(
+                            ((ByteArrayOutputStream) generatePdf()).toByteArray(),
+                            "application/pdf");
+                    getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
+
+                        @Override
+                        public String getFileName() {
+                            return ("export.pdf");
+                        }
+                    });
+                } catch (Exception ex) {
+                    getSession().error("Hiba történt a PDF generálása közben!");
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     private OutputStream generatePdf() throws DocumentException, IOException {

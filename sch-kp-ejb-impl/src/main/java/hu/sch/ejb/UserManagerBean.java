@@ -16,6 +16,8 @@ import hu.sch.domain.SvieStatus;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.services.LogManagerLocal;
+import hu.sch.services.MailManagerLocal;
+import hu.sch.services.PostManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,6 +43,10 @@ public class UserManagerBean implements UserManagerLocal {
     EntityManager em;
     @EJB(name = "LogManagerBean")
     LogManagerLocal logManager;
+    @EJB(name = "MailManagerBean")
+    MailManagerLocal mailManager;
+    @EJB(name = "PostManagerBean")
+    PostManagerLocal postManager;
     private static Logger log = Logger.getLogger(UserManagerBean.class);
     private static Event DELETEMEMBERSHIP_EVENT;
     private static Event CREATEMEMBERSHIP_EVENT;
@@ -54,6 +60,7 @@ public class UserManagerBean implements UserManagerLocal {
             q.setParameter("evt", EventType.JELENTKEZES);
             CREATEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
         }
+        StringBuilder sb = new StringBuilder(200);
     }
 
     public List<User> getAllUsers() {
@@ -180,7 +187,7 @@ public class UserManagerBean implements UserManagerLocal {
                 Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
                         "WHERE ms.user = :user AND ms.group.isSvie = true");
                 q.setParameter("user", ms.getUser());
-                User user = (User) q.getSingleResult();
+                q.getSingleResult();
             } catch (NoResultException nre) {
                 User temp2 = em.find(User.class, ms.getUser().getId());
                 temp2.setSvieMembershipType(SvieMembershipType.PARTOLOTAG);
@@ -204,20 +211,19 @@ public class UserManagerBean implements UserManagerLocal {
 
     public List<User> getUsersWithPrimaryMembership(Long groupId) {
         Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
-                "ms.user " + 
+                "ms.user " +
                 "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms");
         q.setParameter("groupId", groupId);
         return q.getResultList();
     }
-    
+
     public List<User> getDelegatedUsersForGroup(Long groupId) {
         Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
-                "ms.user " + 
+                "ms.user " +
                 "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true");
         q.setParameter("groupId", groupId);
         return q.getResultList();
     }
-    
 
     public List<User> getCsoporttagok(Long csoportId) {
         //Group cs = em.find(Group.class, csoportId);
@@ -317,7 +323,7 @@ public class UserManagerBean implements UserManagerLocal {
 
     public void setUserDelegateStatus(User user, boolean isDelegated) {
         User temp = em.find(User.class, user.getId());
-        
+
         temp.setDelegated(isDelegated);
     }
 
@@ -331,10 +337,7 @@ public class UserManagerBean implements UserManagerLocal {
         em.merge(user);
     }
 
-    @Override
-    public List<Membership> getSvieMembershipsForUser(User user) {
-        Query q = em.createQuery("SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true");
-        q.setParameter("user", user);
-        return q.getResultList();
-    }
+    
+
+
 }

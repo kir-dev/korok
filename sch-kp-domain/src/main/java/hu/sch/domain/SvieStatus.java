@@ -10,5 +10,18 @@ package hu.sch.domain;
  */
 public enum SvieStatus {
 
-    NEMTAG, FELDOLGOZASALATT, ELFOGADASALATT, ELFOGADVA
+    NEMTAG("nem tag"),
+    FELDOLGOZASALATT("feldolgozás alatt"),
+    ELFOGADASALATT("elfogadás alatt"),
+    ELFOGADVA("elfogadva");
+    private String name;
+
+    private SvieStatus(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

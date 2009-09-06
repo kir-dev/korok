@@ -47,8 +47,8 @@ public final class SvieRegistration extends SecuredPageTemplate {
      * oldal ne legyen könyvjelzőzhető
      * @param user A felhasználó, aki szeretne SVIE-be regisztrálni
      */
-    public SvieRegistration(final User user) {
-        this.user = user;
+    public SvieRegistration(final User _user) {
+        this.user = _user;
         try {
             person = ldapManager.getPersonByVirId(user.getId().toString());
         } catch (PersonNotFoundException pnfe) {
@@ -59,7 +59,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
         setHeaderLabelText("SVIE Regisztráció");
         add(new FeedbackPanel("pagemessages"));
 
-        Form form = new Form("registrationForm", new CompoundPropertyModel<Person>(person)) {
+        Form<Person> form = new Form<Person>("registrationForm", new CompoundPropertyModel<Person>(person)) {
 
             @Override
             protected void onSubmit() {
@@ -74,7 +74,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
                 return;
             }
         };
-        form.setModel(new CompoundPropertyModel(person));
+        form.setModel(new CompoundPropertyModel<Person>(person));
 
         RequiredTextField<String> mothersNameTF = new RequiredTextField<String>("mothersName");
         mothersNameTF.add(new PatternValidator(PatternHolder.mothersNamePattern));

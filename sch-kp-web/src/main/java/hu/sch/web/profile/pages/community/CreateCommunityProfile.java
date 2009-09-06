@@ -55,16 +55,14 @@ public class CreateCommunityProfile extends ProfilePage {
     public CreateCommunityProfile(WebPage referer) {
         if (referer == null) {
             getSession().error("Hiba történt.");
-            setResponsePage(ErrorPage.class);
-            return;
+            throw new RestartResponseException(ErrorPage.class);
         }
         setHeaderLabelText("Közösségi profil létrehozása");
         try {
             person = ldapManager.getPersonByUid(getUid());
         } catch (PersonNotFoundException ex) {
             getSession().error("Hiba az adatok betöltésekor");
-            setResponsePage(ErrorPage.class);
-            return;
+            throw new RestartResponseException(ErrorPage.class);
         }
         add(new FeedbackPanel("feedbackPanel"));
 

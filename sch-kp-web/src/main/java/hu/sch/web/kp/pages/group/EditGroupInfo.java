@@ -10,6 +10,7 @@ import hu.sch.domain.MembershipType;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
+import hu.sch.web.kp.util.PatternHolder;
 import java.util.Calendar;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
@@ -73,7 +74,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
 
         RequiredTextField<String> nameTF = new RequiredTextField<String>("name");
         nameTF.add(StringValidator.lengthBetween(2, 255));
-        nameTF.add(new PatternValidator("[^|:]*"));
+        nameTF.add(new PatternValidator(PatternHolder.groupNameOrPostTypePattern));
         nameTF.add(new ValidationStyleBehavior());
         editInfoForm.add(nameTF);
         nameTF.setLabel(new Model<String>("Név *"));

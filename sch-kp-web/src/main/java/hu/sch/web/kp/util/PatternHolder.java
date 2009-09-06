@@ -14,10 +14,12 @@ public class PatternHolder {
 
     public static Pattern mothersNamePattern;
     public static Pattern graduationYearPattern;
+    public static Pattern groupNameOrPostTypePattern;
 
     static {
         mothersNamePattern = Pattern.compile("[A-ZŰÁÉÚŐÓÜÖÍa-zéáűőúöüóí]+ [A-ZÉÁŰŐÚÖÜÓÍa-zéáűőúöüóí ]*");
         graduationYearPattern = Pattern.compile("[0-9]{8}/[0-9]");
+        groupNameOrPostTypePattern = Pattern.compile("[^|:]*");
     }
 
     private PatternHolder() {

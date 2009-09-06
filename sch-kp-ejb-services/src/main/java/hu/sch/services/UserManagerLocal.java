@@ -71,6 +71,4 @@ public interface UserManagerLocal {
     void setOldBoyToActive(Membership cst);
 
     void updateUser(User user);
-
-    List<Membership> getSvieMembershipsForUser(User user);
 }

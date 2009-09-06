@@ -104,13 +104,10 @@ public class User implements Serializable, Comparable<User> {
      * Csoporttagságok - tagsági idővel kiegészítve
      */
     private List<Membership> memberships;
-
     /**
      * Az illető küldött-e az elsődleges körében
      */
-
     private boolean delegated;
-
     /**
      * Tranziens csoporttagsagok
      */
@@ -131,8 +128,7 @@ public class User implements Serializable, Comparable<User> {
         this.id = id;
     }
 
-    @Column(name = "usr_email", length = 64, nullable = false, columnDefinition =
-    "varchar(64)")
+    @Column(name = "usr_email", length = 64, columnDefinition = "varchar(64)")
     public String getEmailAddress() {
         return emailAddress;
     }
@@ -202,6 +198,7 @@ public class User implements Serializable, Comparable<User> {
     public void setDelegated(boolean newValue) {
         this.delegated = newValue;
     }
+
     public void setSvieMembershipType(SvieMembershipType svieMembershipType) {
         this.svieMembershipType = svieMembershipType;
     }
@@ -275,5 +272,30 @@ public class User implements Serializable, Comparable<User> {
     public int compareTo(User o) {
         Collator huCollator = Collator.getInstance(new Locale("hu"));
         return huCollator.compare(getName(), o.getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 61 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 61 * hash + (this.neptunCode != null ? this.neptunCode.hashCode() : 0);
+        hash = 61 * hash + (this.firstName != null ? this.firstName.hashCode() : 0);
+        hash = 61 * hash + (this.lastName != null ? this.lastName.hashCode() : 0);
+        return hash;
     }
 }

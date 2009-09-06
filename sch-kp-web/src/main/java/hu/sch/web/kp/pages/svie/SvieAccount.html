@@ -1,6 +1,8 @@
 <wicket:extend>
     <span wicket:id="pagemessages" id="pagemessages"></span>
-    <div wicket:id="primarySelector">
+    <span wicket:id="ordinalFragment"></span>
+    <span wicket:id="advocateFragment"></span>
+    <wicket:fragment wicket:id="ordinalPanel">
         <h2 wicket:id="formLabel">Elsődleges kör kiválasztása</h2>
         <form wicket:id="form">
             <select wicket:id="sviePrimaryMembership">
@@ -9,6 +11,11 @@
             </select>
             <input class="btn" type="submit" value="Küld" />
         </form>
-    </div>
+        <a wicket:id="ordinalToAdvocate"><wicket:message key="svie.ordinal.to.advocate" /></a>
+    </wicket:fragment>
+    <wicket:fragment wicket:id="advocatePanel">
+        <a wicket:id="advocateToOrdinal"><wicket:message key="svie.advocate.to.ordinal" /></a>
+    </wicket:fragment>
     <a wicket:id="pdfLink">Kérvény letöltése</a>
+    <a wicket:id="deleteSvieMembership"><wicket:message key="svie.delete.membership" /></a>
 </wicket:extend>

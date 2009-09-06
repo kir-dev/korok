@@ -12,6 +12,7 @@ import hu.sch.domain.User;
 import hu.sch.domain.PostType;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,11 +24,12 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.string.StringValueConversionException;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValidator;
 
 /**
@@ -126,10 +128,14 @@ public final class ChangePost extends SecuredPageTemplate {
         form.add(multipleChoice);
         add(form);
 
-        Form createPostTypeForm = new Form("postTypeForm") {
+        Form<Void> createPostTypeForm = new Form<Void>("postTypeForm") {
 
             @Override
             protected void onSubmit() {
+                if (log.isDebugEnabled()) {
+                    log.debug("Creating new posttype (" + postName + ") for group: " + ms.getGroup());
+                }
+
                 if (postManager.createPostType(postName, ms.getGroup())) {
                     getSession().info("Az új poszt sikeresen elkészült.");
                     setResponsePage(ChangePost.class, params);
@@ -142,9 +148,10 @@ public final class ChangePost extends SecuredPageTemplate {
             }
         };
 
-        TextField<String> postNameTF =
-                new TextField<String>("postNameTF", new PropertyModel<String>(this, "postName"));
+        RequiredTextField<String> postNameTF =
+                new RequiredTextField<String>("postNameTF", new PropertyModel<String>(this, "postName"));
         postNameTF.add(new LengthBetweenValidator(2, 30));
+        postNameTF.add(new PatternValidator(PatternHolder.groupNameOrPostTypePattern));
         createPostTypeForm.add(postNameTF);
         add(createPostTypeForm);
     }
