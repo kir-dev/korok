@@ -4,6 +4,7 @@
  */
 package hu.sch.ejb;
 
+import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
@@ -41,6 +42,13 @@ public class SvieManagerBean implements SvieManagerLocal {
     public void updateSvieInfos(List<User> users) {
         for (User user : users) {
             userManager.updateUser(user);
+        }
+    }
+
+    @Override
+    public void updateSvieGroupInfos(List<Group> groups) {
+        for (Group group : groups) {
+            userManager.updateGroup(group);
         }
     }
 

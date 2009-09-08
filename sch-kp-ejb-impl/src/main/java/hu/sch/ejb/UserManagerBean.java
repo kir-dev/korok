@@ -337,7 +337,20 @@ public class UserManagerBean implements UserManagerLocal {
         em.merge(user);
     }
 
-    
+    @Override
+    public void updateGroup(Group group) {
+        em.merge(group);
+    }
 
-
+    public User getGroupLeaderForGroup(Long groupId) {
+        Query q = em.createNamedQuery(Post.getGroupLeaderForGroup);
+        q.setParameter("id", groupId);
+        try {
+            User ret = (User) q.getSingleResult();
+            return ret;
+        } catch (NoResultException nre) {
+            log.error("Nem találtam meg ennek a körnek a körvezetőjét: " + groupId, nre);
+            return null;
+        }
+    }
 }

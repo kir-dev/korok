@@ -10,6 +10,7 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
@@ -26,9 +27,27 @@ public class UserLink extends Panel {
 
     private void init() {
         final User felh = (User) getDefaultModelObject();
-        Link fl = new BookmarkablePageLink("felhLink", ShowUser.class, new PageParameters("id=" + felh.getId()));
-        fl.setModel(getDefaultModel());
-        fl.add(new Label("name"));
-        add(fl);
+        Link fl = null;
+        if (felh != null) {
+            add(new NotNullFragment("displayFragment","notnull",felh.getId(),felh.getName()));
+            
+        } else {
+
+            add(new Fragment("displayFragment","null",null,null));
+           
+        }
+
+    }
+
+    private class NotNullFragment extends Fragment {
+
+        public NotNullFragment(String id, String markupId, Long userId, String userName) {
+            super(id, markupId, null, null);
+            Link fl = new BookmarkablePageLink("felhLink", ShowUser.class, new PageParameters("id=" + userId));
+            fl.setModel(getDefaultModel());
+            fl.add(new Label("name", userName));
+            add(fl);
+
+        }
     }
 }

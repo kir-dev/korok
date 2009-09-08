@@ -4,6 +4,7 @@
  */
 package hu.sch.services;
 
+import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
 import java.util.List;
@@ -17,6 +18,8 @@ import javax.ejb.Local;
 public interface SvieManagerLocal {
 
     void updateSvieInfos(List<User> users);
+
+    void updateSvieGroupInfos(List<Group> groups);
 
     List<Membership> getSvieMembershipsForUser(User user);
 

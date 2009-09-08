@@ -96,6 +96,8 @@ public class PostManagerBean implements PostManagerLocal {
         return false;
     }
 
+    //Ez inkább talán az UserManager-hez tartozó logika.
+    @Deprecated
     public User getGroupLeaderForGroup(Long groupId) {
         Query q = em.createNamedQuery(Post.getGroupLeaderForGroup);
         q.setParameter("id", groupId);
