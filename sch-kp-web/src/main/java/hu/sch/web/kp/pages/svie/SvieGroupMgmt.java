@@ -5,20 +5,15 @@
 package hu.sch.web.kp.pages.svie;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
+import hu.sch.services.PostManagerLocal;
 import hu.sch.services.SvieManagerLocal;
-import hu.sch.services.UserManagerLocal;
-import hu.sch.web.components.MembershipTypeChooser;
 import hu.sch.web.components.SvieDelegateNumberChooser;
 import hu.sch.web.components.SvieGroupStatusChooser;
-import hu.sch.web.components.SvieStatusChooser;
 import hu.sch.web.components.customlinks.GroupLink;
-import hu.sch.web.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.kp.util.SortableGroupDataProvider;
-import hu.sch.web.kp.util.SortableUserDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -29,7 +24,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -42,8 +37,8 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
 
     @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
+    @EJB(name = "PostManagerBean")
+    PostManagerLocal postManager;
     private static Logger log = Logger.getLogger(SvieUserMgmt.class);
     private List<Group> groups;
     private SortableGroupDataProvider groupProvider;
@@ -57,6 +52,7 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
         }
 
         setHeaderLabelText("Csoportok adminisztrálása");
+        add(new FeedbackPanel("pagemessages"));
         groups = userManager.getAllGroups();
 
         List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
@@ -69,7 +65,7 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
         columns.add(new AbstractColumn<Group>(new Model<String>("Körvezető neve")) {
 
             public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
-                User korvezeto = userManager.getGroupLeaderForGroup(rowModel.getObject().getId());
+                User korvezeto = postManager.getGroupLeaderForGroup(rowModel.getObject().getId());
                 cellItem.add(new UserLink(componentId, korvezeto));
 
             }

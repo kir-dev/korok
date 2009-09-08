@@ -23,6 +23,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -48,6 +49,7 @@ public final class SvieUserMgmt extends SecuredPageTemplate {
         }
 
         setHeaderLabelText("Felhasználók adminisztrálása");
+        add(new FeedbackPanel("pagemessages"));
         users = svieManager.getSvieMembers();
 
         List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
@@ -88,6 +90,8 @@ public final class SvieUserMgmt extends SecuredPageTemplate {
             protected void onSubmit() {
                 svieManager.updateSvieInfos(users);
                 userProvider.updateIndexes();
+                getSession().info("A beállítások sikeresen mentésre kerültek");
+                setResponsePage(SvieUserMgmt.class);
             }
         };
 
@@ -101,4 +105,3 @@ public final class SvieUserMgmt extends SecuredPageTemplate {
         add(form);
     }
 }
-

@@ -73,6 +73,4 @@ public interface UserManagerLocal {
     void updateUser(User user);
 
     void updateGroup(Group group);
-
-    User getGroupLeaderForGroup(Long GroupId);
 }

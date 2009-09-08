@@ -10,7 +10,7 @@ package hu.sch.util;
  */
 public enum TimedEvent {
 
-    MEMBERSHIP_NOTIFIER(24 * 3600 * 1000);
+    DAILY_EVENT(24 * 3600 * 1000);
     final long interval;
 
     private TimedEvent(long interval) {

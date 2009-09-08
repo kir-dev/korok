@@ -9,6 +9,7 @@ import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
 import hu.sch.domain.profile.Person;
+import hu.sch.services.SvieManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
@@ -18,6 +19,7 @@ import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.kp.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -38,6 +40,8 @@ import org.apache.wicket.validation.validator.PatternValidator;
  */
 public final class SvieRegistration extends SecuredPageTemplate {
 
+    @EJB(name="SvieManagerBean")
+    SvieManagerLocal svieManager;
     private Person person = null;
     private User user;
     private String choosed;
@@ -65,9 +69,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
             protected void onSubmit() {
                 ldapManager.update(person);
                 SvieMembershipType type = SvieMembershipType.valueOf(choosed);
-                user.setSvieMembershipType(type);
-                user.setSvieStatus(SvieStatus.FELDOLGOZASALATT);
-                userManager.updateUser(user);
+                svieManager.applyToSvie(user, type);
                 if (!continueToOriginalDestination()) {
                     setResponsePage(getApplication().getHomePage());
                 }

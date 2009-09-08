@@ -5,12 +5,13 @@
 package hu.sch.web.kp.util;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
@@ -25,16 +26,13 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
     private List<Group> groups;
     private final List<Group> nameIdx = new ArrayList<Group>();
     private final List<Group> nameDescIdx = new ArrayList<Group>();
-    private final List<Group> msTypeIdx = new ArrayList<Group>();
-    private final List<Group> msTypeDescIdx = new ArrayList<Group>();
+    Collator huCollator = Collator.getInstance(new Locale("hu"));
 
     public SortableGroupDataProvider(List<Group> group) {
         groups = group;
         setSort("name", true);
         nameIdx.addAll(groups);
         nameDescIdx.addAll(groups);
-        msTypeIdx.addAll(groups);
-        msTypeDescIdx.addAll(groups);
         updateIndexes();
     }
 
@@ -53,8 +51,6 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
         }
         if (prop.equals("name")) {
             return (asc) ? nameIdx : nameDescIdx;
-        } else if (prop.equals("svieMembershipType")) {
-            return (asc) ? msTypeIdx : msTypeDescIdx;
         }
         throw new RuntimeException("uknown sort option [" + prop +
                 "]. valid options: [firstName] , [lastName]");
@@ -69,13 +65,13 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
         Collections.sort(nameIdx, new Comparator<Group>() {
 
             public int compare(Group o1, Group o2) {
-                return o1.getName().compareTo(o2.getName());
+                return huCollator.compare(o1.getName(), o2.getName());
             }
         });
         Collections.sort(nameDescIdx, new Comparator<Group>() {
 
             public int compare(Group o1, Group o2) {
-                return o2.getName().compareTo(o1.getName());
+                return huCollator.compare(o2.getName(), o1.getName());
             }
         });
     }

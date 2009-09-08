@@ -20,7 +20,7 @@ public final class SvieGroupStatusChooser extends Panel {
     public SvieGroupStatusChooser(String id, Group group2) {
         super(id);
         group = group2;
-        CheckBox checkBox = new CheckBox("svieStatus", new PropertyModel(this, "group.isSvie"));
+        CheckBox checkBox = new CheckBox("svieStatus", new PropertyModel<Boolean>(group, "isSvie"));
 
         add(checkBox);
     }

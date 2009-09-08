@@ -29,14 +29,21 @@ import javax.persistence.TemporalType;
 @Table(name = "log")
 @SequenceGenerator(name = "log_seq", sequenceName = "log_seq")
 @NamedQueries({
-    @NamedQuery(name = "getFreshEvents",
+    @NamedQuery(name = "getFreshEventsForEventTypeByGroup",
     query = "SELECT l FROM Log l " +
-    "WHERE l.eventDate >= :date ORDER BY l.group.id")
+    "WHERE l.eventDate >= :date AND l.event.eventType = :evtType AND l.group = :group"),
+    @NamedQuery(name = "getFreshEventsForSvie",
+    query = "SELECT l FROM Log l " +
+    "WHERE l.eventDate >= :date AND l.event.eventType = :evtType AND l.group IS NULL"),
+    @NamedQuery(name = "getGroupsForFreshEntries",
+    query = "SELECT DISTINCT l.group FROM Log l WHERE l.eventDate >=:date")
 })
 public class Log implements Serializable {
 
     private static final long serialVersionUID = 1l;
-    public static final String getFreshEvents = "getFreshEvents";
+    public static final String getFreshEventsForEventTypeByGroup = "getFreshEventsForEventTypeByGroup";
+    public static final String getGroupsForFreshEntries = "getGroupsForFreshEntries";
+    public static final String getFreshEventsForSvie = "getFreshEventsForSvie";
     private Long id;
     private Group group;
     private User user;

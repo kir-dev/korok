@@ -6,6 +6,7 @@ package hu.sch.services;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
+import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.User;
 import java.util.List;
 import javax.ejb.Local;
@@ -32,4 +33,6 @@ public interface SvieManagerLocal {
     void OrdinalToAdvocate(User user);
 
     void endMembership(User user);
+
+    void applyToSvie(User user, SvieMembershipType msType);
 }

@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
  * @author aldaris
  */
 @Stateless(mappedName = "PostManager")
+@SuppressWarnings("unchecked")
 public class PostManagerBean implements PostManagerLocal {
 
     @PersistenceContext
@@ -96,8 +97,10 @@ public class PostManagerBean implements PostManagerLocal {
         return false;
     }
 
-    //Ez inkább talán az UserManager-hez tartozó logika.
-    @Deprecated
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
     public User getGroupLeaderForGroup(Long groupId) {
         Query q = em.createNamedQuery(Post.getGroupLeaderForGroup);
         q.setParameter("id", groupId);
@@ -105,7 +108,7 @@ public class PostManagerBean implements PostManagerLocal {
             User ret = (User) q.getSingleResult();
             return ret;
         } catch (NoResultException nre) {
-            log.error("Nem találtam meg ennek a körnek a körvezetőjét: " + groupId, nre);
+            log.error("Nem találtam meg ennek a körnek a körvezetőjét: " + groupId);
             return null;
         }
     }

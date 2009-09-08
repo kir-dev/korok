@@ -21,7 +21,7 @@ public final class SvieDelegateNumberChooser extends Panel {
     public SvieDelegateNumberChooser(String id, Group group2) {
         super(id);
         group = group2;
-        TextField<Integer> tf = new TextField<Integer>("delegateNum", new PropertyModel(this, "group.delegateNumber"));
+        TextField<Integer> tf = new TextField<Integer>("delegateNum", new PropertyModel<Integer>(group, "delegateNumber"));
         tf.add(new RangeValidator<Integer>(0, 40));
         add(tf);
     }

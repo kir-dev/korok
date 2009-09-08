@@ -9,11 +9,15 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
+import hu.sch.domain.logging.Event;
+import hu.sch.domain.logging.EventType;
+import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -34,15 +38,51 @@ public class SvieManagerBean implements SvieManagerLocal {
     MailManagerLocal mailManager;
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
+    @EJB(name = "LogManagerBean")
+    LogManagerLocal logManager;
     @PersistenceContext
     EntityManager em;
     private static final String mailSubject = "Elsődleges kört váltottak";
+    private static Event ADVOCATE_EVENT;
+    private static Event ORDINAL_EVENT;
+    private static Event APPLY_EVENT;
+    private static Event RESIGN_EVENT;
+    private static Event INPROGRESS_EVENT;
+
+    @PostConstruct
+    public void initialize() {
+        if (ADVOCATE_EVENT == null) {
+            Query q = em.createNamedQuery(Event.getEventForEventType);
+            q.setParameter("evt", EventType.PARTOLOVAVALAS);
+            ADVOCATE_EVENT = (Event) q.getSingleResult();
+            q.setParameter("evt", EventType.RENDESTAGGAVALAS);
+            ORDINAL_EVENT = (Event) q.getSingleResult();
+            q.setParameter("evt", EventType.SVIE_JELENTKEZES);
+            APPLY_EVENT = (Event) q.getSingleResult();
+            q.setParameter("evt", EventType.SVIE_TAGSAGTORLES);
+            RESIGN_EVENT = (Event) q.getSingleResult();
+            q.setParameter("evt", EventType.ELFOGADASALATT);
+            INPROGRESS_EVENT = (Event) q.getSingleResult();
+        }
+    }
 
     @Override
     public void updateSvieInfos(List<User> users) {
         for (User user : users) {
-            userManager.updateUser(user);
+            User temp = em.find(User.class, user.getId());
+            if (!temp.getSvieStatus().equals(SvieStatus.ELFOGADASALATT) &&
+                    user.getSvieStatus().equals(SvieStatus.ELFOGADASALATT)) {
+                logManager.createLogEntry(null, user, INPROGRESS_EVENT);
+            }
         }
+    }
+
+    @Override
+    public void applyToSvie(User user, SvieMembershipType msType) {
+        user.setSvieMembershipType(msType);
+        user.setSvieStatus(SvieStatus.FELDOLGOZASALATT);
+        em.merge(user);
+        logManager.createLogEntry(null, user, APPLY_EVENT);
     }
 
     @Override
@@ -72,6 +112,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         Membership oMs = temp.getSviePrimaryMembership();
         if (oMs != null && !oMs.equals(user.getSviePrimaryMembership())) {
             sendPrimaryMembershipChangedMail(user);
+            temp.setDelegated(false);
         }
         temp.setSviePrimaryMembership(user.getSviePrimaryMembership());
     }
@@ -94,6 +135,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSvieStatus(SvieStatus.FELDOLGOZASALATT);
         user.setSvieMembershipType(SvieMembershipType.RENDESTAG);
         em.merge(user);
+        logManager.createLogEntry(null, user, ORDINAL_EVENT);
     }
 
     @Override
@@ -105,8 +147,11 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSvieMembershipType(SvieMembershipType.PARTOLOTAG);
         user.setSvieStatus(SvieStatus.ELFOGADVA);
         em.merge(user);
+        logManager.createLogEntry(null, user, ADVOCATE_EVENT);
+
     }
 
+    @Override
     public void endMembership(User user) {
         if (user.getSviePrimaryMembership() != null) {
             sendPrimaryMembershipChangedMail(user);
@@ -115,5 +160,6 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSvieMembershipType(SvieMembershipType.NEMTAG);
         user.setSvieStatus(SvieStatus.NEMTAG);
         em.merge(user);
+        logManager.createLogEntry(null, user, RESIGN_EVENT);
     }
 }

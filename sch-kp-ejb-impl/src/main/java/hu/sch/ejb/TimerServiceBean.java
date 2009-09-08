@@ -4,6 +4,7 @@
  */
 package hu.sch.ejb;
 
+import hu.sch.domain.Group;
 import hu.sch.domain.User;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.logging.Log;
@@ -12,7 +13,6 @@ import hu.sch.services.PostManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.TimerServiceLocal;
 import hu.sch.util.TimedEvent;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.annotation.Resource;
@@ -31,19 +31,23 @@ import org.apache.log4j.Logger;
  * @author aldaris
  */
 @Stateless(mappedName = "TimerService")
+@SuppressWarnings("unchecked")
 public class TimerServiceBean implements TimerServiceLocal {
 
     @EJB(name = "MailManagerBean")
-    MailManagerLocal mailManager;
+    private MailManagerLocal mailManager;
     @EJB(name = "SystemManagerBean")
-    SystemManagerLocal systemManager;
+    private SystemManagerLocal systemManager;
     @EJB(name = "PostManagerBean")
-    PostManagerLocal postManager;
+    private PostManagerLocal postManager;
     @Resource(name = "jdbc/__TimerPool")
     private TimerService timerService;
     @PersistenceContext
     EntityManager em;
-    private static Logger log = Logger.getLogger(TimerServiceBean.class);
+    private static Logger logger = Logger.getLogger(TimerServiceBean.class);
+    private static String welcome = "Kedves %s!\n\nAz elmúlt időszakban a következő módosítások " +
+            "történtek a körtagságok terén:\n\n";
+    private static final String showUserLink = "https://idp.sch.bme.hu/korok/showuser/id/";
 
     public void scheduleTimers() {
         for (Object timerObj : timerService.getTimers()) {
@@ -53,96 +57,121 @@ public class TimerServiceBean implements TimerServiceLocal {
             }
         }
         Calendar cal = Calendar.getInstance();
-        if (cal.get(Calendar.HOUR_OF_DAY) >= 3) {
+        if (cal.get(Calendar.HOUR_OF_DAY) >= 1) {
             cal.add(Calendar.DAY_OF_MONTH, 1);
         }
-        cal.set(Calendar.HOUR_OF_DAY, 2);
+        cal.set(Calendar.HOUR_OF_DAY, 1);
         cal.clear(Calendar.MINUTE);
 
-        timerService.createTimer(cal.getTime(), TimedEvent.MEMBERSHIP_NOTIFIER.getInterval(), TimedEvent.MEMBERSHIP_NOTIFIER);
-//        timerService.createTimer(60000L, 60000L, TimedEvent.MEMBERSHIP_NOTIFIER);
+//        timerService.createTimer(cal.getTime(), TimedEvent.DAILY_EVENT.getInterval(), TimedEvent.DAILY_EVENT);
+        timerService.createTimer(60000L, 60000L, TimedEvent.DAILY_EVENT);
     }
 
     @Timeout
-    @SuppressWarnings("unchecked")
     public void timerFired(Timer timer) {
-        log.info("event fired");
+        logger.info("event fired");
         if (timer.getInfo() instanceof TimedEvent) {
             TimedEvent evt = (TimedEvent) timer.getInfo();
             switch (evt) {
-                case MEMBERSHIP_NOTIFIER:
-                    membershipNotifier();
+                case DAILY_EVENT: {
+                    notifyGroupLeaders();
+                    notifySvieAdmin();
+                    notifySviePresident();
+                    systemManager.setLastLogsDate();
                     break;
+                }
             }
         }
-        log.info("end of event");
+        logger.info("end of event");
     }
 
     /**
      * A tagságváltoztatásokról értesíti az egyes körök vezetőit. Ha a problémára
      * tudsz egy szebb megoldást, hát hajrá :)
      */
-    private void membershipNotifier() {
-        Query q = em.createNamedQuery(Log.getFreshEvents);
+    private void notifyGroupLeaders() {
+        Query q = em.createNamedQuery(Log.getGroupsForFreshEntries);
         q.setParameter("date", systemManager.getLastLogsDate());
-        List<Log> entrys = (List<Log>) q.getResultList();
+        List<Group> groups = q.getResultList();
+        EventType[] events = {EventType.JELENTKEZES, EventType.TAGSAGTORLES};
 
-        Long groupId = null;
-        List<String> deletedNames = new ArrayList<String>();
-        List<String> newNames = new ArrayList<String>();
+        Query q2 = em.createNamedQuery(Log.getFreshEventsForEventTypeByGroup);
+        q2.setParameter("date", systemManager.getLastLogsDate());
+        for (Group group : groups) {
+            StringBuilder sb = new StringBuilder(welcome.replace("%s", "Körvezető"));
+            q2.setParameter("group", group);
+            for (EventType evtType : events) {
+                q2.setParameter("evtType", evtType);
+                List<Log> logs = q2.getResultList();
 
-        for (Log logEntry : entrys) {
-            //groupId inicializálása
-            if (groupId == null) {
-                groupId = logEntry.getGroup().getId();
+                if (!logs.isEmpty()) {
+                    sb.append(evtType.toString());
+                }
+                for (Log log : logs) {
+                    sb.append(log.getUser().getName()).append(" -> ");
+                    sb.append(showUserLink + log.getUser().getId()).append("\n");
+                }
+                if (!logs.isEmpty()) {
+                    sb.append("\n\n");
+                }
             }
-            //ha a régi groupId nem egyezik meg az új groupId-val, akkor már küldhetjük
-            //is a levelet a körvezetőnek.
-            if (groupId != logEntry.getGroup().getId()) {
-                createEmail(groupId, deletedNames, newNames);
-                deletedNames.clear();
-                newNames.clear();
-                groupId = logEntry.getGroup().getId();
+            User user = postManager.getGroupLeaderForGroup(group.getId());
+            if (user != null) {
+                sendEmail(user.getEmailAddress(), sb);
             }
-            //az evtType-ok szétválogatása, így két külön listánk lesz az eseményekről
-            EventType evtType = logEntry.getEvent().getEventType();
-            if (evtType.equals(EventType.JELENTKEZES)) {
-                newNames.add(logEntry.getUser().getName());
-            } else if (evtType.equals(EventType.TAGSAGTORLES)) {
-                deletedNames.add(logEntry.getUser().getName());
-            }
-        }
-        if (!deletedNames.isEmpty() || !newNames.isEmpty()) {
-            createEmail(groupId, deletedNames, newNames);
         }
     }
 
-    private void createEmail(Long groupId, List<String> deletedNames, List<String> newNames) {
-        StringBuilder sb = new StringBuilder(300);
-        sb.append("Kedves Körvezető!\n\nAz elmúlt időszakban a következő módosítások ");
-        sb.append("történtek a körtagságok terén:\n\n");
-
-        if (!deletedNames.isEmpty()) {
-            sb.append("Kilépett körtagok:\n");
-            for (String string : deletedNames) {
-                sb.append(string).append("\n");
+    private void notifySvieAdmin() {
+        Query q = em.createNamedQuery(Log.getFreshEventsForSvie);
+        StringBuilder sb = new StringBuilder(welcome.replace("%s", "SVIE Adminisztrátor"));
+        q.setParameter("date", systemManager.getLastLogsDate());
+        boolean wasRecord = false;
+        EventType[] events = {EventType.PARTOLOVAVALAS,
+            EventType.SVIE_JELENTKEZES, EventType.SVIE_TAGSAGTORLES,
+            EventType.RENDESTAGGAVALAS};
+        for (EventType eventType : events) {
+            q.setParameter("evtType", eventType);
+            List<Log> logs = q.getResultList();
+            if (!logs.isEmpty()) {
+                wasRecord = true;
+                sb.append(eventType.toString());
+            }
+            for (Log log : logs) {
+                sb.append(log.getUser().getName()).append(" -> ");
+                sb.append(showUserLink + log.getUser().getId()).append("\n");
+            }
+            if (!logs.isEmpty()) {
+                sb.append("\n\n");
             }
         }
-        if (!newNames.isEmpty()) {
-            sb.append("\nKörbe jelentkeztek:\n");
-            for (String string : newNames) {
-                sb.append(string).append("\n");
-            }
+        if (wasRecord) {
+            sendEmail("sviadmin@svieadmin.hu", sb);
         }
+    }
 
-        sb.append("\nA körtagságokat a https://idp.sch.bme.hu/korok/showgroup/id/").append(groupId);
-        sb.append(" oldalon tudod menedzselni.\n\n\nÜdvözlettel:\nKir-Dev");
-
-        log.debug("Ennek a csoportnak keresem a gazdáját: " + groupId);
-        User user = postManager.getGroupLeaderForGroup(groupId);
-        if (user != null) {
-            mailManager.sendEmail(user.getEmailAddress(), "Körtagságok megváltozása", sb.toString());
+    private void notifySviePresident() {
+        Query q = em.createNamedQuery(Log.getFreshEventsForSvie);
+        StringBuilder sb = new StringBuilder(welcome.replace("%s", "Választmányi elnök"));
+        q.setParameter("date", systemManager.getLastLogsDate());
+        q.setParameter("evtType", EventType.ELFOGADASALATT);
+        List<Log> logs = q.getResultList();
+        if (!logs.isEmpty()) {
+            sb.append(EventType.ELFOGADASALATT.toString());
         }
-        systemManager.setLastLogsDate();
+        for (Log log : logs) {
+            sb.append(log.getUser().getName()).append(" -> ");
+            sb.append(showUserLink + log.getUser().getId()).append("\n");
+        }
+        if (!logs.isEmpty()) {
+            sb.append("\n\n");
+            sendEmail("valasztmany@valasztmany.hu", sb);
+        }
+    }
+
+    private void sendEmail(String emailTo, StringBuilder sb) {
+        sb.append("Üdvözlettel:\nKir-Dev");
+
+        mailManager.sendEmail(emailTo, "Események", sb.toString());
     }
 }

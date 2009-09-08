@@ -29,5 +29,10 @@ public interface PostManagerLocal {
 
     boolean createPostType(String postName, Group group);
 
+    /**
+     * Megtalálja egy adott körnek a körvezetőjét
+     * @param groupId A körnek az azonosítója, akinek a körvezetőjét keressük
+     * @return null, ha nem találta meg a körvezetőt
+     */
     User getGroupLeaderForGroup(Long groupId);
 }
