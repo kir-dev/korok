@@ -7,6 +7,7 @@ package hu.sch.web.kp.pages.admin;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.exceptions.NoSuchAttributeException;
+import hu.sch.web.components.customlinks.CsvReportLink;
 import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
 import hu.sch.web.kp.pages.svie.SvieUserMgmt;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
@@ -145,6 +146,7 @@ public class EditSettings extends SecuredPageTemplate {
             super(id, markupId, null, null);
             add(new BookmarkablePageLink<SvieUserMgmt>("userMgmt", SvieUserMgmt.class));
             add(new BookmarkablePageLink<SvieGroupMgmt>("groupMgmt", SvieGroupMgmt.class));
+            add(new CsvReportLink("csvPanel"));
         }
     }
 }

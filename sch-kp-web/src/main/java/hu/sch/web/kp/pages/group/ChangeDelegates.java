@@ -6,15 +6,11 @@ package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.services.PostManagerLocal;
-import hu.sch.services.UserManagerLocal;
 import hu.sch.web.components.EditDelegatesForm;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
-import hu.sch.web.session.VirSession;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
@@ -29,11 +25,7 @@ import org.apache.wicket.util.string.StringValueConversionException;
  */
 public final class ChangeDelegates extends SecuredPageTemplate {
 
-    @EJB(name = "UserManagerBean")
-    private UserManagerLocal _userManager;
-    @EJB(name = "PostManagerBean")
-    private PostManagerLocal _postManager;
-    private static Logger log = Logger.getLogger(ChangePost.class);
+    private static Logger log = Logger.getLogger(ChangeDelegates.class);
 
     public ChangeDelegates(final PageParameters params) {
         Long groupId;
@@ -43,16 +35,16 @@ public final class ChangeDelegates extends SecuredPageTemplate {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        final Group group = _userManager.findGroupById(groupId);
+        final Group group = userManager.findGroupById(groupId);
 
         add(new Label("groupName", group.getName()));
 
-        List<User> users = _userManager.getUsersWithPrimaryMembership(groupId);
+        List<User> users = userManager.getUsersWithPrimaryMembership(groupId);
         Iterator<User> it = users.iterator();
-        long groupLeaderId = _postManager.getGroupLeaderForGroup(groupId).getId();
-        if (((VirSession) getSession()).getUserId() != groupLeaderId) {
+        long groupLeaderId = userManager.getGroupLeaderForGroup(groupId).getId();
+        if ((getSession()).getUserId() != groupLeaderId) {
             getSession().error("Ezt az oldalt, csak a kör körvezetője láthatja!");
-            setResponsePage(ShowGroup.class,new PageParameters("id="+groupId.toString()));
+            setResponsePage(ShowGroup.class, new PageParameters("id=" + groupId.toString()));
             return;
         }
 
@@ -97,7 +89,7 @@ public final class ChangeDelegates extends SecuredPageTemplate {
 
                 for (ExtendedUser extendedUser : modifications) {
 
-                    _userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
+                    userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
 
                 }
                 getSession().
@@ -110,11 +102,5 @@ public final class ChangeDelegates extends SecuredPageTemplate {
 
 
 
-    }
-
-    private class UserDelegate {
-
-        User user;
-        boolean delegated;
     }
 }

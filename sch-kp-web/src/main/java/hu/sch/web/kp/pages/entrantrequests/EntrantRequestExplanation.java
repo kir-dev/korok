@@ -58,10 +58,10 @@ public class EntrantRequestExplanation extends SecuredPageTemplate {
 
             @Override
             protected void populateItem(Item<EntrantRequest> item) {
-                item.add(new Label("felhasznalo.nev"));
-                item.add(new Label("felhasznalo.becenev"));
-                item.add(new Label("belepotipus"));
-                TextArea<String> textArea = new TextArea<String>("szovegesErtekeles");
+                item.add(new Label("user.name"));
+                item.add(new Label("user.nickName"));
+                item.add(new Label("entrantType"));
+                TextArea<String> textArea = new TextArea<String>("valuationText");
                 
                 item.add(textArea);
             }

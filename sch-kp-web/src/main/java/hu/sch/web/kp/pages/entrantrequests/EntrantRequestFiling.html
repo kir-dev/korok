@@ -1,7 +1,7 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
     <div id="belepoIgenylesLeadasCont">
-        <h2><span wicket:id="csoport.nev"></span></h2>
-        <h3>Szemeszter: <span wicket:id="szemeszter"></span></h3>
+        <h2><span wicket:id="group.name"></span></h2>
+        <h3>Szemeszter: <span wicket:id="semester"></span></h3>
         <form wicket:id="igenyekform">
             <div class="subdata">
                 <table class="withheader">
@@ -12,9 +12,9 @@
                         <th style="width: 145px;">Belépő típusa</th>
                     </tr>
                     <tr wicket:id="igenyek">
-                        <td><span wicket:id="felhasznalo.nev"/></td>
-                        <td><span wicket:id="felhasznalo.becenev"/></td>
-                        <td style="padding-top: 3px; padding-bottom: 3px; width: 100px;"><select wicket:id="belepotipus"/></td>
+                        <td><span wicket:id="user.name"/></td>
+                        <td><span wicket:id="user.nickName"/></td>
+                        <td style="padding-top: 3px; padding-bottom: 3px; width: 100px;"><select wicket:id="entrantType"/></td>
                     </tr>
                 </table>
                 <input class="btn" type="submit" value="OK"/>

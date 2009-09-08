@@ -9,9 +9,9 @@ import hu.sch.domain.User;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.logging.Log;
 import hu.sch.services.MailManagerLocal;
-import hu.sch.services.PostManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.TimerServiceLocal;
+import hu.sch.services.UserManagerLocal;
 import hu.sch.util.TimedEvent;
 import java.util.Calendar;
 import java.util.List;
@@ -38,8 +38,8 @@ public class TimerServiceBean implements TimerServiceLocal {
     private MailManagerLocal mailManager;
     @EJB(name = "SystemManagerBean")
     private SystemManagerLocal systemManager;
-    @EJB(name = "PostManagerBean")
-    private PostManagerLocal postManager;
+    @EJB(name = "UserManagerBean")
+    private UserManagerLocal userManager;
     @Resource(name = "jdbc/__TimerPool")
     private TimerService timerService;
     @PersistenceContext
@@ -115,7 +115,7 @@ public class TimerServiceBean implements TimerServiceLocal {
                     sb.append("\n\n");
                 }
             }
-            User user = postManager.getGroupLeaderForGroup(group.getId());
+            User user = userManager.getGroupLeaderForGroup(group.getId());
             if (user != null) {
                 sendEmail(user.getEmailAddress(), sb);
             }

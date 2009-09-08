@@ -126,7 +126,7 @@ public class SvieRegPdfLink extends Panel {
         super(id);
         this.user = user2;
         cachedmsType = user.getSvieMembershipType().toString();
-        add(new Link("pdfLink") {
+        add(new Link<Void>("pdfLink") {
 
             public void onClick() {
                 try {
@@ -143,7 +143,7 @@ public class SvieRegPdfLink extends Panel {
 
                         @Override
                         public String getFileName() {
-                            return ("export.pdf");
+                            return ("export_" + person.getNeptun() + ".pdf");
                         }
                     });
                 } catch (Exception ex) {

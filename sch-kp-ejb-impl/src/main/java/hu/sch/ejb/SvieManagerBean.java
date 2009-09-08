@@ -32,8 +32,6 @@ import javax.persistence.Query;
 @SuppressWarnings("unchecked")
 public class SvieManagerBean implements SvieManagerLocal {
 
-    @EJB(name = "PostManagerBean")
-    PostManagerLocal postManager;
     @EJB(name = "MailManagerBean")
     MailManagerLocal mailManager;
     @EJB(name = "UserManagerBean")
@@ -126,7 +124,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         sb.append("https://idp.sch.bme.hu/korok/showuser/id/").append(user.getId());
         sb.append("\n\nÜdvözlettel:\nKir-Dev");
         mailManager.sendEmail(
-                (postManager.getGroupLeaderForGroup(user.getSviePrimaryMembership().getGroup().getId()).getEmailAddress()),
+                (userManager.getGroupLeaderForGroup(user.getSviePrimaryMembership().getGroup().getId()).getEmailAddress()),
                 mailSubject, sb.toString());
     }
 
@@ -161,5 +159,20 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSvieStatus(SvieStatus.NEMTAG);
         em.merge(user);
         logManager.createLogEntry(null, user, RESIGN_EVENT);
+    }
+
+    public List<User> getDelegatedUsersForGroup(Long groupId) {
+        Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
+                "ms.user " +
+                "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true");
+        q.setParameter("groupId", groupId);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<User> getDelegatedUsers() {
+        Query q = em.createQuery("SELECT u FROM User u WHERE u.delegated = true " +
+                "ORDER BY u.lastName, u.firstName");
+        return q.getResultList();
     }
 }

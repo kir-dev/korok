@@ -44,8 +44,6 @@ public interface UserManagerLocal {
 
     Group findGroupWithCsoporttagsagokById(Long id);
 
-    void modifyMembership(User user, Group group, Date start, Date end);
-
     void deleteMembership(Membership ms);
 
     List<User> getCsoporttagok(Long csoportId);
@@ -57,8 +55,6 @@ public interface UserManagerLocal {
     List<PointRequest> getPontIgenyekForUser(User felhasznalo);
 
     List<User> getUsersWithPrimaryMembership(Long groupId);
-
-    List<User> getDelegatedUsersForGroup(Long groupId);
 
     void groupInfoUpdate(Group cs);
 
@@ -73,4 +69,11 @@ public interface UserManagerLocal {
     void updateUser(User user);
 
     void updateGroup(Group group);
+
+    /**
+     * Megtalálja egy adott körnek a körvezetőjét
+     * @param groupId A körnek az azonosítója, akinek a körvezetőjét keressük
+     * @return null, ha nem találta meg a körvezetőt
+     */
+    User getGroupLeaderForGroup(Long groupId);
 }

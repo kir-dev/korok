@@ -35,4 +35,6 @@ public interface SvieManagerLocal {
     void endMembership(User user);
 
     void applyToSvie(User user, SvieMembershipType msType);
+
+    List<User> getDelegatedUsers();
 }

@@ -36,9 +36,7 @@ import org.apache.wicket.model.Model;
 public final class SvieGroupMgmt extends SecuredPageTemplate {
 
     @EJB(name = "SvieManagerBean")
-    SvieManagerLocal svieManager;
-    @EJB(name = "PostManagerBean")
-    PostManagerLocal postManager;
+    private SvieManagerLocal svieManager;
     private static Logger log = Logger.getLogger(SvieUserMgmt.class);
     private List<Group> groups;
     private SortableGroupDataProvider groupProvider;
@@ -65,7 +63,7 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
         columns.add(new AbstractColumn<Group>(new Model<String>("Körvezető neve")) {
 
             public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
-                User korvezeto = postManager.getGroupLeaderForGroup(rowModel.getObject().getId());
+                User korvezeto = userManager.getGroupLeaderForGroup(rowModel.getObject().getId());
                 cellItem.add(new UserLink(componentId, korvezeto));
 
             }

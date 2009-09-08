@@ -5,17 +5,17 @@
     <wicket:fragment wicket:id="ordinalPanel">
         <h2 wicket:id="formLabel">Elsődleges kör kiválasztása</h2>
         <form wicket:id="form">
-            <select wicket:id="sviePrimaryMembership">
+            <select style="width: 300px;" wicket:id="sviePrimaryMembership">
                 <option>site 1</option>
                 <option>site 2</option>
             </select>
-            <input class="btn" type="submit" value="Küld" />
+            <input class="btn" type="submit" value="Mentés" />
         </form>
         <a wicket:id="ordinalToAdvocate"><wicket:message key="svie.ordinal.to.advocate" /></a>
     </wicket:fragment>
     <wicket:fragment wicket:id="advocatePanel">
         <a wicket:id="advocateToOrdinal"><wicket:message key="svie.advocate.to.ordinal" /></a>
     </wicket:fragment>
-    <a wicket:id="pdfLink">Kérvény letöltése</a>
+    <a wicket:id="pdfLink">Kérvény letöltése</a><br />
     <a wicket:id="deleteSvieMembership"><wicket:message key="svie.delete.membership" /></a>
 </wicket:extend>

@@ -8,7 +8,6 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
-import hu.sch.domain.User;
 import hu.sch.services.PostManagerLocal;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,21 +94,5 @@ public class PostManagerBean implements PostManagerLocal {
             return true;
         }
         return false;
-    }
-
-    /**
-     * @{@inheritDoc}
-     */
-    @Override
-    public User getGroupLeaderForGroup(Long groupId) {
-        Query q = em.createNamedQuery(Post.getGroupLeaderForGroup);
-        q.setParameter("id", groupId);
-        try {
-            User ret = (User) q.getSingleResult();
-            return ret;
-        } catch (NoResultException nre) {
-            log.error("Nem találtam meg ennek a körnek a körvezetőjét: " + groupId);
-            return null;
-        }
     }
 }

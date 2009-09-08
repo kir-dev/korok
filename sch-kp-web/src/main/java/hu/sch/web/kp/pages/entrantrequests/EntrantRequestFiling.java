@@ -37,8 +37,8 @@ public class EntrantRequestFiling extends SecuredPageTemplate {
         final List<EntrantRequest> igenylista = igenyeketElokeszit(ert);
 
         setDefaultModel(new CompoundPropertyModel<Valuation>(ert));
-        add(new Label("csoport.nev"));
-        add(new Label("szemeszter"));
+        add(new Label("group.name"));
+        add(new Label("semester"));
 
         Form igform = new Form("igenyekform") {
 
@@ -61,9 +61,9 @@ public class EntrantRequestFiling extends SecuredPageTemplate {
 
             @Override
             protected void populateItem(Item<EntrantRequest> item) {
-                item.add(new Label("felhasznalo.nev"));
-                item.add(new Label("felhasznalo.becenev"));
-                EntrantTypeChooser bt = new EntrantTypeChooser("belepotipus");
+                item.add(new Label("user.name"));
+                item.add(new Label("user.nickName"));
+                EntrantTypeChooser bt = new EntrantTypeChooser("entrantType");
                 bt.setRequired(true);
                 item.add(bt);
             }

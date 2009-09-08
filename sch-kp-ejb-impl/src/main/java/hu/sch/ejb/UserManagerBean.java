@@ -168,14 +168,6 @@ public class UserManagerBean implements UserManagerLocal {
         return em.find(Group.class, id);
     }
 
-    public void modifyMembership(User user, Group group, Date start, Date end) {
-//        Membership m =
-//                em.find(Membership.class, new MembershipPK(user.getId(), group.getId()));
-//
-//        m.setStart(start);
-//        m.setEnd(end);
-    }
-
     public void deleteMembership(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         em.remove(temp);
@@ -213,14 +205,6 @@ public class UserManagerBean implements UserManagerLocal {
         Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
                 "ms.user " +
                 "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms");
-        q.setParameter("groupId", groupId);
-        return q.getResultList();
-    }
-
-    public List<User> getDelegatedUsersForGroup(Long groupId) {
-        Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
-                "ms.user " +
-                "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true");
         q.setParameter("groupId", groupId);
         return q.getResultList();
     }
@@ -316,6 +300,13 @@ public class UserManagerBean implements UserManagerLocal {
         return cst;
     }
 
+    /**
+     * 
+     * @param ms
+     * @deprecated nem kéne használni, írni kéne egy általános módosítós függvényt
+     * és annak átadni a módosított membership-et.
+     */
+    @Deprecated
     public void setMemberToOldBoy(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         temp.setEnd(new Date());
@@ -327,6 +318,10 @@ public class UserManagerBean implements UserManagerLocal {
         temp.setDelegated(isDelegated);
     }
 
+    /**
+     * @see hu.sch.ejb.UserManagerBean#setMemberToOldBoy(Membership)
+     */
+    @Deprecated
     public void setOldBoyToActive(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         temp.setEnd(null);
@@ -340,5 +335,21 @@ public class UserManagerBean implements UserManagerLocal {
     @Override
     public void updateGroup(Group group) {
         em.merge(group);
+    }
+
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public User getGroupLeaderForGroup(Long groupId) {
+        Query q = em.createNamedQuery(Post.getGroupLeaderForGroup);
+        q.setParameter("id", groupId);
+        try {
+            User ret = (User) q.getSingleResult();
+            return ret;
+        } catch (NoResultException nre) {
+            log.error("Nem találtam meg ennek a körnek a körvezetőjét: " + groupId);
+            return null;
+        }
     }
 }
