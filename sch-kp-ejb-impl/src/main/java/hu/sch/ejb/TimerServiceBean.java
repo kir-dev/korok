@@ -63,8 +63,8 @@ public class TimerServiceBean implements TimerServiceLocal {
         cal.set(Calendar.HOUR_OF_DAY, 1);
         cal.clear(Calendar.MINUTE);
 
-//        timerService.createTimer(cal.getTime(), TimedEvent.DAILY_EVENT.getInterval(), TimedEvent.DAILY_EVENT);
-        timerService.createTimer(60000L, 60000L, TimedEvent.DAILY_EVENT);
+        timerService.createTimer(cal.getTime(), TimedEvent.DAILY_EVENT.getInterval(), TimedEvent.DAILY_EVENT);
+//        timerService.createTimer(60000L, 60000L, TimedEvent.DAILY_EVENT);
     }
 
     @Timeout

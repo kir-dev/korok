@@ -1,11 +1,14 @@
 <wicket:extend>
     <span wicket:id="pagemessages" id="pagemessages"></span>
     <h2>
-        <span wicket:id="groupName"></span> - küldöttek szerkesztése
+        <span wicket:id="groupName"></span>
     </h2>
-    
-        <table>
-       <form wicket:id="form">
+
+    <p>
+        Ennyi küldöttet jelölhetsz: <span wicket:id="numberOfDelegates" />
+    </p>
+    <table>
+        <form wicket:id="form">
             <table wicket:id="table" class="withheader">
                 <tr class="headers">
                     <th style="width: 250px;">Felhasználó neve</th>
@@ -14,17 +17,17 @@
                 </tr>
                 <tr wicket:id="members">
                     <td>
-                        <wicket:panel wicket:id="userLink" />
-                    </td>
-                    <td wicket:id="user.nickName" />
-                    
-                    <td style="text-align: center;">
-                        <input wicket:id="check" type="checkbox" />
-                    </td>
+                <wicket:panel wicket:id="userLink" />
+                </td>
+                <td wicket:id="user.nickName" />
+
+                <td style="text-align: center;">
+                    <input wicket:id="check" type="checkbox" />
+                </td>
                 </tr>
             </table>
             <input type="submit" class="btn" value="Mentés" />
         </form>
-        </table>
+    </table>
 
 </wicket:extend>

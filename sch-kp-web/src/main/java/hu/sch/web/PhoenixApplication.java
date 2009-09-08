@@ -26,6 +26,7 @@ import hu.sch.web.kp.pages.consider.ConsiderPage;
 import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.pages.valuation.NewValuation;
 import hu.sch.web.kp.pages.group.AddGroupMember;
+import hu.sch.web.kp.pages.group.ChangeDelegates;
 import hu.sch.web.kp.pages.group.ChangePost;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.svie.SvieAccount;
@@ -68,6 +69,21 @@ public class PhoenixApplication extends WebApplication {
     protected void init() {
         addComponentInstantiationListener(new JavaEEComponentInjector(this));
 
+        //autorizációs komponens inicializálása
+        String classname = getInitParameter(AUTHZ_COMPONENT_PARAM);
+        try {
+            authorizationComponent = Class.forName(classname).
+                    asSubclass(UserAuthorization.class).newInstance();
+            authorizationComponent.init(this);
+        } catch (Exception ex) {
+            log.fatal("Failed to initialize authorization", ex);
+            throw new IllegalStateException("Cannot instantiate authorization component" +
+                    classname, ex);
+        }
+
+        //Beállítások beolvasása az alkalmazás properties fájljából
+        Configuration.init();
+
         //körök linkek
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);
@@ -83,13 +99,14 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/newvaluation", NewValuation.class);
 
         mountBookmarkablePage("/svieaccount", SvieAccount.class);
+        mountBookmarkablePage("/delegates", ChangeDelegates.class);
         mountBookmarkablePage("/consider", ConsiderPage.class);
         mountBookmarkablePage("/editsettings", EditSettings.class);
         mountBookmarkablePage("/logout", Logout.class);
 
         mount("/error", PackageName.forClass(InternalServerError.class));
 
-        mountBookmarkablePage("/profile", ShowPersonPage.class);
+//        mountBookmarkablePage("/profile", ShowPersonPage.class);
 //        mountBookmarkablePage("profile/edit", EditPage.class);
 
         //alkalmazás beállítások
@@ -104,21 +121,6 @@ public class PhoenixApplication extends WebApplication {
             getRequestCycleSettings().addResponseFilter(new ServerTimerFilter());
             log.info("Successfully enabled ServerTimerFilter");
         }
-
-        //autorizációs komponens inicializálása
-        String classname = getInitParameter(AUTHZ_COMPONENT_PARAM);
-        try {
-            authorizationComponent = Class.forName(classname).
-                    asSubclass(UserAuthorization.class).newInstance();
-            authorizationComponent.init(this);
-        } catch (Exception ex) {
-            log.fatal("Failed to initialize authorization", ex);
-            throw new IllegalStateException("Cannot instantiate authorization component" +
-                    classname, ex);
-        }
-
-        //Beállítások beolvasása az alkalmazás properties fájljából
-        Configuration.init();
 
         //TimerService-ek inicializálása
         TimerServiceLocal timerService = lookupTimerServiceBean();

@@ -37,17 +37,20 @@ public final class ChangeDelegates extends SecuredPageTemplate {
         }
         final Group group = userManager.findGroupById(groupId);
 
+        setHeaderLabelText("Küldöttek beállítása");
+        add(new Label("numberOfDelegates",
+                (group.getDelegateNumber() == null ? "Nincs beállítva" : Integer.toString(group.getDelegateNumber() - 1))));
         add(new Label("groupName", group.getName()));
 
         List<User> users = userManager.getUsersWithPrimaryMembership(groupId);
         Iterator<User> it = users.iterator();
         long groupLeaderId = userManager.getGroupLeaderForGroup(groupId).getId();
         if ((getSession()).getUserId() != groupLeaderId) {
+            log.warn("Illetéktelen hozzáférési kísérlet a küldöttek állításához, felhasználó: " + getSession().getUserId());
             getSession().error("Ezt az oldalt, csak a kör körvezetője láthatja!");
-            setResponsePage(ShowGroup.class, new PageParameters("id=" + groupId.toString()));
-            return;
+            throw new RestartResponseException(ShowGroup.class,
+                    new PageParameters("id=" + groupId.toString()));
         }
-
 
         while (it.hasNext()) {
             User u = it.next();
@@ -76,31 +79,23 @@ public final class ChangeDelegates extends SecuredPageTemplate {
                         selected++;
                     }
 
-                    if (selected > group.getDelegateNumber()) {
-                        getSession().error("Ez a kör nem delegálhat ennyi tagot a küldöttgyűlésre!");
-                        setResponsePage(new ChangeDelegates(params));
-                        return;
-                    }
-
                     if (extendedUser.getSelected() != extendedUser.getUser().getDelegated()) {
                         modifications.add(extendedUser);
                     }
                 }
+                if (group.getDelegateNumber() == null || selected > group.getDelegateNumber()) {
+                    getSession().error("Ez a kör nem delegálhat ennyi tagot a küldöttgyűlésre!");
+                    setResponsePage(new ChangeDelegates(params));
+                    return;
+                }
 
                 for (ExtendedUser extendedUser : modifications) {
-
                     userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
-
                 }
-                getSession().
-                        info("A változások sikeresen mentésre kerültek");
+                getSession().info("A változások sikeresen mentésre kerültek");
                 setResponsePage(new ChangeDelegates(params));
                 return;
             }
         });
-
-
-
-
     }
 }

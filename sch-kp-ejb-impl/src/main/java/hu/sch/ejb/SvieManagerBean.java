@@ -162,17 +162,23 @@ public class SvieManagerBean implements SvieManagerLocal {
     }
 
     public List<User> getDelegatedUsersForGroup(Long groupId) {
-        Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
-                "ms.user " +
+        Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
                 "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true");
         q.setParameter("groupId", groupId);
         return q.getResultList();
     }
 
+    /**
+     * @{@inheritDoc}
+     */
     @Override
     public List<User> getDelegatedUsers() {
         Query q = em.createQuery("SELECT u FROM User u WHERE u.delegated = true " +
                 "ORDER BY u.lastName, u.firstName");
-        return q.getResultList();
+        Query q2 = em.createQuery("SELECT p.membership.user FROM " +
+                "Post p WHERE p.postType.postName = 'körvezető' AND p.membership.group.isSvie = true");
+        List<User> ret = q.getResultList();
+        ret.addAll(q2.getResultList());
+        return ret;
     }
 }

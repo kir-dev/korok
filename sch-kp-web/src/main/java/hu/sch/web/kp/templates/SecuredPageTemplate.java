@@ -34,7 +34,7 @@ import org.apache.wicket.model.Model;
  *
  * @author hege
  */
-public class SecuredPageTemplate extends WebPage {
+public abstract class SecuredPageTemplate extends WebPage {
 
     @EJB(name = "SystemManagerBean")
     protected SystemManagerLocal systemManager;

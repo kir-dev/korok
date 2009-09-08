@@ -55,10 +55,10 @@ public final class CsvReportLink extends Panel {
         StringBuilder sb = new StringBuilder(100);
         List<User> users = svieManager.getDelegatedUsers();
 
-        sb.append("Kör, Delegált neve\n");
+        sb.append("Delegált neve,Képviselt kör\n");
         for (User user : users) {
-            sb.append(user.getSviePrimaryMembership().getGroup().getName()).append(",");
-            sb.append(user.getName()).append("\n");
+            sb.append(user.getName()).append(",");
+            sb.append(user.getSviePrimaryMembership().getGroup().getName()).append("\n");
         }
         os.write(sb.toString().getBytes("UTF-8"));
         return os;
