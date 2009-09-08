@@ -8,7 +8,6 @@ update users set usr_email = trim(both ' ' from usr_email);
 ALTER TABLE users ADD COLUMN usr_svie_state character varying(255) NOT NULL DEFAULT 'NEMTAG';
 ALTER TABLE users ADD COLUMN usr_svie_member_type character varying(255) NOT NULL DEFAULT 'NEMTAG';
 ALTER TABLE users ADD COLUMN usr_svie_primary_group integer;
-ALTER TABLE users ADD COLUMN usr_delegated BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE groups ADD COLUMN grp_issvie boolean NOT NULL DEFAULT false;
 ALTER TABLE groups ADD COLUMN grp_svie_delegate_nr integer;
 
@@ -67,6 +66,7 @@ insert into poszt (grp_member_id, pttip_id) (select id, (select pttip_id from po
 \echo indexek létrehozása
 
 create index poszt_fk_idx ON poszt ( grp_member_id );
+create index membership_usr_fk_idx ON grp_membership (usr_id);
 
 \echo SVIE posztok hozzáadása
 
@@ -76,7 +76,7 @@ insert into poszttipus ( grp_id, pttip_name) values ( (select grp_id from groups
 \echo Logolási rendszer előállítása
 
 create table event ( evt_id integer NOT NULL, evt_text character varying(30), PRIMARY KEY (evt_id) );
-create table log ( id integer NOT NULL,  grp_id integer NOT NULL, usr_id integer NOT NULL, evt_id integer NOT NULL, evt_date date DEFAULT now(), PRIMARY KEY (id));
+create table log ( id integer NOT NULL,  grp_id integer, usr_id integer NOT NULL, evt_id integer NOT NULL, evt_date date DEFAULT now(), PRIMARY KEY (id));
 create sequence event_seq;
 create sequence log_seq;
 alter table event alter COLUMN evt_id SET default nextval('event_seq'::regClass);
@@ -87,3 +87,9 @@ alter table log ADD CONSTRAINT log_event FOREIGN KEY (evt_id) REFERENCES event (
 INSERT INTO system_attrs VALUES (136902, 'utolso_log_kuldve', '2009-08-26');
 INSERT INTO event (evt_text) VALUES ('JELENTKEZES');
 INSERT INTO event (evt_text) VALUES ('TAGSAGTORLES');
+insert into event (evt_text) VALUES ('SVIE_JELENTKEZES');
+insert into event (evt_text) VALUES ('SVIE_TAGSAGTORLES');
+insert into event (evt_text) VALUES ('PARTOLOVAVALAS');
+insert into event (evt_text) VALUES ('RENDESTAGGAVALAS');
+insert into event (evt_text) VALUES ('ELFOGADASALATT');
+
