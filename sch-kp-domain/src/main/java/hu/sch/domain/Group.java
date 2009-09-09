@@ -121,6 +121,10 @@ public class Group implements Serializable, Comparable<Group> {
      */
     private List<Group> subGroups;
     /**
+     * Az elsődleges körtagok száma
+     */
+    private Long numberOfPrimaryMembers;
+    /**
      * Csoporttagságok
      */
     private List<Membership> memberships;
@@ -137,6 +141,17 @@ public class Group implements Serializable, Comparable<Group> {
      */
     private List<Membership> inactiveMembers;
     private List<Log> logs;
+
+    public Group() {
+    }
+
+    public Group(Group group, Long pMs) {
+        id = group.getId();
+        numberOfPrimaryMembers = pMs;
+        name = group.getName();
+        delegateNumber = group.getDelegateNumber();
+        isSvie = group.getIsSvie();
+    }
 
     @Id
     @GeneratedValue(generator = "groups_seq")
@@ -248,6 +263,15 @@ public class Group implements Serializable, Comparable<Group> {
 
     public void setDelegateNumber(Integer delegateNumber) {
         this.delegateNumber = delegateNumber;
+    }
+
+    @Transient
+    public Long getNumberOfPrimaryMembers() {
+        return numberOfPrimaryMembers;
+    }
+
+    public void setNumberOfPrimaryMembers(Long numberOfPrimaryMembers) {
+        this.numberOfPrimaryMembers = numberOfPrimaryMembers;
     }
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
