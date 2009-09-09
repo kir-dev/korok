@@ -30,12 +30,13 @@ import hu.sch.web.kp.pages.group.ChangeDelegates;
 import hu.sch.web.kp.pages.group.ChangePost;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.svie.SvieAccount;
+import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
+import hu.sch.web.kp.pages.svie.SvieUserMgmt;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.kp.util.EntrantTypeConverter;
 import hu.sch.web.kp.util.PostTypeConverter;
 import hu.sch.web.kp.util.ValuationStatusConverter;
 import hu.sch.web.kp.util.ServerTimerFilter;
-import hu.sch.web.profile.pages.show.ShowPersonPage;
 import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -101,8 +102,12 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/svieaccount", SvieAccount.class);
         mountBookmarkablePage("/delegates", ChangeDelegates.class);
         mountBookmarkablePage("/consider", ConsiderPage.class);
-        mountBookmarkablePage("/editsettings", EditSettings.class);
+        mountBookmarkablePage("/administration", EditSettings.class);
+        mountBookmarkablePage("/administration/svieusermgmt", SvieUserMgmt.class);
+        mountBookmarkablePage("/administration/sviegroupmgmt", SvieGroupMgmt.class);
+
         mountBookmarkablePage("/logout", Logout.class);
+
 
         mount("/error", PackageName.forClass(InternalServerError.class));
 

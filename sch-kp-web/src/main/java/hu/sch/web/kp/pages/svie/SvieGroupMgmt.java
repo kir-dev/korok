@@ -6,7 +6,6 @@ package hu.sch.web.kp.pages.svie;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.services.PostManagerLocal;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.components.SvieDelegateNumberChooser;
 import hu.sch.web.components.SvieGroupStatusChooser;
@@ -23,6 +22,7 @@ import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFal
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
@@ -51,7 +51,7 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
 
         setHeaderLabelText("Csoportok adminisztrálása");
         add(new FeedbackPanel("pagemessages"));
-        groups = userManager.getAllGroups();
+        groups = userManager.getAllGroupsWithCount();
 
         List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
         columns.add(new AbstractColumn<Group>(new Model<String>("Név"), "name") {
@@ -65,16 +65,15 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
             public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
                 User korvezeto = userManager.getGroupLeaderForGroup(rowModel.getObject().getId());
                 cellItem.add(new UserLink(componentId, korvezeto));
-
             }
         });
-        columns.add(new AbstractColumn<Group>(new Model<String>("Tagság állapota")) {
+        columns.add(new PropertyColumn<Integer>(new Model<String>("Elsődleges tagok száma"), "numberOfPrimaryMembers"));
+        columns.add(new AbstractColumn<Group>(new Model<String>("SVIE tag?")) {
 
             public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
                 cellItem.add(new SvieGroupStatusChooser(componentId, rowModel.getObject()));
             }
         });
-
         columns.add(new AbstractColumn<Group>(new Model<String>("Küldöttek száma")) {
 
             public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
@@ -82,13 +81,14 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
             }
         });
 
-
         Form form = new Form("svieForm") {
 
             @Override
             protected void onSubmit() {
                 svieManager.updateSvieGroupInfos(groups);
                 groupProvider.updateIndexes();
+                getSession().info("A beállítások sikeresen mentésre kerültek");
+                setResponsePage(SvieGroupMgmt.class);
             }
         };
 
@@ -96,7 +96,7 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
         //azért van változóban, hogy később ha szeretnénk játszadozni a rowperpage-dzsel
         //egyszerűbb legyen.
         final AjaxFallbackDefaultDataTable table =
-                new AjaxFallbackDefaultDataTable("table", columns, groupProvider, 40);
+                new AjaxFallbackDefaultDataTable("table", columns, groupProvider, 100);
 
         form.add(table);
         add(form);

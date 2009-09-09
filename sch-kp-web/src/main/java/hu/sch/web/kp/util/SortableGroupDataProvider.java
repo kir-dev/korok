@@ -26,7 +26,7 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
     private List<Group> groups;
     private final List<Group> nameIdx = new ArrayList<Group>();
     private final List<Group> nameDescIdx = new ArrayList<Group>();
-    Collator huCollator = Collator.getInstance(new Locale("hu"));
+    private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
 
     public SortableGroupDataProvider(List<Group> group) {
         groups = group;

@@ -13,7 +13,6 @@ import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MailManagerLocal;
-import hu.sch.services.PostManagerLocal;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import java.util.List;
@@ -72,6 +71,7 @@ public class SvieManagerBean implements SvieManagerLocal {
                     user.getSvieStatus().equals(SvieStatus.ELFOGADASALATT)) {
                 logManager.createLogEntry(null, user, INPROGRESS_EVENT);
             }
+            em.merge(user);
         }
     }
 
@@ -86,7 +86,9 @@ public class SvieManagerBean implements SvieManagerLocal {
     @Override
     public void updateSvieGroupInfos(List<Group> groups) {
         for (Group group : groups) {
-            userManager.updateGroup(group);
+            Group temp = em.find(Group.class, group.getId());
+            temp.setDelegateNumber(group.getDelegateNumber());
+            temp.setIsSvie(group.getIsSvie());
         }
     }
 
@@ -175,10 +177,6 @@ public class SvieManagerBean implements SvieManagerLocal {
     public List<User> getDelegatedUsers() {
         Query q = em.createQuery("SELECT u FROM User u WHERE u.delegated = true " +
                 "ORDER BY u.lastName, u.firstName");
-        Query q2 = em.createQuery("SELECT p.membership.user FROM " +
-                "Post p WHERE p.postType.postName = 'körvezető' AND p.membership.group.isSvie = true");
-        List<User> ret = q.getResultList();
-        ret.addAll(q2.getResultList());
-        return ret;
+        return q.getResultList();
     }
 }

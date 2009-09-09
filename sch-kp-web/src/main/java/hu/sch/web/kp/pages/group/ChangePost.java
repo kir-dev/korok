@@ -109,7 +109,12 @@ public final class ChangePost extends SecuredPageTemplate {
                     PostType temp = it.next();
                     if (temp.getPostName().equals(MembershipType.KORVEZETO.toString())) {
                         it.remove();
-                        postManager.changeGroupLeader(ms, temp);
+                        try {
+                            postManager.changeGroupLeader(ms, temp);
+                        } catch (Exception ex) {
+                            getSession().error(ex.getMessage());
+                            throw new RestartResponseException(ChangePost.class, new PageParameters("memberid=" + ms.getId()));
+                        }
                         break;
                     }
                 }

@@ -202,8 +202,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public List<User> getUsersWithPrimaryMembership(Long groupId) {
-        Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
-                "ms.user " +
+        Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
                 "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms");
         q.setParameter("groupId", groupId);
         return q.getResultList();
@@ -351,5 +350,14 @@ public class UserManagerBean implements UserManagerLocal {
             log.error("Nem találtam meg ennek a körnek a körvezetőjét: " + groupId);
             return null;
         }
+    }
+
+    public List<Group> getAllGroupsWithCount() {
+        Query q = em.createQuery("SELECT new hu.sch.domain.Group(g, " +
+                "(SELECT COUNT(*) FROM Membership ms WHERE ms.user.sviePrimaryMembership = ms " +
+                "AND ms.group.id = g.id AND ms.user.svieStatus = 'ELFOGADVA' " +
+                "AND ms.user.svieMembershipType = 'RENDESTAG')) " +
+                "FROM Group g WHERE g.status='akt'");
+        return q.getResultList();
     }
 }

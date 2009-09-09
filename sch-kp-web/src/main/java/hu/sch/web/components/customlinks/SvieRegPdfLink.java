@@ -47,6 +47,7 @@ public class SvieRegPdfLink extends Panel {
     private static Logger log = Logger.getLogger(SvieRegPdfLink.class);
     private static final long serialVersionUID = 1L;
     private static Image schLogo;
+    private static Image signImage;
     private final User user;
     private Person person;
     private String cachedmsType;
@@ -126,6 +127,15 @@ public class SvieRegPdfLink extends Panel {
         super(id);
         this.user = user2;
         cachedmsType = user.getSvieMembershipType().toString();
+        try {
+            if (schLogo == null) {
+                getSchLogo();
+                getSigninArea();
+            }
+        } catch (Exception ex) {
+            getSession().error("Hiba a PDF generálása közben.");
+            throw new RestartResponseException(ShowUser.class);
+        }
         add(new Link<Void>("pdfLink") {
 
             public void onClick() {
@@ -159,10 +169,9 @@ public class SvieRegPdfLink extends Panel {
         final OutputStream os = new ByteArrayOutputStream();
         PdfWriter pdfWriter = PdfWriter.getInstance(document, os);
         document.open();
-        Image logo = getImage();
-        logo.setAlignment(Image.ALIGN_CENTER);
-        logo.scalePercent(33f);
-        document.add(logo);
+        schLogo.setAlignment(Image.ALIGN_CENTER);
+        schLogo.scalePercent(33f);
+        document.add(schLogo);
 
         font.setSize(14f);
         font.setStyle(Font.BOLD);
@@ -208,31 +217,9 @@ public class SvieRegPdfLink extends Panel {
         Paragraph testify = new Paragraph(sb.toString(), font);
         testify.setSpacingBefore(15f);
         document.add(testify);
-        pos = pdfWriter.getVerticalPosition(true);
-        cb.setFontAndSize(arialUnicode, 12f);
-        cb.moveTo(130, pos - 25);
-        cb.showText("........................................");
-        cb.moveTo(350, pos - 25);
-        cb.showText("........................................");
-        cb.stroke();
-        cb.newlineText();
-        cb.moveTo(180, pos - 40);
-        cb.showText("név");
-        cb.moveTo(400, pos - 40);
-        cb.showText("név");
-        cb.stroke();
-        cb.newlineText();
-        cb.moveTo(130, pos - 65);
-        cb.showText("........................................");
-        cb.moveTo(350, pos - 65);
-        cb.showText("........................................");
-        cb.stroke();
-        cb.newlineText();
-        cb.moveTo(180, pos - 80);
-        cb.showText("lakcím");
-        cb.moveTo(400, pos - 80);
-        cb.showText("lakcím");
-        cb.stroke();
+        signImage.setAlignment(Image.ALIGN_CENTER);
+        signImage.scalePercent(33f);
+        document.add(signImage);
 
         document.close();
         return os;
@@ -252,7 +239,7 @@ public class SvieRegPdfLink extends Panel {
         return sb.toString();
     }
 
-    private Image getImage() throws IOException, DocumentException {
+    private Image getSchLogo() throws IOException, DocumentException {
         if (schLogo != null) {
             return schLogo;
         }
@@ -267,5 +254,22 @@ public class SvieRegPdfLink extends Panel {
         schLogo = Image.getInstance(output.toByteArray());
         schLogoStream.close();
         return schLogo;
+    }
+
+    private Image getSigninArea() throws IOException, DocumentException {
+        if (signImage != null) {
+            return signImage;
+        }
+        InputStream schLogoStream = getClass().getResourceAsStream("resources/signingarea.png");
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] bytes = new byte[512];
+        int readBytes = 0;
+        while ((readBytes = schLogoStream.read(bytes)) > 0) {
+            output.write(bytes, 0, readBytes);
+        }
+        signImage = Image.getInstance(output.toByteArray());
+        schLogoStream.close();
+        return signImage;
     }
 }

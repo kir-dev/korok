@@ -11,7 +11,6 @@ import hu.sch.domain.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.components.ConfirmationBoxRenderer;
 import hu.sch.web.components.customlinks.SvieRegPdfLink;
-import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
@@ -72,7 +71,7 @@ public final class SvieAccount extends SecuredPageTemplate {
         }
         add(regPdfLink);
 
-        add(new Link<Void>("deleteSvieMembership") {
+        Link<Void> deleteSvieMs = new Link<Void>("deleteSvieMembership") {
 
             @Override
             public void onClick() {
@@ -80,7 +79,9 @@ public final class SvieAccount extends SecuredPageTemplate {
                 getSession().info("A SVIE tagságodat sikeresen megszüntetted");
                 setResponsePage(getApplication().getHomePage());
             }
-        });
+        };
+        deleteSvieMs.add(new ConfirmationBoxRenderer("Biztosan meg szeretnéd szüntetni a SVIE tagságod?"));
+        add(deleteSvieMs);
     }
 
     private class OrdinalFragment extends Fragment {
@@ -138,20 +139,20 @@ public final class SvieAccount extends SecuredPageTemplate {
         public AdvocateFragment(String id, String markupId) {
             super(id, markupId, null, null);
 
-            for (Membership membership : user.getMemberships()) {
-                if (membership.getEnd() == null && membership.getGroup().getIsSvie()) {
-                    add(new Link<Void>("advocateToOrdinal") {
+            List<Membership> ms = svieManager.getSvieMembershipsForUser(user);
+            Link<Void> advocateToOrdinal = new Link<Void>("advocateToOrdinal") {
 
-                        @Override
-                        public void onClick() {
-                            svieManager.advocateToOrdinal(user);
-                            getSession().info("Rendes taggá válás kezdeményezése sikeresen megtörtént");
-                            setResponsePage(SvieAccount.class);
-                        }
-                    });
-                    break;
+                @Override
+                public void onClick() {
+                    svieManager.advocateToOrdinal(user);
+                    getSession().info("Rendes taggá válás kezdeményezése sikeresen megtörtént");
+                    setResponsePage(SvieAccount.class);
                 }
+            };
+            if (ms.isEmpty()) {
+                advocateToOrdinal.setVisible(false);
             }
+            add(advocateToOrdinal);
         }
     }
 

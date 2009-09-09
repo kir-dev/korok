@@ -44,18 +44,18 @@ public class EditSettings extends SecuredPageTemplate {
         setHeaderLabelText("Adminisztráció");
         add(new FeedbackPanel("pagemessages"));
 
-        JetiFragment jetiPanel = new JetiFragment("jetifragment", "jetipanel");
-        SvieFragment sviePanel = new SvieFragment("sviefragment", "sviepanel");
-        jetiPanel.setVisible(false);
-        sviePanel.setVisible(false);
-        add(jetiPanel, sviePanel);
+        JetiFragment jetiFragment = new JetiFragment("jetifragment", "jetipanel");
+        SvieFragment svieFragment = new SvieFragment("sviefragment", "sviepanel");
+        jetiFragment.setVisible(false);
+        svieFragment.setVisible(false);
+        add(jetiFragment, svieFragment);
 
         if (isCurrentUserJETI()) {
-            jetiPanel.setVisible(true);
+            jetiFragment.setVisible(true);
         }
 
         if (isCurrentUserSVIE()) {
-            sviePanel.setVisible(true);
+            svieFragment.setVisible(true);
         }
     }
 

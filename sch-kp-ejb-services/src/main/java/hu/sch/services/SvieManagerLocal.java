@@ -38,9 +38,6 @@ public interface SvieManagerLocal {
 
     /**
      * Visszaadja a küldöttnek jelölt körtagokat, illetve a svie körben lévő körvezetőket is
-     *
-     * Mivel a Hibernate nem támogatja a UNION-t, ezért a két lekérdezést külön
-     * kell végrehajtani.
      * @return A küldött gyűlésen résztvevő tagok listája
      */
     List<User> getDelegatedUsers();

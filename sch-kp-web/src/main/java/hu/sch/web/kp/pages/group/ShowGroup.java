@@ -90,7 +90,7 @@ public class ShowGroup extends SecuredPageTemplate {
         add(editPageLink);
 
         //A kör küldöttjeinek beállításához szükséges link jogosultságellenőrzéssel
-        Link<ChangeDelegates> editDelegates = 
+        Link<ChangeDelegates> editDelegates =
                 new BookmarkablePageLink<ChangeDelegates>("editDelegates", ChangeDelegates.class,
                 new PageParameters("id=" + group.getId().toString()));
 
@@ -105,6 +105,7 @@ public class ShowGroup extends SecuredPageTemplate {
         setDefaultModel(new CompoundPropertyModel<Group>(group));
         add(new Label("name"));
         add(new Label("founded"));
+        add(new Label("svieMs", (group.getIsSvie() ? "igen" : "nem")));
         add(new SmartLinkLabel("webPage"));
         add(new SmartLinkLabel("mailingList"));
         add(new MultiLineLabel("introduction"));

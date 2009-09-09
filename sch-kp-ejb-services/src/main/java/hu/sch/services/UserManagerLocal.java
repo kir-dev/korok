@@ -76,4 +76,6 @@ public interface UserManagerLocal {
      * @return null, ha nem találta meg a körvezetőt
      */
     User getGroupLeaderForGroup(Long groupId);
+
+    List<Group> getAllGroupsWithCount();
 }

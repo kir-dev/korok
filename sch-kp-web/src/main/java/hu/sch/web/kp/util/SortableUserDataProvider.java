@@ -24,20 +24,11 @@ import org.apache.wicket.model.Model;
 public class SortableUserDataProvider extends SortableDataProvider<User> {
 
     private List<User> users;
-    private final List<User> nameIdx = new ArrayList<User>();
-    private final List<User> nameDescIdx = new ArrayList<User>();
-    private final List<User> msTypeIdx = new ArrayList<User>();
-    private final List<User> msTypeDescIdx = new ArrayList<User>();
-    private final Collator huCollator = Collator.getInstance(new Locale("hu"));
+    private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
 
     public SortableUserDataProvider(List<User> user) {
         users = user;
         setSort("name", true);
-        nameIdx.addAll(users);
-        nameDescIdx.addAll(users);
-        msTypeIdx.addAll(users);
-        msTypeDescIdx.addAll(users);
-        updateIndexes();
     }
 
     public Iterator<User> iterator(int first, int count) {
@@ -51,15 +42,53 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
 
     public List<User> getIndex(String prop, boolean asc) {
         if (prop == null) {
-            return nameIdx;
+            return users;
         }
         if (prop.equals("name")) {
-            return (asc) ? nameIdx : nameDescIdx;
+            if (asc) {
+                Collections.sort(users, new Comparator<User>() {
+
+                    public int compare(User o1, User o2) {
+                        return huCollator.compare(o1.getName(), o2.getName());
+                    }
+                });
+            } else {
+                Collections.sort(users, new Comparator<User>() {
+
+                    public int compare(User o1, User o2) {
+                        return huCollator.compare(o2.getName(), o1.getName());
+                    }
+                });
+            }
         } else if (prop.equals("svieMembershipType")) {
-            return (asc) ? msTypeIdx : msTypeDescIdx;
+            if (asc) {
+                Collections.sort(users, new Comparator<User>() {
+
+                    public int compare(User o1, User o2) {
+                        if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
+                            return huCollator.compare(o1.getName(), o2.getName());
+                        } else {
+                            return o1.getSvieMembershipType().compareTo(o2.getSvieMembershipType());
+                        }
+                    }
+                });
+            } else {
+                Collections.sort(users, new Comparator<User>() {
+
+                    public int compare(User o1, User o2) {
+                        if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
+                            return huCollator.compare(o2.getName(), o1.getName());
+                        } else {
+                            return o2.getSvieMembershipType().compareTo(o1.getSvieMembershipType());
+                        }
+                    }
+                });
+            }
+        } else {
+            throw new RuntimeException("uknown sort option [" + prop +
+                    "]. valid options: [firstName] , [lastName]");
         }
-        throw new RuntimeException("uknown sort option [" + prop +
-                "]. valid options: [firstName] , [lastName]");
+        return users;
     }
 
     public IModel<User> model(User object) {
@@ -71,38 +100,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
         return ret;
     }
 
-    public void updateIndexes() {
-        Collections.sort(nameIdx, new Comparator<User>() {
-
-            public int compare(User o1, User o2) {
-                return huCollator.compare(o1.getName(), o2.getName());
-            }
-        });
-        Collections.sort(nameDescIdx, new Comparator<User>() {
-
-            public int compare(User o1, User o2) {
-                return huCollator.compare(o2.getName(), o1.getName());
-            }
-        });
-        Collections.sort(msTypeIdx, new Comparator<User>() {
-
-            public int compare(User o1, User o2) {
-                if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
-                    return huCollator.compare(o1.getName(), o2.getName());
-                } else {
-                    return o1.getSvieMembershipType().compareTo(o2.getSvieMembershipType());
-                }
-            }
-        });
-        Collections.sort(msTypeDescIdx, new Comparator<User>() {
-
-            public int compare(User o1, User o2) {
-                if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
-                    return huCollator.compare(o2.getName(), o1.getName());
-                } else {
-                    return o2.getSvieMembershipType().compareTo(o1.getSvieMembershipType());
-                }
-            }
-        });
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }
