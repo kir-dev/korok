@@ -52,7 +52,7 @@ public final class ChangePost extends SecuredPageTemplate {
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        final Membership ms = userManager.getCsoporttagsag(memberId);
+        final Membership ms = userManager.getMembership(memberId);
         if (ms == null) {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
@@ -65,13 +65,10 @@ public final class ChangePost extends SecuredPageTemplate {
         Group group = userManager.findGroupWithCsoporttagsagokById(ms.getGroup().getId());
         User user = ms.getUser();
 
-//        final List<Membership> activeMembers = group.getActiveMemberships();
-
         if (!isUserGroupLeader(group)) {
             getSession().error("Nincs jogod a megadott művelethez");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        //if (user == null || group == null) { // group == null always false
         if (user == null) {
             getSession().error("Hibás adatok");
             throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + group.getId()));
@@ -112,7 +109,7 @@ public final class ChangePost extends SecuredPageTemplate {
                         try {
                             postManager.changeGroupLeader(ms, temp);
                         } catch (Exception ex) {
-                            getSession().error(ex.getMessage());
+                            getSession().error(ex.getCause().getMessage());
                             throw new RestartResponseException(ChangePost.class, new PageParameters("memberid=" + ms.getId()));
                         }
                         break;
@@ -125,7 +122,6 @@ public final class ChangePost extends SecuredPageTemplate {
             }
         };
 
-        //form.add(checkboxes);
         List<PostType> postTypes = postManager.getAvailablePostTypesForGroup(group);
 
         CheckBoxMultipleChoice<PostType> multipleChoice =

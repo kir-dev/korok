@@ -208,7 +208,7 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
-    public List<User> getCsoporttagok(Long csoportId) {
+    public List<User> getMembersForGroup(Long csoportId) {
         //Group cs = em.find(Group.class, csoportId);
         Query q =
                 em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
@@ -294,7 +294,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public Membership getCsoporttagsag(Long memberId) {
+    public Membership getMembership(Long memberId) {
         Membership cst = em.find(Membership.class, memberId);
         return cst;
     }

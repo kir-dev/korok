@@ -36,6 +36,10 @@ public final class ChangeDelegates extends SecuredPageTemplate {
             throw new RestartResponseException(getApplication().getHomePage());
         }
         final Group group = userManager.findGroupById(groupId);
+        if (!isUserGroupLeader(group)) {
+            getSession().error("Nincsen jogosultságod a művelet végrehajtásához!");
+            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + group.getId()));
+        }
 
         setHeaderLabelText("Küldöttek beállítása");
         add(new Label("numberOfDelegates",
@@ -93,7 +97,7 @@ public final class ChangeDelegates extends SecuredPageTemplate {
                     userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
                 }
                 getSession().info("A változások sikeresen mentésre kerültek");
-                setResponsePage(new ChangeDelegates(params));
+                setResponsePage(ShowGroup.class, new PageParameters("id=" + group.getId()));
                 return;
             }
         });

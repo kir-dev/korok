@@ -46,7 +46,7 @@ public interface UserManagerLocal {
 
     void deleteMembership(Membership ms);
 
-    List<User> getCsoporttagok(Long csoportId);
+    List<User> getMembersForGroup(Long csoportId);
 
     List<User> getCsoporttagokWithoutOregtagok(Long csoportId);
 
@@ -58,7 +58,7 @@ public interface UserManagerLocal {
 
     void groupInfoUpdate(Group cs);
 
-    Membership getCsoporttagsag(Long memberId);
+    Membership getMembership(Long memberId);
 
     void setMemberToOldBoy(Membership user);
 
