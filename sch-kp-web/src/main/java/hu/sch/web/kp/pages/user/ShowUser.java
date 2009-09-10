@@ -86,7 +86,11 @@ public class ShowUser extends SecuredPageTemplate {
                         ms.getGroup().getId().toString()));
                 csoplink.add(new Label("group.name"));
                 item.add(csoplink);
-                item.add(new Label("rights", getConverter(List.class).convertToString(ms.getPosts(), getLocale())));
+                if (ms.getEnd() != null) {
+                    item.add(new Label("rights", "öregtag"));
+                } else {
+                    item.add(new Label("rights", getConverter(List.class).convertToString(ms.getPosts(), getLocale())));
+                }
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
                 Link eraseLink = new Link("deleteMembership") {

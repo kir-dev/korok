@@ -31,6 +31,9 @@ public class PostTypeConverter implements IConverter {
             List<Post> posts = ((List<Post>) value);
             StringBuilder sb = new StringBuilder(posts.size() * 16);
             for (Post post : posts) {
+                if (post.getMembership().getEnd() != null) {
+                    return "öregtag";
+                }
                 if (sb.length() != 0) {
                     sb.append(", ");
                 }
@@ -44,46 +47,9 @@ public class PostTypeConverter implements IConverter {
             log.error("Invalid input type for MembershipTypeConverter");
             return "invalid";
         }
-//        if (value instanceof MembershipType) {
-//            return actualConverter((MembershipType) value);
-//        }
-//
-//        MembershipType[] values = (MembershipType[]) value;
-//        StringBuilder ret = new StringBuilder(values.length * 16);
-//        for (MembershipType membershipType : values) {
-//            if (ret.length() != 0) {
-//                ret.append(", ");
-//            }
-//
-//            ret.append(actualConverter(membershipType));
-//        }
-//        return ret.toString();
     }
 
     public String actualConverter(Post value) {
-        //úgy tűnik, hogy a db-ben ki vannak pótolva a nem használt karakterek
-        //szóközökkel, ezért kell a trim()
         return value.getPostType().toString();
-        /*
-        switch (value) {
-        case TAG:
-        return "tag";
-        case KORVEZETO:
-        return "körvezető";
-        case VOLTKORVEZETO:
-        return "volt körvezető";
-        case GAZDASAGIS:
-        return "gazdaságis";
-        case PRMENEDZSER:
-        return "PR menedzser";
-        case VENDEGFOGADAS:
-        return "vendégfogadó";
-        case OREGTAG:
-        return "öregtag";
-        case JELENTKEZO:
-        return "jelentkező";
-        default:
-        throw new ConversionException("TagsagTipus konverziós hiba");
-        }*/
     }
 }
