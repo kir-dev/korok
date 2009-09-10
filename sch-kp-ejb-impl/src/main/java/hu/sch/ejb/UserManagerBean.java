@@ -52,7 +52,7 @@ public class UserManagerBean implements UserManagerLocal {
     private static Event CREATEMEMBERSHIP_EVENT;
 
     @PostConstruct
-    public void initialize() {
+    private void initialize() {
         if (DELETEMEMBERSHIP_EVENT == null) {
             Query q = em.createNamedQuery(Event.getEventForEventType);
             q.setParameter("evt", EventType.TAGSAGTORLES);
@@ -337,7 +337,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     /**
-     * @{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public User getGroupLeaderForGroup(Long groupId) {

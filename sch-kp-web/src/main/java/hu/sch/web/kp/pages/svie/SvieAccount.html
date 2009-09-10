@@ -4,18 +4,46 @@
     <span wicket:id="advocateFragment"></span>
     <wicket:fragment wicket:id="ordinalPanel">
         <h2 wicket:id="formLabel">Elsődleges kör kiválasztása</h2>
-        <form wicket:id="form">
-            <select style="width: 300px;" wicket:id="sviePrimaryMembership">
-                <option>site 1</option>
-                <option>site 2</option>
-            </select>
-            <input class="btn" type="submit" value="Mentés" />
-        </form>
-        <a wicket:id="ordinalToAdvocate"><wicket:message key="svie.ordinal.to.advocate" /></a>
+        <div class="notifybox">
+            Minden rendes tagnak meg kell jelölnie pontosan egy darab elsődleges 
+            kört, amin keresztül részt vesz az Egyesület döntéshozásában. A
+            megjelölt körben fog tudni küldöttet jelölni.<br/>
+            Amennyiben a listában nem szerepel egy kör sem, akkor vagy nem vagy 
+            tagja egy körnek sem, vagy a köreid nem SVIE-s körök. Jelezd a
+            problémát a körvezetődnek.
+        </div>
+        <div class="subdata">
+            <form wicket:id="form">
+                <select style="width: 300px;" wicket:id="sviePrimaryMembership">
+                    <option>site 1</option>
+                    <option>site 2</option>
+                </select>
+                <input class="btn" type="submit" value="Mentés" />
+            </form>
+            <a wicket:id="ordinalToAdvocate"><wicket:message key="svie.ordinal.to.advocate" /></a>
+        </div>
     </wicket:fragment>
     <wicket:fragment wicket:id="advocatePanel">
         <a wicket:id="advocateToOrdinal"><wicket:message key="svie.advocate.to.ordinal" /></a><br />
     </wicket:fragment>
-    <a wicket:id="pdfLink">Kérvény letöltése</a><br />
-    <a wicket:id="deleteSvieMembership"><wicket:message key="svie.delete.membership" /></a>
+    <div class="notifybox">
+        A regisztrációs folyamat befejezéséhez két lehetőséged van: Ha ki tudod
+        nyomtatni, akkor aláírod a kérvényt és leadod Katalinnak a Schönherz
+        1719-es irodájában (megtehetitek, hogy többet adtok le egyszerre, nem
+        kell személyesen jelen lenni).<br/>
+        Ha nem tudod vagy nem akarod kinyomtatni, akkor keresd Katalint a
+        Schönherz 1719-es irodájában, ő kinyomtatja helyetted, ekkor viszont ott
+        kell lenned személyesen, hogy alá tudd írni.
+        <br/><br/>
+        Ha megszünteted az Egyesületi tagságodat, akkor csak következő félévben tudsz újra belépni.
+        <br/><br/>
+        Pártoló taggá kell minősítened magadat, ha az összes körből kiléptél
+        vagy BME-VIK-es aktív, nappali hallgatói jogviszonyod megszűnt.
+        <br/><br/>
+        További információk: <a href="http://kb.sch.bme.hu">http://kb.sch.bme.hu</a>
+    </div>
+    <div class="subdata">
+        <a wicket:id="pdfLink">Kérvény letöltése</a><br />
+        <a wicket:id="deleteSvieMembership"><wicket:message key="svie.delete.membership" /></a>
+    </div>
 </wicket:extend>

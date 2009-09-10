@@ -22,6 +22,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -39,6 +40,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     LogManagerLocal logManager;
     @PersistenceContext
     EntityManager em;
+    private static Logger log = Logger.getLogger(SvieManagerBean.class);
     private static final String mailSubject = "Elsődleges kört váltottak";
     private static Event ADVOCATE_EVENT;
     private static Event ORDINAL_EVENT;
@@ -125,6 +127,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         sb.append("Link a felhasználó profiljára:\n");
         sb.append("https://idp.sch.bme.hu/korok/showuser/id/").append(user.getId());
         sb.append("\n\nÜdvözlettel:\nKir-Dev");
+        log.info("Erről a csoportról van szó: " + user.getSviePrimaryMembership().getGroup().getName());
         mailManager.sendEmail(
                 (userManager.getGroupLeaderForGroup(user.getSviePrimaryMembership().getGroup().getId()).getEmailAddress()),
                 mailSubject, sb.toString());
