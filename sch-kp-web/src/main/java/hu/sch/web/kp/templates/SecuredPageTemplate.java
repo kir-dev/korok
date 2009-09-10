@@ -79,7 +79,7 @@ public abstract class SecuredPageTemplate extends WebPage {
         //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
     }
 
-    protected void loadUser() {
+    private void loadUser() {
         Long virId = getAuthorizationComponent().getUserid(getRequest());
         if (getSession().getUserId() != virId) {
 
@@ -97,7 +97,7 @@ public abstract class SecuredPageTemplate extends WebPage {
         }
     }
 
-    protected User getUser() {
+    protected final User getUser() {
         Long virId = getAuthorizationComponent().getUserid(getRequest());
         if (getSession().getUserId() != virId) {
             loadUser();
@@ -105,7 +105,7 @@ public abstract class SecuredPageTemplate extends WebPage {
         return userManager.findUserWithCsoporttagsagokById(getSession().getUserId());
     }
 
-    protected Group getGroup() {
+    protected final Group getGroup() {
         Long groupId = getSession().getGroupId();
         if (groupId != null) {
             return userManager.findGroupById(getSession().getGroupId());
@@ -119,7 +119,7 @@ public abstract class SecuredPageTemplate extends WebPage {
         return (VirSession) super.getSession();
     }
 
-    public Semester getSemester() {
+    protected final Semester getSemester() {
         Semester sz = null;
         try {
             sz = systemManager.getSzemeszter();
@@ -129,23 +129,23 @@ public abstract class SecuredPageTemplate extends WebPage {
         return sz;
     }
 
-    public boolean isCurrentUserAdmin() {
+    protected final boolean isCurrentUserAdmin() {
         return getAuthorizationComponent().hasAbstractRole(getRequest(), adminRoleName);
     }
 
-    public boolean isCurrentUserJETI() {
+    protected final boolean isCurrentUserJETI() {
         return getAuthorizationComponent().hasAbstractRole(getRequest(), jetiRoleName);
     }
 
-    public boolean isCurrentUserSVIE() {
+    protected final boolean isCurrentUserSVIE() {
         return getAuthorizationComponent().hasAbstractRole(getRequest(), svieRoleName);
     }
 
-    public boolean isUserGroupLeader(Group group) {
+    protected final boolean isUserGroupLeader(Group group) {
         return getAuthorizationComponent().isGroupLeaderInGroup(getRequest(), group);
     }
 
-    public boolean isUserGroupLeaderInSomeGroup() {
+    protected final boolean isUserGroupLeaderInSomeGroup() {
         return getAuthorizationComponent().isGroupLeaderInSomeGroup(getRequest());
     }
 
@@ -153,11 +153,7 @@ public abstract class SecuredPageTemplate extends WebPage {
         ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model<Serializable>(text));
     }
 
-    public void setHeaderLabelModel(IModel<?> model) {
-        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(model);
-    }
-
-    protected UserAuthorization getAuthorizationComponent() {
+    private final UserAuthorization getAuthorizationComponent() {
         return ((PhoenixApplication) getApplication()).getAuthorizationComponent();
     }
 }

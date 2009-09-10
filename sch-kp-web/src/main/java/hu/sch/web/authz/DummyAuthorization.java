@@ -13,7 +13,7 @@ import org.apache.wicket.protocol.http.WebApplication;
  * 
  * @author hege
  */
-public class DummyAuthorization implements UserAuthorization {
+public final class DummyAuthorization implements UserAuthorization {
 
     /**
      * A logoláshoz szükséges logger.

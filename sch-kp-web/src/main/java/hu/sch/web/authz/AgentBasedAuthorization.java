@@ -19,7 +19,7 @@ import org.apache.wicket.protocol.http.WebRequest;
  *
  * @author hege
  */
-public class AgentBasedAuthorization implements UserAuthorization {
+public final class AgentBasedAuthorization implements UserAuthorization {
 
     private static final Logger log =
             Logger.getLogger(AgentBasedAuthorization.class);
@@ -151,7 +151,7 @@ public class AgentBasedAuthorization implements UserAuthorization {
                                     " ,tagsagTipus: " + membershipType +
                                     " , csoportId: " + groupId.toString());
                         }
-                        if (membershipType.equalsIgnoreCase("korvezeto")) {
+                        if (membershipType.equalsIgnoreCase(MembershipType.KORVEZETO.toString())) {
                             memberships.put(groupId, MembershipType.KORVEZETO);
                         } else {
                             //Az olvashatóság érdekében, csak a körvezetői tagságokkal
