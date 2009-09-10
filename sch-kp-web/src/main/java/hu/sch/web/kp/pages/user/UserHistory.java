@@ -36,8 +36,7 @@ public class UserHistory extends SecuredPageTemplate {
 
     private static final Logger log = Logger.getLogger(UserHistory.class);
     Long id;
-    final Long EVERY_GROUP_L = -1L;
-    public Long selected = EVERY_GROUP_L;
+    public Long selected = null;
     final String EVERY_GROUP = "Összes kör";
     public String selected_text = EVERY_GROUP;
     private boolean own_profile = false;
@@ -50,8 +49,10 @@ public class UserHistory extends SecuredPageTemplate {
     public UserHistory(PageParameters parameters) {
         try {
             id = parameters.getLong("id");
-            selected = parameters.getLong("group", EVERY_GROUP_L);
-            selected_text = userManager.findGroupById(selected).getName();
+            selected = parameters.getLong("group");
+            if (selected != null) {
+                selected_text = userManager.findGroupById(selected).getName();
+            }
         } catch (Throwable t) {
             log.warn("Error while loading parameters.", t);
         }
@@ -72,12 +73,12 @@ public class UserHistory extends SecuredPageTemplate {
 
         setHeaderLabelText(user.getName() + " közösségi története");
         if (own_profile) {
-            add(new BookmarkablePageLink("simpleView", ShowUser.class));
+            add(new BookmarkablePageLink<ShowUser>("simpleView", ShowUser.class));
         } else {
-            add(new BookmarkablePageLink("simpleView", ShowUser.class, new PageParameters("id=" + user.getId())));
+            add(new BookmarkablePageLink<ShowUser>("simpleView", ShowUser.class, new PageParameters("id=" + user.getId())));
         }
         add(new ExternalLink("profilelink", "/profile/show/virid/" + id.toString()));
-        setDefaultModel(new CompoundPropertyModel(user));
+        setDefaultModel(new CompoundPropertyModel<User>(user));
 
         final List<String> groups = new ArrayList<String>();
         groups.add(EVERY_GROUP);
@@ -88,17 +89,17 @@ public class UserHistory extends SecuredPageTemplate {
         }
 
         List<PointRequest> origPointRequests = userManager.getPontIgenyekForUser(user);
-                
+
         // csak az elfogadott pontok legyenek megjelenítve
-        ArrayList<PointRequest> pointRequests = new ArrayList();
-        for (PointRequest pointRequest : origPointRequests)
-        {
-            if (pointRequest.getValuation().getPointStatus().equals(ValuationStatus.ELFOGADVA))
+        ArrayList<PointRequest> pointRequests = new ArrayList<PointRequest>();
+        for (PointRequest pointRequest : origPointRequests) {
+            if (pointRequest.getValuation().getPointStatus().equals(ValuationStatus.ELFOGADVA)) {
                 pointRequests.add(pointRequest);
+            }
         }
 
         //
-        DropDownChoice ddc = new DropDownChoice("group", new PropertyModel(this, "selected_text"), groups) {
+        DropDownChoice ddc = new DropDownChoice("group", new PropertyModel<String>(this, "selected_text"), groups) {
 
             @Override
             protected boolean wantOnSelectionChangedNotifications() {
@@ -114,7 +115,6 @@ public class UserHistory extends SecuredPageTemplate {
 
                 if (Lselected.equals(EVERY_GROUP)) {
                     // minden kört megjelenítek
-                    pp.add("group", EVERY_GROUP_L.toString());
                 } else {
                     // csak a kiválasztott kört jelenítem meg
                     Group group = userManager.findGroupByName(Lselected).get(0);
@@ -219,7 +219,7 @@ public class UserHistory extends SecuredPageTemplate {
         add(splv);
 
         // Pontigények táblázat
-        if (!selected.equals(EVERY_GROUP_L)) {
+        if (selected != null) {
             // szűrés adott csoportra
 
             ArrayList<PointRequest> obj = new ArrayList<PointRequest>();
@@ -249,13 +249,13 @@ public class UserHistory extends SecuredPageTemplate {
 
         // csak az elfogadott belépők legyenek megjelenítve
         ArrayList<EntrantRequest> entrantRequests = new ArrayList();
-        for (EntrantRequest entrantRequest : origEntrantRequests)
-        {
-            if (entrantRequest.getValuation().getEntrantStatus().equals(ValuationStatus.ELFOGADVA))
+        for (EntrantRequest entrantRequest : origEntrantRequests) {
+            if (entrantRequest.getValuation().getEntrantStatus().equals(ValuationStatus.ELFOGADVA)) {
                 entrantRequests.add(entrantRequest);
+            }
         }
 
-        if (!selected.equals(EVERY_GROUP_L)) {
+        if (selected != null) {
             // szűrés adott csoportra
 
             ArrayList<EntrantRequest> obj = new ArrayList<EntrantRequest>();
