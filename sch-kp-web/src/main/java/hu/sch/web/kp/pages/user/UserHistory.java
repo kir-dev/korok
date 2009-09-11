@@ -49,10 +49,12 @@ public class UserHistory extends SecuredPageTemplate {
     public UserHistory(PageParameters parameters) {
         try {
             id = parameters.getLong("id");
-            selected = parameters.getLong("group");
-            if (selected != null) {
+            selected = parameters.getLong("group", 0l);
+            if (selected != 0l) {
                 selected_text = userManager.findGroupById(selected).getName();
-            }
+            } else {
+		selected = null;
+	    }
         } catch (Throwable t) {
             log.warn("Error while loading parameters.", t);
         }
