@@ -48,6 +48,7 @@ public class TimerServiceBean implements TimerServiceLocal {
     private static String welcome = "Kedves %s!\n\nAz elmúlt időszakban a következő módosítások " +
             "történtek a körtagságok terén:\n\n";
     private static final String showUserLink = "https://idp.sch.bme.hu/korok/showuser/id/";
+    private static final Long VALASZTMANY_ID = 370L;
 
     public void scheduleTimers() {
         for (Object timerObj : timerService.getTimers()) {
@@ -146,7 +147,7 @@ public class TimerServiceBean implements TimerServiceLocal {
             }
         }
         if (wasRecord) {
-            sendEmail("sviadmin@svieadmin.hu", sb);
+            sendEmail("katalin@sch.bme.hu", sb);
         }
     }
 
@@ -165,7 +166,7 @@ public class TimerServiceBean implements TimerServiceLocal {
         }
         if (!logs.isEmpty()) {
             sb.append("\n\n");
-            sendEmail("valasztmany@valasztmany.hu", sb);
+            sendEmail(userManager.getGroupLeaderForGroup(VALASZTMANY_ID).getEmailAddress(), sb);
         }
     }
 
