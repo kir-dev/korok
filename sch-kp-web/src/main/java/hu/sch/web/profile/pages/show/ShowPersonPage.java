@@ -6,6 +6,7 @@ import hu.sch.services.EntitlementManagerRemote;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.components.ImageResource;
 import hu.sch.web.error.ErrorPage;
+import hu.sch.web.profile.pages.admin.AdminPage;
 import hu.sch.web.profile.pages.community.CreateCommunityProfile;
 import hu.sch.web.profile.pages.search.DormitoryRoomNumberLinkPanel;
 import hu.sch.web.profile.pages.template.ProfilePage;
@@ -19,6 +20,7 @@ import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -69,13 +71,20 @@ public class ShowPersonPage extends ProfilePage {
                 }
             };
 
-
             add(pageLink);
             //Ha nem a saját profilunkat nézzük, akkor ne jelenjen meg a készítős link
             if (!person.getUid().equalsIgnoreCase(getUid())) {
                 pageLink.setVisible(false);
             }
         }
+
+        Link<AdminPage> adminLink =
+                new BookmarkablePageLink<AdminPage>("adminLink", AdminPage.class,
+                new PageParameters("uid=" + person.getUid()));
+        if (!isCurrentUserAdmin()) {
+            adminLink.setVisible(false);
+        }
+        add(adminLink);
 
         WebMarkupContainer mailWMC = new WebMarkupContainer("mailWMC");
 
