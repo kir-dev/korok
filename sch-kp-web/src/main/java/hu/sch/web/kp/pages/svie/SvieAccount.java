@@ -40,6 +40,8 @@ public final class SvieAccount extends SecuredPageTemplate {
     private final User user = getUser();
 
     public SvieAccount() {
+
+        createNavbarWithSupportId(34);
         //ha még nem SVIE tag, akkor továbbítjuk a SVIE regisztrációs oldalra.
         if (user == null) {
             getSession().error("A SVIE tagsághoz először létre kell hoznod egy közösségi profilt");

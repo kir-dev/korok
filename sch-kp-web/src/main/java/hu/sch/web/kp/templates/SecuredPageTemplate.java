@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 /**
@@ -46,9 +45,16 @@ public abstract class SecuredPageTemplate extends WebPage {
     private static final String adminRoleName = "ADMIN";
     private static final String jetiRoleName = "JETI";
     private static final String svieRoleName = "SVIE";
+    private Label navbarScript;
 
     public SecuredPageTemplate() {
         loadUser();
+
+        navbarScript = new Label("navbarScript", "var navbarConf = { " +
+                "logoutLink: 'https://idp.sch.bme.hu/opensso/UI/Logout', theme: 'blue', width: 900, support: 32}; " +
+                "printNavbar(navbarConf);");
+        navbarScript.setEscapeModelStrings(false); // do not HTML escape JavaScript code
+        add(navbarScript);
 
         WebMarkupContainer headerLabelContainer =
                 new WebMarkupContainer("headerLabelContainer");
@@ -151,6 +157,16 @@ public abstract class SecuredPageTemplate extends WebPage {
 
     public void setHeaderLabelText(String text) {
         ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model<Serializable>(text));
+    }
+
+    protected void createNavbarWithSupportId(int supportId) {
+        navbarScript.setDefaultModel(new Model<String>("var navbarConf = { " +
+                "logoutLink: 'https://idp.sch.bme.hu/opensso/UI/Logout', " +
+                "theme: 'blue', " +
+                "width: 900, " +
+                "support: " + supportId +
+                "}; " +
+                "printNavbar(navbarConf);"));
     }
 
     private final UserAuthorization getAuthorizationComponent() {

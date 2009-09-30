@@ -42,6 +42,7 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
     private SortableGroupDataProvider groupProvider;
 
     public SvieGroupMgmt() {
+        createNavbarWithSupportId(34);
         if (!isCurrentUserSVIE()) {
             log.warn("Illetéktelen hozzáférési próbálkozás a SVIE beállításokhoz! Felhasználó: " +
                     getSession().getUserId());

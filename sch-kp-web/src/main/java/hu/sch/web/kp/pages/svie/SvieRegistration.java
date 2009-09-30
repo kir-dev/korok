@@ -40,7 +40,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
  */
 public final class SvieRegistration extends SecuredPageTemplate {
 
-    @EJB(name="SvieManagerBean")
+    @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;
     private Person person = null;
     private User user;
@@ -52,6 +52,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
      * @param user A felhasználó, aki szeretne SVIE-be regisztrálni
      */
     public SvieRegistration(final User _user) {
+        createNavbarWithSupportId(34);
         this.user = _user;
         try {
             person = ldapManager.getPersonByVirId(user.getId().toString());
