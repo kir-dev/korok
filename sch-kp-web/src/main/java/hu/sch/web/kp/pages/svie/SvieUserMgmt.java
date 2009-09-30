@@ -49,6 +49,7 @@ public final class SvieUserMgmt extends SecuredPageTemplate {
     private SvieStatus currentFilter;
 
     public SvieUserMgmt() {
+        createNavbarWithSupportId(34);
         if (!isCurrentUserSVIE()) {
             log.warn("Illetéktelen hozzáférési próbálkozás a SVIE beállításokhoz! Felhasználó: " +
                     getSession().getUserId());
