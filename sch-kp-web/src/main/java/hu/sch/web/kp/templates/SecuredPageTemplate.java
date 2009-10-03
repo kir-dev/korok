@@ -9,6 +9,7 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
 import hu.sch.services.LdapManagerLocal;
+import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.kp.pages.admin.EditSettings;
@@ -41,6 +42,8 @@ public abstract class SecuredPageTemplate extends WebPage {
     protected UserManagerLocal userManager;
     @EJB(name = "LdapManagerBean")
     protected LdapManagerLocal ldapManager;
+    @EJB(name = "PostManagerBean")
+    protected PostManagerLocal postManager;
     private static final Logger log = Logger.getLogger(SecuredPageTemplate.class);
     private static final String adminRoleName = "ADMIN";
     private static final String jetiRoleName = "JETI";
@@ -153,6 +156,14 @@ public abstract class SecuredPageTemplate extends WebPage {
 
     protected final boolean isUserGroupLeaderInSomeGroup() {
         return getAuthorizationComponent().isGroupLeaderInSomeGroup(getRequest());
+    }
+
+    protected final boolean hasUserDelegatedPostInGroup(Group group) {
+        User user = getUser();
+        if (user == null) {
+            return false;
+        }
+        return postManager.hasUserDelegatedPostInGroup(group, user);
     }
 
     public void setHeaderLabelText(String text) {

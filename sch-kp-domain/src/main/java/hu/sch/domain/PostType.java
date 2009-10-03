@@ -42,6 +42,7 @@ public class PostType implements Serializable {
     Long id;
     Group group;
     String postName;
+    Boolean delegatedPost;
 
     @Id
     @GeneratedValue(generator = "poszttipus_seq")
@@ -71,6 +72,15 @@ public class PostType implements Serializable {
 
     public void setPostName(String postName) {
         this.postName = postName;
+    }
+
+    @Column(name = "delegated_post")
+    public Boolean getDelegatedPost() {
+        return delegatedPost;
+    }
+
+    public void setDelegatedPost(Boolean delegatedPost) {
+        this.delegatedPost = delegatedPost;
     }
 
     @Override

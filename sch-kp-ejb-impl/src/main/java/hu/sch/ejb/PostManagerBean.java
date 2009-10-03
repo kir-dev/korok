@@ -92,7 +92,7 @@ public class PostManagerBean implements PostManagerLocal {
         }
     }
 
-    public boolean createPostType(String postName, Group group) {
+    public boolean createPostType(String postName, Group group, Boolean isDelegatedPost) {
         try {
             Query q = em.createQuery("SELECT p FROM PostType p " +
                     "WHERE (p.postName = :pn AND p.group IS NULL) OR " +
@@ -104,9 +104,22 @@ public class PostManagerBean implements PostManagerLocal {
             PostType temp = new PostType();
             temp.setGroup(group);
             temp.setPostName(postName);
+            temp.setDelegatedPost(isDelegatedPost);
             em.persist(temp);
             return true;
         }
         return false;
+    }
+
+    public boolean hasUserDelegatedPostInGroup(Group group, User user) {
+        try {
+            Query q = em.createNamedQuery(Post.getUserDelegatedPost);
+            q.setParameter("group", group);
+            q.setParameter("user", user);
+            q.getSingleResult();
+            return true;
+        } catch (NoResultException nre) {
+            return false;
+        }
     }
 }

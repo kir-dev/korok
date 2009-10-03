@@ -27,5 +27,7 @@ public interface PostManagerLocal {
 
     void changeGroupLeader(Membership membership, PostType groupLeaderType);
 
-    boolean createPostType(String postName, Group group);
+    boolean createPostType(String postName, Group group, Boolean isDelegatedPost);
+
+    boolean hasUserDelegatedPostInGroup(Group group, User user);
 }
