@@ -69,24 +69,34 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public void updateUserAttributes(User user) {
-        User f = em.find(User.class, user.getId());
-        if (user.getEmailAddress() != null) {
-            f.setEmailAddress(user.getEmailAddress());
-        }
-        if (user.getNickName() != null) {
-            f.setNickName(user.getNickName());
-        }
-        if (user.getNeptunCode() != null) {
-            f.setNeptunCode(user.getNeptunCode());
-        }
-        if (user.getLastName() != null) {
-            f.setLastName(user.getLastName());
-        }
-        if (user.getFirstName() != null) {
-            f.setFirstName(user.getFirstName());
-        }
+	User f = em.find(User.class, user.getId());
+	boolean changed = false;
 
-        em.flush();
+	if (user.getEmailAddress() != null && !user.getEmailAddress().equals(f.getEmailAddress())) {
+	    f.setEmailAddress(user.getEmailAddress());
+	    changed = true;
+	}
+	if (user.getNickName() != null && !user.getNickName().equals(f.getNickName())) {
+	    f.setNickName(user.getNickName());
+	    changed = true;
+	}
+	if (user.getNeptunCode() != null && !user.getNeptunCode().equals(f.getNeptunCode())) {
+	    f.setNeptunCode(user.getNeptunCode());
+	    changed = true;
+	}
+	if (user.getLastName() != null && !user.getLastName().equals(f.getLastName())) {
+	    f.setLastName(user.getLastName());
+	    changed = true;
+	}
+	if (user.getFirstName() != null && !user.getFirstName().equals(f.getFirstName())) {
+            f.setFirstName(user.getFirstName());
+	    changed = true;
+	}
+
+	if (changed) {
+	    em.merge(f);
+	    em.flush();
+	}
     }
 
     public User findUserById(Long userId) {
