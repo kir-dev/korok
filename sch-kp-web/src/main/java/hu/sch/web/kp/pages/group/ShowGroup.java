@@ -7,6 +7,7 @@ package hu.sch.web.kp.pages.group;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
+import hu.sch.services.PostManagerLocal;
 import hu.sch.web.components.ActiveMembershipsPanel;
 import hu.sch.web.components.AdminMembershipsPanel;
 import hu.sch.web.components.AdminOldBoysPanel;
@@ -16,6 +17,7 @@ import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
@@ -132,7 +134,7 @@ public class ShowGroup extends SecuredPageTemplate {
         List<Membership> inactiveMembers = group.getInactiveMemberships();
         Panel adminOrActivePanel;
         Panel adminOrOldBoysPanel;
-        if (user != null && isUserGroupLeader(group)) {
+        if (user != null && (isUserGroupLeader(group) || hasUserDelegatedPostInGroup(group))) {
             adminOrActivePanel = new AdminMembershipsPanel("adminOrActive", activeMembers);
             adminOrOldBoysPanel = new AdminOldBoysPanel("adminOrOldBoy", inactiveMembers);
         } else {

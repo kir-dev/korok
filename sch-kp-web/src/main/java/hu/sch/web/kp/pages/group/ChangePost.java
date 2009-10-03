@@ -22,8 +22,10 @@ import org.apache.wicket.IClusterable;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -42,6 +44,7 @@ public final class ChangePost extends SecuredPageTemplate {
     private PostManagerLocal postManager;
     private static Logger log = Logger.getLogger(ChangePost.class);
     private String postName;
+    private Boolean isDelegatedPost;
 
     public ChangePost(final PageParameters params) {
         Long memberId;
@@ -65,7 +68,7 @@ public final class ChangePost extends SecuredPageTemplate {
         Group group = userManager.findGroupWithCsoporttagsagokById(ms.getGroup().getId());
         User user = ms.getUser();
 
-        if (!isUserGroupLeader(group)) {
+        if (!isUserGroupLeader(group) && !hasUserDelegatedPostInGroup(group)) {
             getSession().error("Nincs jogod a megadott művelethez");
             throw new RestartResponseException(getApplication().getHomePage());
         }
@@ -126,6 +129,23 @@ public final class ChangePost extends SecuredPageTemplate {
 
         CheckBoxMultipleChoice<PostType> multipleChoice =
                 new CheckBoxMultipleChoice<PostType>("choices", postTypes);
+        multipleChoice.setChoiceRenderer(new IChoiceRenderer<PostType>() {
+
+            @Override
+            public Object getDisplayValue(PostType object) {
+                if (object.getDelegatedPost()) {
+                    return object.toString() + " (delegált)";
+                } else {
+                    return object.toString();
+                }
+            }
+
+            @Override
+            public String getIdValue(PostType object, int index) {
+                return object.toString();
+            }
+        });
+
         form.add(multipleChoice);
         add(form);
 
@@ -137,14 +157,13 @@ public final class ChangePost extends SecuredPageTemplate {
                     log.debug("Creating new posttype (" + postName + ") for group: " + ms.getGroup());
                 }
 
-                if (postManager.createPostType(postName, ms.getGroup())) {
+                if (postManager.createPostType(postName, ms.getGroup(), isDelegatedPost)) {
                     getSession().info("Az új poszt sikeresen elkészült.");
                     setResponsePage(ChangePost.class, params);
                     return;
                 } else {
                     getSession().error("Az új poszt létrehozása közben hiba lépett fel, " +
                             "valószínűleg egy már létező posztot szerettél volna újra felvenni.");
-
                 }
             }
         };
@@ -153,6 +172,9 @@ public final class ChangePost extends SecuredPageTemplate {
                 new RequiredTextField<String>("postNameTF", new PropertyModel<String>(this, "postName"));
         postNameTF.add(new LengthBetweenValidator(2, 30));
         postNameTF.add(new PatternValidator(PatternHolder.groupNameOrPostTypePattern));
+
+        CheckBox delegatedBox = new CheckBox("delegatedBox", new PropertyModel<Boolean>(this, "isDelegatedPost"));
+        createPostTypeForm.add(delegatedBox);
         createPostTypeForm.add(postNameTF);
         add(createPostTypeForm);
     }
