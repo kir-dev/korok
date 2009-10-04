@@ -100,9 +100,9 @@ public abstract class SecuredPageTemplate extends WebPage {
                     userManager.updateUserAttributes(userAttrs);
                 }
                 getSession().setUserId(virId);
-            } else {
-                getSession().setUserId(0L);
             }
+        } else {
+            getSession().setUserId(0L);
         }
     }
 

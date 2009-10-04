@@ -9,6 +9,7 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.User;
 import hu.sch.web.components.ConfirmationBoxRenderer;
 import hu.sch.web.components.customlinks.SvieRegPdfLink;
+import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class ShowUser extends SecuredPageTemplate {
         final User user = userManager.findUserWithCsoporttagsagokById(id);
         if (user == null) {
             info("A felhasználó nem található");
-            throw new RestartResponseException(getApplication().getHomePage());
+            throw new RestartResponseException(GroupHierarchy.class);
         }
         setDefaultModel(new CompoundPropertyModel<User>(user));
         setHeaderLabelText(user.getName() + " felhasználó lapja");
