@@ -116,7 +116,7 @@ public class PostManagerBean implements PostManagerLocal {
             Query q = em.createNamedQuery(Post.getUserDelegatedPost);
             q.setParameter("group", group);
             q.setParameter("user", user);
-            q.getSingleResult();
+            q.getResultList();
             return true;
         } catch (NoResultException nre) {
             return false;
