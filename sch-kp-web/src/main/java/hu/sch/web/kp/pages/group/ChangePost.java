@@ -109,11 +109,18 @@ public final class ChangePost extends SecuredPageTemplate {
                     PostType temp = it.next();
                     if (temp.getPostName().equals(MembershipType.KORVEZETO.toString())) {
                         it.remove();
-                        try {
-                            postManager.changeGroupLeader(ms, temp);
-                        } catch (Exception ex) {
-                            getSession().error(ex.getCause().getMessage());
-                            throw new RestartResponseException(ChangePost.class, new PageParameters("memberid=" + ms.getId()));
+                        if (isUserGroupLeader(ms.getGroup())) {
+                            try {
+                                postManager.changeGroupLeader(ms, temp);
+                            } catch (Exception ex) {
+                                getSession().error(ex.getCause().getMessage());
+                                throw new RestartResponseException(ChangePost.class, new PageParameters("memberid=" + ms.getId()));
+                            }
+                        } else {
+                            log.warn("A következő felhasználó: " + getUser().getId() + " megpróbált a delegált posztjával körvezetővé válni, " +
+                                    "vagy a körvezető személyét valaki másra megváltoztatni! A kezdeményezett fél: " + ms.getUser().getId());
+                            getSession().error("Ez most nem volt szép Tőled, nemsokára jön is érted a fekete kocsi");
+                            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + ms.getGroup().getId()));
                         }
                         break;
                     }
