@@ -122,8 +122,9 @@ public final class SvieRegistration extends SecuredPageTemplate {
         msTypeRadioChoice.setChoiceRenderer(new MsTypeRadioChoices());
         msTypeRadioChoice.setLabel(new Model<String>("Tagságtípus"));
         msTypeRadioChoice.setRequired(true);
+        msTypeRadioChoice.add(new ValidationStyleBehavior());
         form.add(msTypeRadioChoice);
-        form.add(new SimpleFormComponentLabel("radioLabel", msTypeRadioChoice));
+        form.add(new ValidationSimpleFormComponentLabel("radioLabel", msTypeRadioChoice));
         add(form);
     }
 
