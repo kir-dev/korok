@@ -34,6 +34,7 @@ public class PostType implements Serializable {
     private static final long serialVersionUID = 1l;
     public static final String availablePostsQuery = "availablePostsForGroup";
     public static final String searchForPostType = "searchForCertainPostType";
+    public static final String KORVEZETO = "körvezető";
     /*
     pttip_id   | integer       | not null default nextval('poszttipus_seq'::regclass)
     grp_id     | integer       |

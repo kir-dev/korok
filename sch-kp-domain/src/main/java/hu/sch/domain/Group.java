@@ -192,6 +192,18 @@ public class Group implements Serializable, Comparable<Group> {
         this.parent = parent;
     }
 
+    @Transient
+    public User getGroupLeader() {
+        for (Membership ms : activeMembers) {
+            for (Post post : ms.getPosts()) {
+                if (post.getPostType().getPostName().equals(PostType.KORVEZETO)) {
+                    return ms.getUser();
+                }
+            }
+        }
+        throw new IllegalStateException("Unable to find GroupLeader for group: " + getId());
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "grp_state")
     public GroupStatus getStatus() {

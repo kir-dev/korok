@@ -78,4 +78,6 @@ public interface UserManagerLocal {
     User getGroupLeaderForGroup(Long groupId);
 
     List<Group> getAllGroupsWithCount();
+
+    Membership getMembership(final Long groupId, final Long userId);
 }

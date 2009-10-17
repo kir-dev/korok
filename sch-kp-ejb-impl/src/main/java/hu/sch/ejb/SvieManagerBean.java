@@ -91,6 +91,14 @@ public class SvieManagerBean implements SvieManagerLocal {
             Group temp = em.find(Group.class, group.getId());
             temp.setDelegateNumber(group.getDelegateNumber());
             temp.setIsSvie(group.getIsSvie());
+            User user = temp.getGroupLeader();
+            if (group.getIsSvie() && user.getSvieMembershipType().equals(SvieMembershipType.NEMTAG)) {
+                user.setSvieMembershipType(SvieMembershipType.RENDESTAG);
+                user.setSvieStatus(SvieStatus.ELFOGADVA);
+                user.setSviePrimaryMembership(userManager.getMembership(group.getId(), user.getId()));
+                user.setDelegated(true);
+                em.merge(user);
+            }
         }
     }
 
