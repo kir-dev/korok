@@ -11,7 +11,7 @@
         <group-name>urn:geant:niif.hu:sch.bme.hu:entitlement:tag:Jutalmazást Elbíráló Testület:156</group-name>
 	<!--group-name>am_jeti_role</group-name-->
     </security-role-mapping>
-        <security-role-mapping>
+    <security-role-mapping>
         <role-name>SVIE</role-name>
         <group-name>urn:geant:niif.hu:sch.bme.hu:entitlement:adminisztrátor:SVIE:369</group-name>
 	<!--group-name>am_svie_role</group-name-->
