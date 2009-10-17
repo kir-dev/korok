@@ -55,6 +55,7 @@ public final class SvieAccount extends SecuredPageTemplate {
 
         add(new FeedbackPanel("pagemessages"));
 
+        add(new Label("sviestatusLabel", user.getSvieStatus().toString()));
         OrdinalFragment ordFragment = new OrdinalFragment("ordinalFragment", "ordinalPanel");
         AdvocateFragment advFragment = new AdvocateFragment("advocateFragment", "advocatePanel");
         ordFragment.setVisible(false);
