@@ -20,6 +20,11 @@ public interface SvieManagerLocal {
 
     void updateSvieInfos(List<User> users);
 
+    /**
+     * Frissíti a paraméterben megkapott körök SVIE-s tulajdonságait, valamint
+     * beállítja, hogy a SVIE-s kör körvezetője is SVIE-s legyen.
+     * @param groups
+     */
     void updateSvieGroupInfos(List<Group> groups);
 
     List<Membership> getSvieMembershipsForUser(User user);

@@ -320,13 +320,6 @@ public class UserManagerBean implements UserManagerLocal {
         return (Membership) q.getSingleResult();
     }
 
-    /**
-     * 
-     * @param ms
-     * @deprecated nem kéne használni, írni kéne egy általános módosítós függvényt
-     * és annak átadni a módosított membership-et.
-     */
-    @Deprecated
     public void setMemberToOldBoy(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         temp.setEnd(new Date());
@@ -338,10 +331,6 @@ public class UserManagerBean implements UserManagerLocal {
         temp.setDelegated(isDelegated);
     }
 
-    /**
-     * @see hu.sch.ejb.UserManagerBean#setMemberToOldBoy(Membership)
-     */
-    @Deprecated
     public void setOldBoyToActive(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         temp.setEnd(null);

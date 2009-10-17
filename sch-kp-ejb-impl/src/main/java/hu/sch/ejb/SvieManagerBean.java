@@ -85,6 +85,9 @@ public class SvieManagerBean implements SvieManagerLocal {
         logManager.createLogEntry(null, user, APPLY_EVENT);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateSvieGroupInfos(List<Group> groups) {
         for (Group group : groups) {
