@@ -213,8 +213,10 @@ public class UserManagerBean implements UserManagerLocal {
 
     public List<User> getUsersWithPrimaryMembership(Long groupId) {
         Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
-                "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms");
+                "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms " +
+                "AND ms.user.svieStatus = :svieStatus");
         q.setParameter("groupId", groupId);
+        q.setParameter("svieStatus", SvieStatus.ELFOGADVA);
         return q.getResultList();
     }
 
