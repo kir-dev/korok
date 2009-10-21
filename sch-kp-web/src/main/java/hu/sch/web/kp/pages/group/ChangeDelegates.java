@@ -56,14 +56,6 @@ public final class ChangeDelegates extends SecuredPageTemplate {
                     new PageParameters("id=" + groupId.toString()));
         }
 
-        while (it.hasNext()) {
-            User u = it.next();
-
-            if (u.getId() == groupLeaderId) {
-                it.remove();
-            }
-        }
-
         add(new FeedbackPanel("pagemessages"));
 
         add(new EditDelegatesForm("form", users) {
