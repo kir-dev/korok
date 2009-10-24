@@ -25,8 +25,8 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
     @PersistenceContext
     EntityManager em;
     private final String FINDUSER =
-            "SELECT f FROM Felhasznalo f WHERE upper(f.neptunkod) = upper(:neptunkod) OR " +
-            "upper(f.emailcim) = upper(:emailcim)";
+            "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR " +
+            "upper(u.emailAddress) = upper(:emailcim)";
 
     public User createUserEntry(User user) {
         if (user.getNeptunCode() != null) {
