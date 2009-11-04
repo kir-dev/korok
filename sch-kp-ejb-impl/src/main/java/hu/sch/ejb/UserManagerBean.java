@@ -279,7 +279,7 @@ public class UserManagerBean implements UserManagerLocal {
             User user = (User) q.getSingleResult();
             return user;
         } catch (Exception ex) {
-            log.warn("Can't find user with memberships", ex);
+            log.warn("Can't find user with memberships for this id: " + userId);
             return null;
         }
     }

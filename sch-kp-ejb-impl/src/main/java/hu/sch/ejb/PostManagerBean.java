@@ -46,15 +46,15 @@ public class PostManagerBean implements PostManagerLocal {
     }
 
     public void setPostsForMembership(Membership ms, List<Post> removable, List<PostType> creatable) {
-        System.out.println("törlendő:");
+        log.info("törlendő:");
         for (Post post : removable) {
-            System.out.println(post.getPostType().toString());
+            log.info(post.getPostType().toString());
             Post temp = em.find(Post.class, post.getId());
             em.remove(temp);
         }
-        System.out.println("létrehozandók");
+        log.info("létrehozandók");
         for (PostType postType : creatable) {
-            System.out.println(postType.toString());
+            log.info(postType.toString());
             Post temp = new Post();
             temp.setMembership(ms);
             temp.setPostType(postType);
