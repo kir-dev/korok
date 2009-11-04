@@ -43,7 +43,7 @@ public final class ChangeDelegates extends SecuredPageTemplate {
 
         setHeaderLabelText("Küldöttek beállítása");
         add(new Label("numberOfDelegates",
-                (group.getDelegateNumber() == null ? "Nincs beállítva" : Integer.toString(group.getDelegateNumber() - 1))));
+                (group.getDelegateNumber() == null ? "Nincs beállítva" : Integer.toString(group.getDelegateNumber()))));
         add(new Label("groupName", group.getName()));
 
         List<User> users = userManager.getUsersWithPrimaryMembership(groupId);
@@ -68,7 +68,7 @@ public final class ChangeDelegates extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 List<ExtendedUser> eu = getLines();
-                int selected = 1; // a körvezető eleve küldött, a listától függetlenül.
+                int selected = 0; // a körvezető eleve küldött, a listától függetlenül.
                 List<ExtendedUser> modifications = new ArrayList<ExtendedUser>();
                 for (ExtendedUser extendedUser : eu) {
                     if (extendedUser.getSelected()) {
