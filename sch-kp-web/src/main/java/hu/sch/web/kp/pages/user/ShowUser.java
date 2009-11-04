@@ -6,9 +6,10 @@ package hu.sch.web.kp.pages.user;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
+import hu.sch.domain.Post;
+import hu.sch.domain.PostType;
 import hu.sch.domain.User;
 import hu.sch.web.components.ConfirmationBoxRenderer;
-import hu.sch.web.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
@@ -98,6 +99,13 @@ public class ShowUser extends SecuredPageTemplate {
 
                     @Override
                     public void onClick() {
+                        for (Post post : ms.getPosts()) {
+                            if (post.getPostType().getPostName().equals(PostType.KORVEZETO)) {
+                                getSession().error("Körvezetőként nem törölheted magad a körből, csak miután átadtad a posztodat!");
+                                setResponsePage(ShowUser.class);
+                                return;
+                            }
+                        }
                         userManager.deleteMembership(ms);
                         getSession().info("A tagság törlése sikeresen megtörtént");
                         setResponsePage(ShowUser.class);
