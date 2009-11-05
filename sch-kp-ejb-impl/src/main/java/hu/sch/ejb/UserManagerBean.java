@@ -313,7 +313,7 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public Membership getMembership(final Long groupId, final Long userId) {
-        Query q = em.createQuery("SELET ms FROM Membership ms WHERE ms.user.id = :userId " +
+        Query q = em.createQuery("SELECT ms FROM Membership ms WHERE ms.user.id = :userId " +
                 "AND ms.group.id = :groupId");
         q.setParameter("groupId", groupId);
         q.setParameter("userId", userId);
