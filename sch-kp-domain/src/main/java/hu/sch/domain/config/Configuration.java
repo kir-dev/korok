@@ -14,8 +14,11 @@ import java.util.Properties;
  */
 public class Configuration {
 
+    private static final String PROPERTY_NAME = "application.resource.dir";
     private static final String SPRINGLDAP_FILE = "springldap.file";
     private static final String TIMES_FONT_FILE = "times.font.file";
+    private static final String APPLICATION_FOLDER = "korok";
+    private static final String CONFIG_FILE = "config.properties";
     private static Properties properties = new Properties();
     private static String baseDir;
 
@@ -23,13 +26,16 @@ public class Configuration {
     }
 
     public static void init() {
-        baseDir = System.getProperty("korok.resource.dir");
+        baseDir = System.getProperty(PROPERTY_NAME);
         if (baseDir == null) {
             throw new IllegalArgumentException(
-                    "System property 'korok.resource.dir' isn't setted! Can't initialize application!");
+                    "System property '" + PROPERTY_NAME + "' isn't setted! Can't initialize application!");
+        }
+        if (!baseDir.endsWith("/")) {
+            baseDir += "/";
         }
         try {
-            FileInputStream fis = new FileInputStream(new File(baseDir + "config.properties"));
+            FileInputStream fis = new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE));
             properties.load(fis);
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error while loading properties file!", ex);
