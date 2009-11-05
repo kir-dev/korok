@@ -175,7 +175,7 @@ public class User implements Serializable, Comparable<User> {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "usr_svie_state")
+    @Column(name = "usr_svie_state", nullable = false)
     public SvieStatus getSvieStatus() {
         return svieStatus;
     }
@@ -185,22 +185,22 @@ public class User implements Serializable, Comparable<User> {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "usr_svie_member_type")
+    @Column(name = "usr_svie_member_type", nullable = false)
     public SvieMembershipType getSvieMembershipType() {
         return svieMembershipType;
     }
 
-    @Column(name = "usr_delegated")
+    public void setSvieMembershipType(SvieMembershipType svieMembershipType) {
+        this.svieMembershipType = svieMembershipType;
+    }
+
+    @Column(name = "usr_delegated", nullable = false, columnDefinition = "boolean default false")
     public boolean getDelegated() {
         return delegated;
     }
 
     public void setDelegated(boolean newValue) {
         this.delegated = newValue;
-    }
-
-    public void setSvieMembershipType(SvieMembershipType svieMembershipType) {
-        this.svieMembershipType = svieMembershipType;
     }
 
     @ManyToOne

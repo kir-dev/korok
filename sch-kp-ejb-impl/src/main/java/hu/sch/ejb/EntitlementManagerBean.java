@@ -4,6 +4,8 @@
  */
 package hu.sch.ejb;
 
+import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
 import hu.sch.services.EntitlementManagerRemote;
 import hu.sch.services.UserManagerLocal;
@@ -24,7 +26,8 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
     UserManagerLocal userManager;
     @PersistenceContext
     EntityManager em;
-    private final String FINDUSER =
+    private static final long serialVersionUID = 1L;
+    private static final String FINDUSER =
             "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR " +
             "upper(u.emailAddress) = upper(:emailcim)";
 
@@ -54,14 +57,16 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
     }
 
     protected User mapNew(User f) {
-        User felhasznalo = mapReturn(f);
-        felhasznalo.setNeptunCode(f.getNeptunCode());
-        felhasznalo.setLastName(f.getLastName());
-        felhasznalo.setFirstName(f.getFirstName());
-        felhasznalo.setNickName(f.getNickName());
-        felhasznalo.setEmailAddress(f.getEmailAddress());
+        User user = mapReturn(f);
+        user.setNeptunCode(f.getNeptunCode());
+        user.setLastName(f.getLastName());
+        user.setFirstName(f.getFirstName());
+        user.setNickName(f.getNickName());
+        user.setEmailAddress(f.getEmailAddress());
+        user.setSvieMembershipType(SvieMembershipType.NEMTAG);
+        user.setSvieStatus(SvieStatus.NEMTAG);
 
-        return felhasznalo;
+        return user;
     }
 
     public User findUser(String neptun, String email) {
