@@ -65,31 +65,33 @@ public class PostManagerBean implements PostManagerLocal {
 
     public void changeGroupLeader(Membership membership, PostType groupLeaderType) {
         User user = membership.getUser();
-        if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
-                user.getSvieStatus().equals(SvieStatus.ELFOGADVA) &&
-                user.getSviePrimaryMembership().equals(membership)) {
-            Query q = em.createQuery("SELECT p FROM Post p " +
-                    "WHERE p.postType = :pt AND p.membership.group = :group");
-            q.setParameter("pt", groupLeaderType);
-            q.setParameter("group", membership.getGroup());
-            Post post = (Post) q.getSingleResult();
-            post.getMembership().getUser().setDelegated(false);
-            Query q2 = em.createQuery("SELECT p FROM PostType p " +
-                    "WHERE p.postName = :pn");
-            q2.setParameter("pn", "volt körvezető");
-            PostType postType = (PostType) q2.getSingleResult();
-            post.setPostType(postType);
-
-            List<PostType> temp = new ArrayList<PostType>(1);
-            temp.add(groupLeaderType);
-            membership.getUser().setDelegated(true);
-            em.merge(membership.getUser());
-            em.flush();
-            setPostsForMembership(membership, new ArrayList<Post>(0), temp);
-        } else {
-            throw new IllegalStateException("Ennek a felhasználónak nem adhatod át a körvezetőséget, " +
-                    "nem teljesíti a SVIE feltételeket.");
+        Query q = em.createQuery("SELECT p FROM Post p " +
+                "WHERE p.postType = :pt AND p.membership.group = :group");
+        q.setParameter("pt", groupLeaderType);
+        q.setParameter("group", membership.getGroup());
+        Post post = (Post) q.getSingleResult();
+        Query q2 = em.createQuery("SELECT p FROM PostType p " +
+                "WHERE p.postName = :pn");
+        q2.setParameter("pn", "volt körvezető");
+        PostType postType = (PostType) q2.getSingleResult();
+        post.setPostType(postType);
+        List<PostType> temp = new ArrayList<PostType>(1);
+        temp.add(groupLeaderType);
+        log.warn("Körvezetőt szeretnének váltani: " + post.getMembership().getUser().getId() + "->" + membership.getUser().getId());
+        if (membership.getGroup().getIsSvie()) {
+            if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
+                    user.getSvieStatus().equals(SvieStatus.ELFOGADVA) &&
+                    user.getSvieMembershipType() != null && user.getSviePrimaryMembership().equals(membership)) {
+                post.getMembership().getUser().setDelegated(false);
+                membership.getUser().setDelegated(true);
+            } else {
+                throw new IllegalStateException("Ennek a felhasználónak nem adhatod át a körvezetőséget, " +
+                        "nem teljesíti a SVIE feltételeket.");
+            }
         }
+        em.merge(membership.getUser());
+        em.flush();
+        setPostsForMembership(membership, new ArrayList<Post>(0), temp);
     }
 
     public boolean createPostType(String postName, Group group, Boolean isDelegatedPost) {
