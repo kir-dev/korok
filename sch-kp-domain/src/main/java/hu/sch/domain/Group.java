@@ -201,7 +201,8 @@ public class Group implements Serializable, Comparable<Group> {
                 }
             }
         }
-        throw new IllegalStateException("Unable to find GroupLeader for group: " + getId());
+        System.out.println("Unable to find GroupLeader for group: " + getId());
+        return null;
     }
 
     @Enumerated(EnumType.STRING)
