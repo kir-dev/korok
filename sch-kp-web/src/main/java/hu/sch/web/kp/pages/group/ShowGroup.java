@@ -122,7 +122,7 @@ public class ShowGroup extends SecuredPageTemplate {
             }
         };
         applyLink.add(new ConfirmationBoxRenderer("Biztosan szeretnél jelentkezni a körbe?"));
-        if (user != null && user.getGroups().contains(group)) {
+        if (user == null || user.getGroups().contains(group)) {
             applyLink.setVisible(false);
         }
         add(applyLink);
