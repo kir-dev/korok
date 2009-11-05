@@ -39,6 +39,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
     private static final String FIRSTNAME_ATTRNAME = "givenName";
     private static final String NICNKAME_ATTRNAME = "displayName";
     private static final String EMAIL_ATTRNAME = "mail";
+    private static final String ENTITLEMENT_SEPARATOR = "\\|";
 
     /**
      * {@inheritDoc}
@@ -138,7 +139,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
 
         if (entitlementSet != null) {
             for (String entitlement : entitlementSet) {
-                String[] entitlements = entitlement.split("\\|");
+                String[] entitlements = entitlement.split(ENTITLEMENT_SEPARATOR);
                 for (String string : entitlements) {
                     Matcher m = ENTITLEMENT_PATTERN.matcher(string);
                     if (m.matches()) {
