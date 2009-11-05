@@ -265,7 +265,7 @@ select.wide { width: 355px; }
 }
 #footercont {
     position: relative;
-    background: #517D9D url('../images/logoSch.gif') top left no-repeat;
+    background: #517D9D url('../images/logoSch.png') top left no-repeat;
     height: 60px;
     width: 900px;
     margin: 0 auto;
