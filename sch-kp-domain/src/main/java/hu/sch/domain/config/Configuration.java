@@ -43,10 +43,10 @@ public class Configuration {
     }
 
     public static String getSpringLdapPath() {
-        return baseDir + properties.getProperty(SPRINGLDAP_FILE);
+        return baseDir + APPLICATION_FOLDER + "/" + properties.getProperty(SPRINGLDAP_FILE);
     }
 
     public static String getFontPath() {
-        return baseDir + properties.getProperty(TIMES_FONT_FILE);
+        return baseDir + APPLICATION_FOLDER + "/" + properties.getProperty(TIMES_FONT_FILE);
     }
 }
