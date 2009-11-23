@@ -93,3 +93,5 @@ insert into event (evt_text) VALUES ('PARTOLOVAVALAS');
 insert into event (evt_text) VALUES ('RENDESTAGGAVALAS');
 insert into event (evt_text) VALUES ('ELFOGADASALATT');
 
+ALTER TABLE users DROP CONSTRAINT users_main_group;
+ALTER TABLE users ADD CONSTRAINT users_main_group_fkey FOREIGN KEY (usr_svie_primary_membership) REFERENCES grp_membership (id);

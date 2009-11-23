@@ -180,20 +180,30 @@ public class UserManagerBean implements UserManagerLocal {
 
     public void deleteMembership(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
+        User user = ms.getUser();
+        boolean userChanged = false;
+
         em.remove(temp);
         em.flush();
-        if (ms.getUser().getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
-                ms.getUser().getSvieStatus().equals(SvieStatus.ELFOGADVA) &&
+        if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
+                user.getSvieStatus().equals(SvieStatus.ELFOGADVA) &&
                 ms.getGroup().getIsSvie()) {
             try {
                 Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
                         "WHERE ms.user = :user AND ms.group.isSvie = true");
-                q.setParameter("user", ms.getUser());
+                q.setParameter("user", user);
                 q.getSingleResult();
             } catch (NoResultException nre) {
-                User temp2 = em.find(User.class, ms.getUser().getId());
-                temp2.setSvieMembershipType(SvieMembershipType.PARTOLOTAG);
+                user.setSvieMembershipType(SvieMembershipType.PARTOLOTAG);
+                userChanged = true;
             }
+        }
+        if (ms.getId().equals(user.getSviePrimaryMembership().getId())) {
+            user.setSviePrimaryMembership(null);
+            userChanged = true;
+        }
+        if (userChanged){
+            em.merge(user);
         }
         logManager.createLogEntry(ms.getGroup(), ms.getUser(), DELETEMEMBERSHIP_EVENT);
     }
