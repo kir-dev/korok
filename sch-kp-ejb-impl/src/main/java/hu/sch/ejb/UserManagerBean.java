@@ -329,19 +329,18 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public void setMemberToOldBoy(Membership ms) {
-        Membership temp = em.find(Membership.class, ms.getId());
-        temp.setEnd(new Date());
+        ms.setEnd(new Date());
+        em.merge(ms);
     }
 
     public void setUserDelegateStatus(User user, boolean isDelegated) {
-        User temp = em.find(User.class, user.getId());
-
-        temp.setDelegated(isDelegated);
+        user.setDelegated(isDelegated);
+        em.merge(user);
     }
 
     public void setOldBoyToActive(Membership ms) {
-        Membership temp = em.find(Membership.class, ms.getId());
-        temp.setEnd(null);
+        ms.setEnd(null);
+        em.merge(ms);
     }
 
     @Override
