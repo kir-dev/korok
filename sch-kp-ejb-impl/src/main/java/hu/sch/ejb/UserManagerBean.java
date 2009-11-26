@@ -197,11 +197,11 @@ public class UserManagerBean implements UserManagerLocal {
                 userChanged = true;
             }
         }
-        if (ms.getId().equals(user.getSviePrimaryMembership().getId())) {
+        if (user.getSviePrimaryMembership() != null && ms.getId().equals(user.getSviePrimaryMembership().getId())) {
             user.setSviePrimaryMembership(null);
             userChanged = true;
         }
-        if (userChanged){
+        if (userChanged) {
             em.merge(user);
         }
         logManager.createLogEntry(ms.getGroup(), ms.getUser(), DELETEMEMBERSHIP_EVENT);
