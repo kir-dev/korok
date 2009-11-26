@@ -16,23 +16,24 @@
                     <th>Becenév</th>
                     <th>Betöltött poszt</th>
                     <th>Jogok</th>
-                    <th style="text-align: center;">Öregtagok</th>
+                    <th></th>
                 </tr>
                 <tr wicket:id="members">
                     <td>
-                        <wicket:panel wicket:id="userLink" />
-                    </td>
-                    <td wicket:id="membership.user.nickName" />
-                    <td wicket:id="rights" />
-                    <td>
-                        <span wicket:id="postLink" />
-                    </td>
-                    <td style="text-align: center;">
-                        <input wicket:id="check" type="checkbox" />
-                    </td>
+                <wicket:panel wicket:id="userLink" />
+                </td>
+                <td wicket:id="membership.user.nickName" />
+                <td wicket:id="rights" />
+                <td>
+                    <span wicket:id="postLink" />
+                </td>
+                <td style="text-align: center;">
+                    <input wicket:id="check" type="checkbox" />
+                </td>
                 </tr>
             </table>
-            <input type="submit" class="btn" value="Mentés" />
+            <input wicket:id="oldBoyButton" type="submit" class="btn" value="Öregtaggá nyilvánítás" />
+            <input wicket:id="eraseButton" type="submit" class="btn" value="Tagok törlése" />
         </form>
     </div>
 </wicket:panel>

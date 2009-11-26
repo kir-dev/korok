@@ -95,42 +95,42 @@ public class ShowUser extends SecuredPageTemplate {
                 }
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
-                Link eraseLink = new Link("deleteMembership") {
+                
+                Link<Void> oldBoyLink = new Link<Void>("oldBoyLink") {
 
                     @Override
                     public void onClick() {
                         for (Post post : ms.getPosts()) {
                             if (post.getPostType().getPostName().equals(PostType.KORVEZETO)) {
-                                getSession().error("Körvezetőként nem törölheted magad a körből, csak miután átadtad a posztodat!");
+                                getSession().error("Körvezetőként nem teheted magad öregtaggá!");
                                 setResponsePage(ShowUser.class);
                                 return;
                             }
                         }
-                        userManager.deleteMembership(ms);
-                        getSession().info("A tagság törlése sikeresen megtörtént");
+                        userManager.setMemberToOldBoy(ms);
+                        getSession().info("Az öregtaggá válás sikeresen megtörtént");
                         setResponsePage(ShowUser.class);
                         return;
                     }
                 };
-                eraseLink.add(new ConfirmationBoxRenderer("Biztosan meg szeretnéd szüntetni a tagságodat?"));
+                oldBoyLink.add(new ConfirmationBoxRenderer("Biztosan öregtaggá szeretnél válni?"));
                 if (!ownProfile) {
-                    eraseLink.setVisible(false);
+                    oldBoyLink.setVisible(false);
                 }
-                item.add(eraseLink);
+                item.add(oldBoyLink);
             }
         };
         add(csoptagsagok);
-        List<Group> csoportok;
+        List<Group> groups;
 
         if (getUser() == null) {
-            csoportok = new ArrayList<Group>();
+            groups = new ArrayList<Group>();
         } else {
-            csoportok = getUser().getGroups();
+            groups = getUser().getGroups();
         }
         List<Group> korvezetoicsoportok = new ArrayList<Group>();
-        for (Group cs : csoportok) {
-            if (isUserGroupLeader(cs) &&
-                    !user.getGroups().contains(cs)) {
+        for (Group cs : groups) {
+            if (isUserGroupLeader(cs) && !user.getGroups().contains(cs)) {
                 korvezetoicsoportok.add(cs);
             }
         }
