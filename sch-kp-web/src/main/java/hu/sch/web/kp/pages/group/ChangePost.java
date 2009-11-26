@@ -10,13 +10,11 @@ import hu.sch.domain.MembershipType;
 import hu.sch.domain.Post;
 import hu.sch.domain.User;
 import hu.sch.domain.PostType;
-import hu.sch.services.PostManagerLocal;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.kp.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IClusterable;
 import org.apache.wicket.PageParameters;
@@ -40,8 +38,6 @@ import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValid
  */
 public final class ChangePost extends SecuredPageTemplate {
 
-    @EJB(name = "PostManagerBean")
-    private PostManagerLocal postManager;
     private static Logger log = Logger.getLogger(ChangePost.class);
     private String postName;
     private Boolean isDelegatedPost;

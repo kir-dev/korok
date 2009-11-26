@@ -60,7 +60,6 @@ public class UserManagerBean implements UserManagerLocal {
             q.setParameter("evt", EventType.JELENTKEZES);
             CREATEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
         }
-        StringBuilder sb = new StringBuilder(200);
     }
 
     public List<User> getAllUsers() {
@@ -209,7 +208,6 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public List<User> getCsoporttagokWithoutOregtagok(Long csoportId) {
-        //Group cs = em.find(Group.class, csoportId);
         Query q =
                 em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
                 "ms.user " +
