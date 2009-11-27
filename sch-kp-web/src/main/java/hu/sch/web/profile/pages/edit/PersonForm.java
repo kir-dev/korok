@@ -280,12 +280,14 @@ public class PersonForm extends Form<Person> {
         TextField<String> mobileTF = new TextField<String>("mobile");
         add(mobileTF);
         mobileTF.setLabel(new Model<String>("Mobil"));
-        add(new SimpleFormComponentLabel("mobileLabel", mobileTF));
+        mobileTF.add(new PatternValidator(PatternHolder.phoneNumberPattern));
+        add(new ValidationSimpleFormComponentLabel("mobileLabel", mobileTF));
 
         TextField<String> homePhoneTF = new TextField<String>("homePhone");
         add(homePhoneTF);
         homePhoneTF.setLabel(new Model<String>("Vezetékes"));
-        add(new SimpleFormComponentLabel("homePhoneLabel", homePhoneTF));
+        homePhoneTF.add(new PatternValidator(PatternHolder.phoneNumberPattern));
+        add(new ValidationSimpleFormComponentLabel("homePhoneLabel", homePhoneTF));
 
         TextField<String> webpageTF = new TextField<String>("webpage");
         webpageTF.add(new UrlValidator());
