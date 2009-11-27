@@ -60,7 +60,6 @@ public class UserManagerBean implements UserManagerLocal {
             q.setParameter("evt", EventType.JELENTKEZES);
             CREATEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
         }
-        StringBuilder sb = new StringBuilder(200);
     }
 
     public List<User> getAllUsers() {
@@ -198,18 +197,17 @@ public class UserManagerBean implements UserManagerLocal {
                 userChanged = true;
             }
         }
-        if (ms.getId().equals(user.getSviePrimaryMembership().getId())) {
+        if (user.getSviePrimaryMembership() != null && ms.getId().equals(user.getSviePrimaryMembership().getId())) {
             user.setSviePrimaryMembership(null);
             userChanged = true;
         }
-        if (userChanged){
+        if (userChanged) {
             em.merge(user);
         }
         logManager.createLogEntry(ms.getGroup(), ms.getUser(), DELETEMEMBERSHIP_EVENT);
     }
 
     public List<User> getCsoporttagokWithoutOregtagok(Long csoportId) {
-        //Group cs = em.find(Group.class, csoportId);
         Query q =
                 em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
                 "ms.user " +
@@ -331,19 +329,18 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public void setMemberToOldBoy(Membership ms) {
-        Membership temp = em.find(Membership.class, ms.getId());
-        temp.setEnd(new Date());
+        ms.setEnd(new Date());
+        em.merge(ms);
     }
 
     public void setUserDelegateStatus(User user, boolean isDelegated) {
-        User temp = em.find(User.class, user.getId());
-
-        temp.setDelegated(isDelegated);
+        user.setDelegated(isDelegated);
+        em.merge(user);
     }
 
     public void setOldBoyToActive(Membership ms) {
-        Membership temp = em.find(Membership.class, ms.getId());
-        temp.setEnd(null);
+        ms.setEnd(null);
+        em.merge(ms);
     }
 
     @Override

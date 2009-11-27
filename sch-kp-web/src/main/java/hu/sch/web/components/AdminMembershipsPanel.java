@@ -5,6 +5,7 @@
 package hu.sch.web.components;
 
 import hu.sch.domain.Membership;
+import hu.sch.web.components.EditEntitlementsForm.ExtendedGroup;
 import hu.sch.web.components.customlinks.ChangePostLink;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.session.VirSession;
@@ -12,6 +13,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 
@@ -25,7 +28,8 @@ public final class AdminMembershipsPanel extends Panel {
 
     public AdminMembershipsPanel(String id, final List<Membership> activeMembers) {
         super(id);
-        add(new EditEntitlementsForm("form", activeMembers) {
+        //TODO: szebbé tenni
+        final EditEntitlementsForm entForm = new EditEntitlementsForm("form", activeMembers) {
 
             @Override
             public void onPopulateItem(ListItem<ExtendedGroup> item, Membership ms) {
@@ -36,13 +40,19 @@ public final class AdminMembershipsPanel extends Panel {
 
             @Override
             public void onSubmit() {
+            }
+        };
+        entForm.add(new Button("oldBoyButton") {
+
+            @Override
+            public void onSubmit() {
                 try {
                     long myId = ((VirSession) getSession()).getUserId();
-                    for (ExtendedGroup extendedGroup : getLines()) {
+                    for (ExtendedGroup extendedGroup : entForm.getLines()) {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
                             if (!ms.getUser().getId().equals(myId)) {
-                                userManager.setMemberToOldBoy(ms);
+                                entForm.userManager.setMemberToOldBoy(ms);
                             }
                         }
                     }
@@ -54,5 +64,34 @@ public final class AdminMembershipsPanel extends Panel {
                 setResponsePage(ShowGroup.class, new PageParameters("id=" + activeMembers.get(0).getGroup().getId()));
             }
         });
+
+        entForm.add(new Button("eraseButton") {
+
+            @Override
+            protected String getOnClickScript() {
+                return "return confirm('Ezzel a művelettel végérvényesen eltűnnek az emberek a körből.\\nBiztosan szeretnéd törölni ezeket a tagokat?')";
+            }
+
+            @Override
+            public void onSubmit() {
+                try {
+                    long myId = ((VirSession) getSession()).getUserId();
+                    for (ExtendedGroup extendedGroup : entForm.getLines()) {
+                        Membership ms = extendedGroup.getMembership();
+                        if (extendedGroup.getSelected()) {
+                            if (!ms.getUser().getId().equals(myId)) {
+                                entForm.userManager.deleteMembership(ms);
+                            }
+                        }
+                    }
+                    getSession().info("A változások sikeresen mentésre kerültek");
+                } catch (Exception ex) {
+                    getSession().error("Hiba történt a tag törlése közben");
+                    log.warn("Hiba történt a tag törlése közben", ex);
+                }
+                setResponsePage(ShowGroup.class, new PageParameters("id=" + activeMembers.get(0).getGroup().getId()));
+            }
+        });
+        add(entForm);
     }
 }

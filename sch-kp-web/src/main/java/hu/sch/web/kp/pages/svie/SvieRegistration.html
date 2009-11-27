@@ -26,10 +26,19 @@
                     </a>
                 </td>
             </tr>
-            <tr>
-                <td><label wicket:id="radioLabel">Nem</label></td>
-                <td><span class="gender_radios" wicket:id="radiochoice"/></td>
-            </tr>
+            <span wicket:id="choices">
+                <tr>
+                    <td></td>
+                    <td>
+                        <table  style="padding-top: 10px">
+                            <tr wicket:id="choiceList">
+                                <td><input type="radio" wicket:id="radio"/></td>
+                                <td><span wicket:id="name" /></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </span>
         </table>
         <p style="padding-top: 15px;">
             Igen, be szeretnék lépni a Schönherz Egyesületbe!<br/>

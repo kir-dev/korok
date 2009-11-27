@@ -4,9 +4,7 @@
  */
 package hu.sch.web.kp.pages.svie;
 
-import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
-import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.SvieManagerLocal;
@@ -21,15 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.RadioChoice;
+import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -44,7 +42,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
     SvieManagerLocal svieManager;
     private Person person = null;
     private User user;
-    private String choosed;
+    private SvieMembershipType choosed;
 
     /**
      * Ezzel a konstruktorral egyszerre gyorsítjuk a kódot és megoldjuk, hogy az
@@ -69,8 +67,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 ldapManager.update(person);
-                SvieMembershipType type = SvieMembershipType.valueOf(choosed);
-                svieManager.applyToSvie(user, type);
+                svieManager.applyToSvie(user, choosed);
                 if (!continueToOriginalDestination()) {
                     setResponsePage(getApplication().getHomePage());
                 }
@@ -102,66 +99,22 @@ public final class SvieRegistration extends SecuredPageTemplate {
         AttributeAjaxFallbackLink.setPerson(person);
         form.add(new AttributeAjaxFallbackLink("homePostalAddressAttributeLink", "homePostalAddressAttributeImg", "homePostalAddress"));
 
-        IModel<List<KeyValuePair>> membershipTypes = new LoadableDetachableModel<List<KeyValuePair>>() {
+        final RadioGroup<SvieMembershipType> radioGroup = new RadioGroup<SvieMembershipType>("choices", new PropertyModel<SvieMembershipType>(this, "choosed"));
+        form.add(radioGroup);
+        List<SvieMembershipType> msTypes = new ArrayList<SvieMembershipType>();
+        msTypes.add(SvieMembershipType.PARTOLOTAG);
+        msTypes.add(SvieMembershipType.RENDESTAG);
+        ListView lv = new ListView("choiceList", msTypes) {
 
             @Override
-            protected List<KeyValuePair> load() {
-                List<KeyValuePair> l = new ArrayList<KeyValuePair>();
-                for (Membership membership : user.getMemberships()) {
-                    if (membership.getEnd() == null && membership.getGroup().getIsSvie()) {
-                        l.add(new KeyValuePair(SvieMembershipType.RENDESTAG, "Rendes tag"));
-                        break;
-                    }
-                }
-                l.add(new KeyValuePair(SvieMembershipType.PARTOLOTAG, "Pártoló tag"));
-                return l;
+            protected void populateItem(ListItem item) {
+                item.add(new Radio("radio", item.getModel()));
+                item.add(new Label("name", item.getModelObject().toString()));
             }
         };
-        RadioChoice<KeyValuePair> msTypeRadioChoice =
-                new RadioChoice<KeyValuePair>("radiochoice", new PropertyModel<KeyValuePair>(this, "choosed"), membershipTypes);
-        msTypeRadioChoice.setChoiceRenderer(new MsTypeRadioChoices());
-        msTypeRadioChoice.setLabel(new Model<String>("Tagságtípus"));
-        msTypeRadioChoice.setRequired(true);
-        msTypeRadioChoice.add(new ValidationStyleBehavior());
-        form.add(msTypeRadioChoice);
-        form.add(new ValidationSimpleFormComponentLabel("radioLabel", msTypeRadioChoice));
+        radioGroup.add(lv);
+
         add(form);
-    }
-
-    private static class MsTypeRadioChoices implements IChoiceRenderer<Object> {
-
-        public Object getDisplayValue(Object object) {
-            KeyValuePair gender = (KeyValuePair) object;
-            return gender.getValue();
-        }
-
-        public String getIdValue(Object object, int index) {
-            return object.toString();
-        }
-    }
-
-    private class KeyValuePair {
-
-        private SvieMembershipType key;
-        private String value;
-
-        public KeyValuePair(SvieMembershipType key, String value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public SvieMembershipType getKey() {
-            return key;
-        }
-
-        @Override
-        public String toString() {
-            return this.key.name();
-        }
     }
 }
 
