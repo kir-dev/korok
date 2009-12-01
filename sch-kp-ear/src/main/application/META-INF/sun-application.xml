@@ -3,7 +3,7 @@
 <sun-application>
     <security-role-mapping>
         <role-name>ADMIN</role-name>
-        <group-name>urn:geant:niif.hu:sch.bme.hu:entitlement:tag:KIR fejlesztők és üzemeltetők:106</group-name>
+        <group-name>urn:geant:niif.hu:sch.bme.hu:entitlement:PéK admin:KIR fejlesztők és üzemeltetők:106</group-name>
 	<!--group-name>am_admin_role</group-name-->
     </security-role-mapping>
     <security-role-mapping>
