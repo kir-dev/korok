@@ -6,6 +6,7 @@ package hu.sch.web.profile.pages.admin;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.web.components.ConfirmationBoxRenderer;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
 import hu.sch.web.error.ErrorPage;
@@ -16,7 +17,7 @@ import hu.sch.web.profile.pages.show.ShowPersonPage;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -36,23 +37,6 @@ public class AdminPage extends ProfilePage {
 
     public Person person;
 
-    private static class DropDownChoiceRenderer implements IChoiceRenderer<Object> {
-
-        public Object getDisplayValue(Object object) {
-            KeyValuePairInForm status = (KeyValuePairInForm)object;
-            return status.getValue();
-        }
-
-        public String getIdValue(Object object, int index) {
-            return object.toString();
-        }
-    }
-
-    private void error() {
-        getSession().error("A kért oldal nem található!");
-        setResponsePage(ErrorPage.class);
-    }
-
     public AdminPage() {
         error();
     }
@@ -60,25 +44,22 @@ public class AdminPage extends ProfilePage {
     public AdminPage(PageParameters params) {
         if (!isCurrentUserAdmin()) {
             error();
-            return;
         }
-        add(new FeedbackPanel("feedbackPanel"));
         String uid = params.getString("uid");
         if (uid == null) {
             error();
-            return;
         }
 
+        add(new FeedbackPanel("feedbackPanel"));
         try {
             person = ldapManager.getPersonByUid(uid);
         } catch (PersonNotFoundException e) {
             error();
-            return;
         }
 
         add(new Label("uid", new Model<String>(person.getFullName() + " szerkesztése")));
 
-        Link deletePersonLink = new Link("deletePersonLink") {
+        Link<Void> deletePersonLink = new Link<Void>("deletePersonLink") {
 
             @Override
             public void onClick() {
@@ -88,17 +69,19 @@ public class AdminPage extends ProfilePage {
                 }
 
                 getSession().info("A felhasználó (" + person.getUid() + ", " + person.getFullName() + ", " + person.getMail() + ") sikeresen törölve lett.");
-                setResponsePage(new ShowPersonPage());
+                setResponsePage(ShowPersonPage.class, new PageParameters("uid=" + person.getUid()));
             }
         };
-        deletePersonLink.add(new SimpleAttributeModifier("onclick", "return confirm(\"Biztos, hogy törölni akarod a felasználót? \\n Uid: " + person.getUid() + "\\n Név: " + person.getFullName() + "\\n Mail: " + person.getMail() + "\");"));
+        deletePersonLink.add(
+                new ConfirmationBoxRenderer("return confirm(\"Biztos, hogy törölni akarod a felasználót? \\n Uid: " +
+                person.getUid() + "\\n Név: " + person.getFullName() + "\\n Mail: " +
+                person.getMail() + "\");"));
         add(deletePersonLink);
-
 
         add(new PersonForm("personForm", person) {
 
             @Override
-            public void initAjaxPrivateLinks() {
+            public void onInit() {
                 super.initAjaxPrivateLinks();
 
                 TextField neptunTF = (TextField) new TextField("neptun").setRequired(true);
@@ -115,7 +98,7 @@ public class AdminPage extends ProfilePage {
                 IModel<List<KeyValuePairInForm>> status = new LoadableDetachableModel<List<KeyValuePairInForm>>() {
 
                     @Override
-					public List<KeyValuePairInForm> load() {
+                    public List<KeyValuePairInForm> load() {
                         List<KeyValuePairInForm> l = new ArrayList<KeyValuePairInForm>();
                         l.add(new KeyValuePairInForm("Active", "Aktív"));
                         l.add(new KeyValuePairInForm("Inactive", "Inaktív"));
@@ -131,8 +114,8 @@ public class AdminPage extends ProfilePage {
                 IModel<List<KeyValuePairInForm>> studentStatus = new LoadableDetachableModel<List<KeyValuePairInForm>>() {
 
                     @Override
-					public List<KeyValuePairInForm> load() {
-                    	List<KeyValuePairInForm> l = new ArrayList<KeyValuePairInForm>();
+                    public List<KeyValuePairInForm> load() {
+                        List<KeyValuePairInForm> l = new ArrayList<KeyValuePairInForm>();
                         l.add(new KeyValuePairInForm("active", "Aktív"));
                         l.add(new KeyValuePairInForm("other", "Egyéb"));
                         l.add(new KeyValuePairInForm("graduated", "Végzett"));
@@ -151,8 +134,25 @@ public class AdminPage extends ProfilePage {
             protected void onSubmit() {
                 super.onSubmit();
                 info("Isten vagy! :)");
-                setResponsePage(new ShowPersonPage(new PageParameters("uid=" + person.getUid())));
+                setResponsePage(ShowPersonPage.class, new PageParameters("uid=" + person.getUid()));
             }
         });
+    }
+
+    private void error() {
+        getSession().error("A kért oldal nem található!");
+        throw new RestartResponseException(ErrorPage.class);
+    }
+
+    private static class DropDownChoiceRenderer implements IChoiceRenderer<Object> {
+
+        public Object getDisplayValue(Object object) {
+            KeyValuePairInForm status = (KeyValuePairInForm) object;
+            return status.getValue();
+        }
+
+        public String getIdValue(Object object, int index) {
+            return object.toString();
+        }
     }
 }
