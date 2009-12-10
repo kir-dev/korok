@@ -157,6 +157,7 @@ public class PersonForm extends Form<Person> {
         add(new Label("neptunLabel", new PropertyModel(person, "neptun")));
 
         initAjaxPrivateLinks();
+        onInit();
 
         //nem szabad használni a Form#onSubmit() függvényt, mindenképp szükség
         //van erre a gombra, különben az IM listás Ajax elromlik! A setResponsePage
@@ -373,6 +374,9 @@ public class PersonForm extends Form<Person> {
         add(new AttributeAjaxFallbackLink("webpageAttributeLink", "webpageAttributeImg", "labeledURI"));
         add(new AttributeAjaxFallbackLink("dateOfBirthAttributeLink", "dateOfBirthAttributeImg", "schacDateOfBirth"));
 //            add(new AttributeAjaxFallbackLink("neptunAttributeLink", "neptunAttributeImg", "schacPersonalUniqueCode"));
+    }
+
+    protected void onInit() {
     }
 
     private static class GenderRadioChoices implements IChoiceRenderer<Object> {

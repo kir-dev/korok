@@ -5,39 +5,52 @@
 package hu.sch.web.components;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.IComponentBorder;
 import org.apache.wicket.Response;
-import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.markup.ComponentTag;
 
 /**
  *
  * @author aldaris
  */
-public class FocusOnLoadBehavior extends AbstractBehavior {
+public class FocusOnLoadBehavior implements IBehavior {
 
     @Override
-    public void bind(Component component) {
-        super.bind(component);
+    public void beforeRender(Component component) {
         component.setOutputMarkupId(true);
-        component.setComponentBorder(new IComponentBorder() {
-
-            @Override
-            public void renderBefore(Component component) {
-            }
-
-            @Override
-            public void renderAfter(Component component) {
-                final Response response = component.getResponse();
-                response.write(
-                        "<script type=\"text/javascript\" language=\"javascript\">document.getElementById(\"" +
-                        component.getMarkupId() +
-                        "\").focus()</script>");
-            }
-        });
     }
 
     @Override
-    public boolean isTemporary() {
+    public void afterRender(Component component) {
+        final Response response = component.getResponse();
+        response.write(
+                "<script type=\"text/javascript\" language=\"javascript\">document.getElementById(\"" +
+                component.getMarkupId() +
+                "\").focus()</script>");
+
+    }
+
+    public void bind(Component arg0) {
+    }
+
+    public void detach(Component arg0) {
+    }
+
+    public void exception(Component arg0, RuntimeException arg1) {
+    }
+
+    public boolean getStatelessHint(Component arg0) {
         return true;
     }
-}
+
+    public boolean isEnabled(Component arg0) {
+        return true;
+    }
+
+    public boolean isTemporary() {
+        return false;
+    }
+
+    public void onComponentTag(Component arg0, ComponentTag arg1) {
+    }
+};
