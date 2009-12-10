@@ -82,7 +82,7 @@ public class AdminPage extends ProfilePage {
 
             @Override
             public void onInit() {
-                super.initAjaxPrivateLinks();
+                super.onInit();
 
                 TextField neptunTF = (TextField) new TextField("neptun").setRequired(true);
                 neptunTF.add(new ValidationStyleBehavior());
