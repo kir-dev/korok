@@ -107,6 +107,7 @@ public class LdapManagerBean implements LdapManagerLocal {
      * Inicializalo fuggveny, segitsegevel keszitjuk el az egyetlen darab Ldap-kezelo objektumunkat
      */
     @PostConstruct
+    @Override
     public void initialization() {
         //mivel az EJB thread-safe, megtehetjuk ezt
         LdapManagerBean lmb = INSTANCE;
@@ -225,9 +226,9 @@ public class LdapManagerBean implements LdapManagerLocal {
             context.addAttributeValue("objectClass", "sch-vir");
         }
 
-        Iterator iterator = p.getIMAccounts().iterator();
+        Iterator<IMAccount> iterator = p.getIMAccounts().iterator();
         while (iterator.hasNext()) {
-            if (((IMAccount) iterator.next()).getPresenceID() == null) {
+            if (iterator.next().getPresenceID() == null) {
                 iterator.remove();
             }
         }
@@ -253,6 +254,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         return new PersonContextMapper();
     }
 
+    @Override
     public void deletePersonByUid(String uid) throws PersonNotFoundException {
         // Tenyleg letezik-e a user.
         getPersonByUid(uid);
@@ -262,6 +264,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         getLdapTemplate().unbind(dn);
     }
 
+    @Override
     public Person getPersonByUid(String uid) throws PersonNotFoundException {
         Name dn = buildDn(uid);
         Person p = null;
@@ -278,6 +281,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         return p;
     }
 
+    @Override
     public Person getPersonByVirId(String virId) throws PersonNotFoundException {
         EqualsFilter equalsFilter = new EqualsFilter("schacPersonalUniqueID", "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:" + virId);
 
@@ -289,6 +293,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         return searchResult.get(0);
     }
 
+    @Override
     public void update(Person p) {
         Name dn = buildDn(p.getUid());
         DirContextOperations context = getLdapTemplate().lookupContext(dn);
@@ -319,14 +324,15 @@ public class LdapManagerBean implements LdapManagerLocal {
             //            orFilter.or(new LikeFilter("roomNumber", "*" + s));
             orFilter.or(new AndFilter().and(new NotFilter(
                     new EqualsFilter("schacUserPrivateAttribute", "roomNumber"))).
-                    and(new LikeFilter("roomNumber", "*" +
-                    s + "*")));
+                    and(new LikeFilter("roomNumber", "*"
+                    + s + "*")));
             andFilter.and(orFilter);
         }
         andFilter.and(new EqualsFilter("objectclass", "person"));
         return andFilter;
     }
 
+    @Override
     public List<Person> search(List<String> searchWords) {
         AndFilter andFilter = setUpAndFilter(searchWords);
         andFilter.and(new EqualsFilter("inetUserStatus", "active"));
@@ -334,12 +340,14 @@ public class LdapManagerBean implements LdapManagerLocal {
                 andFilter.encode(), getSearchContextMapper());
     }
 
+    @Override
     public List<Person> searchByAdmin(List<String> searchWords) {
         AndFilter andFilter = setUpAndFilter(searchWords);
         return getLdapTemplate().search("",
                 andFilter.encode(), getSearchContextMapper());
     }
 
+    @Override
     public List<Person> getPersonsWhoHasBirthday(String searchDate) {
         AndFilter andFilter = new AndFilter();
         andFilter.and(
@@ -349,12 +357,14 @@ public class LdapManagerBean implements LdapManagerLocal {
                 andFilter.encode(), getSearchContextMapper());
     }
 
+    @Override
     public List<Person> searchsomething(String searchDate) {
         AndFilter andFilter = new AndFilter();
         andFilter.and(new NotFilter(new EqualsFilter("schacUserPrivateAttribute", "schacDateOfBirth"))).and(new LikeFilter("schacDateOfBirth", "*" + searchDate));
         return getLdapTemplate().search("", andFilter.encode(), getContextMapper());
     }
 
+    @Override
     public List<Person> getPersonByDn(List<String> dnList) {
         List<Person> LDAPPersons = new ArrayList<Person>(dnList.size());
         for (String dnStr : dnList) {
@@ -370,6 +380,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         return LDAPPersons;
     }
 
+    @Override
     public void changePassword(String uid, String oldPassword, String newPassword)
             throws InvalidPasswordException {
 
