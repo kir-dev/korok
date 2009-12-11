@@ -123,6 +123,6 @@
         </dependency>
     </dependencies>
     <properties>
-        <wicket.version>1.4.0</wicket.version>
+        <wicket.version>1.4.4</wicket.version>
     </properties>
 </project>
