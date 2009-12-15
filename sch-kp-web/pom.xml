@@ -15,8 +15,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -91,12 +91,6 @@
             <artifactId>wicket-ioc</artifactId>
             <version>${wicket.version}</version>
         </dependency>
-        <!-- kell az ioc-hez -->
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>2.2</version>
-        </dependency>
         <!-- Logoláshoz függőségek -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -108,16 +102,6 @@
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
         </dependency>
-        <!-- Teszteléshez függőségek -->
-<!--
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.2</version>
-            <scope>test</scope>
-        </dependency>
--->
-
         <!-- PDF generáláshoz kell -->
         <dependency>
             <groupId>com.lowagie</groupId>
@@ -131,14 +115,6 @@
             <version>2.4</version>
             <scope>provided</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-ejb_3.0_spec</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
--->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -147,6 +123,6 @@
         </dependency>
     </dependencies>
     <properties>
-        <wicket.version>1.4.0</wicket.version>
+        <wicket.version>1.4.4</wicket.version>
     </properties>
 </project>
