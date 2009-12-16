@@ -6,6 +6,7 @@
 package hu.sch.web.kp.pages.consider;
 
 import hu.sch.domain.ConsideredValuation;
+import hu.sch.domain.Semester;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
@@ -70,7 +71,7 @@ public class ConsiderPage extends SecuredPageTemplate {
 
         setHeaderLabelText("Leadott értékelések elbírálása");
         add(new FeedbackPanel("pagemessages"));
-        add(new Label("semester", new PropertyModel(this, "semester")));
+        add(new Label("semester", getSemester().toString()));
         SortableDataProvider<ValuationStatistic> dp = new SortableValuationStatisticDataProvider(valuationManager, getSemester());
 
         Form form = new Form("considerForm") {
