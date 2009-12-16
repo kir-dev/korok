@@ -68,11 +68,16 @@ public final class SvieAccount extends SecuredPageTemplate {
             advFragment.setVisible(true);
         }
 
+        Fragment reginfoFragment = new Fragment("reginfoFragment", "reginfoPanel", null, null);
+        reginfoFragment.setVisible(true);
+
         SvieRegPdfLink regPdfLink = new SvieRegPdfLink("pdfLink", user);
         if (!user.getSvieStatus().equals(SvieStatus.FELDOLGOZASALATT)) {
             regPdfLink.setVisible(false);
+            reginfoFragment.setVisible(false);
         }
         add(regPdfLink);
+        add(reginfoFragment);
 
         Link<Void> deleteSvieMs = new Link<Void>("deleteSvieMembership") {
 
