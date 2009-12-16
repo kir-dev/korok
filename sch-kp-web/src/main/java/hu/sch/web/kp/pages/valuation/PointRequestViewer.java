@@ -4,18 +4,23 @@
  */
 package hu.sch.web.kp.pages.valuation;
 
+import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
+import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.kp.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.kp.pages.consider.ConsiderExplainPage;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
@@ -30,7 +35,7 @@ public class PointRequestViewer extends SecuredPageTemplate {
     @EJB(name = "ErtekelesManagerBean")
     ValuationManagerLocal ertekelesManager;
 
-    public PointRequestViewer(Valuation val) {
+    public PointRequestViewer(final Valuation val) {
 
         setHeaderLabelText("Kiosztott pontok");
         final List<PointRequest> pointRequests = prepareRequests(val);
@@ -75,8 +80,15 @@ public class PointRequestViewer extends SecuredPageTemplate {
 //            }
 //        };
 
+        if (isCurrentUserJETI()) {
+            Fragment jetifragment = new JETIFragment("jetifragment", "jetipanel", val);
+            add(jetifragment);
+        } else {
+            add(new Label("jetifragment", ""));
+        }
         add(dview);
 //        add(considerForm);
+
     }
 
     private List<PointRequest> prepareRequests(Valuation ert) {
@@ -91,4 +103,37 @@ public class PointRequestViewer extends SecuredPageTemplate {
         }
         return requests;
     }
+
+    private class JETIFragment extends Fragment {
+
+        public JETIFragment(String id, String markupId, final Valuation val) {
+            super(id, markupId, null, null);
+
+            Link acceptLink = new Link("accept") {
+
+                @Override
+                public void onClick() {
+                    List<ConsideredValuation> list = new ArrayList<ConsideredValuation>();
+                    ConsideredValuation cv = new ConsideredValuation(val, val.getPointStatus(), val.getEntrantStatus());
+                    cv.setPointStatus(ValuationStatus.ELFOGADVA);
+                    setResponsePage(new ConsiderExplainPage(list));
+                }
+            };
+
+            Link rejectLink = new Link("reject") {
+
+                @Override
+                public void onClick() {
+                    List<ConsideredValuation> list = new ArrayList<ConsideredValuation>();
+                    ConsideredValuation cv = new ConsideredValuation(val, val.getPointStatus(), val.getEntrantStatus());
+                    cv.setPointStatus(ValuationStatus.ELUTASITVA);
+                    setResponsePage(new ConsiderExplainPage(list));
+                }
+            };
+            add(acceptLink);
+            add(rejectLink);
+
+        }
+    }
 }
+
