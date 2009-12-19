@@ -25,7 +25,7 @@ import hu.sch.web.components.ImageResource;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
 import hu.sch.web.components.customlinks.AttributeAjaxFallbackLink;
-import hu.sch.web.kp.util.PatternHolder;
+import hu.sch.util.PatternHolder;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

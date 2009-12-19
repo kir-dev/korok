@@ -14,7 +14,7 @@ import hu.sch.web.components.ValidationStyleBehavior;
 import hu.sch.web.components.customlinks.AttributeAjaxFallbackLink;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
-import hu.sch.web.kp.util.PatternHolder;
+import hu.sch.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;

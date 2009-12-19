@@ -10,7 +10,7 @@ import hu.sch.domain.MembershipType;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
-import hu.sch.web.kp.util.PatternHolder;
+import hu.sch.util.PatternHolder;
 import java.util.Calendar;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;

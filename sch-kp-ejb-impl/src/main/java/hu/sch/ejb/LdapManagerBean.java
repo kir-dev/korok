@@ -11,6 +11,7 @@ import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -67,7 +68,6 @@ public class LdapManagerBean implements LdapManagerLocal {
      * Ez az objektum kezeli az osszes Ldap-ban levo adat elereset, modositasat, mindent.
      */
     private static LdapTemplate ldapTemplate;
-    private static Pattern imRegex = Pattern.compile("^([a-zA-Z]+):(.*)");
 
     /**
      * Callback fuggveny, az INSTANCE letrehozasa utan hivodik meg, beallitva ezzel az ldapTemplate-et.
@@ -146,7 +146,7 @@ public class LdapManagerBean implements LdapManagerLocal {
             String[] im = context.getStringAttributes("schacUserPresenceID");
             if (im != null) {
                 for (String presenceid : im) {
-                    Matcher m = imRegex.matcher(presenceid);
+                    Matcher m = PatternHolder.imRegex.matcher(presenceid);
                     if (m.matches()) {
                         try {
                             // throws invalidargumentexception
