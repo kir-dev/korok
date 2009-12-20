@@ -27,14 +27,10 @@ public class UserLink extends Panel {
 
     private void init() {
         final User felh = (User) getDefaultModelObject();
-        Link fl = null;
         if (felh != null) {
-            add(new NotNullFragment("displayFragment","notnull",felh.getId(),felh.getName()));
-            
+            add(new NotNullFragment("displayFragment", "notnull", felh.getId(), felh.getName()));
         } else {
-
-            add(new Fragment("displayFragment","null",null,null));
-           
+            add(new Fragment("displayFragment", "null", null, null));
         }
 
     }
@@ -47,7 +43,6 @@ public class UserLink extends Panel {
             fl.setModel(getDefaultModel());
             fl.add(new Label("name", userName));
             add(fl);
-
         }
     }
 }
