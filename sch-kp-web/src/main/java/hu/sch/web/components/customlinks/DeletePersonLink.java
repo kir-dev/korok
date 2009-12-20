@@ -39,9 +39,9 @@ public class DeletePersonLink extends Panel {
             }
         };
         deletePersonLink.add(
-                new ConfirmationBoxRenderer("return confirm(\"Biztos, hogy törölni akarod a felasználót? \\n Uid: "
+                new ConfirmationBoxRenderer("Biztos, hogy törölni akarod a felasználót? \\n Uid: "
                 + person.getUid() + "\\n Név: " + person.getFullName() + "\\n Mail: "
-                + person.getMail() + "\");"));
+                + person.getMail()));
         add(deletePersonLink);
     }
 }

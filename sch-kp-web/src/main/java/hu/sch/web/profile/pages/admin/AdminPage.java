@@ -6,10 +6,11 @@ package hu.sch.web.profile.pages.admin;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.components.ConfirmationBoxRenderer;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
+import hu.sch.web.components.customlinks.DeletePersonLink;
 import hu.sch.web.error.ErrorPage;
+import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.profile.pages.edit.PersonForm;
 import hu.sch.web.profile.pages.edit.PersonForm.KeyValuePairInForm;
 import hu.sch.web.profile.pages.template.ProfilePage;
@@ -23,8 +24,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -59,23 +60,7 @@ public class AdminPage extends ProfilePage {
 
         add(new Label("uid", new Model<String>(person.getFullName() + " szerkesztése")));
 
-        Link<Void> deletePersonLink = new Link<Void>("deletePersonLink") {
-
-            @Override
-            public void onClick() {
-                try {
-                    ldapManager.deletePersonByUid(person.getUid());
-                } catch (PersonNotFoundException e) {
-                }
-
-                getSession().info("A felhasználó (" + person.getUid() + ", " + person.getFullName() + ", " + person.getMail() + ") sikeresen törölve lett.");
-                setResponsePage(ShowPersonPage.class, new PageParameters("uid=" + person.getUid()));
-            }
-        };
-        deletePersonLink.add(
-                new ConfirmationBoxRenderer("return confirm(\"Biztos, hogy törölni akarod a felasználót? \\n Uid: " +
-                person.getUid() + "\\n Név: " + person.getFullName() + "\\n Mail: " +
-                person.getMail() + "\");"));
+        Panel deletePersonLink = new DeletePersonLink("deletePersonLink", person, ShowUser.class);
         add(deletePersonLink);
 
         add(new PersonForm("personForm", person) {
