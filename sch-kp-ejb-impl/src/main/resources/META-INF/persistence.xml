@@ -26,8 +26,8 @@
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.bytecode.use_reflection_optimizer" value="true"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
-            <property name="hibernate.cache.use_query_cache" value="true"/>
+            <!--property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
+            <property name="hibernate.cache.use_query_cache" value="true"/-->
       <!--property name="hibernate.hbm2ddl.auto" value="validate"/-->
         </properties>
     </persistence-unit>
