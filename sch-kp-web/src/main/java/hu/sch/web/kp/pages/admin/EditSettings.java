@@ -159,6 +159,7 @@ public class EditSettings extends SecuredPageTemplate {
         public KirDevFragment(String id, String markupId) {
             super(id, markupId, null, null);
             add(new BookmarkablePageLink<ShowInactive>("showinactive", ShowInactive.class));
+            add(new BookmarkablePageLink<CreateGroup>("createGroup", CreateGroup.class));
         }
     }
 }

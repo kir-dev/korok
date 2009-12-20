@@ -137,6 +137,23 @@ public class UserManagerBean implements UserManagerLocal {
         logManager.createLogEntry(group, user, CREATEMEMBERSHIP_EVENT);
     }
 
+    @Override
+    public void createNewGroupWithLeader(Group group, User user) {
+        em.persist(group);
+        Membership ms = new Membership();
+        ms.setGroup(group);
+        ms.setUser(user);
+        ms.setStart(new Date());
+        em.persist(ms);
+        Post post = new Post();
+        post.setMembership(ms);
+        PostType leader = (PostType) em.createQuery(
+                "SELECT p FROM PostType p WHERE p.postName = 'körvezető'").getSingleResult();
+        post.setPostType(leader);
+        em.persist(post);
+    }
+
+    @Override
     public List<Group> getAllGroups() {
         Query q = em.createNamedQuery(Group.findAll);
 
@@ -370,11 +387,20 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public List<Group> getAllGroupsWithCount() {
-        Query q = em.createQuery("SELECT new hu.sch.domain.Group(g, " +
-                "(SELECT COUNT(*) FROM Membership ms WHERE ms.user.sviePrimaryMembership = ms " +
-                "AND ms.group.id = g.id AND ms.user.svieStatus = 'ELFOGADVA' " +
-                "AND ms.user.svieMembershipType = 'RENDESTAG')) " +
-                "FROM Group g WHERE g.status='akt'");
+        Query q = em.createQuery("SELECT new hu.sch.domain.Group(g, "
+                + "(SELECT COUNT(*) FROM Membership ms WHERE ms.user.sviePrimaryMembership = ms "
+                + "AND ms.group.id = g.id AND ms.user.svieStatus = 'ELFOGADVA' "
+                + "AND ms.user.svieMembershipType = 'RENDESTAG')) "
+                + "FROM Group g WHERE g.status='akt'");
+        return q.getResultList();
+    }
+
+    public List<User> searchForUserByName(String name) {
+        Query q = em.createQuery("SELECT u FROM User u WHERE UPPER(concat(concat(u.lastName, ' '), "
+                + "u.firstName)) LIKE UPPER(:name) "
+                + "ORDER BY u.lastName ASC, u.firstName ASC");
+        q.setParameter("name", "%" + name + "%");
+
         return q.getResultList();
     }
 }

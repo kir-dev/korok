@@ -80,4 +80,8 @@ public interface UserManagerLocal {
     List<Group> getAllGroupsWithCount();
 
     Membership getMembership(final Long groupId, final Long userId);
+
+    void createNewGroupWithLeader(Group group, User user);
+
+    List<User> searchForUserByName(String name);
 }
