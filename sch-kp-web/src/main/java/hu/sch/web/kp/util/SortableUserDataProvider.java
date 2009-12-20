@@ -86,7 +86,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
             }
         } else {
             throw new RuntimeException("uknown sort option [" + prop +
-                    "]. valid options: [firstName] , [lastName]");
+                    "]. valid options: [name] , [svieMembershipType]");
         }
         return users;
     }
