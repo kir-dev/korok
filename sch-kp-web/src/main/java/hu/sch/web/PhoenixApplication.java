@@ -22,6 +22,7 @@ import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.PageExpiredError;
 import hu.sch.web.kp.pages.admin.EditSettings;
+import hu.sch.web.kp.pages.admin.ShowInactive;
 import hu.sch.web.kp.pages.consider.ConsiderPage;
 import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.pages.valuation.NewValuation;
@@ -78,8 +79,8 @@ public class PhoenixApplication extends WebApplication {
             authorizationComponent.init(this);
         } catch (Exception ex) {
             log.fatal("Failed to initialize authorization", ex);
-            throw new IllegalStateException("Cannot instantiate authorization component" +
-                    classname, ex);
+            throw new IllegalStateException("Cannot instantiate authorization component"
+                    + classname, ex);
         }
 
         //Beállítások beolvasása az alkalmazás properties fájljából
@@ -105,6 +106,7 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/administration", EditSettings.class);
         mountBookmarkablePage("/administration/svieusermgmt", SvieUserMgmt.class);
         mountBookmarkablePage("/administration/sviegroupmgmt", SvieGroupMgmt.class);
+        mountBookmarkablePage("/showinactive", ShowInactive.class);
 
         mountBookmarkablePage("/logout", Logout.class);
 

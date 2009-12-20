@@ -2,6 +2,7 @@
     <span wicket:id="pagemessages" id="pagemessages" style="display: block; margin-bottom: 20px;"></span>
     <span wicket:id="sviefragment"></span>
     <span wicket:id="jetifragment"></span>
+    <span wicket:id="kirdevfragment"></span>
     <wicket:fragment wicket:id="sviepanel">
         <h2>SVIE</h2>
         <a wicket:id="userMgmt">Felhasználói menedzsment</a><br />
@@ -28,5 +29,9 @@
                 <input type="submit" class="btn" value="OK"/>
             </span>
         </form>
+    </wicket:fragment>
+    <wicket:fragment wicket:id="kirdevpanel">
+        <h2>Admin</h2>
+        <a wicket:id ="showinactive"><wicket:message key="admin.show.inactive" /></a>
     </wicket:fragment>
 </wicket:extend>

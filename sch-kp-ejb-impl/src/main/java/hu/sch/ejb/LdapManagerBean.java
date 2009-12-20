@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.naming.Name;
@@ -358,10 +357,9 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     @Override
-    public List<Person> searchsomething(String searchDate) {
-        AndFilter andFilter = new AndFilter();
-        andFilter.and(new NotFilter(new EqualsFilter("schacUserPrivateAttribute", "schacDateOfBirth"))).and(new LikeFilter("schacDateOfBirth", "*" + searchDate));
-        return getLdapTemplate().search("", andFilter.encode(), getContextMapper());
+    public List<Person> searchInactives() {
+        EqualsFilter filter = new EqualsFilter("inetUserStatus", "Inactive");
+        return getLdapTemplate().search("", filter.encode(), getContextMapper());
     }
 
     @Override

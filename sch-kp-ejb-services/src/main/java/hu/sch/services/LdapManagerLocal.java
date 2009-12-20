@@ -34,7 +34,7 @@ public interface LdapManagerLocal {
 
     List<Person> searchByAdmin(List<String> searchWords);
 
-    List<Person> searchsomething(String searchDate);
+    List<Person> searchInactives();
 
     List<Person> getPersonByDn(List<String> dnList);
 

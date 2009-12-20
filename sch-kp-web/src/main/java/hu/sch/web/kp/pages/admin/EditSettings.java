@@ -31,13 +31,12 @@ import org.apache.wicket.validation.validator.RangeValidator;
  *
  * @author aldaris
  */
-//TODO
 public class EditSettings extends SecuredPageTemplate {
 
     public EditSettings() {
         //Jogosultságellenőrzés
-        if (!isCurrentUserJETI() && !isCurrentUserSVIE()) {
-            error("Nincs jogod a megadott művelethez");
+        if (!(isCurrentUserJETI() || isCurrentUserSVIE() || isCurrentUserAdmin())) {
+            getSession().error("Nincs jogod a megadott művelethez");
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
@@ -46,9 +45,11 @@ public class EditSettings extends SecuredPageTemplate {
 
         JetiFragment jetiFragment = new JetiFragment("jetifragment", "jetipanel");
         SvieFragment svieFragment = new SvieFragment("sviefragment", "sviepanel");
+        KirDevFragment kirDevFragment = new KirDevFragment("kirdevfragment", "kirdevpanel");
         jetiFragment.setVisible(false);
         svieFragment.setVisible(false);
-        add(jetiFragment, svieFragment);
+        kirDevFragment.setVisible(false);
+        add(jetiFragment, svieFragment, kirDevFragment);
 
         if (isCurrentUserJETI()) {
             jetiFragment.setVisible(true);
@@ -56,6 +57,9 @@ public class EditSettings extends SecuredPageTemplate {
 
         if (isCurrentUserSVIE()) {
             svieFragment.setVisible(true);
+        }
+        if (isCurrentUserAdmin()) {
+            kirDevFragment.setVisible(true);
         }
     }
 
@@ -114,8 +118,8 @@ public class EditSettings extends SecuredPageTemplate {
                 }
 
                 public void validate(Form<?> form) {
-                    if (Integer.parseInt(firstYear.getValue()) + 1 !=
-                            Integer.parseInt(secondYear.getValue())) {
+                    if (Integer.parseInt(firstYear.getValue()) + 1
+                            != Integer.parseInt(secondYear.getValue())) {
                         error(firstYear, "err.SzemeszterEvKulonbseg");
                     }
                 }
@@ -147,6 +151,14 @@ public class EditSettings extends SecuredPageTemplate {
             add(new BookmarkablePageLink<SvieUserMgmt>("userMgmt", SvieUserMgmt.class));
             add(new BookmarkablePageLink<SvieGroupMgmt>("groupMgmt", SvieGroupMgmt.class));
             add(new CsvReportLink("csvPanel"));
+        }
+    }
+
+    private class KirDevFragment extends Fragment {
+
+        public KirDevFragment(String id, String markupId) {
+            super(id, markupId, null, null);
+            add(new BookmarkablePageLink<ShowInactive>("showinactive", ShowInactive.class));
         }
     }
 }
