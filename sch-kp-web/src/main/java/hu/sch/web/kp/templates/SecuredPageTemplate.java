@@ -53,9 +53,8 @@ public abstract class SecuredPageTemplate extends WebPage {
     public SecuredPageTemplate() {
         loadUser();
 
-        navbarScript = new Label("navbarScript", "var navbarConf = { " +
-                "logoutLink: 'https://idp.sch.bme.hu/opensso/UI/Logout', theme: 'blue', width: 900, support: 32}; " +
-                "printNavbar(navbarConf);");
+        navbarScript = new Label("navbarScript");
+        createNavbarWithSupportId(32);
         navbarScript.setEscapeModelStrings(false); // do not HTML escape JavaScript code
         add(navbarScript);
 
@@ -171,13 +170,19 @@ public abstract class SecuredPageTemplate extends WebPage {
     }
 
     protected void createNavbarWithSupportId(int supportId) {
-        navbarScript.setDefaultModel(new Model<String>("var navbarConf = { " +
-                "logoutLink: 'https://idp.sch.bme.hu/opensso/UI/Logout', " +
-                "theme: 'blue', " +
-                "width: 900, " +
-                "support: " + supportId +
-                "}; " +
-                "printNavbar(navbarConf);"));
+        navbarScript.setDefaultModel(new Model<String>("var navbarConf = { "
+                + "logoutLink: 'https://idp.sch.bme.hu/opensso/UI/Logout', "
+                + "theme: 'blue', "
+                + "width: 900, "
+                + "support: " + supportId + ", "
+                + "helpMenuItems: ["
+                + "{"
+                + "title: 'FAQ',"
+                + "url: 'https://kir-dev.sch.bme.hu/kozossegi-pontozas/'"
+                + "}"
+                + "]"
+                + "}; "
+                + "printNavbar(navbarConf);"));
     }
 
     private final UserAuthorization getAuthorizationComponent() {
