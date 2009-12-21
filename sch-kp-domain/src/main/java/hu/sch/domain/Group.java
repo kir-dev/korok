@@ -39,13 +39,13 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "groups")
 @NamedQueries({
-    @NamedQuery(name = "findAllGroup", query = "SELECT g FROM Group g " +
-    "WHERE g.status='akt' ORDER BY g.name"),
+    @NamedQuery(name = "findAllGroup", query = "SELECT g FROM Group g "
+    + "WHERE g.status='akt' ORDER BY g.name"),
     @NamedQuery(name = "groupHierarchy", query =
-    "SELECT g FROM Group g LEFT JOIN FETCH g.parent " +
-    "WHERE g.status='akt' ORDER BY g.name"),
-    @NamedQuery(name = "findGroupWithMemberships", query = "SELECT g FROM " +
-    "Group g LEFT JOIN FETCH g.memberships WHERE g.id = :id")
+    "SELECT g FROM Group g LEFT JOIN FETCH g.parent "
+    + "WHERE g.status='akt' ORDER BY g.name"),
+    @NamedQuery(name = "findGroupWithMemberships", query = "SELECT g FROM "
+    + "Group g LEFT JOIN FETCH g.memberships WHERE g.id = :id")
 })
 @SequenceGenerator(name = "groups_seq", sequenceName = "groups_grp_id_seq")
 public class Group implements Serializable, Comparable<Group> {
@@ -402,12 +402,8 @@ public class Group implements Serializable, Comparable<Group> {
         hash = 31 * hash + (this.type != null ? this.type.hashCode() : 0);
         hash = 31 * hash + (this.webPage != null ? this.webPage.hashCode() : 0);
         hash = 31 * hash + (this.introduction != null ? this.introduction.hashCode() : 0);
-        hash =
-                31 * hash +
-                (this.mailingList != null ? this.mailingList.hashCode() : 0);
-        hash =
-                31 * hash +
-                (this.founded != null ? this.founded.hashCode() : 0);
+        hash = 31 * hash + (this.mailingList != null ? this.mailingList.hashCode() : 0);
+        hash = 31 * hash + (this.founded != null ? this.founded.hashCode() : 0);
         hash = 31 * hash + (this.status != null ? this.status.hashCode() : 0);
         return hash;
     }

@@ -162,25 +162,25 @@ public class UserManagerBean implements UserManagerLocal {
 
     public List<String> getEveryGroupName() {
         Query q =
-                em.createQuery("SELECT g.name FROM Group g " +
-                "ORDER BY g.name");
+                em.createQuery("SELECT g.name FROM Group g "
+                + "ORDER BY g.name");
 
         return q.getResultList();
     }
 
     public List<Group> findGroupByName(String name) {
         Query q =
-                em.createQuery("SELECT g FROM Group g " +
-                "WHERE g.name LIKE :groupName " +
-                "ORDER BY g.name");
+                em.createQuery("SELECT g FROM Group g "
+                + "WHERE g.name LIKE :groupName "
+                + "ORDER BY g.name");
         q.setParameter("groupName", name);
 
         return q.getResultList();
     }
 
     public Group getGroupByName(String name) {
-        Query q = em.createQuery("SELECT g FROM Group g " +
-                "WHERE g.name=:groupName");
+        Query q = em.createQuery("SELECT g FROM Group g "
+                + "WHERE g.name=:groupName");
         q.setParameter("groupName", name);
         try {
             Group csoport = (Group) q.getSingleResult();
@@ -201,12 +201,12 @@ public class UserManagerBean implements UserManagerLocal {
 
         em.remove(temp);
         em.flush();
-        if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
-                user.getSvieStatus().equals(SvieStatus.ELFOGADVA) &&
-                ms.getGroup().getIsSvie()) {
+        if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG)
+                && user.getSvieStatus().equals(SvieStatus.ELFOGADVA)
+                && ms.getGroup().getIsSvie()) {
             try {
-                Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
-                        "WHERE ms.user = :user AND ms.group.isSvie = true");
+                Query q = em.createQuery("SELECT ms.user FROM Membership ms "
+                        + "WHERE ms.user = :user AND ms.group.isSvie = true");
                 q.setParameter("user", user);
                 q.getSingleResult();
             } catch (NoResultException nre) {
@@ -226,10 +226,10 @@ public class UserManagerBean implements UserManagerLocal {
 
     public List<User> getCsoporttagokWithoutOregtagok(Long csoportId) {
         Query q =
-                em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
-                "ms.user " +
-                "WHERE ms.group.id=:groupId AND ms.end=NULL " +
-                "ORDER BY ms.user.lastName ASC, ms.user.firstName ASC");
+                em.createQuery("SELECT ms.user FROM Membership ms JOIN "
+                + "ms.user "
+                + "WHERE ms.group.id=:groupId AND ms.end=NULL "
+                + "ORDER BY ms.user.lastName ASC, ms.user.firstName ASC");
 
         q.setParameter("groupId", csoportId);
 
@@ -237,9 +237,9 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public List<User> getUsersWithPrimaryMembership(Long groupId) {
-        Query q = em.createQuery("SELECT ms.user FROM Membership ms " +
-                "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms " +
-                "AND ms.user.svieStatus = :svieStatus");
+        Query q = em.createQuery("SELECT ms.user FROM Membership ms "
+                + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms "
+                + "AND ms.user.svieStatus = :svieStatus");
         q.setParameter("groupId", groupId);
         q.setParameter("svieStatus", SvieStatus.ELFOGADVA);
         return q.getResultList();
@@ -248,10 +248,10 @@ public class UserManagerBean implements UserManagerLocal {
     public List<User> getMembersForGroup(Long csoportId) {
         //Group cs = em.find(Group.class, csoportId);
         Query q =
-                em.createQuery("SELECT ms.user FROM Membership ms JOIN " +
-                "ms.user " +
-                "WHERE ms.group.id=:groupId " +
-                "ORDER BY ms.user.lastName ASC, ms.user.firstName ASC");
+                em.createQuery("SELECT ms.user FROM Membership ms JOIN "
+                + "ms.user "
+                + "WHERE ms.group.id=:groupId "
+                + "ORDER BY ms.user.lastName ASC, ms.user.firstName ASC");
 
         q.setParameter("groupId", csoportId);
 
@@ -259,18 +259,18 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public List<EntrantRequest> getBelepoIgenyekForUser(User felhasznalo) {
-        Query q = em.createQuery("SELECT e FROM EntrantRequest e " +
-                "WHERE e.user=:user " +
-                "ORDER BY e.valuation.semester DESC, e.entrantType ASC");
+        Query q = em.createQuery("SELECT e FROM EntrantRequest e "
+                + "WHERE e.user=:user "
+                + "ORDER BY e.valuation.semester DESC, e.entrantType ASC");
         q.setParameter("user", felhasznalo);
 
         return q.getResultList();
     }
 
     public List<PointRequest> getPontIgenyekForUser(User felhasznalo) {
-        Query q = em.createQuery("SELECT p FROM PointRequest p " +
-                "WHERE p.user=:user " +
-                "ORDER BY p.valuation.semester DESC, p.valuation.group.name ASC");
+        Query q = em.createQuery("SELECT p FROM PointRequest p "
+                + "WHERE p.user=:user "
+                + "ORDER BY p.valuation.semester DESC, p.valuation.group.name ASC");
         q.setParameter("user", felhasznalo);
 
         return q.getResultList();
@@ -338,8 +338,8 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public Membership getMembership(final Long groupId, final Long userId) {
-        Query q = em.createQuery("SELECT ms FROM Membership ms WHERE ms.user.id = :userId " +
-                "AND ms.group.id = :groupId");
+        Query q = em.createQuery("SELECT ms FROM Membership ms WHERE ms.user.id = :userId "
+                + "AND ms.group.id = :groupId");
         q.setParameter("groupId", groupId);
         q.setParameter("userId", userId);
         return (Membership) q.getSingleResult();
