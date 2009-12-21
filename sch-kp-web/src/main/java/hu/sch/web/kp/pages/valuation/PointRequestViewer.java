@@ -114,8 +114,8 @@ public class PointRequestViewer extends SecuredPageTemplate {
                 @Override
                 public void onClick() {
                     List<ConsideredValuation> list = new ArrayList<ConsideredValuation>();
-                    ConsideredValuation cv = new ConsideredValuation(val, val.getPointStatus(), val.getEntrantStatus());
-                    cv.setPointStatus(ValuationStatus.ELFOGADVA);
+                    ConsideredValuation cv = new ConsideredValuation(val, ValuationStatus.ELFOGADVA, val.getEntrantStatus());
+                    list.add(cv);
                     setResponsePage(new ConsiderExplainPage(list));
                 }
             };
@@ -125,14 +125,14 @@ public class PointRequestViewer extends SecuredPageTemplate {
                 @Override
                 public void onClick() {
                     List<ConsideredValuation> list = new ArrayList<ConsideredValuation>();
-                    ConsideredValuation cv = new ConsideredValuation(val, val.getPointStatus(), val.getEntrantStatus());
-                    cv.setPointStatus(ValuationStatus.ELUTASITVA);
+                    ConsideredValuation cv = new ConsideredValuation(val, ValuationStatus.ELUTASITVA, val.getEntrantStatus());
+                    list.add(cv);
                     setResponsePage(new ConsiderExplainPage(list));
                 }
             };
+
             add(acceptLink);
             add(rejectLink);
-
         }
     }
 }

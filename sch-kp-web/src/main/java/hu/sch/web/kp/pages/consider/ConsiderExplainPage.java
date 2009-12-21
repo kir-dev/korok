@@ -30,6 +30,7 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
     public ConsiderExplainPage(final List<ConsideredValuation> underConsider) {
         add(new FeedbackPanel("pagemessages"));
         setHeaderLabelText("Elbírálás indoklása");
+
         Form considerForm = new Form("considerExplainForm") {
 
             @Override
@@ -44,7 +45,6 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
             }
         };
 
-        add(considerForm);
         considerForm.add(new ListView<ConsideredValuation>("consideredValuation", underConsider) {
 
             @Override
@@ -58,5 +58,7 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
                 item.add(ta);
             }
         });
+        
+        add(considerForm);
     }
 }
