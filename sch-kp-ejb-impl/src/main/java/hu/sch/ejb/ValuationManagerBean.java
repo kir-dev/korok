@@ -18,7 +18,6 @@ import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
-import hu.sch.domain.MembershipType;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.SystemManagerLocal;
@@ -54,13 +53,13 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     private static final Logger logger = Logger.getLogger(ValuationManagerBean.class);
     private static final String defaultSortColumnForErtekelesLista = "csoportNev";
     private static final Map<String, String> sortMapForErtekelesLista;
-    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ValuationStatistic(v, " +
-            "(SELECT avg(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as averagePoint, " +
-            "(SELECT sum(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as summaPoint, " +
-            "(SELECT count(*) as numKDO FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KDO\') as givenKDO, " +
-            "(SELECT count(*) as numKB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KB\') as givenKB, " +
-            "(SELECT count(*) as numAB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'AB\') as givenAB" +
-            ") FROM Valuation v ";
+    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ValuationStatistic(v, "
+            + "(SELECT avg(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as averagePoint, "
+            + "(SELECT sum(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as summaPoint, "
+            + "(SELECT count(*) as numKDO FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KDO\') as givenKDO, "
+            + "(SELECT count(*) as numKB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KB\') as givenKB, "
+            + "(SELECT count(*) as numAB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'AB\') as givenAB"
+            + ") FROM Valuation v ";
     @Resource(name = "mail/korokMail")
     private Session mailSession;
     @PersistenceContext
@@ -106,7 +105,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     public List<ValuationStatistic> getStatisztikaForErtekelesek(List<Long> ertekelesId) {
         String ids = StringUtils.join(ertekelesId.iterator(), ", ");
         Query q = em.createQuery(statisztikaQuery + "WHERE v.id in (" + ids + ")");
-        
+
         return q.getResultList();
     }
 
@@ -126,8 +125,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     public List<ValuationStatistic> findElbiralatlanErtekelesStatisztika() {
-        Query q = em.createQuery(statisztikaQuery + "WHERE v.semester=:semester " +
-                "AND (v.pointStatus=:pointStatus OR v.entrantStatus=:entrantStatus)");
+        Query q = em.createQuery(statisztikaQuery + "WHERE v.semester=:semester "
+                + "AND (v.pointStatus=:pointStatus OR v.entrantStatus=:entrantStatus)");
 
         q.setParameter("semester", systemManager.getSzemeszter());
         q.setParameter("pointStatus", ValuationStatus.ELBIRALATLAN);
@@ -167,9 +166,9 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     public boolean ErtekeleseketElbiral(Collection<ConsideredValuation> elbiralas, User felhasznalo) {
         for (ConsideredValuation ee : elbiralas) {
 
-            if ((ee.getPointStatus().equals(ValuationStatus.ELUTASITVA) ||
-                    ee.getEntrantStatus().equals(ValuationStatus.ELUTASITVA)) &&
-                    ee.getExplanation() == null) {
+            if ((ee.getPointStatus().equals(ValuationStatus.ELUTASITVA)
+                    || ee.getEntrantStatus().equals(ValuationStatus.ELUTASITVA))
+                    && ee.getExplanation() == null) {
                 return false;
             } else {
 
@@ -231,19 +230,13 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         em.merge(ertekeles);
 
         // E-mail értesítés küldése az üzenetről
-        String emailText = uzenet.toString() + "\n\n\n" +
-                "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n" +
-                "Ez egy automatikusan generált e-mail.";
+        String emailText = uzenet.toString() + "\n\n\n"
+                + "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n"
+                + "Ez egy automatikusan generált e-mail.";
 
         // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
-        User groupLeader = null;
         List<Membership> tagsag = ertekeles.getGroup().getActiveMemberships();
-        for (Membership cst : tagsag) {
-            if (MembershipType.hasJogInGroup(cst, MembershipType.KORVEZETO)) {
-                groupLeader = cst.getUser();
-                break;
-            }
-        }
+        User groupLeader = userManager.getGroupLeaderForGroup(ertekeles.getGroup().getId());
         if (groupLeader != null) {
             mailManager.sendEmail(groupLeader.getEmailAddress(), "Módosult értékelés", emailText);
         }
@@ -291,10 +284,10 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     public List<Valuation> findApprovedValuations(Group group) {
-        Query q = em.createQuery("SELECT v FROM Valuation v WHERE v.group=:group " +
-                "AND (v.pointStatus = :approved OR v.pointStatus = :none) " +
-                "AND (v.entrantStatus = :approved OR v.entrantStatus = :none) " +
-                "ORDER BY v.semester DESC");
+        Query q = em.createQuery("SELECT v FROM Valuation v WHERE v.group=:group "
+                + "AND (v.pointStatus = :approved OR v.pointStatus = :none) "
+                + "AND (v.entrantStatus = :approved OR v.entrantStatus = :none) "
+                + "ORDER BY v.semester DESC");
         q.setParameter("group", group);
         q.setParameter("approved", ValuationStatus.ELFOGADVA);
         q.setParameter("none", ValuationStatus.NINCS);
@@ -321,8 +314,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
     public boolean isErtekelesLeadhato(Group csoport) {
         try {
-            if (systemManager.getErtekelesIdoszak() !=
-                    ValuationPeriod.ERTEKELESLEADAS) {
+            if (systemManager.getErtekelesIdoszak()
+                    != ValuationPeriod.ERTEKELESLEADAS) {
 
                 return false;
             }
@@ -357,29 +350,25 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 // a JETI a feladó
                 System.out.println("JETI a feladó");
                 // az értékelt group körvezetőjének a mail címének kikeresése
-                User groupLeader = null;
-                List<Membership> tagsag = e.getGroup().getActiveMemberships();
-                for (Membership cst : tagsag) {
-                    if (MembershipType.hasJogInGroup(cst, MembershipType.KORVEZETO)) {
-                        groupLeader = cst.getUser();
-                        break;
-                    }
-                }
+                User groupLeader = userManager.getGroupLeaderForGroup(e.getGroup().getId());
                 if (groupLeader != null) {
                     emailTo = groupLeader.getEmailAddress();
                 }
-                emailText = "Kedves Körvezető!\n\nA JETi a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n" +
-                        "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n" +
-                        "Ez egy automatikusan generált e-mail.";
+                emailText = "Kedves Körvezető!\n\nA JETi a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n"
+                        + "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n"
+                        + "Ez egy automatikusan generált e-mail.";
             } else {
                 System.out.println("nem JETI");
                 // nem a JETI a feladó
 
                 // jeti körvezetőjének a mail címének kikeresése
-//                emailTo = userManager.findKorvezetoForCsoport(156L).getEmailAddress();
-                emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getGroup().getName() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n" +
-                        "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n" +
-                        "Ez egy automatikusan generált e-mail.";
+                User leader = userManager.getGroupLeaderForGroup(156L);
+                if (leader != null) {
+                    emailTo = leader.getEmailAddress();
+                }
+                emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getGroup().getName() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n"
+                        + "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n"
+                        + "Ez egy automatikusan generált e-mail.";
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -437,9 +426,9 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             throw new RuntimeException("Elfogadott értékelésen nem változtathat");
         }
         for (EntrantRequest igeny : igenyek) {
-            if ((igeny.getEntrantType().equals(EntrantType.AB) ||
-                    igeny.getEntrantType().equals(EntrantType.KB)) &&
-                    (igeny.getValuationText() == null)) {
+            if ((igeny.getEntrantType().equals(EntrantType.AB)
+                    || igeny.getEntrantType().equals(EntrantType.KB))
+                    && (igeny.getValuationText() == null)) {
                 return false;
             }
         }
@@ -466,28 +455,28 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     public List<EntrantRequest> findBelepoIgenyekForErtekeles(Long ertekelesId) {
-        Query q = em.createQuery("SELECT e FROM EntrantRequest e JOIN FETCH e.user " +
-                "JOIN e.valuation WHERE e.valuation.id=:valuationId " +
-                "ORDER BY e.user.lastName ASC, e.user.firstName ASC");
+        Query q = em.createQuery("SELECT e FROM EntrantRequest e JOIN FETCH e.user "
+                + "JOIN e.valuation WHERE e.valuation.id=:valuationId "
+                + "ORDER BY e.user.lastName ASC, e.user.firstName ASC");
         q.setParameter("valuationId", ertekelesId);
 
         return q.getResultList();
     }
 
     public List<PointRequest> findPontIgenyekForErtekeles(Long ertekelesId) {
-        Query q = em.createQuery("SELECT p FROM PointRequest p JOIN FETCH p.user " +
-                "JOIN p.valuation " +
-                "WHERE p.valuation.id=:valuationId " +
-                "ORDER BY p.point DESC, p.user.lastName ASC, p.user.firstName ASC");
+        Query q = em.createQuery("SELECT p FROM PointRequest p JOIN FETCH p.user "
+                + "JOIN p.valuation "
+                + "WHERE p.valuation.id=:valuationId "
+                + "ORDER BY p.point DESC, p.user.lastName ASC, p.user.firstName ASC");
         q.setParameter("valuationId", ertekelesId);
 
         return q.getResultList();
     }
 
     public List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter) {
-        Query q = em.createQuery("SELECT new hu.sch.domain.ApprovedEntrant(e.user.neptunCode," +
-                "e.entrantType) FROM EntrantRequest e " +
-                "WHERE e.valuation.semester = :semester AND e.valuation.entrantStatus=:status");
+        Query q = em.createQuery("SELECT new hu.sch.domain.ApprovedEntrant(e.user.neptunCode,"
+                + "e.entrantType) FROM EntrantRequest e "
+                + "WHERE e.valuation.semester = :semester AND e.valuation.entrantStatus=:status");
 
         q.setParameter("status", ValuationStatus.ELBIRALATLAN);
         q.setParameter("semester", szemeszter);
@@ -502,10 +491,10 @@ public class ValuationManagerBean implements ValuationManagerLocal {
      * @return A keresett értékelés point -és belépőigényléssel együtt.
      */
     public Valuation findValuations(Long valuationId) {
-        Query q = em.createQuery("SELECT v FROM Valuation v " +
-                "JOIN FETCH v.pointRequests " +
-                "JOIN FETCH v.entrantRequests " +
-                "WHERE e.id = :id");
+        Query q = em.createQuery("SELECT v FROM Valuation v "
+                + "JOIN FETCH v.pointRequests "
+                + "JOIN FETCH v.entrantRequests "
+                + "WHERE e.id = :id");
         q.setParameter("id", valuationId);
         return (Valuation) q.getSingleResult();
     }

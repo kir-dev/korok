@@ -2,13 +2,12 @@ package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.domain.MembershipType;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import hu.sch.domain.PostType;
+import hu.sch.util.PatternHolder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
@@ -16,29 +15,57 @@ import org.apache.wicket.Request;
 import org.apache.wicket.protocol.http.WebRequest;
 
 /**
+ * Autorizációs feladatok ellátásáért felelős osztály, mely feldolgozza az
+ * agenttől kapott adatokat, melyeket az egyes oldalak később le tudnak
+ * kérdezni.
  *
  * @author hege
  */
+@SuppressWarnings("unchecked")
 public final class AgentBasedAuthorization implements UserAuthorization {
 
+    /**
+     * Logoláshoz szükséges objektum
+     */
     private static final Logger log =
             Logger.getLogger(AgentBasedAuthorization.class);
+    /**
+     * A HTTP headerben ezen kulcs alá kerül tárolásra a cache-elt autorizációs
+     * adatok
+     */
     private static final String ENTITLEMENT_CACHE =
             "hu.sch.kp.web.authz.EntitlementCache";
-    private static final Pattern VIRID_PATTERN =
-            Pattern.compile("^.*:([0-9]+)$");
-    private static final Pattern NEPTUN_PATTERN =
-            Pattern.compile("^.*:([A-Za-z0-9]{6,7})$");
-    private static final Pattern ENTITLEMENT_PATTERN =
-            //                          jog:csoportnév:csoportid
-            Pattern.compile("^.*:entitlement:([^:]+):([^:]+):([0-9]+)$");
+    /**
+     * A csoporttagsági adatokhoz tartozó HTTP header kulcs
+     */
     private static final String ENTITLEMENT_ATTRNAME = "eduPersonEntitlement";
+    /**
+     * A VIRID-hez tartozó HTTP header kulcs
+     */
     private static final String VIRID_ATTRNAME = "virid";
+    /**
+     * A neptun kódhoz tartozó HTTP header kulcs
+     */
     private static final String NEPTUN_ATTRNAME = "neptun";
+    /**
+     * A vezetéknévhez tartozó HTTP header kulcs
+     */
     private static final String LASTNAME_ATTRNAME = "sn";
+    /**
+     * A keresztnévhez tartozó HTTP header kulcs
+     */
     private static final String FIRSTNAME_ATTRNAME = "givenName";
+    /**
+     * A becenévhez tartozó HTTP header kulcs
+     */
     private static final String NICNKAME_ATTRNAME = "displayName";
+    /**
+     * Az e-mailhez tartozó HTTP header kulcs
+     */
     private static final String EMAIL_ATTRNAME = "mail";
+    /**
+     * A csoporttagság stringben található elválasztó karakter
+     */
     private static final String ENTITLEMENT_SEPARATOR = "\\|";
 
     /**
@@ -60,10 +87,10 @@ public final class AgentBasedAuthorization implements UserAuthorization {
 
         if (viridSet != null) {
             for (String virid : viridSet) {
-                Matcher m = VIRID_PATTERN.matcher(virid);
+                Matcher m = PatternHolder.VIRID_PATTERN.matcher(virid);
                 if (m.matches()) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Parsed userid from agent: " + m.group(1));
+                        log.debug("Parsed virid from agent: " + m.group(1));
                     }
                     return Long.parseLong(m.group(1));
                 }
@@ -81,8 +108,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
                 ((WebRequest) wicketRequest).getHttpServletRequest();
         boolean inRole = servletRequest.isUserInRole(role);
         if (log.isDebugEnabled()) {
-            log.debug("Check container role: " + role + ": " +
-                    (inRole ? "true" : "false"));
+            log.debug("Check container role: " + role + ": " + inRole);
         }
 
         return inRole;
@@ -93,9 +119,8 @@ public final class AgentBasedAuthorization implements UserAuthorization {
      */
     @Override
     public boolean isGroupLeaderInGroup(Request wicketRequest, Group group) {
-        Map<Long, MembershipType> memberships = parseEntitlements(wicketRequest);
-        MembershipType msType = memberships.get(group.getId());
-        if (msType == null) {
+        List<Long> memberships = parseEntitlements(wicketRequest);
+        if (!memberships.contains(group.getId())) {
             return false;
         }
 
@@ -109,30 +134,29 @@ public final class AgentBasedAuthorization implements UserAuthorization {
      */
     @Override
     public boolean isGroupLeaderInSomeGroup(Request wicketRequest) {
-        Map<Long, MembershipType> memberships = parseEntitlements(wicketRequest);
+        List<Long> memberships = parseEntitlements(wicketRequest);
 
         return !memberships.isEmpty();
     }
 
     /**
-     * A kérésben található entitlement-ek feldolgozását elvégző függvény.
+     * A kérésben található entitlementek feldolgozását elvégző függvény.
      * @param wicketRequest Wicket kérés
      * @return CsoportId-Tagságtípus párok
      */
-    @SuppressWarnings("unchecked")
-    private Map<Long, MembershipType> parseEntitlements(Request wicketRequest) {
+    private List<Long> parseEntitlements(Request wicketRequest) {
         HttpServletRequest servletRequest =
                 ((WebRequest) wicketRequest).getHttpServletRequest();
 
-        Map<Long, MembershipType> memberships =
-                (Map<Long, MembershipType>) servletRequest.getAttribute(ENTITLEMENT_CACHE);
+        List<Long> memberships =
+                (List<Long>) servletRequest.getAttribute(ENTITLEMENT_CACHE);
         if (memberships != null) {
             log.debug("Reusing request entitlement cache");
 
             return memberships;
         }
 
-        memberships = new HashMap<Long, MembershipType>();
+        memberships = new ArrayList<Long>();
 
         Set<String> entitlementSet =
                 (Set<String>) servletRequest.getAttribute(ENTITLEMENT_ATTRNAME);
@@ -141,21 +165,21 @@ public final class AgentBasedAuthorization implements UserAuthorization {
             for (String entitlement : entitlementSet) {
                 String[] entitlements = entitlement.split(ENTITLEMENT_SEPARATOR);
                 for (String string : entitlements) {
-                    Matcher m = ENTITLEMENT_PATTERN.matcher(string);
+                    Matcher m = PatternHolder.ENTITLEMENT_PATTERN.matcher(string);
                     if (m.matches()) {
-                        String membershipType = m.group(1);
+                        String postType = m.group(1);
                         String groupName = m.group(2);
                         Long groupId = Long.parseLong(m.group(3));
 
                         if (log.isDebugEnabled()) {
-                            log.debug("Entitlement: csoportNev: " + groupName +
-                                    " ,tagsagTipus: " + membershipType +
-                                    " , csoportId: " + groupId.toString());
+                            log.debug("Entitlement: csoportNev: " + groupName
+                                    + " , tagsagTipus: " + postType
+                                    + " , csoportId: " + groupId.toString());
                         }
-                        if (membershipType.equalsIgnoreCase(MembershipType.KORVEZETO.toString())) {
-                            memberships.put(groupId, MembershipType.KORVEZETO);
+                        if (postType.equalsIgnoreCase(PostType.KORVEZETO)) {
+                            memberships.add(groupId);
                         } else {
-                            //Az olvashatóság érdekében, csak a körvezetői tagságokkal
+                            //Az olvashatóság érdekében. Csak a körvezetői tagságokkal
                             //foglalkozunk az autorizáció folyamán.
                             continue;
                         }
@@ -186,7 +210,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
                 getSingleValuedStringAttribute(servletRequest, NEPTUN_ATTRNAME);
 
         if (neptunUrn != null) {
-            Matcher m = NEPTUN_PATTERN.matcher(neptunUrn);
+            Matcher m = PatternHolder.NEPTUN_PATTERN.matcher(neptunUrn);
             if (m.matches()) {
                 user.setNeptunCode(m.group(1));
             }
@@ -198,14 +222,12 @@ public final class AgentBasedAuthorization implements UserAuthorization {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     private String getSingleValuedStringAttribute(HttpServletRequest request, String attrName) {
         Set<String> attrSet = (Set<String>) request.getAttribute(attrName);
 
         if (attrSet != null) {
-            Iterator<String> it = attrSet.iterator();
-            if (it.hasNext()) {
-                return it.next();
+            for (String string : attrSet) {
+                return string;
             }
         }
 

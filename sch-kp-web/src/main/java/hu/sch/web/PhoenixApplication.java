@@ -108,7 +108,7 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/administration/svieusermgmt", SvieUserMgmt.class);
         mountBookmarkablePage("/administration/sviegroupmgmt", SvieGroupMgmt.class);
         mountBookmarkablePage("/showinactive", ShowInactive.class);
-        mountBookmarkablePage("creategroup", CreateGroup.class);
+        mountBookmarkablePage("/creategroup", CreateGroup.class);
 
         mountBookmarkablePage("/logout", Logout.class);
 

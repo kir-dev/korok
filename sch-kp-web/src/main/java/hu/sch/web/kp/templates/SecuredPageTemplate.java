@@ -77,7 +77,7 @@ public abstract class SecuredPageTemplate extends WebPage {
             add(new BookmarkablePageLink<ConsiderPage>("elbiralas", ConsiderPage.class).setVisible(false));
         }
 
-        if (isCurrentUserJETI() || isCurrentUserSVIE()) {
+        if (isCurrentUserJETI() || isCurrentUserSVIE() || isCurrentUserAdmin()) {
             add(new BookmarkablePageLink<EditSettings>("editsettings", EditSettings.class));
         } else {
             add(new BookmarkablePageLink<EditSettings>("editsettings", EditSettings.class).setVisible(false));

@@ -1,7 +1,6 @@
 package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.MembershipType;
 import hu.sch.domain.User;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;

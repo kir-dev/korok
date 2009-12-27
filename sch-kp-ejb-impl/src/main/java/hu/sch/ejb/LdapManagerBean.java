@@ -145,7 +145,7 @@ public class LdapManagerBean implements LdapManagerLocal {
             String[] im = context.getStringAttributes("schacUserPresenceID");
             if (im != null) {
                 for (String presenceid : im) {
-                    Matcher m = PatternHolder.imRegex.matcher(presenceid);
+                    Matcher m = PatternHolder.IM_PATTERN.matcher(presenceid);
                     if (m.matches()) {
                         try {
                             // throws invalidargumentexception

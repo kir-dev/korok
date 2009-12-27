@@ -10,7 +10,6 @@ import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.User;
-import hu.sch.domain.MembershipType;
 import hu.sch.web.kp.pages.entrantrequests.EntrantRequestFiling;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.pointrequests.PointRequestFiling;

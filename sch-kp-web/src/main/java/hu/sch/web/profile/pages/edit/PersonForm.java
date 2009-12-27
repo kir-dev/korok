@@ -281,13 +281,13 @@ public class PersonForm extends Form<Person> {
         TextField<String> mobileTF = new TextField<String>("mobile");
         add(mobileTF);
         mobileTF.setLabel(new Model<String>("Mobil"));
-        mobileTF.add(new PatternValidator(PatternHolder.phoneNumberPattern));
+        mobileTF.add(new PatternValidator(PatternHolder.PHONE_NUMBER_PATTERN));
         add(new ValidationSimpleFormComponentLabel("mobileLabel", mobileTF));
 
         TextField<String> homePhoneTF = new TextField<String>("homePhone");
         add(homePhoneTF);
         homePhoneTF.setLabel(new Model<String>("Vezetékes"));
-        homePhoneTF.add(new PatternValidator(PatternHolder.phoneNumberPattern));
+        homePhoneTF.add(new PatternValidator(PatternHolder.PHONE_NUMBER_PATTERN));
         add(new ValidationSimpleFormComponentLabel("homePhoneLabel", homePhoneTF));
 
         TextField<String> webpageTF = new TextField<String>("webpage");
@@ -300,14 +300,14 @@ public class PersonForm extends Form<Person> {
 
     private void createSvieFields() {
         TextField<String> mothersNameTF = new TextField<String>("mothersName");
-        mothersNameTF.add(new PatternValidator(PatternHolder.mothersNamePattern));
+        mothersNameTF.add(new PatternValidator(PatternHolder.MOTHER_NAME_PATTERN));
         mothersNameTF.add(new ValidationStyleBehavior());
         add(mothersNameTF);
         mothersNameTF.setLabel(new Model<String>("Anyja neve"));
         add(new ValidationSimpleFormComponentLabel("mothersNameLabel", mothersNameTF));
 
         TextField<String> estGradTF = new TextField<String>("estimatedGraduationYear");
-        estGradTF.add(new PatternValidator(PatternHolder.graduationYearPattern));
+        estGradTF.add(new PatternValidator(PatternHolder.GRADUATION_YEAR_PATTERN));
         estGradTF.add(new ValidationStyleBehavior());
         add(estGradTF);
         estGradTF.setLabel(new Model<String>("Egyetem várható befejezési ideje"));

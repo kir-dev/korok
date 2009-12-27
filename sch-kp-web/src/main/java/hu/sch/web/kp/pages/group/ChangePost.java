@@ -6,7 +6,6 @@ package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.MembershipType;
 import hu.sch.domain.Post;
 import hu.sch.domain.User;
 import hu.sch.domain.PostType;
@@ -93,7 +92,7 @@ public final class ChangePost extends SecuredPageTemplate {
                     if (newRights.contains(temp.getPostType())) {
                         newRights.remove(temp.getPostType());
                     } else {
-                        if (temp.getPostType().getPostName().equals(MembershipType.KORVEZETO.toString())) {
+                        if (temp.getPostType().getPostName().equals(PostType.KORVEZETO)) {
                             getSession().error("A körvezetői posztot nem szüntetheted meg, azt csak átruházni lehet egy másik körtagra.");
                             throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + ms.getGroup().getId()));
                         }
@@ -103,7 +102,7 @@ public final class ChangePost extends SecuredPageTemplate {
                 Iterator<PostType> it = newRights.iterator();
                 while (it.hasNext()) {
                     PostType temp = it.next();
-                    if (temp.getPostName().equals(MembershipType.KORVEZETO.toString())) {
+                    if (temp.getPostName().equals(PostType.KORVEZETO)) {
                         it.remove();
                         if (isUserGroupLeader(ms.getGroup())) {
                             try {
@@ -174,7 +173,7 @@ public final class ChangePost extends SecuredPageTemplate {
         RequiredTextField<String> postNameTF =
                 new RequiredTextField<String>("postNameTF", new PropertyModel<String>(this, "postName"));
         postNameTF.add(new LengthBetweenValidator(2, 30));
-        postNameTF.add(new PatternValidator(PatternHolder.groupNameOrPostTypePattern));
+        postNameTF.add(new PatternValidator(PatternHolder.GROUP_NAME_OR_POSTTYPE_PATTERN));
 
         CheckBox delegatedBox = new CheckBox("delegatedBox", new PropertyModel<Boolean>(this, "isDelegatedPost"));
         createPostTypeForm.add(delegatedBox);

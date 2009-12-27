@@ -77,14 +77,14 @@ public final class SvieRegistration extends SecuredPageTemplate {
         form.setModel(new CompoundPropertyModel<Person>(person));
 
         RequiredTextField<String> mothersNameTF = new RequiredTextField<String>("mothersName");
-        mothersNameTF.add(new PatternValidator(PatternHolder.mothersNamePattern));
+        mothersNameTF.add(new PatternValidator(PatternHolder.MOTHER_NAME_PATTERN));
         mothersNameTF.add(new ValidationStyleBehavior());
         mothersNameTF.setLabel(new Model<String>("Anyja neve *"));
         form.add(mothersNameTF);
         form.add(new ValidationSimpleFormComponentLabel("mothersNameLabel", mothersNameTF));
 
         RequiredTextField<String> estGradTF = new RequiredTextField<String>("estimatedGraduationYear");
-        estGradTF.add(new PatternValidator(PatternHolder.graduationYearPattern));
+        estGradTF.add(new PatternValidator(PatternHolder.GRADUATION_YEAR_PATTERN));
         estGradTF.add(new ValidationStyleBehavior());
         estGradTF.setLabel(new Model<String>("Egyetem várható befejezési ideje *"));
         form.add(estGradTF);

@@ -6,7 +6,6 @@ package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.domain.MembershipType;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
@@ -74,7 +73,7 @@ public class EditGroupInfo extends SecuredPageTemplate {
 
         RequiredTextField<String> nameTF = new RequiredTextField<String>("name");
         nameTF.add(StringValidator.lengthBetween(2, 255));
-        nameTF.add(new PatternValidator(PatternHolder.groupNameOrPostTypePattern));
+        nameTF.add(new PatternValidator(PatternHolder.GROUP_NAME_OR_POSTTYPE_PATTERN));
         nameTF.add(new ValidationStyleBehavior());
         editInfoForm.add(nameTF);
         nameTF.setLabel(new Model<String>("Név *"));
