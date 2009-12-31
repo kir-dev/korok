@@ -22,6 +22,7 @@ import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.PageExpiredError;
 import hu.sch.web.kp.pages.admin.CreateGroup;
+import hu.sch.web.kp.pages.admin.CreateNewPerson;
 import hu.sch.web.kp.pages.admin.EditSettings;
 import hu.sch.web.kp.pages.admin.ShowInactive;
 import hu.sch.web.kp.pages.consider.ConsiderPage;
@@ -109,6 +110,7 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/administration/sviegroupmgmt", SvieGroupMgmt.class);
         mountBookmarkablePage("/showinactive", ShowInactive.class);
         mountBookmarkablePage("/creategroup", CreateGroup.class);
+        mountBookmarkablePage("/createperson", CreateNewPerson.class);
 
         mountBookmarkablePage("/logout", Logout.class);
 

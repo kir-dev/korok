@@ -21,13 +21,16 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.naming.Name;
 import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.ldap.NameAlreadyBoundException;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.DistinguishedName;
@@ -411,5 +414,43 @@ public class LdapManagerBean implements LdapManagerLocal {
 
     protected ContextMapper getSearchContextMapper() {
         return new PersonForSearchContextMapper();
+    }
+
+    @Override
+    public void bindPerson(Person p) {
+        try {
+            Name dn = buildDn(p.getUid());
+            Attributes attrs = new BasicAttributes();
+            BasicAttribute ocattr = new BasicAttribute("objectclass");
+            ocattr.add("top");
+            ocattr.add("schacLinkageIdentifiers");
+            ocattr.add("sunAMAuthAccountLockout");
+            ocattr.add("schacContactLocation");
+            ocattr.add("person");
+            ocattr.add("schacPersonalCharacteristics");
+            ocattr.add("inetUser");
+            ocattr.add("inetorgperson");
+            ocattr.add("schacLinkageIdentifiers");
+            ocattr.add("organizationalPerson");
+            ocattr.add("schacEmployeeInfo");
+            ocattr.add("sch-vir");
+            ocattr.add("sunFMSAML2NameIdentifier");
+            ocattr.add("top");
+            ocattr.add("schacEntryConfidentiality");
+            ocattr.add("eduPerson");
+            ocattr.add("schacEntryMetadata");
+            ocattr.add("schacUserEntitlements");
+
+            attrs.put(ocattr);
+            attrs.put("sn", p.getLastName());
+            attrs.put("givenName", p.getFirstName());
+            attrs.put("cn", p.getLastName() + " " + p.getFirstName());
+            attrs.put("mail", p.getMail());
+
+            ldapTemplate.bind(dn, null, attrs);
+        } catch (Exception ex) {
+            log.error("Nem sikerült menteni a felhasználót", ex);
+            throw new RuntimeException("nem sikerült létrehozni a felhasználót", ex);
+        }
     }
 }

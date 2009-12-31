@@ -39,4 +39,6 @@ public interface LdapManagerLocal {
     List<Person> getPersonByDn(List<String> dnList);
 
     void initialization();
+
+    void bindPerson(Person p);
 }

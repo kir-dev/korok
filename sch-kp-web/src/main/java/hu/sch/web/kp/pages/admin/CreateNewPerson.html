@@ -1,0 +1,28 @@
+<wicket:extend>
+    <div id="admincont">
+        <form wicket:id="form">
+            <table wicket:id="wmc">
+                <tr>
+                    <td><label>Uid</label></td>
+                    <td><input class="textinput" type="text" wicket:id="uid" /></td>
+                    <td><span wicket:id="notifier" /></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td><label>Vezetéknév</label></td>
+                    <td><input class="textinput" wicket:id="lastName"/></td>
+                </tr>
+                <tr>
+                    <td><label>Keresztnév</label></td>
+                    <td><input class="textinput" wicket:id="firstName"/></td>
+                </tr>
+                <tr>
+                    <td><label>Mail</label></td>
+                    <td><input class="textinput" wicket:id="mail"/></td>
+                </tr>
+            </table>
+            <input type="submit" id="btns" class="btn" value="Mentés" />
+        </form>
+    </div>
+</wicket:extend>

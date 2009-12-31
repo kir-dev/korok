@@ -160,6 +160,7 @@ public class EditSettings extends SecuredPageTemplate {
             super(id, markupId, null, null);
             add(new BookmarkablePageLink<ShowInactive>("showinactive", ShowInactive.class));
             add(new BookmarkablePageLink<CreateGroup>("createGroup", CreateGroup.class));
+            add(new BookmarkablePageLink<CreateNewPerson>("createPerson", CreateNewPerson.class));
         }
     }
 }
