@@ -498,4 +498,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         q.setParameter("id", valuationId);
         return (Valuation) q.getSingleResult();
     }
+
+    public void updateValuation(Valuation valuation) {
+        em.merge(valuation);
+    }
 }

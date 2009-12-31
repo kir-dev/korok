@@ -5,7 +5,9 @@
 package hu.sch.web.kp.pages.valuation;
 
 import hu.sch.domain.Valuation;
+import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
+import hu.sch.services.SystemManagerLocal;
 import hu.sch.web.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
@@ -13,13 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.Page;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  *
@@ -29,6 +37,8 @@ public class ValuationDetails extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     private ValuationManagerLocal valuationManager;
+    @EJB(name = "SystemManagerBean")
+    private SystemManagerLocal systemManager;
 
     public ValuationDetails(Valuation valuation) {
         this(valuation, null);
@@ -85,7 +95,46 @@ public class ValuationDetails extends SecuredPageTemplate {
         add(new Label("stat.givenKB", new Model<Long>(stat.getGivenKB())));
         add(new Label("stat.givenAB", new Model<Long>(stat.getGivenAB())));
 
-        add(new MultiLineLabel("valuationText"));
+        final WebMarkupContainer container = new WebMarkupContainer("container");
+        final MultiLineLabel textLabel = new MultiLineLabel("valuationText");
+        container.add(textLabel);
+        final Form<Valuation> form = new Form<Valuation>("textForm", new CompoundPropertyModel<Valuation>(valuation)) {
+
+            @Override
+            protected void onSubmit() {
+                valuationManager.updateValuation(valuation);
+                getSession().info("A féléves értékelés sikeresen frissítve.");
+                setResponsePage(Valuations.class);
+                return;
+            }
+        };
+        //mivel nem lehet két azonos wicket:id
+        TextArea<String> text = new TextArea<String>("valuationText2", new PropertyModel<String>(valuation, "valuationText"));
+        text.setRequired(true);
+        form.add(text);
+        form.setVisible(false);
+
+        container.add(form);
+        container.setOutputMarkupId(true);
+        add(container);
+
+        AjaxFallbackLink ajaxLink = new AjaxFallbackLink("modifyText") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                textLabel.setVisible(false);
+                form.setVisible(true);
+                if (target != null) {
+                    target.addComponent(container);
+                }
+            }
+        };
+        container.add(ajaxLink);
+        if (systemManager.getErtekelesIdoszak() != ValuationPeriod.ERTEKELESLEADAS
+                || !systemManager.getSzemeszter().equals(valuation.getSemester())) {
+            ajaxLink.setVisible(false);
+        }
+
         add(DateLabel.forDatePattern("lastModified", "yyyy.MM.dd. kk:mm"));
         add(DateLabel.forDatePattern("lastConsidered", "yyyy.MM.dd. kk:mm"));
     }

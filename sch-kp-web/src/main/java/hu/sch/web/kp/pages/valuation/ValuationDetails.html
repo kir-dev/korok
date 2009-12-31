@@ -28,7 +28,14 @@
             <tr><td colspan="2"><a wicket:id="pointLink">Pontkérelmek megtekintése</a></td></tr>
         </table>
     </div>
-    <h3>Szöveges értékelés</h3>
-    <div class="subdata" wicket:id="valuationText">ert</div>
 
+    <div wicket:id="container">
+        <h3>Szöveges értékelés - <a wicket:id="modifyText"><wicket:message key="modify.valuation.text" /></a></h3>
+        <div class="subdata" wicket:id="valuationText">értékelés szöveg</div>
+        <form wicket:id="textForm">
+            <textarea class="textinput" style="width: 790px; height: 350px;" wicket:id="valuationText2">valami</textarea>
+            <br />
+            <input class="btn" type="submit" value="Mentés"/>
+        </form>
+    </div>
 </wicket:extend>

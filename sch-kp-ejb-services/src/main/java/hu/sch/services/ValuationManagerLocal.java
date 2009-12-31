@@ -169,4 +169,6 @@ public interface ValuationManagerLocal {
      * @return A keresett értékelés pont -és belépőigényléssel együtt.
      */
     Valuation findValuations(Long valuationId);
+
+    void updateValuation(Valuation valuation);
 }
