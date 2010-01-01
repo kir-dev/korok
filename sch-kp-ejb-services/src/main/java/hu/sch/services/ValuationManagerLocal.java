@@ -170,5 +170,5 @@ public interface ValuationManagerLocal {
      */
     Valuation findValuations(Long valuationId);
 
-    void updateValuation(Valuation valuation);
+    void updateValuation(Long valuationId, String text);
 }

@@ -490,6 +490,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
      * @param valuationId A keresendő értékelés azonosítója.
      * @return A keresett értékelés point -és belépőigényléssel együtt.
      */
+    @Override
     public Valuation findValuations(Long valuationId) {
         Query q = em.createQuery("SELECT v FROM Valuation v "
                 + "JOIN FETCH v.pointRequests "
@@ -499,7 +500,17 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return (Valuation) q.getSingleResult();
     }
 
-    public void updateValuation(Valuation valuation) {
-        em.merge(valuation);
+    @Override
+    public void updateValuation(Long valuationId, String text) {
+        Valuation val = em.find(Valuation.class, valuationId);
+        val.setValuationText(text);
+        if (val.getPointStatus().equals(ValuationStatus.ELUTASITVA)) {
+            val.setPointStatus(ValuationStatus.ELBIRALATLAN);
+        }
+        if (val.getEntrantStatus().equals(ValuationStatus.ELUTASITVA)) {
+            val.setEntrantStatus(ValuationStatus.ELBIRALATLAN);
+        }
+        val.setLastModified(new Date());
+        em.merge(val);
     }
 }

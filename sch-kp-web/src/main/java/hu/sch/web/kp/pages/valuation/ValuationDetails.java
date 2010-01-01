@@ -7,7 +7,7 @@ package hu.sch.web.kp.pages.valuation;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
-import hu.sch.services.SystemManagerLocal;
+import hu.sch.domain.ValuationStatus;
 import hu.sch.web.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
@@ -37,8 +37,6 @@ public class ValuationDetails extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
     private ValuationManagerLocal valuationManager;
-    @EJB(name = "SystemManagerBean")
-    private SystemManagerLocal systemManager;
 
     public ValuationDetails(Valuation valuation) {
         this(valuation, null);
@@ -70,14 +68,14 @@ public class ValuationDetails extends SecuredPageTemplate {
         add(new Label("entrantStatus"));
         add(new Label("pointStatus"));
 
-        add(new Link<Object>("entrantLink") {
+        add(new Link<EntrantRequestViewer>("entrantLink") {
 
             @Override
             public void onClick() {
                 setResponsePage(new EntrantRequestViewer(valuation));
             }
         });
-        add(new Link<Object>("pointLink") {
+        add(new Link<PointRequestViewer>("pointLink") {
 
             @Override
             public void onClick() {
@@ -102,7 +100,7 @@ public class ValuationDetails extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                valuationManager.updateValuation(valuation);
+                valuationManager.updateValuation(valuation.getId(), valuation.getValuationText());
                 getSession().info("A féléves értékelés sikeresen frissítve.");
                 setResponsePage(Valuations.class);
                 return;
@@ -130,8 +128,10 @@ public class ValuationDetails extends SecuredPageTemplate {
             }
         };
         container.add(ajaxLink);
-        if (systemManager.getErtekelesIdoszak() != ValuationPeriod.ERTEKELESLEADAS
-                || !systemManager.getSzemeszter().equals(valuation.getSemester())) {
+        if ((!systemManager.getErtekelesIdoszak().equals(ValuationPeriod.ERTEKELESLEADAS)
+                || !systemManager.getSzemeszter().equals(valuation.getSemester())
+                || (valuation.getPointStatus().equals(ValuationStatus.ELFOGADVA)
+                && valuation.getEntrantStatus().equals(ValuationStatus.ELFOGADVA)))) {
             ajaxLink.setVisible(false);
         }
 
