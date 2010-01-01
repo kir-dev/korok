@@ -24,7 +24,7 @@ public class PatternHolder {
     static {
         MOTHER_NAME_PATTERN = Pattern.compile("[A-ZŰÁÉÚŐÓÜÖÍa-zéáűőúöüóí]+ [A-ZÉÁŰŐÚÖÜÓÍa-zéáűőúöüóí ]*");
         IM_PATTERN = Pattern.compile("^([a-zA-Z]+):(.*)");
-        GRADUATION_YEAR_PATTERN = Pattern.compile("[0-9]{8}/[0-9]");
+        GRADUATION_YEAR_PATTERN = Pattern.compile("[0-9]{8}/[1-2]");
         GROUP_NAME_OR_POSTTYPE_PATTERN = Pattern.compile("[^|:]*");
         PHONE_NUMBER_PATTERN = Pattern.compile(".*\\d.*");
         VIRID_PATTERN = Pattern.compile("^.*:([0-9]+)$");
