@@ -30,7 +30,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.ldap.NameAlreadyBoundException;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.DistinguishedName;
@@ -446,6 +445,7 @@ public class LdapManagerBean implements LdapManagerLocal {
             attrs.put("givenName", p.getFirstName());
             attrs.put("cn", p.getLastName() + " " + p.getFirstName());
             attrs.put("mail", p.getMail());
+            attrs.put("schacUserStatus", p.getStudentUserStatus());
 
             ldapTemplate.bind(dn, null, attrs);
         } catch (Exception ex) {
