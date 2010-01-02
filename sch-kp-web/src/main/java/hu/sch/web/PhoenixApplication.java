@@ -46,10 +46,15 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
+import org.apache.wicket.Page;
 import org.apache.wicket.Request;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.lang.PackageName;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
@@ -121,7 +126,6 @@ public class PhoenixApplication extends WebApplication {
 //        mountBookmarkablePage("profile/edit", EditPage.class);
 
         //alkalmazás beállítások
-        getApplicationSettings().setInternalErrorPage(InternalServerError.class);
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
         getMarkupSettings().setStripWicketTags(true);
         getPageSettings().setAutomaticMultiWindowSupport(false);
@@ -143,6 +147,21 @@ public class PhoenixApplication extends WebApplication {
     @Override
     public Session newSession(Request request, Response response) {
         return new VirSession(request);
+    }
+
+    @Override
+    public RequestCycle newRequestCycle(Request request, Response response) {
+        if (getConfigurationType().equals(DEVELOPMENT)) {
+            return super.newRequestCycle(request, response);
+        } else {
+            return new WebRequestCycle(this, (WebRequest) request, (WebResponse) response) {
+
+                @Override
+                public Page onRuntimeException(Page page, RuntimeException ex) {
+                    return new InternalServerError(page, ex);
+                }
+            };
+        }
     }
 
     @Override
