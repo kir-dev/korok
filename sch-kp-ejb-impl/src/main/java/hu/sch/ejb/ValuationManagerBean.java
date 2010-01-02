@@ -354,19 +354,17 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 if (groupLeader != null) {
                     emailTo = groupLeader.getEmailAddress();
                 }
-                emailText = "Kedves Körvezető!\n\nA JETi a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n"
+                emailText = "Kedves Körvezető!\n\nA SVIE Választmány a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n"
                         + "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n"
                         + "Ez egy automatikusan generált e-mail.";
             } else {
-                System.out.println("nem JETI");
                 // nem a JETI a feladó
-
                 // jeti körvezetőjének a mail címének kikeresése
                 User leader = userManager.getGroupLeaderForGroup(156L);
                 if (leader != null) {
                     emailTo = leader.getEmailAddress();
                 }
-                emailText = "Kedves JETi körvezető!\n\nA(z) " + e.getGroup().getName() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n"
+                emailText = "Kedves SVIE Választmány Elnök!\n\nA(z) " + e.getGroup().getName() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n"
                         + "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n"
                         + "Ez egy automatikusan generált e-mail.";
             }
