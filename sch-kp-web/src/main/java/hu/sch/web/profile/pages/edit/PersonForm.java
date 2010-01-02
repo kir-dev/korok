@@ -290,7 +290,24 @@ public class PersonForm extends Form<Person> {
         homePhoneTF.add(new PatternValidator(PatternHolder.PHONE_NUMBER_PATTERN));
         add(new ValidationSimpleFormComponentLabel("homePhoneLabel", homePhoneTF));
 
-        TextField<String> webpageTF = new TextField<String>("webpage");
+        TextField<String> webpageTF = new TextField<String>("webpage") {
+
+            @Override
+            public String[] getInputAsArray() {
+                //lásd: http://www.mail-archive.com/users@wicket.apache.org/msg29215.html
+                String[] inputArray = super.getInputAsArray();
+                if (inputArray != null && inputArray.length != 0
+                        && inputArray[0] != null) {
+                    String value = inputArray[0];
+                    if (!value.startsWith("http")) {
+                        value = "http://" + value;
+                        inputArray[0] = value;
+                    }
+                }
+                return inputArray;
+            }
+        };
+
         webpageTF.add(new UrlValidator());
         webpageTF.add(new ValidationStyleBehavior());
         add(webpageTF);
