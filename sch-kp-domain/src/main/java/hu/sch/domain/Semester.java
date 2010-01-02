@@ -27,9 +27,9 @@ public class Semester implements Serializable {
     }
 
     public Semester(Integer firstYear, Integer secondYear, boolean isAutumn) {
-        if (firstYear > 2030 || firstYear < 2000 ||
-                secondYear > 2030 || secondYear < 2000) {
-            throw new IllegalArgumentException("Az évnek 2000 és 2030 között kell lennie");
+        if (firstYear > 2030 || firstYear <= 1970 ||
+                secondYear > 2030 || secondYear <= 1970) {
+            throw new IllegalArgumentException("Az évnek 1970 és 2030 között kell lennie");
         }
 
         setId(firstYear.toString() + secondYear.toString() + (isAutumn ? "1" : "2"));
@@ -104,8 +104,8 @@ public class Semester implements Serializable {
     }
 
     public void setFirstYear(Integer firstYear) {
-        if (firstYear > 2030 || firstYear < 2000) {
-            throw new IllegalArgumentException("Az évnek 2000 és 2030 között kell lennie");
+        if (firstYear > 2030 || firstYear <= 1970) {
+            throw new IllegalArgumentException("Az évnek 1970 és 2030 között kell lennie");
         }
 
         setId(firstYear.toString() + getSecondYear().toString() + (isAutumn() ? "1" : "2"));
@@ -117,8 +117,8 @@ public class Semester implements Serializable {
     }
 
     public void setSecondYear(Integer secondYear) {
-        if (secondYear > 2030 || secondYear < 2000) {
-            throw new IllegalArgumentException("Az évnek 2000 és 2030 között kell lennie");
+        if (secondYear > 2030 || secondYear <= 1970) {
+            throw new IllegalArgumentException("Az évnek 1970 és 2030 között kell lennie");
         }
 
         setId(getFirstYear() + secondYear.toString() + (isAutumn() ? "1" : "2"));
