@@ -48,6 +48,7 @@ ul.horizontal li {
     color: #C5E2F7;
     border: none;
     font: bold 15px verdana, arial, sans;
+    padding: 0px 8px;
 }
 #header ul#pagemenu {
     position: absolute;
@@ -60,7 +61,7 @@ ul.horizontal li {
     top: 112px;
     right: 2px;
 }
-#header ul li { padding: 4px 8px 4px 8px; }
+#header ul li { padding: 4px 0; }
 #header ul li:hover { background: #58829e; }
 
 #content .header {
