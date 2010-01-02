@@ -92,6 +92,11 @@
             <layout>default</layout>
             <url>http://wicketstuff.org/maven/repository</url>
         </repository>
+        <repository>
+            <id>wicket-tree</id>
+            <name>Wicket-tree Repository</name>
+            <url>http://wicket-tree.googlecode.com/svn/repo</url>
+        </repository>
     </repositories>
     <modules>
         <module>sch-kp-domain</module>

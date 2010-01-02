@@ -34,7 +34,7 @@ public interface UserManagerLocal {
 
     List<String> getEveryGroupName();
 
-    Group getGroupHierarchy();
+    List<Group> getGroupHierarchy();
 
     List<Group> findGroupByName(String name);
 

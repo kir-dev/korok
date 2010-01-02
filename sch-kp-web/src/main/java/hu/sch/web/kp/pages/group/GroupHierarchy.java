@@ -4,28 +4,31 @@ import hu.sch.domain.Group;
 import hu.sch.web.components.FocusOnLoadBehavior;
 import hu.sch.web.components.SearchAutoCompleteTextField;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
-import java.io.Serializable;
 import java.text.Collator;
 import java.util.Arrays;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
 import org.apache.log4j.Logger;
+import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.behavior.HeaderContributor;
+import org.apache.wicket.markup.html.IHeaderContributor;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.markup.html.tree.LinkTree;
+import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
+import wickettree.ITreeProvider;
+import wickettree.NestedTree;
+import wickettree.content.Folder;
+import wickettree.theme.WindowsTheme;
 
 /**
  *
@@ -34,6 +37,7 @@ import org.apache.wicket.model.PropertyModel;
 public class GroupHierarchy extends SecuredPageTemplate {
 
     private static Logger log = Logger.getLogger(GroupHierarchy.class);
+    private List<Group> roots = userManager.getGroupHierarchy();
 
     private String[] sort(List<String> list) {
         String[] items = list.toArray(new String[list.size()]);
@@ -93,79 +97,64 @@ public class GroupHierarchy extends SecuredPageTemplate {
             }
         });
 
-        TreeModel model = new DefaultTreeModel(
-                new GroupTreeNode(userManager.getGroupHierarchy()));
-        LinkTree tree = new LinkTree("hierarchyTree", model) {
+        final NestedTree<Group> tree = new NestedTree<Group>("hierarchyTree", new TreeProvider()) {
 
             @Override
-            protected IModel<Object> getNodeTextModel(IModel<Object> nodeModel) {
-                return new PropertyModel<Object>(nodeModel, "group.name");
-            }
+            protected Component newContentComponent(String string, IModel<Group> model) {
+                return new Folder<Group>(string, this, model) {
 
-            @Override
-            protected void onNodeLinkClicked(
-                    Object node, BaseTree baseTree, AjaxRequestTarget target) {
-                Long csoportId = ((GroupTreeNode) node).getGroup().getId();
-                setResponsePage(ShowGroup.class,
-                        new PageParameters("id=" + csoportId.toString()));
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    protected MarkupContainer newLinkComponent(String id, IModel<Group> model) {
+                        Group group = model.getObject();
+                        return new BookmarkablePageLink<Void>(id, ShowGroup.class,
+                                new PageParameters("id=" + group.getId()));
+                    }
+                };
             }
         };
-        tree.setRootLess(true);
+        tree.add(new HeaderContributor(new IHeaderContributor() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void renderHead(IHeaderResponse response) {
+                response.renderCSSReference(new CompressedResourceReference(WindowsTheme.class, "windows/theme.css"));
+            }
+        }));
         add(tree);
     }
 
-    private class GroupTreeNode implements TreeNode, Serializable {
+    public class TreeProvider implements ITreeProvider<Group> {
 
-        private Group group;
-        private Vector<TreeNode> children;
-        private TreeNode parent;
-
-        public GroupTreeNode(Group csoport) {
-            this(csoport, null);
+        @Override
+        public Iterator<? extends Group> getChildren(Group t) {
+            return t.getSubGroups().iterator();
         }
 
-        private GroupTreeNode(Group group, TreeNode parent) {
-            this.group = group;
-            this.parent = parent;
+        @Override
+        public Iterator<? extends Group> getRoots() {
+            return roots.iterator();
+        }
 
-            children = new Vector<TreeNode>();
-            if (group.getSubGroups() != null) {
-                for (Group g : group.getSubGroups()) {
-                    children.add(new GroupTreeNode(g, this));
-                }
+        @Override
+        public boolean hasChildren(Group t) {
+            List<Group> groups = t.getSubGroups();
+            if (groups == null) {
+                return false;
+            } else {
+                return !groups.isEmpty();
             }
         }
 
-        public Group getGroup() {
-            return group;
+        @Override
+        public IModel<Group> model(Group t) {
+            return new Model<Group>(t);
         }
 
-        public TreeNode getChildAt(int childIndex) {
-            return children.elementAt(childIndex);
-        }
-
-        public int getChildCount() {
-            return children.size();
-        }
-
-        public TreeNode getParent() {
-            return parent;
-        }
-
-        public int getIndex(TreeNode node) {
-            return children.indexOf(node);
-        }
-
-        public boolean getAllowsChildren() {
-            return true;
-        }
-
-        public boolean isLeaf() {
-            return children.isEmpty();
-        }
-
-        public Enumeration<TreeNode> children() {
-            return children.elements();
+        @Override
+        public void detach() {
         }
     }
 }

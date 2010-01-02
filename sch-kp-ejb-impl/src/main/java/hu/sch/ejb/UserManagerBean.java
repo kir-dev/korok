@@ -276,12 +276,10 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
-    public Group getGroupHierarchy() {
+    public List<Group> getGroupHierarchy() {
         Query q = em.createNamedQuery("groupHierarchy");
         List<Group> csoportok = q.getResultList();
-        Group rootCsoport = new Group();
         List<Group> rootCsoportok = new ArrayList<Group>();
-        rootCsoport.setSubGroups(rootCsoportok);
 
         for (Group cs : csoportok) {
             if (cs.getParent() != null) {
@@ -294,7 +292,7 @@ public class UserManagerBean implements UserManagerLocal {
             }
         }
 
-        return rootCsoport;
+        return rootCsoportok;
     }
 
     public User findUserWithCsoporttagsagokById(Long userId) {

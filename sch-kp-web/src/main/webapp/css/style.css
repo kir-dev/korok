@@ -361,11 +361,11 @@ div.wicket-aa li.selected {
     color: #FFFFFF;
 }
 /* Fa-hierarchia */
-table.wicket-tree-content table.icon-panel a,
-table.wicket-tree-content table.icon-panel a:hover,
-table.wicket-tree-content table.icon-panel a:visited {
+a.tree-junction-expanded,
+a.tree-junction-collapsed { border-width: 0px; }
+span.tree-content a {
     color: #1E4565 !important;
-    text-decoration: none !important;
+    border-width: 0px;
 }
 /* Értékelési gyorslinkek */
 .ertekelFigyelmeztet table td {
