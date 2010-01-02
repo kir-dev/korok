@@ -26,6 +26,7 @@ public class MailManagerBean implements MailManagerLocal {
     @Resource(name = "mail/korokMail")
     private Session mailSession;
 
+    @Override
     public boolean sendEmail(String to, String subject, String message) {
         StringBuilder sb = new StringBuilder();
         sb.append("E-mail küldése ");
@@ -55,7 +56,7 @@ public class MailManagerBean implements MailManagerLocal {
             }
 //            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
 
-            msg.setSubject("[VIR] " + subject);
+            msg.setSubject("[VIR Körök] " + subject);
             msg.setText(message);
             msg.setSentDate(new Date());
 
