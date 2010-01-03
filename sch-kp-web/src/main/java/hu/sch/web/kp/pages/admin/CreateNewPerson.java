@@ -63,6 +63,7 @@ public class CreateNewPerson extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 person.setStudentUserStatus("urn:mace:terena.org:schac:status:sch.hu:student_status:other");
+                person.setStatus("Active");
                 ldapManager.bindPerson(person);
                 setResponsePage(AdminPage.class, new PageParameters("uid=" + person.getUid()));
                 return;

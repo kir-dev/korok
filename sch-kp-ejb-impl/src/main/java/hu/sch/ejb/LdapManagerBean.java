@@ -482,6 +482,7 @@ public class LdapManagerBean implements LdapManagerLocal {
             attrs.put("cn", p.getLastName() + " " + p.getFirstName());
             attrs.put("mail", p.getMail());
             attrs.put("schacUserStatus", p.getStudentUserStatus());
+            attrs.put("inetUserStatus", p.getStatus());
 
             ldapTemplate.bind(dn, null, attrs);
         } catch (Exception ex) {
