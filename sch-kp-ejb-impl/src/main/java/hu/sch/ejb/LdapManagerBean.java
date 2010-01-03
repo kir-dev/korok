@@ -360,6 +360,16 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     @Override
+    public List<Person> searchMyUid(String mail) {
+        AndFilter andFilter = new AndFilter();
+        if (mail != null) {
+            andFilter.and(new EqualsFilter("mail", mail));
+        }
+        andFilter.and(new EqualsFilter("inetUserStatus", "Active"));
+        return getLdapTemplate().search("", andFilter.encode(), getContextMapper());
+    }
+
+    @Override
     public List<Person> search(List<String> searchWords) {
         AndFilter andFilter = setUpAndFilter(searchWords);
         andFilter.and(new EqualsFilter("inetUserStatus", "active"));

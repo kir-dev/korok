@@ -41,6 +41,7 @@ import hu.sch.web.kp.pages.group.GroupHistory;
 import hu.sch.web.kp.pages.logout.Logout;
 import hu.sch.web.kp.pages.user.UserHistory;
 import hu.sch.web.authz.UserAuthorization;
+import hu.sch.web.common.pages.UserNameReminder;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.PageExpiredError;
 import hu.sch.web.kp.pages.admin.CreateGroup;
@@ -118,6 +119,7 @@ public class PhoenixApplication extends WebApplication {
         //körök linkek
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);
+        mountBookmarkablePage("/reminder", UserNameReminder.class);
 
         mountBookmarkablePage("/showgroup", ShowGroup.class);
         mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);

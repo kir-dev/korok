@@ -62,6 +62,8 @@ public interface LdapManagerLocal {
 
     List<Person> searchInactives();
 
+    List<Person> searchMyUid(String mail);
+
     List<Person> getPersonByDn(List<String> dnList);
 
     void initialization();
