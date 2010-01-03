@@ -64,6 +64,10 @@
                 <artifactId>maven-license-plugin</artifactId>
                 <configuration>
                     <header>LICENSE</header>
+                    <excludes>
+                        <exclude>**/*.html</exclude>
+                    </excludes>
+                    <useDefaultExcludes>true</useDefaultExcludes>
                 </configuration>
             </plugin>
         </plugins>
