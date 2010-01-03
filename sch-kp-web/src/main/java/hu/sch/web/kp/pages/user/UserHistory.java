@@ -1,6 +1,32 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (c) 2009, Peter Major
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the Peter Major nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ *  * All advertising materials mentioning features or use of this software
+ * must display the following acknowledgement:
+ * This product includes software developed by the Kir-Dev Team, Hungary
+ * and its contributors.
+ *
+ * THIS SOFTWARE IS PROVIDED BY Peter Major ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Peter Major BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package hu.sch.web.kp.pages.user;
 
@@ -53,8 +79,8 @@ public class UserHistory extends SecuredPageTemplate {
             if (selected != 0l) {
                 selected_text = userManager.findGroupById(selected).getName();
             } else {
-		selected = null;
-	    }
+                selected = null;
+            }
         } catch (Throwable t) {
             log.warn("Error while loading parameters.", t);
         }
@@ -141,8 +167,8 @@ public class UserHistory extends SecuredPageTemplate {
 
         for (SemesterGroupPoint sgp2 : sgp) {
             for (SemesterGroupPoint skp2 : sgp) {
-                if (sgp2.getGroupId().equals(skp2.getGroupId()) &&
-                        sgp2.getSemester().getPrevious().getId().equals(skp2.getSemester().getId())) {
+                if (sgp2.getGroupId().equals(skp2.getGroupId())
+                        && sgp2.getSemester().getPrevious().getId().equals(skp2.getSemester().getId())) {
                     sgp2.add(skp2.getPoint());
                 }
             }
@@ -152,8 +178,8 @@ public class UserHistory extends SecuredPageTemplate {
         for (SemesterGroupPoint skp : sgp.toArray(new SemesterGroupPoint[sgp.size()])) {
             boolean isNot = true;
             for (SemesterGroupPoint skp2 : sgp) {
-                if (skp2.getGroupId().equals(skp.getGroupId()) &&
-                        skp2.getSemester().equals(skp.getSemester().getNext())) {
+                if (skp2.getGroupId().equals(skp.getGroupId())
+                        && skp2.getSemester().equals(skp.getSemester().getNext())) {
                     isNot = false;
                     break;
                 }

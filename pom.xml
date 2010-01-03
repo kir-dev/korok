@@ -6,7 +6,15 @@
     <packaging>pom</packaging>
     <version>2.2.1</version>
     <name>SCH KP Application</name>
-    <url>http://maven.apache.org</url>
+    <url>http://kir-dev.sch.bme.hu</url>
+    <licenses>
+        <license>
+            <name>BSD License (original)</name>
+            <url>http://www.opensource.org/licenses/bsd-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <build>
         <plugins>
             <plugin>
@@ -23,7 +31,7 @@
                         <version>1.1.3</version>
                         <exclusions>
                             <exclusion>
-<!--
+                                <!--
      Use the version specified by checkstyle:checkstyle instead
      -->
                                 <artifactId>commons-collections</artifactId>
@@ -51,6 +59,13 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>LICENSE</header>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -68,6 +83,19 @@
             </plugin>
         </plugins>
     </reporting>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mc-release</id>
+            <name>Local Maven repository of releases</name>
+            <url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
     <repositories>
         <!-- for oswego-concurrent 1.3.4 jboss package -->
         <repository>

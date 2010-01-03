@@ -1,6 +1,32 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (c) 2009, Peter Major
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the Peter Major nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ *  * All advertising materials mentioning features or use of this software
+ * must display the following acknowledgement:
+ * This product includes software developed by the Kir-Dev Team, Hungary
+ * and its contributors.
+ *
+ * THIS SOFTWARE IS PROVIDED BY Peter Major ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Peter Major BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package hu.sch.ejb;
 
@@ -65,13 +91,13 @@ public class PostManagerBean implements PostManagerLocal {
 
     public void changeGroupLeader(Membership membership, PostType groupLeaderType) {
         User user = membership.getUser();
-        Query q = em.createQuery("SELECT p FROM Post p " +
-                "WHERE p.postType = :pt AND p.membership.group = :group");
+        Query q = em.createQuery("SELECT p FROM Post p "
+                + "WHERE p.postType = :pt AND p.membership.group = :group");
         q.setParameter("pt", groupLeaderType);
         q.setParameter("group", membership.getGroup());
         Post post = (Post) q.getSingleResult();
-        Query q2 = em.createQuery("SELECT p FROM PostType p " +
-                "WHERE p.postName = :pn");
+        Query q2 = em.createQuery("SELECT p FROM PostType p "
+                + "WHERE p.postName = :pn");
         q2.setParameter("pn", "volt körvezető");
         PostType postType = (PostType) q2.getSingleResult();
         post.setPostType(postType);
@@ -79,14 +105,14 @@ public class PostManagerBean implements PostManagerLocal {
         temp.add(groupLeaderType);
         log.warn("Körvezetőt szeretnének váltani: " + post.getMembership().getUser().getId() + "->" + membership.getUser().getId());
         if (membership.getGroup().getIsSvie()) {
-            if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
-                    user.getSvieStatus().equals(SvieStatus.ELFOGADVA) &&
-                    user.getSvieMembershipType() != null && user.getSviePrimaryMembership().equals(membership)) {
+            if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG)
+                    && user.getSvieStatus().equals(SvieStatus.ELFOGADVA)
+                    && user.getSvieMembershipType() != null && user.getSviePrimaryMembership().equals(membership)) {
                 post.getMembership().getUser().setDelegated(false);
                 membership.getUser().setDelegated(true);
             } else {
-                throw new IllegalStateException("Ennek a felhasználónak nem adhatod át a körvezetőséget, " +
-                        "nem teljesíti a SVIE feltételeket.");
+                throw new IllegalStateException("Ennek a felhasználónak nem adhatod át a körvezetőséget, "
+                        + "nem teljesíti a SVIE feltételeket.");
             }
         }
         em.merge(membership.getUser());
@@ -96,9 +122,9 @@ public class PostManagerBean implements PostManagerLocal {
 
     public boolean createPostType(String postName, Group group, Boolean isDelegatedPost) {
         try {
-            Query q = em.createQuery("SELECT p FROM PostType p " +
-                    "WHERE (p.postName = :pn AND p.group IS NULL) OR " +
-                    "p.postName = :pn AND p.group = :group");
+            Query q = em.createQuery("SELECT p FROM PostType p "
+                    + "WHERE (p.postName = :pn AND p.group IS NULL) OR "
+                    + "p.postName = :pn AND p.group = :group");
             q.setParameter("pn", postName);
             q.setParameter("group", group);
             PostType result = (PostType) q.getSingleResult();
