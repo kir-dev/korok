@@ -248,6 +248,11 @@ public class Valuations extends SecuredPageTemplate {
                 Link ert = new Link("valuationLink") {
 
                     @Override
+                    protected boolean getStatelessHint() {
+                        return false;
+                    }
+
+                    @Override
                     public void onClick() {
                         setResponsePage(new ValuationDetails(v));
                     }

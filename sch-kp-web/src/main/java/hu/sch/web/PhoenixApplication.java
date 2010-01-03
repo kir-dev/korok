@@ -78,6 +78,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.protocol.http.request.InvalidUrlException;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.lang.PackageName;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
@@ -182,6 +183,9 @@ public class PhoenixApplication extends WebApplication {
 
                 @Override
                 public Page onRuntimeException(Page page, RuntimeException ex) {
+                    if (ex instanceof InvalidUrlException) {
+                        return new PageExpiredError();
+                    }
                     return new InternalServerError(page, ex);
                 }
             };
