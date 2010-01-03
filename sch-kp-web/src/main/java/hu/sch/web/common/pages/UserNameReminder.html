@@ -1,0 +1,17 @@
+<wicket:extend>
+    <span wicket:id="pagemessages" id="pagemessages" style="display: block; margin-bottom: 20px;"></span>
+    <div id="notifybox">
+        <wicket:message key="notify.reminder" />
+    </div>
+    <div id="admincont">
+        <form wicket:id="reminderForm">
+            <table>
+                <tr>
+                    <td><label>E-mail</label></td>
+                    <td><input class="textinput" wicket:id="mail"/></td>
+                </tr>
+            </table>
+            <input type="submit" id="btns" class="btn" value="Küldés" />
+        </form>
+    </div>
+</wicket:extend>
