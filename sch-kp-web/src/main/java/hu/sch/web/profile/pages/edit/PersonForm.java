@@ -313,7 +313,7 @@ public class PersonForm extends Form<Person> {
                 if (inputArray != null && inputArray.length != 0
                         && inputArray[0] != null) {
                     String value = inputArray[0];
-                    if (!value.startsWith("http") || !value.isEmpty()) {
+                    if (!value.startsWith("http") && !value.isEmpty()) {
                         value = "http://" + value;
                         inputArray[0] = value;
                     }
