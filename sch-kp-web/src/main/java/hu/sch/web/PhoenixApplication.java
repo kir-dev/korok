@@ -74,6 +74,7 @@ import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
+import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
@@ -183,7 +184,7 @@ public class PhoenixApplication extends WebApplication {
 
                 @Override
                 public Page onRuntimeException(Page page, RuntimeException ex) {
-                    if (ex instanceof InvalidUrlException) {
+                    if (ex instanceof InvalidUrlException || ex instanceof PageExpiredException) {
                         return new PageExpiredError();
                     }
                     return new InternalServerError(page, ex);
