@@ -53,13 +53,10 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
     @PersistenceContext
     EntityManager em;
     private static final long serialVersionUID = 1L;
-    private static final String FINDUSER =
-            "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
-            + "upper(u.emailAddress) = upper(:emailcim)";
 
     public User createUserEntry(User user) {
         if (user.getNeptunCode() != null) {
-            Query q = em.createNamedQuery("findUserByNeptunCode");
+            Query q = em.createNamedQuery(User.findUserByNeptunCode);
             q.setParameter("neptun", user.getNeptunCode());
             try {
                 User exists = (User) q.getSingleResult();
@@ -96,7 +93,7 @@ public class EntitlementManagerBean implements EntitlementManagerRemote {
     }
 
     public User findUser(String neptun, String email) {
-        return mapReturn((User) em.createQuery(FINDUSER).
+        return mapReturn((User) em.createNamedQuery(User.findUser).
                 setParameter("neptunkod", neptun).
                 setParameter("emailcim", email).
                 getSingleResult());
