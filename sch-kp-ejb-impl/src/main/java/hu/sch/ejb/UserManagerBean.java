@@ -303,7 +303,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     public List<Group> getGroupHierarchy() {
-        Query q = em.createNamedQuery("groupHierarchy");
+        Query q = em.createNamedQuery(Group.groupHierarchy);
         List<Group> csoportok = q.getResultList();
         List<Group> rootCsoportok = new ArrayList<Group>();
 

@@ -75,6 +75,7 @@ public class Group implements Serializable, Comparable<Group> {
     private static final long serialVersionUID = 1L;
     public static final String findAll = "findAllGroup";
     public static final String findWithMemberships = "findGroupWithMemberships";
+    public static final String groupHierarchy="groupHierarchy";
 
     /*
     grp_id               | integer               | not null default nextval('groups_grp_id_seq'::regclass)
