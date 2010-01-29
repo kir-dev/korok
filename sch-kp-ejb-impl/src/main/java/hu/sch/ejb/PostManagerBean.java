@@ -91,13 +91,11 @@ public class PostManagerBean implements PostManagerLocal {
 
     public void changeGroupLeader(Membership membership, PostType groupLeaderType) {
         User user = membership.getUser();
-        Query q = em.createQuery("SELECT p FROM Post p "
-                + "WHERE p.postType = :pt AND p.membership.group = :group");
+        Query q = em.createNamedQuery(Post.getByTypeAndGroup);
         q.setParameter("pt", groupLeaderType);
         q.setParameter("group", membership.getGroup());
         Post post = (Post) q.getSingleResult();
-        Query q2 = em.createQuery("SELECT p FROM PostType p "
-                + "WHERE p.postName = :pn");
+        Query q2 = em.createQuery(Post.getByName);
         q2.setParameter("pn", "volt körvezető");
         PostType postType = (PostType) q2.getSingleResult();
         post.setPostType(postType);
@@ -122,12 +120,10 @@ public class PostManagerBean implements PostManagerLocal {
 
     public boolean createPostType(String postName, Group group, Boolean isDelegatedPost) {
         try {
-            Query q = em.createQuery("SELECT p FROM PostType p "
-                    + "WHERE (p.postName = :pn AND p.group IS NULL) OR "
-                    + "p.postName = :pn AND p.group = :group");
+            Query q = em.createNamedQuery(PostType.getByNameAndGroup);
             q.setParameter("pn", postName);
             q.setParameter("group", group);
-            PostType result = (PostType) q.getSingleResult();
+            q.getSingleResult();
         } catch (NoResultException nre) {
             PostType temp = new PostType();
             temp.setGroup(group);

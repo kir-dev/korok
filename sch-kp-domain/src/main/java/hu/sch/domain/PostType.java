@@ -52,7 +52,11 @@ import javax.persistence.Table;
     @NamedQuery(name = "availablePostsForGroup",
     query = "SELECT p FROM PostType p WHERE p.group IS NULL OR p.group.id = :id"),
     @NamedQuery(name = "searchForCertainPostType",
-    query = "SELECT p FROM PostType p WHERE p.postName = :pn")
+    query = "SELECT p FROM PostType p WHERE p.postName = :pn"),
+    @NamedQuery(name = "getByNameAndGroup",
+    query = "SELECT p FROM PostType p "
+    + "WHERE (p.postName = :pn AND p.group IS NULL) OR "
+    + "p.postName = :pn AND p.group = :group")
 })
 @SequenceGenerator(name = "poszttipus_seq", sequenceName = "poszttipus_seq")
 public class PostType implements Serializable {
@@ -60,6 +64,7 @@ public class PostType implements Serializable {
     private static final long serialVersionUID = 1l;
     public static final String availablePostsQuery = "availablePostsForGroup";
     public static final String searchForPostType = "searchForCertainPostType";
+    public static final String getByNameAndGroup = "getByNameAndGroup";
     public static final String KORVEZETO = "körvezető";
     /*
     pttip_id   | integer       | not null default nextval('poszttipus_seq'::regclass)
