@@ -55,6 +55,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -173,8 +174,7 @@ public class UserManagerBean implements UserManagerLocal {
         em.persist(ms);
         Post post = new Post();
         post.setMembership(ms);
-        PostType leader = (PostType) em.createQuery(
-                "SELECT p FROM PostType p WHERE p.postName = 'körvezető'").getSingleResult();
+        PostType leader = (PostType) em.createNamedQuery(PostType.searchForPostType).setParameter("pn", "körvezető").getSingleResult();
         post.setPostType(leader);
         em.persist(post);
     }
