@@ -134,14 +134,14 @@ public class SvieManagerBean implements SvieManagerLocal {
 
     @Override
     public List<Membership> getSvieMembershipsForUser(User user) {
-        Query q = em.createQuery("SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true");
+        Query q = em.createNamedQuery(Membership.getMembership);
         q.setParameter("user", user);
         return q.getResultList();
     }
 
     @Override
     public List<User> getSvieMembers() {
-        Query q = em.createQuery("SELECT u FROM User u WHERE u.svieMembershipType <> :msType");
+        Query q = em.createNamedQuery(Membership.getMembers);
         q.setParameter("msType", SvieMembershipType.NEMTAG);
         return q.getResultList();
     }
@@ -205,8 +205,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     }
 
     public List<User> getDelegatedUsersForGroup(Long groupId) {
-        Query q = em.createQuery("SELECT ms.user FROM Membership ms "
-                + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true");
+        Query q = em.createNamedQuery(Membership.getDelegatedMemberForGroup);
         q.setParameter("groupId", groupId);
         return q.getResultList();
     }
@@ -216,8 +215,7 @@ public class SvieManagerBean implements SvieManagerLocal {
      */
     @Override
     public List<User> getDelegatedUsers() {
-        Query q = em.createQuery("SELECT u FROM User u WHERE u.delegated = true "
-                + "ORDER BY u.lastName, u.firstName");
+        Query q = em.createNamedQuery(Membership.getAllDelegated);
         return q.getResultList();
     }
 }

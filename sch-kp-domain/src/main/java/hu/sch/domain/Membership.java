@@ -40,6 +40,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -52,11 +54,28 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "grp_membership")
+@NamedQueries(value={
+@NamedQuery(name = "getMembership",
+query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
+@NamedQuery(name = "getMembers",
+query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
+@NamedQuery(name = "getDelegatedMemberForGroup",
+query = "SELECT ms.user FROM Membership ms "
+    + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true"),
+@NamedQuery(name = "getAllDelegated",
+query = "SELECT u FROM User u WHERE u.delegated = true "
+    + "ORDER BY u.lastName, u.firstName")
+}		
+)
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq")
 public class Membership implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String find = "findMembership";
+    public static final String getMembership = "getMembership";
+    public static final String getMembers = "getMembers";
+    public static final String getDelegatedMemberForGroup = "getDelegatedMemberForGroup";
+    public static final String getAllDelegated = "getAllDelegated";
+    
     /*
     id               | integer | not null default nextval('grp_members_seq'::regclass)
     grp_id           | integer |
