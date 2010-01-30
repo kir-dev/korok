@@ -139,15 +139,6 @@ public abstract class SecuredPageTemplate extends WebPage {
         return userManager.findUserWithCsoporttagsagokById(getSession().getUserId());
     }
 
-    protected final Group getGroup() {
-        Long groupId = getSession().getGroupId();
-        if (groupId != null) {
-            return userManager.findGroupById(getSession().getGroupId());
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public VirSession getSession() {
         return (VirSession) super.getSession();
