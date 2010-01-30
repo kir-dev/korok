@@ -34,11 +34,13 @@ import hu.sch.domain.Group;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import javax.ejb.EJB;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  *
@@ -49,9 +51,21 @@ public class NewValuation extends SecuredPageTemplate {
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
     String valuationText = "";
+    private final Group group;
 
-    public NewValuation() {
-        final Group group = getGroup();
+    public NewValuation(PageParameters params) {
+        Long groupId;
+        try {
+            groupId = params.getLong("id");
+        } catch (StringValueConversionException svce) {
+            getSession().error("Hibás paraméter!");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+        if (groupId != null) {
+            group = userManager.findGroupById(groupId);
+        } else {
+            group = null;
+        }
         if (group == null) {
             getSession().error("Nincs csoport kiválasztva");
             throw new RestartResponseException(Valuations.class);

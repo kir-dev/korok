@@ -39,13 +39,14 @@ import hu.sch.domain.User;
 import hu.sch.web.kp.pages.entrantrequests.EntrantRequestFiling;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.pointrequests.PointRequestFiling;
-import hu.sch.web.session.VirSession;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
+import org.apache.log4j.Logger;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -64,10 +65,12 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author hege
  */
+//TODO: újraírni az egészet
 public class Valuations extends SecuredPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
+    private static Logger log = Logger.getLogger(Valuations.class);
     private String selected = "";
     List<Valuation> valuationList = new ArrayList<Valuation>();
     private Long id;
@@ -77,6 +80,25 @@ public class Valuations extends SecuredPageTemplate {
 
     public Valuations() {
         setHeaderLabelText("Értékelések");
+        init();
+    }
+
+    public Valuations(PageParameters params) {
+        try {
+            Long groupId = params.getLong("id");
+            group = userManager.findGroupById(groupId);
+            if (!isUserGroupLeader(group)) {
+                log.warn("Paraméterátírásos próbálkozás! " + getUser().getId());
+                getSession().error("Nincs jogod a művelethez! A próbálkozásod naplózásra került!");
+                throw new RestartResponseException(getApplication().getHomePage());
+            }
+        } catch (Exception ex) {
+            log.error("Hiba a paraméter feldolgozása közben: " + params.toString(), ex);
+        }
+        init();
+    }
+
+    public void init() {
         if (id == null) {
             id = getSession().getUserId();
         }
@@ -147,14 +169,12 @@ public class Valuations extends SecuredPageTemplate {
                     @Override
                     public void onClick() {
                         // group kiválasztása (mert nem feltétlen volt legördülővel...)
-                        ((VirSession) getSession()).setGroupId(group.getId());
-
                         if (val == null) {
                             /*
                              * ha egyáltalán nincs még értékelés az adott csoporthoz
                              * és szemeszterhez, akkor elősször szöveges értékelés kell
                              */
-                            setResponsePage(NewValuation.class);
+                            setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
                         } else {
                             // pontigény leadása a szöveges értékelés mellé
                             setResponsePage(new PointRequestFiling(val));
@@ -176,14 +196,12 @@ public class Valuations extends SecuredPageTemplate {
                     @Override
                     public void onClick() {
                         // group kiválasztása (mert nem feltétlen volt legördülővel...)
-                        ((VirSession) getSession()).setGroupId(group.getId());
-
                         if (val == null) {
                             /*
                              * ha egyáltalán nincs még értékelés az adott csoporthoz
                              * és szemeszterhez, akkor elősször szöveges értékelés kell
                              */
-                            setResponsePage(NewValuation.class);
+                            setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
                         } else {
                             // belépőigény leadása a szöveges értékelés mellé
                             setResponsePage(new EntrantRequestFiling(val));
@@ -221,7 +239,6 @@ public class Valuations extends SecuredPageTemplate {
                     //TODO simplify this
                     g = (iterator.next()).getGroup();
                     if (g.getName().equals(selected)) {
-                        ((VirSession) getSession()).setGroupId(g.getId());
                         updateErtekelesList();
                         if ((valuationList.isEmpty())
                                 || (!valuationManager.isErtekelesLeadhato(group))) {
@@ -234,7 +251,7 @@ public class Valuations extends SecuredPageTemplate {
                     }
                 }
 
-                setResponsePage(Valuations.class);
+                setResponsePage(Valuations.class, new PageParameters("id=" + g.getId()));
             }
         };
         add(ddc);
@@ -332,7 +349,6 @@ public class Valuations extends SecuredPageTemplate {
     }
 
     public void updateErtekelesList() {
-        group = getGroup();
         if (group != null) {
             valuationList.clear();
             valuationList.addAll(valuationManager.findErtekeles(group));
