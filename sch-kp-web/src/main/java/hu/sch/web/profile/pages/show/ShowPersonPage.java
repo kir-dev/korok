@@ -32,7 +32,6 @@ package hu.sch.web.profile.pages.show;
 
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.Person;
-import hu.sch.services.EntitlementManagerRemote;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.components.ImageResource;
 import hu.sch.web.profile.pages.admin.AdminPage;
@@ -43,7 +42,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -64,8 +62,6 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class ShowPersonPage extends ProfilePage {
 
-    @EJB(name = "foo", mappedName = "EntitlementManager")
-    EntitlementManagerRemote entitlementManager;
     //private static final Logger log = Logger.getLogger(ShowPersonPage.class);
     private Person person;
 
@@ -255,9 +251,5 @@ public class ShowPersonPage extends ProfilePage {
             return;
         }
         bindPerson();
-    }
-
-    protected EntitlementManagerRemote getEntitlementManager() {
-        return entitlementManager;
     }
 }
