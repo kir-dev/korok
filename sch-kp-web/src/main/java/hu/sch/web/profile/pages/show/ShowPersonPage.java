@@ -35,7 +35,6 @@ import hu.sch.domain.profile.Person;
 import hu.sch.services.EntitlementManagerRemote;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.components.ImageResource;
-import hu.sch.web.error.ErrorPage;
 import hu.sch.web.profile.pages.admin.AdminPage;
 import hu.sch.web.profile.pages.community.CreateCommunityProfile;
 import hu.sch.web.profile.pages.search.DormitoryRoomNumberLinkPanel;
@@ -232,14 +231,14 @@ public class ShowPersonPage extends ProfilePage {
 
         if (uid == null && virid == null) {
             getSession().error("A felhasználó nem található!");
-            setResponsePage(ErrorPage.class);
+            setResponsePage(getApplication().getHomePage());
             return;
         } else if (uid != null && virid == null) {
             try {
                 setPerson(ldapManager.getPersonByUid(uid));
             } catch (PersonNotFoundException e) {
                 getSession().error("A felhasználó nem található!");
-                setResponsePage(ErrorPage.class);
+                setResponsePage(getApplication().getHomePage());
                 return;
             }
         } else if (uid == null && virid != null) {
@@ -247,12 +246,12 @@ public class ShowPersonPage extends ProfilePage {
                 setPerson(ldapManager.getPersonByVirId(virid));
             } catch (PersonNotFoundException e) {
                 getSession().error("A felhasználó nem található!");
-                setResponsePage(ErrorPage.class);
+                setResponsePage(getApplication().getHomePage());
                 return;
             }
         } else {
             getSession().error("A felhasználó nem található!");
-            setResponsePage(ErrorPage.class);
+            setResponsePage(getApplication().getHomePage());
             return;
         }
         bindPerson();

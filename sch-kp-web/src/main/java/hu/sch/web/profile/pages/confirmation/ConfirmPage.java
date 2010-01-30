@@ -32,7 +32,6 @@ package hu.sch.web.profile.pages.confirmation;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.error.ErrorPage;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import java.math.BigInteger;
@@ -88,7 +87,7 @@ public final class ConfirmPage extends ProfilePage {
             }
         } catch (PersonNotFoundException e) {
             getSession().error("A felhasználó nem található!");
-            setResponsePage(ErrorPage.class);
+            setResponsePage(getApplication().getHomePage());
             return;
 
         }

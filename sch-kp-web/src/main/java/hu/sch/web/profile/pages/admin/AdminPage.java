@@ -35,7 +35,7 @@ import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.components.ValidationStyleBehavior;
 import hu.sch.web.components.customlinks.DeletePersonLink;
-import hu.sch.web.error.ErrorPage;
+import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.profile.pages.edit.PersonForm;
 import hu.sch.web.profile.pages.edit.PersonForm.KeyValuePairInForm;
@@ -151,8 +151,7 @@ public class AdminPage extends ProfilePage {
     }
 
     private void error() {
-        getSession().error("A kért oldal nem található!");
-        throw new RestartResponseException(ErrorPage.class);
+        throw new RestartResponseException(NotFound.class);
     }
 
     private static class DropDownChoiceRenderer implements IChoiceRenderer<Object> {

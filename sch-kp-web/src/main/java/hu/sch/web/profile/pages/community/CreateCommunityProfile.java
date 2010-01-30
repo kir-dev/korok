@@ -36,7 +36,6 @@ import hu.sch.services.EntitlementManagerRemote;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.components.ConfirmationBoxRenderer;
-import hu.sch.web.error.ErrorPage;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import java.util.regex.Pattern;
@@ -85,14 +84,14 @@ public class CreateCommunityProfile extends ProfilePage {
     public CreateCommunityProfile(WebPage referer) {
         if (referer == null) {
             getSession().error("Hiba történt.");
-            throw new RestartResponseException(ErrorPage.class);
+            throw new RestartResponseException(getApplication().getHomePage());
         }
         setHeaderLabelText("Közösségi profil létrehozása");
         try {
             person = ldapManager.getPersonByUid(getUid());
         } catch (PersonNotFoundException ex) {
             getSession().error("Hiba az adatok betöltésekor");
-            throw new RestartResponseException(ErrorPage.class);
+            throw new RestartResponseException(getApplication().getHomePage());
         }
         add(new FeedbackPanel("feedbackPanel"));
 
