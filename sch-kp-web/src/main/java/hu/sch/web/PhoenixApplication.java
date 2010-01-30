@@ -184,7 +184,7 @@ public class PhoenixApplication extends WebApplication {
 
                 @Override
                 public Page onRuntimeException(Page page, RuntimeException ex) {
-                    if (ex instanceof InvalidUrlException || ex instanceof PageExpiredException) {
+                    if (ex instanceof PageExpiredException) {
                         return new PageExpiredError();
                     }
                     return new InternalServerError(page, ex);
