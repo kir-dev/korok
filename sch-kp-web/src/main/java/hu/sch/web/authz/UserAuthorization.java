@@ -62,17 +62,16 @@ public interface UserAuthorization {
      * Az aktuálisan bejelentkezett felhasználó csoportbeli tagságát vizsgálja.
      * 
      * @param wicketRequest
-     * @param csoport
+     * @param group
      * @return
      */
-    boolean isGroupLeaderInGroup(Request wicketRequest, Group csoport);
+    boolean isGroupLeaderInGroup(Request wicketRequest, Group group);
 
     /**
      * Az aktuálisan bejelentkezett felhasználó rendelkezik-e valamelyik csoportban
      * az adott jogosultsággal.
      * 
      * @param wicketRequest
-     * @param tagsagTipus
      * @return
      */
     boolean isGroupLeaderInSomeGroup(Request wicketRequest);
