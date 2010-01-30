@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.log4j.Logger;
 import org.apache.wicket.Page;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -46,6 +47,7 @@ import org.apache.wicket.protocol.http.WebRequest;
  */
 public final class InternalServerError extends SecuredPageTemplate {
 
+    private static Logger log = Logger.getLogger(InternalServerError.class);
     @EJB(name = "MailManagerBean")
     MailManagerLocal mailManager;
 
@@ -75,8 +77,10 @@ public final class InternalServerError extends SecuredPageTemplate {
         sb.append(bs.toString());
         sb.append("\n\nJó debugolást! :)\nKörök");
         try {
-            mailManager.sendEmail("majorpetya@sch.bme.hu", "Programhiba", sb.toString());
+            mailManager.sendEmail("jee-dev@sch.bme.hu", "Programhiba", sb.toString());
         } catch (Exception e) {
+            e.initCause(ex);
+            log.error("Error while sending the error e-mail!", e);
         }
     }
 }
