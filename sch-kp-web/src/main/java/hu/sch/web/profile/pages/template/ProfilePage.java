@@ -38,7 +38,6 @@ import hu.sch.web.profile.pages.birthday.BirthDayPage;
 import hu.sch.web.profile.pages.edit.EditPage;
 import hu.sch.web.profile.pages.passwordchange.ChangePasswordPage;
 import javax.ejb.EJB;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -53,20 +52,16 @@ public abstract class ProfilePage extends WebPage {
 
     @EJB(name = "LdapManagerBean")
     protected LdapManagerLocal ldapManager;
+    private Label headerLabel;
 
     public ProfilePage() {
 
-        add(new BookmarkablePageLink("profilePageLink", ShowPersonPage.class));
-        add(new BookmarkablePageLink("searchPageLink", SearchPage.class));
-        add(new BookmarkablePageLink("editPageLink", EditPage.class));
-        //add(new BookmarkablePageLink("logoutPageLink", LogoutPage.class));
-        add(new BookmarkablePageLink("changePasswordPageLink", ChangePasswordPage.class));
-        add(new BookmarkablePageLink("birthDayPageLink", BirthDayPage.class));
-//        add(new BookmarkablePageLink("listGroupsLink", ListGroupsPage.class));
-        WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
-        add(headerLabelContainer);
-        headerLabelContainer.add(new Label("headerLabel", new Model<Serializable>()));
-        headerLabelContainer.setVisible(false);
+        add(new BookmarkablePageLink<ShowPersonPage>("profilePageLink", ShowPersonPage.class));
+        add(new BookmarkablePageLink<SearchPage>("searchPageLink", SearchPage.class));
+        add(new BookmarkablePageLink<EditPage>("editPageLink", EditPage.class));
+        add(new BookmarkablePageLink<ChangePasswordPage>("changePasswordPageLink", ChangePasswordPage.class));
+        add(new BookmarkablePageLink<BirthDayPage>("birthDayPageLink", BirthDayPage.class));
+        add(headerLabel = new Label("headerLabel", new Model<Serializable>()));
     }
 
     protected String getUid() {
@@ -80,12 +75,10 @@ public abstract class ProfilePage extends WebPage {
     }
 
     public void setHeaderLabelText(String text) {
-        get("headerLabelContainer").setVisible(true);
-        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model<Serializable>(text));
+        headerLabel.setDefaultModel(new Model<Serializable>(text));
     }
 
-    public void setHeaderLabelModel(IModel<?> model) {
-        get("headerLabelContainer").setVisible(true);
-        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(model);
+    public void setHeaderLabelModel(IModel<?> imodel) {
+        headerLabel.setDefaultModel(imodel);
     }
 }
