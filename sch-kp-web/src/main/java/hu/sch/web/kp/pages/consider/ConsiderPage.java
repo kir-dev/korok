@@ -35,7 +35,7 @@ import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
-import hu.sch.web.components.ValuationStatusChooser;
+import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
 import hu.sch.web.kp.pages.valuation.ValuationDetails;
 import hu.sch.web.kp.pages.valuation.ValuationMessages;
 import hu.sch.web.kp.pages.valuation.EntrantRequestViewer;

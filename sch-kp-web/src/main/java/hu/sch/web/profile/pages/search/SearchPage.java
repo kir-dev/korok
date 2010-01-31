@@ -30,7 +30,7 @@
  */
 package hu.sch.web.profile.pages.search;
 
-import hu.sch.web.components.FocusOnLoadBehavior;
+import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.Form;

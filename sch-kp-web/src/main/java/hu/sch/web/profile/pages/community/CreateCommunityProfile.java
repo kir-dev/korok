@@ -35,7 +35,7 @@ import hu.sch.domain.profile.Person;
 import hu.sch.services.EntitlementManagerRemote;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.components.ConfirmationBoxRenderer;
+import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import java.util.regex.Pattern;
@@ -235,7 +235,7 @@ public class CreateCommunityProfile extends ProfilePage {
                     }
                 }.setVisible(false);
 
-        createProfileWithoutNEPTUN.add(new ConfirmationBoxRenderer("Biztos, hogy külsős vagy, és nincs NEPTUN-kódod?"));
+        createProfileWithoutNEPTUN.add(new ConfirmationBehavior("Biztos, hogy külsős vagy, és nincs NEPTUN-kódod?"));
         enterConfirmationCode =
                 new Link("enterConfirmationCode") {
 

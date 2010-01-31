@@ -33,12 +33,12 @@ package hu.sch.web.kp.pages.svie;
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
 import hu.sch.services.SvieManagerLocal;
-import hu.sch.web.components.SvieDelegateNumberChooser;
-import hu.sch.web.components.SvieGroupStatusChooser;
-import hu.sch.web.components.customlinks.GroupLink;
-import hu.sch.web.components.customlinks.UserLink;
+import hu.sch.web.wicket.components.SvieDelegateNumberField;
+import hu.sch.web.wicket.components.SvieGroupStatusSelector;
+import hu.sch.web.wicket.components.customlinks.GroupLink;
+import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
-import hu.sch.web.kp.util.SortableGroupDataProvider;
+import hu.sch.web.wicket.util.SortableGroupDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -98,13 +98,13 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
         columns.add(new AbstractColumn<Group>(new Model<String>("SVIE tag?")) {
 
             public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
-                cellItem.add(new SvieGroupStatusChooser(componentId, rowModel.getObject()));
+                cellItem.add(new SvieGroupStatusSelector(componentId, rowModel.getObject()));
             }
         });
         columns.add(new AbstractColumn<Group>(new Model<String>("Küldöttek száma")) {
 
             public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
-                cellItem.add(new SvieDelegateNumberChooser(componentId, rowModel.getObject()));
+                cellItem.add(new SvieDelegateNumberField(componentId, rowModel.getObject()));
             }
         });
 

@@ -31,7 +31,7 @@
 package hu.sch.web.profile.pages.search;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.web.profile.pages.show.PersonDataProvider;
+import hu.sch.web.wicket.util.PersonDataProvider;
 import java.util.ArrayList;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;

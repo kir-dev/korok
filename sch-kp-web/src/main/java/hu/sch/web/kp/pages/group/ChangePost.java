@@ -36,7 +36,7 @@ import hu.sch.domain.Post;
 import hu.sch.domain.User;
 import hu.sch.domain.PostType;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
-import hu.sch.util.PatternHolder;
+import hu.sch.domain.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

@@ -34,7 +34,7 @@ import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
-import hu.sch.web.components.customlinks.UserLink;
+import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;

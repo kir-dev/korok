@@ -31,7 +31,7 @@
 package hu.sch.web.profile.pages.birthday;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.web.profile.pages.show.PersonDataProvider;
+import hu.sch.web.wicket.util.PersonDataProvider;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
 import java.text.SimpleDateFormat;

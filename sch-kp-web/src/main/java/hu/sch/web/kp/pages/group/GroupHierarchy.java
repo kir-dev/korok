@@ -31,8 +31,8 @@
 package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
-import hu.sch.web.components.FocusOnLoadBehavior;
-import hu.sch.web.components.SearchAutoCompleteTextField;
+import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
+import hu.sch.web.wicket.components.SearchAutoCompleteTextField;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.text.Collator;
 import java.util.Arrays;

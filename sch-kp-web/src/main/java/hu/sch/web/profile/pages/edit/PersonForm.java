@@ -30,16 +30,16 @@
  */
 package hu.sch.web.profile.pages.edit;
 
-import hu.sch.web.components.ImageResizer;
+import hu.sch.web.wicket.util.ImageResizer;
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.IMProtocol;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
-import hu.sch.web.components.ImageResource;
-import hu.sch.web.components.ValidationSimpleFormComponentLabel;
-import hu.sch.web.components.ValidationStyleBehavior;
-import hu.sch.web.components.customlinks.AttributeAjaxFallbackLink;
-import hu.sch.util.PatternHolder;
+import hu.sch.web.wicket.components.ImageResource;
+import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
+import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
+import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
+import hu.sch.domain.util.PatternHolder;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -31,10 +31,10 @@
 package hu.sch.web.kp.pages.admin;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.web.components.customlinks.DeletePersonLink;
+import hu.sch.web.wicket.components.customlinks.DeletePersonLink;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
-import hu.sch.web.kp.util.SortablePersonDataProvider;
+import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
 import java.util.ArrayList;
 import java.util.List;

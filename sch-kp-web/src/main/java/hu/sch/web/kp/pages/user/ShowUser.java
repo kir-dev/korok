@@ -35,7 +35,7 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
 import hu.sch.domain.User;
-import hu.sch.web.components.ConfirmationBoxRenderer;
+import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
@@ -139,7 +139,7 @@ public class ShowUser extends SecuredPageTemplate {
                         return;
                     }
                 };
-                oldBoyLink.add(new ConfirmationBoxRenderer("Biztosan öregtaggá szeretnél válni?"));
+                oldBoyLink.add(new ConfirmationBehavior("Biztosan öregtaggá szeretnél válni?"));
                 if (!ownProfile) {
                     oldBoyLink.setVisible(false);
                 }

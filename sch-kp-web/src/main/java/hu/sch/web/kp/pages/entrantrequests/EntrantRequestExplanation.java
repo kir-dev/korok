@@ -35,7 +35,7 @@ import hu.sch.domain.EntrantType;
 import hu.sch.domain.Valuation;
 import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
-import hu.sch.web.kp.util.ListDataProviderCompoundPropertyModelImpl;
+import hu.sch.web.wicket.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;
 import java.util.List;

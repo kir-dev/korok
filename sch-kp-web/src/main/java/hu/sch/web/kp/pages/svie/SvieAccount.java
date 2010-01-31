@@ -35,8 +35,8 @@ import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
 import hu.sch.services.SvieManagerLocal;
-import hu.sch.web.components.ConfirmationBoxRenderer;
-import hu.sch.web.components.customlinks.SvieRegPdfLink;
+import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
+import hu.sch.web.wicket.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
@@ -114,7 +114,7 @@ public final class SvieAccount extends SecuredPageTemplate {
                 setResponsePage(getApplication().getHomePage());
             }
         };
-        deleteSvieMs.add(new ConfirmationBoxRenderer("Biztosan meg szeretnéd szüntetni a SVIE tagságod?"));
+        deleteSvieMs.add(new ConfirmationBehavior("Biztosan meg szeretnéd szüntetni a SVIE tagságod?"));
         add(deleteSvieMs);
     }
 
@@ -160,7 +160,7 @@ public final class SvieAccount extends SecuredPageTemplate {
                     setResponsePage(SvieAccount.class);
                 }
             };
-            ordinalToAdvocate.add(new ConfirmationBoxRenderer("Biztosan pártoló taggá szeretnél válni?"));
+            ordinalToAdvocate.add(new ConfirmationBehavior("Biztosan pártoló taggá szeretnél válni?"));
             add(ordinalToAdvocate);
             if (!user.getSvieStatus().equals(SvieStatus.ELFOGADVA)) {
                 ordinalToAdvocate.setVisible(false);

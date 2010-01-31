@@ -30,7 +30,7 @@
  */
 package hu.sch.web.error;
 
-import hu.sch.web.components.MetaHeaderContributor;
+import hu.sch.web.wicket.util.MetaHeaderContributor;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 
 /**

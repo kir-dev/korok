@@ -32,7 +32,7 @@ package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.web.components.EditDelegatesForm;
+import hu.sch.web.wicket.components.EditDelegatesForm;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.ArrayList;
 import java.util.Iterator;

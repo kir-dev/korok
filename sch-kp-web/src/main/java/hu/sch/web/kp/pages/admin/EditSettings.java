@@ -33,7 +33,7 @@ package hu.sch.web.kp.pages.admin;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import hu.sch.web.components.customlinks.CsvReportLink;
+import hu.sch.web.wicket.components.customlinks.CsvReportLink;
 import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
 import hu.sch.web.kp.pages.svie.SvieUserMgmt;
 import hu.sch.web.kp.templates.SecuredPageTemplate;

@@ -37,7 +37,7 @@ import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.util.PatternHolder;
+import hu.sch.domain.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;

@@ -33,11 +33,11 @@ package hu.sch.web.kp.pages.group;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
-import hu.sch.web.components.ActiveMembershipsPanel;
-import hu.sch.web.components.AdminMembershipsPanel;
-import hu.sch.web.components.AdminOldBoysPanel;
-import hu.sch.web.components.ConfirmationBoxRenderer;
-import hu.sch.web.components.OldBoysPanel;
+import hu.sch.web.wicket.components.ActiveMembershipsPanel;
+import hu.sch.web.wicket.components.AdminMembershipsPanel;
+import hu.sch.web.wicket.components.AdminOldBoysPanel;
+import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
+import hu.sch.web.wicket.components.OldBoysPanel;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.Date;
@@ -147,7 +147,7 @@ public class ShowGroup extends SecuredPageTemplate {
                 return;
             }
         };
-        applyLink.add(new ConfirmationBoxRenderer("Biztosan szeretnél jelentkezni a körbe?"));
+        applyLink.add(new ConfirmationBehavior("Biztosan szeretnél jelentkezni a körbe?"));
         if (user == null || user.getGroups().contains(group)) {
             applyLink.setVisible(false);
         }

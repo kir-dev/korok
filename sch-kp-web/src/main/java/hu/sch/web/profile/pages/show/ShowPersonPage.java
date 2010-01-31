@@ -33,7 +33,7 @@ package hu.sch.web.profile.pages.show;
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.components.ImageResource;
+import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.profile.pages.admin.AdminPage;
 import hu.sch.web.profile.pages.community.CreateCommunityProfile;
 import hu.sch.web.profile.pages.search.DormitoryRoomNumberLinkPanel;

@@ -32,9 +32,9 @@ package hu.sch.web.profile.pages.admin;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.components.ValidationSimpleFormComponentLabel;
-import hu.sch.web.components.ValidationStyleBehavior;
-import hu.sch.web.components.customlinks.DeletePersonLink;
+import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
+import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
+import hu.sch.web.wicket.components.customlinks.DeletePersonLink;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.profile.pages.edit.PersonForm;

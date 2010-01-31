@@ -38,7 +38,7 @@ import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.TimerServiceLocal;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.util.TimedEvent;
+import hu.sch.domain.util.TimedEvent;
 import java.util.Calendar;
 import java.util.List;
 import javax.annotation.Resource;
