@@ -45,11 +45,12 @@ public class VirSession extends WebSession {
         super(request);
     }
 
-    public Long getUserId() {
+    public synchronized Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public synchronized void setUserId(Long userId) {
         this.userId = userId;
+        dirty();
     }
 }
