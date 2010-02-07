@@ -443,7 +443,7 @@ h5 {
     color: #ffffff;
     border: none;
 }
-#ViewNavigation span, #ViewNavigation li {
+#ViewNavigation span, #ViewNavigation li a {
     padding: 4px 25px 4px 4px;
     display: block;
 }
@@ -461,4 +461,8 @@ h5 {
 }
 #ViewNavigation:hover ul li {
     display: block;
+}
+
+.subdata table {
+width:100%;
 }
