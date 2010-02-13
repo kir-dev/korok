@@ -50,16 +50,11 @@ import org.apache.wicket.model.Model;
 public class SortableGroupDataProvider extends SortableDataProvider<Group> {
 
     private List<Group> groups;
-    private final List<Group> nameIdx = new ArrayList<Group>();
-    private final List<Group> nameDescIdx = new ArrayList<Group>();
     private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
 
     public SortableGroupDataProvider(List<Group> group) {
         groups = group;
         setSort("name", true);
-        nameIdx.addAll(groups);
-        nameDescIdx.addAll(groups);
-        updateIndexes();
     }
 
     public Iterator<Group> iterator(int first, int count) {
@@ -73,33 +68,34 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
 
     public List<Group> getIndex(String prop, boolean asc) {
         if (prop == null) {
-            return nameIdx;
+            return groups;
         }
         if (prop.equals("name")) {
-            return (asc) ? nameIdx : nameDescIdx;
+            if (asc) {
+                Collections.sort(groups, new Comparator<Group>() {
+
+                    public int compare(Group o1, Group o2) {
+                        return huCollator.compare(o1.getName(), o2.getName());
+                    }
+                });
+            } else {
+                Collections.sort(groups, new Comparator<Group>() {
+
+                    public int compare(Group o1, Group o2) {
+                        return huCollator.compare(o2.getName(), o1.getName());
+                    }
+                });
+            }
+        } else {
+            throw new RuntimeException("uknown sort option [" + prop
+                    + "]. valid options: [name] , [svieMembershipType]");
         }
-        throw new RuntimeException("uknown sort option [" + prop
-                + "]. valid options: [firstName] , [lastName]");
+        return groups;
     }
 
     private List<Group> find(int first, int count, String property, boolean ascending) {
         List<Group> ret = getIndex(property, ascending).subList(first, first + count);
         return ret;
-    }
-
-    public void updateIndexes() {
-        Collections.sort(nameIdx, new Comparator<Group>() {
-
-            public int compare(Group o1, Group o2) {
-                return huCollator.compare(o1.getName(), o2.getName());
-            }
-        });
-        Collections.sort(nameDescIdx, new Comparator<Group>() {
-
-            public int compare(Group o1, Group o2) {
-                return huCollator.compare(o2.getName(), o1.getName());
-            }
-        });
     }
 
     public IModel<Group> model(Group object) {

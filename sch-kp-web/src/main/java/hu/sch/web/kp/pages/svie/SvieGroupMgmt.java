@@ -33,27 +33,33 @@ package hu.sch.web.kp.pages.svie;
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
 import hu.sch.services.SvieManagerLocal;
-import hu.sch.web.wicket.components.SvieDelegateNumberField;
-import hu.sch.web.wicket.components.SvieGroupStatusSelector;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.wicket.components.SvieDelegateNumberField;
+import hu.sch.web.wicket.components.SvieGroupStatusSelector;
 import hu.sch.web.wicket.util.SortableGroupDataProvider;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  *
@@ -65,6 +71,8 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
     private SvieManagerLocal svieManager;
     private static Logger log = Logger.getLogger(SvieUserMgmt.class);
     private List<Group> groups;
+    private List<Group> filteredGroups;
+    private String currentFilter;
     private SortableGroupDataProvider groupProvider;
 
     public SvieGroupMgmt() {
@@ -79,6 +87,7 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
         setHeaderLabelText("Csoportok adminisztrálása");
         add(new FeedbackPanel("pagemessages"));
         groups = userManager.getAllGroupsWithCount();
+        filteredGroups = new ArrayList<Group>(groups);
 
         List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
         columns.add(new AbstractColumn<Group>(new Model<String>("Név"), "name") {
@@ -113,20 +122,53 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
                 svieManager.updateSvieGroupInfos(groups);
-                groupProvider.updateIndexes();
                 getSession().info("A beállítások sikeresen mentésre kerültek");
                 setResponsePage(SvieGroupMgmt.class);
             }
         };
 
-        groupProvider = new SortableGroupDataProvider(groups);
+        groupProvider = new SortableGroupDataProvider(filteredGroups);
         //azért van változóban, hogy később ha szeretnénk játszadozni a rowperpage-dzsel
         //egyszerűbb legyen.
         final AjaxFallbackDefaultDataTable table =
                 new AjaxFallbackDefaultDataTable("table", columns, groupProvider, 100);
+        table.setOutputMarkupId(true);
+
+        DropDownChoice<String> filter =
+                new DropDownChoice<String>("status",
+                new PropertyModel<String>(this, "currentFilter"),
+                Arrays.asList(new String[]{"svie tag", "nem svie tag"}));
+        filter.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                filteredGroups.clear();
+                if (currentFilter == null) {
+                    filteredGroups.addAll(groups);
+                } else {
+                    Iterator<Group> it = groups.iterator();
+                    while (it.hasNext()) {
+                        Group temp = it.next();
+                        if (currentFilter.equals("svie tag")) {
+                            if (temp.getIsSvie()) {
+                                filteredGroups.add(temp);
+                            }
+                        } else if (!temp.getIsSvie()) {
+                            filteredGroups.add(temp);
+                        }
+                    }
+                }
+
+                groupProvider.setGroups(filteredGroups);
+                if (target != null) {
+                    target.addComponent(table);
+                }
+            }
+        });
+
+        form.add(filter);
 
         form.add(table);
         add(form);
     }
 }
-
