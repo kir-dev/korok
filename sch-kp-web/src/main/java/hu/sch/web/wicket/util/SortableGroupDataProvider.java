@@ -105,4 +105,8 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
     public IModel<Group> model(Group object) {
         return new Model<Group>(object);
     }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
 }
