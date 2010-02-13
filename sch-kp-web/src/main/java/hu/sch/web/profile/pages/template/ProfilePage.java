@@ -75,7 +75,7 @@ public abstract class ProfilePage extends WebPage {
     }
 
     public void setHeaderLabelText(String text) {
-        headerLabel.setDefaultModel(new Model<Serializable>(text));
+        headerLabel.setDefaultModelObject(text);
     }
 
     public void setHeaderLabelModel(IModel<?> imodel) {
