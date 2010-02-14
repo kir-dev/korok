@@ -125,9 +125,9 @@ public class UserHistory extends SecuredPageTemplate {
                 pointRequests.add(pointRequest);
             }
         }
-
+        
         //
-        DropDownChoice ddc = new DropDownChoice("group", new PropertyModel<String>(this, "selected_text"), groups) {
+        DropDownChoice<String> ddc = new DropDownChoice<String>("group", new PropertyModel<String>(this, "selected_text"), groups) {
 
             @Override
             protected boolean wantOnSelectionChangedNotifications() {
@@ -135,7 +135,7 @@ public class UserHistory extends SecuredPageTemplate {
             }
 
             @Override
-            protected void onSelectionChanged(final Object newSelection) {
+            protected void onSelectionChanged(final String newSelection) {
                 PageParameters pp = new PageParameters();
 
                 // Ez van a legördülő menüben kiválasztva
@@ -156,84 +156,11 @@ public class UserHistory extends SecuredPageTemplate {
 
         add(ddc);
 
-        // Szemeszterenkénti pontigények táblázat
-        ArrayList<SemesterGroupPoint> sgp = new ArrayList<SemesterGroupPoint>();
-
-        // minden kör minden pontjához hozzáadom az előző évben adott pontot (ha volt előző féléves pont is)
-        for (PointRequest pointRequest : pointRequests) {
-            sgp.add(new SemesterGroupPoint(pointRequest.getValuation().getSemester(),
-                    pointRequest.getPoint(), pointRequest.getValuation().getGroup().getId()));
+        List<SemesterPoint> semesterPoints=new ArrayList<SemesterPoint>();
+        for(Semester s:userManager.getAllValuatedSemesterForUser(user)){
+        	semesterPoints.add(new SemesterPoint(s, userManager.getSemesterPointForUser(user, s)));
         }
-
-        for (SemesterGroupPoint sgp2 : sgp) {
-            for (SemesterGroupPoint skp2 : sgp) {
-                if (sgp2.getGroupId().equals(skp2.getGroupId())
-                        && sgp2.getSemester().getPrevious().getId().equals(skp2.getSemester().getId())) {
-                    sgp2.add(skp2.getPoint());
-                }
-            }
-        }
-
-        // a csak előző félévben pontozott köröket is hozzá kell majd számolni a jelenlegi féléves pontokhoz
-        for (SemesterGroupPoint skp : sgp.toArray(new SemesterGroupPoint[sgp.size()])) {
-            boolean isNot = true;
-            for (SemesterGroupPoint skp2 : sgp) {
-                if (skp2.getGroupId().equals(skp.getGroupId())
-                        && skp2.getSemester().equals(skp.getSemester().getNext())) {
-                    isNot = false;
-                    break;
-                }
-            }
-
-            if (isNot) {   // ebből a körből nincs most pont csak az előző félévben,
-                // viszont nekem azt is összegeznem kell majd
-                if (!skp.getSemester().equals(systemManager.getSzemeszter())) // jövőbe nem pontozunk :)
-                {
-                    sgp.add(new SemesterGroupPoint(skp.getSemester().getNext(), skp.getPoint(), skp.getGroupId()));
-                }
-            }
-        }
-
-        ArrayList<SemesterPoint> semesterPoints = new ArrayList<SemesterPoint>();
-
-        Semester semester = null;
-
-        // négyzetösszegek...
-        for (SemesterGroupPoint skp : sgp) {
-
-            if (!skp.getSemester().equals(semester)) {
-                semester = skp.getSemester();
-            } else {
-                continue;
-            }
-
-            // megnézem számoltam-e már ezt a félévet
-            boolean next = false;
-            for (SemesterPoint semesterPoint : semesterPoints) {
-                if (semesterPoint.getSemester().equals(semester)) {
-                    next = true;
-                    break;
-                }
-            }
-
-            if (next) {
-                continue;   // már számoltam ezt a félévet
-            }
-            // négyzetösszeg...
-            int point = 0;
-
-            for (SemesterGroupPoint p : sgp) {
-                if (p.getSemester().equals(semester)) {
-                    point = point + p.getPoint() * p.getPoint();
-                }
-            }
-
-            point = (int) Math.sqrt(point); // nem szabályos kerekítés! (egészrész)
-
-            semesterPoints.add(new SemesterPoint(semester, point));
-        }
-
-
+        
         // megjelenítés...
         ListView<SemesterPoint> splv = new ListView<SemesterPoint>("semesterPointList", semesterPoints) {
 

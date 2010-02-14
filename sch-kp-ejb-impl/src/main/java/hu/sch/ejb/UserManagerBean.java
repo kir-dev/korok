@@ -33,21 +33,27 @@ package hu.sch.ejb;
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
+import hu.sch.domain.Semester;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
+import hu.sch.domain.User;
+import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.UserManagerLocal;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -426,5 +432,37 @@ public class UserManagerBean implements UserManagerLocal {
         q.setParameter("name", "%" + name + "%");
 
         return q.getResultList();
+    }
+    
+    public List<Semester> getAllValuatedSemesterForUser(User user){
+    	return em.createNamedQuery(User.getAllValuatedSemesterForUser).setParameter("user", user).getResultList();
+    }
+    
+    public int getSemesterPointForUser(User user,Semester semester){
+    	//Beszerezzük a pontokat
+    	List<PointRequest> pontigenyek=getPontIgenyekForUser(user);
+
+    	//Ebbe a Map-be lesz tárolva, hogy melyik körtől hány pontot kapott
+    	Map<Group,Integer> points=new HashMap<Group, Integer>();
+    	for(PointRequest pr:pontigenyek){
+    		//Csak ha az adott pont elfogadott
+    		if(pr.getValuation().getPointStatus().equals(ValuationStatus.ELFOGADVA)){
+    			//Csak akkor, ha a vizsgált vagy az előző félévre vonatkozik
+	    		if(pr.getValuation().getSemester().equals(semester) || pr.getValuation().getSemester().equals(semester.getPrevious())){
+	    			if(points.containsKey(pr.getValuation().getGroup())==false){
+	    				points.put(pr.getValuation().getGroup(), 0);
+	    			}
+	    			points.put(pr.getValuation().getGroup(), points.get(pr.getValuation().getGroup())+pr.getPoint());
+	    		}
+    		}
+    	}
+    	//Az összeg
+    	int sum=0;
+    	//Négyzetösszeget számolunk
+    	for(Integer pointFromGroup:points.values()){
+    		sum+=pointFromGroup*pointFromGroup;
+    	}
+    	
+    	return (int)Math.min(Math.sqrt(sum), 100);
     }
 }

@@ -67,7 +67,9 @@ import javax.persistence.Transient;
     @NamedQuery(name = "findUserByNeptunCode",
     query = "SELECT u FROM User u WHERE u.neptunCode = :neptun"),
     @NamedQuery(name = "findUser", query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
-            + "upper(u.emailAddress) = upper(:emailcim)")})
+            + "upper(u.emailAddress) = upper(:emailcim)"),
+    @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
+})
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
 public class User implements Serializable, Comparable<User> {
 
@@ -77,6 +79,7 @@ public class User implements Serializable, Comparable<User> {
     public static final String findWithMemberships = "findUserWithMemberships";
     public static final String findUserByNeptunCode = "findUserByNeptunCode";
     public static final String findUser = "findUser";
+    public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
     /*
     usr_id                 | integer                | not null default nextval('users_usr_id_seq'::regclass)
     usr_email              | character varying(64)  | 
