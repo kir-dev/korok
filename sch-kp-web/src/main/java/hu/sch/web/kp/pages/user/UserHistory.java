@@ -156,10 +156,10 @@ public class UserHistory extends SecuredPageTemplate {
 
         add(ddc);
 
-        List<SemesterPoint> semesterPoints=new ArrayList<SemesterPoint>();
-        for(Semester s:userManager.getAllValuatedSemesterForUser(user)){
-        	semesterPoints.add(new SemesterPoint(s, userManager.getSemesterPointForUser(user, s)));
-        }
+		List<SemesterPoint> semesterPoints = new ArrayList<SemesterPoint>();
+		for (Semester s : userManager.getAllValuatedSemesterForUser(user)) {
+			semesterPoints.add(new SemesterPoint(s, userManager.getSemesterPointForUser(user, s)));
+		}
         
         // megjelenítés...
         ListView<SemesterPoint> splv = new ListView<SemesterPoint>("semesterPointList", semesterPoints) {
