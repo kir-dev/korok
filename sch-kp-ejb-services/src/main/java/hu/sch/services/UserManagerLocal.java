@@ -116,11 +116,13 @@ public interface UserManagerLocal {
      * @param user - A felhasználó, akit vizsgálunk
      * @return A szemeszterek, amikor van elfogadott pontkérelme*/
     public List<Semester> getAllValuatedSemesterForUser(User user);
-    
+
     /** Visszaadja a felhasználó felvételi pontjait az adott félévre. Ezt úgy kapjuk, hogy az aktuális és az előző félévben
      * szerzett pontjait körönként összeadjuk, majd ezek négyzetes közepét vesszük. Legfeljebb 100 lehet, és egészre csonkolva adjuk vissza.
      * @param user - A felhasználó, akinek a pontjait vizsgáljuk
      * @param semester - Erre a szemeszterre számolunk
      * @return A felhasználó felvételi pontjai az adott félévre*/
-	public int getSemesterPointForUser(User user, Semester semester);
+    public int getSemesterPointForUser(User user, Semester semester);
+
+    public List<Group> getParentGroups(Long id);
 }

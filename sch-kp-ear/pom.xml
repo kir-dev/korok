@@ -24,6 +24,11 @@
                             <artifactId>sch-kp-web</artifactId>
                             <contextRoot>/korok</contextRoot>
                         </webModule>
+                        <webModule>
+                            <groupId>hu.sch</groupId>
+                            <artifactId>sch-kp-web-services</artifactId>
+                            <contextRoot>/services</contextRoot>
+                        </webModule>
                         <ejbModule>
                             <groupId>hu.sch</groupId>
                             <artifactId>sch-kp-ejb-impl</artifactId>
@@ -60,18 +65,25 @@
     </pluginRepositories>
     <dependencies>
         <dependency>
-            <type>ejb</type>
             <groupId>hu.sch</groupId>
             <artifactId>sch-kp-ejb-impl</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+            <type>ejb</type>
         </dependency>
         <dependency>
-            <type>war</type>
             <groupId>hu.sch</groupId>
             <artifactId>sch-kp-web</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>hu.sch</groupId>
+            <artifactId>sch-kp-web-services</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <type>war</type>
         </dependency>
     </dependencies>
 </project>

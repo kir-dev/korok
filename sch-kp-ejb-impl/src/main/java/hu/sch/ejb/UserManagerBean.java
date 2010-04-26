@@ -433,42 +433,64 @@ public class UserManagerBean implements UserManagerLocal {
 
         return q.getResultList();
     }
-    
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<Semester> getAllValuatedSemesterForUser(User user) {
-		return em.createNamedQuery(User.getAllValuatedSemesterForUser).setParameter("user", user).getResultList();
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getSemesterPointForUser(User user, Semester semester) {
-		// Beszerezzük a pontokat
-		List<PointRequest> pontigenyek = getPontIgenyekForUser(user);
+    /**
+     * {@inheritDoc}
+     */
+    public List<Semester> getAllValuatedSemesterForUser(User user) {
+        return em.createNamedQuery(User.getAllValuatedSemesterForUser).setParameter("user", user).getResultList();
+    }
 
-		// Ebbe a Map-be lesz tárolva, hogy melyik körtől hány pontot kapott
-		Map<Group, Integer> points = new HashMap<Group, Integer>();
-		for (PointRequest pr : pontigenyek) {
-			// Csak ha az adott pont elfogadott
-			if (pr.getValuation().getPointStatus().equals(ValuationStatus.ELFOGADVA)) {
-				// Csak akkor, ha a vizsgált vagy az előző félévre vonatkozik
-				if (pr.getValuation().getSemester().equals(semester) || pr.getValuation().getSemester().equals(semester.getPrevious())) {
-					if (points.containsKey(pr.getValuation().getGroup()) == false) {
-						points.put(pr.getValuation().getGroup(), 0);
-					}
-					points.put(pr.getValuation().getGroup(), points.get(pr.getValuation().getGroup()) + pr.getPoint());
-				}
-			}
-		}
-		// Az összeg
-		int sum = 0;
-		// Négyzetösszeget számolunk
-		for (Integer pointFromGroup : points.values()) {
-			sum += pointFromGroup * pointFromGroup;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public int getSemesterPointForUser(User user, Semester semester) {
+        // Beszerezzük a pontokat
+        List<PointRequest> pontigenyek = getPontIgenyekForUser(user);
 
-		return (int) Math.min(Math.sqrt(sum), 100);
-	}
+        // Ebbe a Map-be lesz tárolva, hogy melyik körtől hány pontot kapott
+        Map<Group, Integer> points = new HashMap<Group, Integer>();
+        for (PointRequest pr : pontigenyek) {
+            // Csak ha az adott pont elfogadott
+            if (pr.getValuation().getPointStatus().equals(ValuationStatus.ELFOGADVA)) {
+                // Csak akkor, ha a vizsgált vagy az előző félévre vonatkozik
+                if (pr.getValuation().getSemester().equals(semester) || pr.getValuation().getSemester().equals(semester.getPrevious())) {
+                    if (points.containsKey(pr.getValuation().getGroup()) == false) {
+                        points.put(pr.getValuation().getGroup(), 0);
+                    }
+                    points.put(pr.getValuation().getGroup(), points.get(pr.getValuation().getGroup()) + pr.getPoint());
+                }
+            }
+        }
+        // Az összeg
+        int sum = 0;
+        // Négyzetösszeget számolunk
+        for (Integer pointFromGroup : points.values()) {
+            sum += pointFromGroup * pointFromGroup;
+        }
+
+        return (int) Math.min(Math.sqrt(sum), 100);
+    }
+
+    @Override
+    public List<Group> getParentGroups(Long id) {
+        List<Group> groups = em.createNamedQuery(Group.groupHierarchy).getResultList();
+        Group parent;
+        List<Group> result = new ArrayList<Group>();
+        while ((parent = findParent(groups, id)).getParent() != null) {
+            result.add(parent);
+            id = parent.getParent().getId();
+        }
+        result.add(parent);
+        return result;
+    }
+
+    private Group findParent(List<Group> groups, Long id) {
+        for (Group group : groups) {
+            if (group.getId().equals(id)) {
+                return group;
+            }
+        }
+        throw new IllegalArgumentException("No such group");
+    }
 }

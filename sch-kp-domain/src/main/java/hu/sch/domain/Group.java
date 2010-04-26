@@ -53,6 +53,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -70,12 +74,14 @@ import javax.persistence.Transient;
     + "Group g LEFT JOIN FETCH g.memberships WHERE g.id = :id")
 })
 @SequenceGenerator(name = "groups_seq", sequenceName = "groups_grp_id_seq")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Group implements Serializable, Comparable<Group> {
 
     private static final long serialVersionUID = 1L;
     public static final String findAll = "findAllGroup";
     public static final String findWithMemberships = "findGroupWithMemberships";
-    public static final String groupHierarchy="groupHierarchy";
+    public static final String groupHierarchy = "groupHierarchy";
 
     /*
     grp_id               | integer               | not null default nextval('groups_grp_id_seq'::regclass)
@@ -126,10 +132,12 @@ public class Group implements Serializable, Comparable<Group> {
     /**
      * A kör vezetőjének egyéni titulusa
      */
+    @XmlTransient
     private String head;
     /**
      * Alapítás éve
      */
+    @XmlTransient
     private Integer founded;
     /**
      * Az adott kör tagja-e a SVIE-nek
@@ -138,31 +146,39 @@ public class Group implements Serializable, Comparable<Group> {
     /**
      * Az adott kör hány tagot küldhet küldött gyülésre
      */
+    @XmlTransient
     private Integer delegateNumber;
     /**
      * Alcsoportok
      */
+    @XmlTransient
     private List<Group> subGroups;
     /**
      * Az elsődleges körtagok száma
      */
+    @XmlTransient
     private Long numberOfPrimaryMembers;
     /**
      * Csoporttagságok
      */
+    @XmlTransient
     private List<Membership> memberships;
     /**
      * Cache-elt mező
      */
+    @XmlTransient
     private List<User> members;
     /**
      * Aktív tagságok
      */
+    @XmlTransient
     private List<Membership> activeMembers;
     /**
      * Öregtagok
      */
+    @XmlTransient
     private List<Membership> inactiveMembers;
+    @XmlTransient
     private List<Log> logs;
 
     public Group() {
