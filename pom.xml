@@ -167,19 +167,8 @@
             <name>Wicket-tree Repository</name>
             <url>http://wicket-tree.googlecode.com/svn/repo</url>
         </repository>
-        <repository>
-            <id>org.bindgen</id>
-            <name>Bindgen Repository</name>
-            <url>http://repo.joist.ws</url>
-            <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>org.bindgen.wicket</id>
-            <name>Bindgen Wicket Repository</name>
-            <url>http://bindgen-wicket.googlecode.com/svn/maven2</url>
-            <snapshots><enabled>false</enabled></snapshots>
-        </repository>
     </repositories>
+
     <modules>
         <module>sch-kp-domain</module>
         <module>sch-kp-ejb-services</module>

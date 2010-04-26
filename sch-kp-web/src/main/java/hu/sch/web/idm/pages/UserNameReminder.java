@@ -40,13 +40,11 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.bindgen.Bindable;
 
 /**
  *
  * @author aldaris
  */
-@Bindable
 public class UserNameReminder extends SecuredPageTemplate {
 
     @EJB(name = "MailManagerBean")
@@ -87,7 +85,7 @@ public class UserNameReminder extends SecuredPageTemplate {
                 }
             }
         };
-        RequiredTextField<String> mailTF = new RequiredTextField<String>("mail", new PropertyModel<String>(this, new UserNameReminderBinding().mail().getPath()));
+        RequiredTextField<String> mailTF = new RequiredTextField<String>("mail", new PropertyModel<String>(this, "mail"));
         mailTF.add(EmailAddressValidator.getInstance());
         reminderForm.add(mailTF);
         add(reminderForm);
