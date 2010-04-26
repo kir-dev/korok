@@ -112,9 +112,9 @@
         </dependency>
         <!-- PDF generáláshoz kell -->
         <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>2.1.7</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.0.2</version>
         </dependency>
         <!-- Profilba kódgeneráláshoz -->
         <dependency>
