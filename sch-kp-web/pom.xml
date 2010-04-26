@@ -9,7 +9,7 @@
     <groupId>hu.sch</groupId>
     <artifactId>sch-kp-web</artifactId>
     <packaging>war</packaging>
-    <name>SCH KP Application web project (Wicket-1.4.6)</name>
+    <name>SCH KP Application web project (Wicket-1.4.7)</name>
     <build>
         <plugins>
             <plugin>
@@ -75,13 +75,15 @@
         <!-- Modul függőségek -->
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-ejb-services</artifactId>
+            <artifactId>sch-kp-domain</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-domain</artifactId>
+            <artifactId>sch-kp-ejb-services</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Wicket függőségek -->
         <dependency>
@@ -91,12 +93,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
-            <artifactId>wicket-extensions</artifactId>
+            <artifactId>wicket-datetime</artifactId>
             <version>${wicket.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
-            <artifactId>wicket-datetime</artifactId>
+            <artifactId>wicket-extensions</artifactId>
             <version>${wicket.version}</version>
         </dependency>
         <dependency>
@@ -107,7 +109,7 @@
         <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>javaee-inject</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>wicket-tree</groupId>
@@ -139,9 +141,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -151,7 +153,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <wicket.version>1.4.6</wicket.version>
+        <wicket.version>1.4.7</wicket.version>
         <bindgen.version>2.5</bindgen.version>
         <bindgen.wicket.version>1.0</bindgen.wicket.version>
     </properties>

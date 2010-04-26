@@ -145,12 +145,6 @@
         </pluginRepository>
     </pluginRepositories>
     <repositories>
-        <!-- for oswego-concurrent 1.3.4 jboss package -->
-        <repository>
-            <id>jboss</id>
-            <layout>default</layout>
-            <url>http://repository.jboss.org/maven2</url>
-        </repository>
         <!-- for jta-1.0.0B -->
         <repository>
             <id>sun</id>

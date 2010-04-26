@@ -60,9 +60,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-ejb_3.0_spec</artifactId>
-            <version>1.0</version>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- LOGGING DEPENDENCIES - LOG4J -->
@@ -91,4 +91,3 @@
         </dependency>
     </dependencies>
 </project>
-

@@ -9,7 +9,7 @@
     <groupId>hu.sch</groupId>
     <artifactId>sch-kp-domain</artifactId>
     <name>SCH KP EJB3 domain classes</name>
-    <url>http://maven.apache.org</url>
+
     <build>
         <plugins>
             <plugin>
@@ -24,16 +24,10 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-ejb_3.0_spec</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
