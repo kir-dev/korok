@@ -95,11 +95,7 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
-    public List<User> getAllUsers() {
-        Query q = em.createNamedQuery(User.findAll);
-        return q.getResultList();
-    }
-
+    @Override
     public void updateUserAttributes(User user) {
         User f = em.find(User.class, user.getId());
         boolean changed = false;

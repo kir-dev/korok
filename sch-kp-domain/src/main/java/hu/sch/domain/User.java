@@ -60,8 +60,6 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "users")
 @NamedQueries({
-    @NamedQuery(name = "findAllUser",
-    query = "SELECT u FROM User u"),
     @NamedQuery(name = "findUserWithMemberships",
     query = "SELECT u FROM User u LEFT OUTER JOIN FETCH u.memberships WHERE u.id = :id"),
     @NamedQuery(name = "findUserByNeptunCode",
@@ -74,7 +72,6 @@ import javax.persistence.Transient;
 public class User implements Serializable, Comparable<User> {
 
     private static final long serialVersionUID = 1L;
-    public static final String findAll = "findAllUser";
     public static final String findByLoginName = "findUserByLoginName";
     public static final String findWithMemberships = "findUserWithMemberships";
     public static final String findUserByNeptunCode = "findUserByNeptunCode";

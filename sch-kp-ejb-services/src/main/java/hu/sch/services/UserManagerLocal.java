@@ -47,8 +47,6 @@ import java.util.List;
 @Local
 public interface UserManagerLocal {
 
-    List<User> getAllUsers();
-
     void updateUserAttributes(User user);
 
     User findUserById(Long userId);
