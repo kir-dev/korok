@@ -64,11 +64,22 @@
                 <artifactId>maven-license-plugin</artifactId>
                 <configuration>
                     <header>LICENSE</header>
+                    <properties>
+                        <year>2009-2010</year>
+                        <username>Peter Major</username>
+                    </properties>
                     <excludes>
                         <exclude>**/*.html</exclude>
                     </excludes>
                     <useDefaultExcludes>true</useDefaultExcludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
