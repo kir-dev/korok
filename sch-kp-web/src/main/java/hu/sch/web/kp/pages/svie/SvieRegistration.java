@@ -73,7 +73,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
     /**
      * Ezzel a konstruktorral egyszerre gyorsítjuk a kódot és megoldjuk, hogy az
      * oldal ne legyen könyvjelzőzhető
-     * @param user A felhasználó, aki szeretne SVIE-be regisztrálni
+     * @param _user A felhasználó, aki szeretne SVIE-be regisztrálni
      */
     public SvieRegistration(final User _user) {
         createNavbarWithSupportId(34);

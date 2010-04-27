@@ -70,8 +70,8 @@ public class IMAccount implements Serializable {
     }
 
     /**
-     * Returns protocol:presenceID
-     * @return
+     * Az IMAccount string formában
+     * @return protocol:presenceID
      */
     @Override
     public String toString() {

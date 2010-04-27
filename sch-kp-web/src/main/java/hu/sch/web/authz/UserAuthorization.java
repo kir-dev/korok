@@ -59,11 +59,11 @@ public interface UserAuthorization {
     Long getUserid(Request wicketRequest);
 
     /**
-     * Az aktuálisan bejelentkezett felhasználó csoportbeli tagságát vizsgálja.
+     * Az aktuálisan bejelentkezett felhasználó körvezetőségét vizsgálja.
      * 
      * @param wicketRequest
      * @param group
-     * @return
+     * @return Körvezető-e az adott csoportban a felhasználó
      */
     boolean isGroupLeaderInGroup(Request wicketRequest, Group group);
 
@@ -72,16 +72,16 @@ public interface UserAuthorization {
      * az adott jogosultsággal.
      * 
      * @param wicketRequest
-     * @return
+     * @return Körvezető-e valamelyik csoportban a felhasználó
      */
     boolean isGroupLeaderInSomeGroup(Request wicketRequest);
 
     /**
-     * A felhasználó tagja-e az absztrakt szerepnek.
+     * A felhasználó rendelkezik-e az adott szerepkörrel (ADMIN|JETI|SVIE)
      * 
      * @param wicketRequest
      * @param role
-     * @return
+     * @return Rendelkezik-e a felhasználó az adott szereppel
      */
     boolean hasAbstractRole(Request wicketRequest, String role);
 
@@ -89,7 +89,7 @@ public interface UserAuthorization {
      * Az aktuálisan bejelentkezett felhasználó attribútumait adja vissza.
      *
      * @param wicketRequest
-     * @return
+     * @return Az Agent által átadott felhasználói attribútumok
      */
     User getUserAttributes(Request wicketRequest);
 }

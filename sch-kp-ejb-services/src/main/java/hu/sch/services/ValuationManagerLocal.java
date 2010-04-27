@@ -61,7 +61,7 @@ public interface ValuationManagerLocal {
      * Egy teljes értékelést visszakeres, üzenetekkel együtt
      * 
      * @param ertekelesId
-     * @return
+     * @return Értékelés üzenetekkel együtt
      */
     Valuation getErtekelesWithUzenetek(Long ertekelesId);
 
@@ -69,7 +69,7 @@ public interface ValuationManagerLocal {
      * Értékelés keresése csoporthoz, adott szemeszterben
      * @param csoport
      * @param szemeszter
-     * @return
+     * @return Adott csoporthoz, szemeszterhez tartozó értékelés
      */
     Valuation findErtekeles(Group csoport, Semester szemeszter);
 
@@ -77,7 +77,7 @@ public interface ValuationManagerLocal {
      * Egy csoport összes értékelését keresi ki
      * 
      * @param csoport
-     * @return
+     * @return Csoporthoz tartozó értékelések listája
      */
     List<Valuation> findErtekeles(Group csoport);
 
@@ -88,8 +88,7 @@ public interface ValuationManagerLocal {
      * Elbírálatlan az értékelés, amiben vagy a pontigénylés vagy a 
      * belépőigénylés elbírálatlan.
      * 
-     * @param szemeszter
-     * @return
+     * @return Elbírálatlan értékelések statisztikája
      */
     List<ValuationStatistic> findElbiralatlanErtekelesStatisztika();
 
@@ -119,10 +118,10 @@ public interface ValuationManagerLocal {
      * Az aktuális szemeszterben leadhat-e új értékelést az adott csoport.
      * Leadhat, ha leadási időszak van és még nem adott le.
      * 
-     * @param csoport
-     * @return
+     * @param group
+     * @return Az adott kör leadhat-e értékelést
      */
-    boolean isErtekelesLeadhato(Group csoport);
+    boolean isErtekelesLeadhato(Group group);
 
     /**
      * Új üzenetet fűz egy értékeléshez
@@ -147,7 +146,7 @@ public interface ValuationManagerLocal {
      * Amennyiben a belépőigények már léteztek, egyesével felülírja őket.
      * 
      * @param ertekelesId
-     * @param igenyek
+     * @param igenyek false ha hibás formátumú az igénylés
      */
     boolean belepoIgenyekLeadasa(Long ertekelesId, List<EntrantRequest> igenyek);
 
@@ -155,7 +154,7 @@ public interface ValuationManagerLocal {
      * Értékelést ad vissza ID alapján (de nem adja vissza az igényléseket és az üzeneteket)
      * 
      * @param ertekelesId
-     * @return
+     * @return ID-hoz tartozó értékelés
      */
     Valuation findErtekelesById(Long ertekelesId);
 
@@ -163,7 +162,7 @@ public interface ValuationManagerLocal {
      * Adott értékeléshez kapcsolódó belépőigényeket adja vissza
      * 
      * @param ertekelesId
-     * @return
+     * @return Értékeléshez tartozó belépőigények
      */
     List<EntrantRequest> findBelepoIgenyekForErtekeles(Long ertekelesId);
 
@@ -171,7 +170,7 @@ public interface ValuationManagerLocal {
      * Adott értékeléshez kapcsolódó pontigényeket adja vissza
      * 
      * @param ertekelesId
-     * @return
+     * @return Értékeléshez tartozó pontigények
      */
     List<PointRequest> findPontIgenyekForErtekeles(Long ertekelesId);
 
@@ -180,7 +179,7 @@ public interface ValuationManagerLocal {
      * (pontátlag, kiosztott belépők típusonként)
      * 
      * @param ertekelesId
-     * @return
+     * @return Értékelésekhez tartozó statisztika
      */
     List<ValuationStatistic> getStatisztikaForErtekelesek(List<Long> ertekelesId);
 

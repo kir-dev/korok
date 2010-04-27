@@ -49,7 +49,7 @@ public interface SystemManagerLocal {
      * Rendszerattribútum értékét kérdezi le
      * 
      * @param attributeName
-     * @return
+     * @return Az attribútumnévhez tartozó érték
      * @throws hu.sch.kp.services.exceptions.NoSuchAttributeException
      */
     String getAttributeValue(String attributeName) throws NoSuchAttributeException;
@@ -65,7 +65,7 @@ public interface SystemManagerLocal {
     /**
      * Visszaadja az aktuális szemesztert
      * 
-     * @return
+     * @return Az aktuális szemeszter objektuma
      * @throws NoSuchAttributeException
      */
     Semester getSzemeszter();
@@ -73,7 +73,7 @@ public interface SystemManagerLocal {
     /**
      * Visszaadja az aktuális értékelési időszakot
      * 
-     * @return
+     * @return Aktuális értékelési időszak
      */
     ValuationPeriod getErtekelesIdoszak();
 
@@ -93,7 +93,7 @@ public interface SystemManagerLocal {
 
     /**
      * Visszaadja az utolsó logküldési időt
-     * @return
+     * @return Ekkor került kiküldésre utoljára log
      */
     Date getLastLogsDate();
 

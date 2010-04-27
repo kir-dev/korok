@@ -211,7 +211,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     }
 
     /**
-     * @{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<User> getDelegatedUsers() {
