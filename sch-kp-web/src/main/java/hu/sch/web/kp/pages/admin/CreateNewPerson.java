@@ -76,11 +76,13 @@ public class CreateNewPerson extends SecuredPageTemplate {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                try {
-                    ldapManager.getPersonByUid(person.getUid());
-                    notifier.setDefaultModelObject("Foglalt uid!");
-                } catch (PersonNotFoundException pnfe) {
-                    notifier.setDefaultModelObject("Szabad uid");
+                if (person.getUid() != null) {
+                    try {
+                        ldapManager.getPersonByUid(person.getUid());
+                        notifier.setDefaultModelObject("Foglalt uid!");
+                    } catch (PersonNotFoundException pnfe) {
+                        notifier.setDefaultModelObject("Szabad uid");
+                    }
                 }
                 if (target != null) {
                     target.addComponent(wmc);
