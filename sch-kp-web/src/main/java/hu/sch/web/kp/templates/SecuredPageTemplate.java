@@ -47,6 +47,7 @@ import hu.sch.web.session.VirSession;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;
+import hu.sch.web.kp.pages.search.SearchResultsPage;
 import hu.sch.web.kp.pages.svie.SvieAccount;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,7 @@ public abstract class SecuredPageTemplate extends WebPage {
     private static final String jetiRoleName = "JETI";
     private static final String svieRoleName = "SVIE";
     private String searchTerm;
-    private String searchType;
+    private String searchType = "felhasználó";
     private Label navbarScript;
 
     public SecuredPageTemplate() {
@@ -130,13 +131,19 @@ public abstract class SecuredPageTemplate extends WebPage {
 
             @Override
             protected void onSubmit() {
-                if (searchType == null) {
+                System.out.println("type: " + searchType + " term: " + searchTerm);
+                if (searchType == null || searchTerm == null) {
                     getSession().error("Hibás keresési feltétel!");
+                    throw new RestartResponseException(getApplication().getHomePage());
+                }
+                if (searchTerm.length() < 3) {
+                    getSession().error("Túl rövid keresési feltétel!");
                     throw new RestartResponseException(getApplication().getHomePage());
                 }
                 PageParameters params = new PageParameters();
                 params.put("type", ((searchType.equals("felhasználó")) ? "user" : "group"));
-//                setResponsePage(SearchResultsPage.class, params);
+                params.put("key", searchTerm);
+                setResponsePage(SearchResultsPage.class, params);
             }
         };
         DropDownChoice<String> searchTypeDdc = new DropDownChoice<String>("searchDdc",
@@ -151,6 +158,7 @@ public abstract class SecuredPageTemplate extends WebPage {
                         return ret;
                     }
                 });
+        searchTypeDdc.setNullValid(false);
         searchForm.add(searchTypeDdc);
         searchForm.add(new TextField<String>("searchField", new PropertyModel<String>(this, "searchTerm")));
         add(searchForm);

@@ -188,6 +188,7 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<String> getEveryGroupName() {
         Query q =
                 em.createQuery("SELECT g.name FROM Group g "
@@ -196,16 +197,18 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<Group> findGroupByName(String name) {
         Query q =
                 em.createQuery("SELECT g FROM Group g "
-                + "WHERE g.name LIKE :groupName "
+                + "WHERE UPPER(g.name) LIKE UPPER(:groupName) "
                 + "ORDER BY g.name");
         q.setParameter("groupName", name);
 
         return q.getResultList();
     }
 
+    @Override
     public Group getGroupByName(String name) {
         Query q = em.createQuery("SELECT g FROM Group g "
                 + "WHERE g.name=:groupName");

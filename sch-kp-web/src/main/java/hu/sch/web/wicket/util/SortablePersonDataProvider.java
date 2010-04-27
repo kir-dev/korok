@@ -64,8 +64,8 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
     }
 
     @Override
-    public IModel<Person> model(Person t) {
-        return new Model<Person>(t);
+    public IModel<Person> model(Person p) {
+        return new LoadableDetachablePersonModel(p);
     }
 
     @Override

@@ -57,11 +57,13 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
         setSort("name", true);
     }
 
+    @Override
     public Iterator<Group> iterator(int first, int count) {
         SortParam sp = getSort();
         return find(first, count, sp.getProperty(), sp.isAscending()).iterator();
     }
 
+    @Override
     public int size() {
         return groups.size();
     }
@@ -74,6 +76,7 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
             if (asc) {
                 Collections.sort(groups, new Comparator<Group>() {
 
+                    @Override
                     public int compare(Group o1, Group o2) {
                         return huCollator.compare(o1.getName(), o2.getName());
                     }
@@ -81,6 +84,7 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
             } else {
                 Collections.sort(groups, new Comparator<Group>() {
 
+                    @Override
                     public int compare(Group o1, Group o2) {
                         return huCollator.compare(o2.getName(), o1.getName());
                     }
@@ -98,8 +102,9 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
         return ret;
     }
 
+    @Override
     public IModel<Group> model(Group object) {
-        return new Model<Group>(object);
+        return new LoadableDetachableGroupModel(object);
     }
 
     public void setGroups(List<Group> groups) {
