@@ -48,13 +48,22 @@ import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.kp.pages.svie.SvieAccount;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  *
@@ -74,6 +83,8 @@ public abstract class SecuredPageTemplate extends WebPage {
     private static final String adminRoleName = "ADMIN";
     private static final String jetiRoleName = "JETI";
     private static final String svieRoleName = "SVIE";
+    private String searchTerm;
+    private String searchType;
     private Label navbarScript;
 
     public SecuredPageTemplate() {
@@ -84,10 +95,11 @@ public abstract class SecuredPageTemplate extends WebPage {
         navbarScript.setEscapeModelStrings(false); // do not HTML escape JavaScript code
         add(navbarScript);
 
-        WebMarkupContainer headerLabelContainer =
-                new WebMarkupContainer("headerLabelContainer");
+        WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
         add(headerLabelContainer);
         headerLabelContainer.add(new Label("headerLabel", new Model<Serializable>()));
+
+        createSearchBar();
 
         add(new BookmarkablePageLink<ShowUser>("showuserlink", ShowUser.class));
         add(new BookmarkablePageLink<GroupHierarchy>("grouphierarchylink", GroupHierarchy.class));
@@ -111,6 +123,37 @@ public abstract class SecuredPageTemplate extends WebPage {
 
         add(new BookmarkablePageLink<SvieAccount>("svieaccount", SvieAccount.class));
         //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
+    }
+
+    private void createSearchBar() {
+        Form<Void> searchForm = new Form<Void>("searchForm") {
+
+            @Override
+            protected void onSubmit() {
+                if (searchType == null) {
+                    getSession().error("Hibás keresési feltétel!");
+                    throw new RestartResponseException(getApplication().getHomePage());
+                }
+                PageParameters params = new PageParameters();
+                params.put("type", ((searchType.equals("felhasználó")) ? "user" : "group"));
+//                setResponsePage(SearchResultsPage.class, params);
+            }
+        };
+        DropDownChoice<String> searchTypeDdc = new DropDownChoice<String>("searchDdc",
+                new PropertyModel<String>(this, "searchType"),
+                new LoadableDetachableModel<List<? extends String>>() {
+
+                    @Override
+                    protected List<? extends String> load() {
+                        List<String> ret = new ArrayList<String>();
+                        ret.add("felhasználó");
+                        ret.add("kör");
+                        return ret;
+                    }
+                });
+        searchForm.add(searchTypeDdc);
+        searchForm.add(new TextField<String>("searchField", new PropertyModel<String>(this, "searchTerm")));
+        add(searchForm);
     }
 
     private void loadUser() {

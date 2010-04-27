@@ -14,6 +14,11 @@
             <div id="header">
                 <img id="logo" src="images/logoKorok.gif" alt="VIR Körök logó" />
                 <img id="txtVirKorok" src="images/txtVirKorok.png" alt="VIR Körök" />
+                <form wicket:id="searchForm" style="position: relative; float: right; margin-top: 55px">
+                    <select wicket:id="searchDdc" />
+                    <input type="text" wicket:id="searchField"/>
+                    <input type="submit" value="Keresés" />
+                </form>
                 <ul class="horizontal" id="pagemenu">
                     <li><a wicket:id="showuserlink">Profilom</a></li>
                     <li><a wicket:id="grouphierarchylink">Egységek</a></li>
