@@ -53,6 +53,8 @@ public interface LdapManagerLocal {
 
     Person getPersonByVirId(String virId) throws PersonNotFoundException;
 
+    Person getPersonByNeptun(String neptun) throws PersonNotFoundException;
+
     List<Person> getPersonsWhoHasBirthday(String searchDate);
 
     void update(Person p);

@@ -322,6 +322,18 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     @Override
+    public Person getPersonByNeptun(String neptun) throws PersonNotFoundException {
+        EqualsFilter equalsFilter = new EqualsFilter("schacPersonalUniqueCode", "urn:mace:terena.org:schac:personalUniqueCode:hu:BME-NEPTUN:" + neptun);
+
+        List<Person> searchResult = getLdapTemplate().search("", equalsFilter.encode(), getContextMapper());
+
+        if (searchResult.isEmpty()) {
+            throw new PersonNotFoundException();
+        }
+        return searchResult.get(0);
+    }
+
+    @Override
     public void update(Person p) {
         Name dn = buildDn(p.getUid());
         DirContextOperations context = getLdapTemplate().lookupContext(dn);
