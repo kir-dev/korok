@@ -74,7 +74,7 @@ public class TimerServiceBean implements TimerServiceLocal {
     private static Logger logger = Logger.getLogger(TimerServiceBean.class);
     private static String welcome = "Kedves %s!\n\nAz elmúlt időszakban a következő módosítások "
             + "történtek a körtagságok terén:\n\n";
-    private static final String showUserLink = "https://idp.sch.bme.hu/korok/showuser/id/";
+    private static final String showUserLink = "https://korok.sch.bme.hu/korok/showuser/id/";
     private static final Long VALASZTMANY_ID = 370L;
 
     public void scheduleTimers() {
