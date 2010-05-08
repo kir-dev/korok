@@ -258,7 +258,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
         // E-mail értesítés küldése az üzenetről
         String emailText = uzenet.toString() + "\n\n\n"
-                + "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n"
+                + "Az értékeléseidet megtekintheted a https://korok.sch.bme.hu/korok/valuation link alatt.\n"
                 + "Ez egy automatikusan generált e-mail.";
 
         // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
@@ -382,7 +382,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                     emailTo = groupLeader.getEmailAddress();
                 }
                 emailText = "Kedves Körvezető!\n\nA SVIE Választmány a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n"
-                        + "Az értékeléseidet megtekintheted a https://idp.sch.bme.hu/korok/valuation link alatt.\n"
+                        + "Az értékeléseidet megtekintheted a https://korok.sch.bme.hu/korok/valuation link alatt.\n"
                         + "Ez egy automatikusan generált e-mail.";
             } else {
                 // nem a JETI a feladó
@@ -392,7 +392,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                     emailTo = leader.getEmailAddress();
                 }
                 emailText = "Kedves SVIE Választmány Elnök!\n\nA(z) " + e.getGroup().getName() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n"
-                        + "A kör értékelését megtekintheted a https://idp.sch.bme.hu/korok/consider link alatt.\n"
+                        + "A kör értékelését megtekintheted a https://korok.sch.bme.hu/korok/consider link alatt.\n"
                         + "Ez egy automatikusan generált e-mail.";
             }
         } catch (Exception ex) {

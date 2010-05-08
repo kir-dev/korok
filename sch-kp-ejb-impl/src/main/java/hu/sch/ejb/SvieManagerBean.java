@@ -164,7 +164,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         sb.append(user.getName());
         sb.append(" az előbb változtatta meg elsődleges körét.\n");
         sb.append("Link a felhasználó profiljára:\n");
-        sb.append("https://idp.sch.bme.hu/korok/showuser/id/").append(user.getId());
+        sb.append("https://korok.sch.bme.hu/korok/showuser/id/").append(user.getId());
         sb.append("\n\nÜdvözlettel:\nKir-Dev");
         log.info("Erről a csoportról van szó: " + user.getSviePrimaryMembership().getGroup().getName());
         mailManager.sendEmail(
