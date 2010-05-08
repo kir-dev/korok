@@ -9,7 +9,7 @@
     <groupId>hu.sch</groupId>
     <artifactId>sch-kp-web</artifactId>
     <packaging>war</packaging>
-    <name>SCH KP Application web project (Wicket-1.4.7)</name>
+    <name>SCH KP Application web project (Wicket-${wicket.version})</name>
     <build>
         <plugins>
             <plugin>

@@ -128,6 +128,7 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
+    @Override
     public User findUserById(Long userId) {
         try {
             return em.find(User.class, userId);
@@ -136,6 +137,7 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
+    @Override
     public void addUserToGroup(User user, Group group, Date start, Date veg) {
         Membership ms = new Membership();
         User _user = em.find(User.class, user.getId());
