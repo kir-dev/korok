@@ -32,10 +32,8 @@
 package hu.sch.web.profile.pages.search;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.web.profile.pages.show.ShowPersonPage;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.Panel;
 
 /**
@@ -47,9 +45,10 @@ public class PersonLinkPanel extends Panel {
     public PersonLinkPanel(String id, Person person) {
         super(id);
 
-        BookmarkablePageLink bpl = new BookmarkablePageLink("fullNameLink", ShowPersonPage.class, new PageParameters("uid=" + person.getUid()));
-        bpl.add(new Label("fullName", person.getFullName()));
-        add(bpl);
+//        BookmarkablePageLink bpl = new BookmarkablePageLink("fullNameLink", ShowPersonPage.class, new PageParameters("uid=" + person.getUid()));
+        ExternalLink link = new ExternalLink("fullNameLink", "https://profile.sch.bme.hu/profile/show/uid/" + person.getUid());
+        link.add(new Label("fullName", person.getFullName()));
+        add(link);
         setMarkupId(id);
     }
 }

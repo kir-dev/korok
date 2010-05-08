@@ -56,6 +56,7 @@ import hu.sch.web.kp.pages.group.AddGroupMember;
 import hu.sch.web.kp.pages.group.ChangeDelegates;
 import hu.sch.web.kp.pages.group.ChangePost;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
+import hu.sch.web.kp.pages.search.SearchResultsPage;
 import hu.sch.web.kp.pages.svie.SvieAccount;
 import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
 import hu.sch.web.kp.pages.svie.SvieUserMgmt;
@@ -123,6 +124,7 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);
         mountBookmarkablePage("/reminder", UserNameReminder.class);
+        mountBookmarkablePage("/search", SearchResultsPage.class);
 
         mountBookmarkablePage("/showgroup", ShowGroup.class);
         mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);

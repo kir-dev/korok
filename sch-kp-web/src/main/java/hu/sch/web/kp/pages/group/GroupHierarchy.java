@@ -33,7 +33,6 @@ package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
 import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
-import hu.sch.web.wicket.components.SearchAutoCompleteTextField;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.text.Collator;
 import java.util.Arrays;
@@ -70,63 +69,9 @@ public class GroupHierarchy extends SecuredPageTemplate {
     private static Logger log = Logger.getLogger(GroupHierarchy.class);
     private List<Group> roots = userManager.getGroupHierarchy();
 
-    private String[] sort(List<String> list) {
-        String[] items = list.toArray(new String[list.size()]);
-        Collator huCollator = Collator.getInstance(new Locale("hu"));
-        Arrays.sort(items, huCollator);
-        return items;
-    }
-
     public GroupHierarchy() {
         setHeaderLabelText("Csoportok listája");
         add(new FeedbackPanel("pagemessages"));
-        final String[] csoportok = sort(userManager.getEveryGroupName());
-        final SearchAutoCompleteTextField field =
-                new SearchAutoCompleteTextField("ac", new Model<String>(""), csoportok);
-        field.add(new FocusOnLoadBehavior());
-        final Label label = new Label("selectedValue", field.getModel());
-        Form form = new Form("form") {
-
-            @Override
-            protected void onSubmit() {
-                super.onSubmit();
-                try {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Autocomplete modelobject: " + field.getModelObject());
-                    }
-                    Long id = userManager.getGroupByName(field.getModelObject()).getId();
-                    setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
-                } catch (Exception ex) {
-                    log.warn("Autocomplete keresésnél hiba történt: ", ex);
-                }
-            }
-        };
-
-        add(form);
-        form.add(field);
-
-        label.setOutputMarkupId(true);
-        label.setVisible(false);
-        form.add(label);
-
-        field.add(new AjaxFormSubmitBehavior(form, "onchange") {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target) {
-                try {
-                    target.addComponent(label);
-                    Long id = userManager.getGroupByName(label.getDefaultModelObjectAsString()).getId();
-                    setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
-                    return;
-                } catch (Exception e) {
-                    log.warn("AJAX hívásnál hiba történt: ", e);
-                }
-            }
-
-            @Override
-            protected void onError(AjaxRequestTarget target) {
-            }
-        });
 
         final NestedTree<Group> tree = new NestedTree<Group>("hierarchyTree", new TreeProvider()) {
 

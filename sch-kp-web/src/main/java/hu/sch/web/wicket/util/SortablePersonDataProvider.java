@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.util;
 
 import hu.sch.domain.profile.Person;
@@ -41,7 +40,6 @@ import java.util.Locale;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 
 /**
  *
@@ -79,6 +77,7 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
         return ret;
     }
 
+    //TODO: Reflexió használata inkább???
     private List<Person> getIndex(String property, boolean ascending) {
         if (property == null) {
             return persons;
@@ -87,6 +86,7 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
             if (ascending) {
                 Collections.sort(persons, new Comparator<Person>() {
 
+                    @Override
                     public int compare(Person o1, Person o2) {
                         return huCollator.compare(o1.getFullName(), o2.getFullName());
                     }
@@ -94,6 +94,7 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
             } else {
                 Collections.sort(persons, new Comparator<Person>() {
 
+                    @Override
                     public int compare(Person o1, Person o2) {
                         return huCollator.compare(o2.getFullName(), o1.getFullName());
                     }
@@ -103,6 +104,7 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
             if (ascending) {
                 Collections.sort(persons, new Comparator<Person>() {
 
+                    @Override
                     public int compare(Person o1, Person o2) {
                         return huCollator.compare(o1.getUid(), o2.getUid());
                     }
@@ -110,6 +112,7 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
             } else {
                 Collections.sort(persons, new Comparator<Person>() {
 
+                    @Override
                     public int compare(Person o1, Person o2) {
                         return huCollator.compare(o2.getUid(), o1.getUid());
                     }
@@ -119,6 +122,7 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
             if (ascending) {
                 Collections.sort(persons, new Comparator<Person>() {
 
+                    @Override
                     public int compare(Person o1, Person o2) {
                         return huCollator.compare((o1.getNeptun() == null) ? "" : o1.getNeptun(),
                                 (o2.getNeptun() == null) ? "" : o2.getNeptun());
@@ -127,15 +131,36 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
             } else {
                 Collections.sort(persons, new Comparator<Person>() {
 
+                    @Override
                     public int compare(Person o1, Person o2) {
                         return huCollator.compare((o2.getNeptun() == null) ? "" : o2.getNeptun(),
                                 (o1.getNeptun() == null) ? "" : o1.getNeptun());
                     }
                 });
             }
+        } else if (property.equals("roomNumber")) {
+            if (ascending) {
+                Collections.sort(persons, new Comparator<Person>() {
+
+                    @Override
+                    public int compare(Person o1, Person o2) {
+                        return huCollator.compare((o1.getRoomNumber() == null) ? "" : o1.getRoomNumber(),
+                                (o2.getRoomNumber() == null) ? "" : o2.getRoomNumber());
+                    }
+                });
+            } else {
+                Collections.sort(persons, new Comparator<Person>() {
+
+                    @Override
+                    public int compare(Person o1, Person o2) {
+                        return huCollator.compare((o2.getRoomNumber() == null) ? "" : o2.getRoomNumber(),
+                                (o1.getRoomNumber() == null) ? "" : o1.getRoomNumber());
+                    }
+                });
+            }
         } else {
             throw new RuntimeException("uknown sort option [" + property
-                    + "]. valid options: [name] , [uid] , [neptun]");
+                    + "]. valid options: [name] , [uid] , [neptun] , [roomNumber]");
         }
         return persons;
     }

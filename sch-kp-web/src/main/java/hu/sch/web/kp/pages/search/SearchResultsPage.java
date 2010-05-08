@@ -43,6 +43,11 @@ import org.apache.wicket.RestartResponseException;
  */
 public class SearchResultsPage extends SecuredPageTemplate {
 
+    public SearchResultsPage() {
+        getSession().error("Nem adtál meg keresési feltételt");
+        throw new RestartResponseException(getApplication().getHomePage());
+    }
+
     public SearchResultsPage(final PageParameters params) {
         String type = params.getString("type");
         String keyword = params.getString("key");
@@ -50,6 +55,10 @@ public class SearchResultsPage extends SecuredPageTemplate {
 
         if (type == null || keyword == null || (!type.equals("user") && !type.equals("group")) || keyword.isEmpty()) {
             getSession().error("Hibás keresési feltétel!");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+        if (keyword.length() < 3 ) {
+            getSession().error("A keresési feltételnek legalább 3 karateresnek kell lennie!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
 

@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.search;
 
 import hu.sch.domain.Group;
@@ -37,6 +36,7 @@ import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
+import hu.sch.web.wicket.components.customlinks.SearchLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.wicket.util.SortableGroupDataProvider;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
@@ -69,7 +69,7 @@ public class PersonResultPanel extends Panel {
         InjectorHolder.getInjector().inject(this);
 
         List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
-        columns.add(new AbstractColumn<Person>(new Model<String>("Név"), "fullName") {
+        columns.add(new AbstractColumn<Person>(new Model<String>("Név"), "name") {
 
             @Override
             public void populateItem(Item<ICellPopulator<Person>> cellItem, String componentId, IModel<Person> rowModel) {
@@ -77,7 +77,13 @@ public class PersonResultPanel extends Panel {
             }
         });
         columns.add(new PropertyColumn<Person>(new Model<String>("Becenév"), "nickName"));
-        columns.add(new PropertyColumn<Person>(new Model<String>("Szobaszám"), "roomNumber"));
+        columns.add(new AbstractColumn<Person>(new Model<String>("Szobaszám"), "roomNumber") {
+
+            @Override
+            public void populateItem(Item<ICellPopulator<Person>> cellItem, String componentId, IModel<Person> rowModel) {
+                cellItem.add(new SearchLink(componentId, SearchLink.USER_TYPE, rowModel.getObject().getRoomNumber()));
+            }
+        });
 
         SortablePersonDataProvider provider = new SortablePersonDataProvider(persons);
         AjaxFallbackDefaultDataTable table = new AjaxFallbackDefaultDataTable("personTable", columns, provider, 50);
