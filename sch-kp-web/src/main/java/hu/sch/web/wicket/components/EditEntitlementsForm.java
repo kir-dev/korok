@@ -73,6 +73,7 @@ public abstract class EditEntitlementsForm extends Form {
                 item.setModel(new CompoundPropertyModel<ExtendedGroup>(ext));
                 item.add(new UserLink("userLink", ms.getUser()));
                 item.add(new Label("membership.user.nickName"));
+                item.add(new Label("rights", getConverter(Membership.class).convertToString(ms, getLocale())));
                 item.add(new CheckBox("check", new PropertyModel<Boolean>(ext, "selected")));
                 onPopulateItem(item, ms);
             }

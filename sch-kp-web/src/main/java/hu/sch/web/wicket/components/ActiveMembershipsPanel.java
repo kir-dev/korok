@@ -57,8 +57,7 @@ public final class ActiveMembershipsPanel extends Panel {
                 item.setModel(new CompoundPropertyModel<Membership>(ms));
                 item.add(new UserLink("userLink", ms.getUser()));
                 item.add(new Label("user.nickName"));
-                item.add(new Label("rights",
-                        getConverter(List.class).convertToString(ms.getPosts(), getLocale())));
+                item.add(new Label("rights", getConverter(Membership.class).convertToString(ms, getLocale())));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
             }
         };

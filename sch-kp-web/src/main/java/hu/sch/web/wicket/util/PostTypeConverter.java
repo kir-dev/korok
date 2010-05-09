@@ -28,9 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.util;
 
+import hu.sch.domain.Membership;
 import hu.sch.domain.Post;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +41,7 @@ import org.apache.wicket.util.convert.IConverter;
  *
  * @author aldaris
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class PostTypeConverter implements IConverter {
 
     private static Logger log = Logger.getLogger(PostTypeConverter.class);
@@ -51,23 +52,27 @@ public class PostTypeConverter implements IConverter {
     }
 
     @Override
-    @SuppressWarnings(value = "unchecked")
     public String convertToString(Object value, Locale locale) {
-        if (value instanceof List) {
-            List<Post> posts = ((List<Post>) value);
+        if (value instanceof Membership) {
+            Membership ms = (Membership) value;
+            List<Post> posts = ms.getPosts();
             StringBuilder sb = new StringBuilder(posts.size() * 16);
+            if (ms.getEnd() != null) {
+                sb.append("öregtag");
+            }
+
             for (Post post : posts) {
-                if (post.getMembership().getEnd() != null) {
-                    return "öregtag";
-                }
                 if (sb.length() != 0) {
                     sb.append(", ");
                 }
                 sb.append(actualConverter(post));
             }
+
             if (sb.length() == 0) {
                 sb.append("tag");
             }
+
+            
             return sb.toString();
         } else {
             log.error("Invalid input type for MembershipTypeConverter");

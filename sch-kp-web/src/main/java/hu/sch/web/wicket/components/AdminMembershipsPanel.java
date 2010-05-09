@@ -59,8 +59,6 @@ public final class AdminMembershipsPanel extends Panel {
 
             @Override
             public void onPopulateItem(ListItem<ExtendedGroup> item, Membership ms) {
-                item.add(new Label("rights",
-                        getConverter(List.class).convertToString(ms.getPosts(), getLocale())));
                 item.add(new ChangePostLink("postLink", item.getModelObject().getMembership()));
             }
 

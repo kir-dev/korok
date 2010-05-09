@@ -57,6 +57,7 @@ public final class OldBoysPanel extends Panel {
                 item.setModel(new CompoundPropertyModel<Membership>(ms));
                 item.add(new UserLink("userLink", ms.getUser()));
                 item.add(new Label("user.nickName"));
+                item.add(new Label("rights", getConverter(Membership.class).convertToString(ms, getLocale())));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
             }

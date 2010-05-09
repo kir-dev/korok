@@ -115,11 +115,7 @@ public class ShowUser extends SecuredPageTemplate {
                         + ms.getGroup().getId().toString()));
                 csoplink.add(new Label("group.name"));
                 item.add(csoplink);
-                if (ms.getEnd() != null) {
-                    item.add(new Label("rights", "öregtag"));
-                } else {
-                    item.add(new Label("rights", getConverter(List.class).convertToString(ms.getPosts(), getLocale())));
-                }
+                item.add(new Label("rights", getConverter(Membership.class).convertToString(ms, getLocale())));
                 item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
                 item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
 

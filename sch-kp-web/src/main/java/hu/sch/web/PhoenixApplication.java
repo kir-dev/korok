@@ -32,6 +32,7 @@
 package hu.sch.web;
 
 import hu.sch.domain.EntrantType;
+import hu.sch.domain.Membership;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.config.Configuration;
 import hu.sch.services.TimerServiceLocal;
@@ -65,7 +66,6 @@ import hu.sch.web.wicket.util.EntrantTypeConverter;
 import hu.sch.web.wicket.util.PostTypeConverter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
 import hu.sch.web.wicket.util.ServerTimerFilter;
-import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -201,7 +201,7 @@ public class PhoenixApplication extends WebApplication {
         ConverterLocator locator = new ConverterLocator();
         locator.set(EntrantType.class, new EntrantTypeConverter());
         locator.set(ValuationStatus.class, new ValuationStatusConverter());
-        locator.set(List.class, new PostTypeConverter());
+        locator.set(Membership.class, new PostTypeConverter());
 
         return locator;
     }
