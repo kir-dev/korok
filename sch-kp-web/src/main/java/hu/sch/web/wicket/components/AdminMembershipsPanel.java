@@ -32,6 +32,7 @@
 package hu.sch.web.wicket.components;
 
 import hu.sch.domain.Membership;
+import hu.sch.domain.SvieStatus;
 import hu.sch.web.wicket.components.EditEntitlementsForm.ExtendedGroup;
 import hu.sch.web.wicket.components.customlinks.ChangePostLink;
 import hu.sch.web.kp.pages.group.ShowGroup;
@@ -59,7 +60,9 @@ public final class AdminMembershipsPanel extends Panel {
 
             @Override
             public void onPopulateItem(ListItem<ExtendedGroup> item, Membership ms) {
-                item.add(new ChangePostLink("postLink", item.getModelObject().getMembership()));
+                ExtendedGroup extGroup = item.getModelObject();
+                item.add(new Label("isSvieMember", extGroup.getMembership().getUser().getSvieStatus().equals(SvieStatus.ELFOGADVA) ? "igen" : "nem"));
+                item.add(new ChangePostLink("postLink", extGroup.getMembership()));
             }
 
             @Override
