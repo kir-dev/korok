@@ -28,11 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.choosers;
 
 import hu.sch.domain.ValuationStatus;
 import java.util.Arrays;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 
@@ -59,5 +59,30 @@ public class ValuationStatusChooser extends DropDownChoice<ValuationStatus> {
                 return object.toString();
             }
         });
+    }
+
+    @Override
+    protected void onComponentTag(ComponentTag tag) {
+        super.onComponentTag(tag);
+        if (getModelObject() != null) {
+            String style = tag.getAttribute("style");
+            if (style == null) {
+                style = "";
+            }
+            switch (getModelObject()) {
+                case ELBIRALATLAN:
+                    style += " background: #888888 none repeat;";
+                    break;
+                case ELFOGADVA:
+                    style += " background: #00FF00 none repeat;";
+                    break;
+                case ELUTASITVA:
+                    style += " background: #FF0000 none repeat;";
+                    break;
+                default:
+                    break;
+            }
+            tag.getAttributes().put("style", style);
+        }
     }
 }
