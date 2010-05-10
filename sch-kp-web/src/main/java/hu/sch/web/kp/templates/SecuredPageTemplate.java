@@ -60,7 +60,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -128,11 +128,10 @@ public abstract class SecuredPageTemplate extends WebPage {
     }
 
     private void createSearchBar() {
-        Form<Void> searchForm = new Form<Void>("searchForm") {
+        StatelessForm<Void> searchForm = new StatelessForm<Void>("searchForm") {
 
             @Override
             protected void onSubmit() {
-                System.out.println("type: " + searchType + " term: " + searchTerm);
                 if (searchType == null || searchTerm == null) {
                     getSession().error("Hibás keresési feltétel!");
                     throw new RestartResponseException(getApplication().getHomePage());
