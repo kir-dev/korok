@@ -36,8 +36,8 @@ import hu.sch.services.MailManagerLocal;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
@@ -56,7 +56,7 @@ public class UserNameReminder extends SecuredPageTemplate {
         setHeaderLabelText("Felhasználói név emlékeztető");
         add(new FeedbackPanel("pagemessages"));
 
-        Form<Void> reminderForm = new Form<Void>("reminderForm") {
+        StatelessForm<Void> reminderForm = new StatelessForm<Void>("reminderForm") {
 
             @Override
             protected void onSubmit() {

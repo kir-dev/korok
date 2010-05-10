@@ -1,13 +1,13 @@
 <wicket:extend>
     <span wicket:id="pagemessages" id="pagemessages" style="display: block; margin-bottom: 20px;"></span>
-    <div id="notifybox">
+    <div class="notifybox">
         <wicket:message key="notify.reminder" />
     </div>
-    <div id="admincont">
+    <div id="admincont" style="padding-top: 15px;">
         <form wicket:id="reminderForm">
             <table>
                 <tr>
-                    <td><label>E-mail</label></td>
+                    <td><label>E-mail cím:</label></td>
                     <td><input class="textinput" wicket:id="mail"/></td>
                 </tr>
             </table>

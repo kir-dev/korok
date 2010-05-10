@@ -77,6 +77,7 @@ public class TimerServiceBean implements TimerServiceLocal {
     private static final String showUserLink = "https://korok.sch.bme.hu/korok/showuser/id/";
     private static final Long VALASZTMANY_ID = 370L;
 
+    @Override
     public void scheduleTimers() {
         for (Object timerObj : timerService.getTimers()) {
             Timer timer = (Timer) timerObj;
