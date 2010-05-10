@@ -72,6 +72,7 @@ public class ValuationDetailPanel extends Panel {
 
     public void generateValuationText() {
         valuationText = new MultiLineLabel("valuationText");
+        valuationText.setEscapeModelStrings(false);
         add(valuationText);
     }
 

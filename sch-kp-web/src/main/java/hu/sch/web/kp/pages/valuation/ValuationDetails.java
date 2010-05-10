@@ -38,23 +38,27 @@ import hu.sch.domain.ValuationStatus;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.wicket.components.TinyMCEContainer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
+import org.apache.wicket.markup.html.IHeaderContributor;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import wicket.contrib.tinymce.settings.TinyMCESettings;
 
 /**
  *
@@ -122,6 +126,7 @@ public class ValuationDetails extends SecuredPageTemplate {
 
         final WebMarkupContainer container = new WebMarkupContainer("container");
         final MultiLineLabel textLabel = new MultiLineLabel("valuationText");
+        textLabel.setEscapeModelStrings(false);
         container.add(textLabel);
         final Form<Valuation> form = new Form<Valuation>("textForm", new CompoundPropertyModel<Valuation>(valuation)) {
 
@@ -133,17 +138,26 @@ public class ValuationDetails extends SecuredPageTemplate {
                 return;
             }
         };
+
+        //TinyMCE csak akkor működik AJAXszal, ha már az oldal betöltődésekor be
+        //van töltve a js :(
+        add(new HeaderContributor(new IHeaderContributor() {
+
+            @Override
+            public void renderHead(IHeaderResponse response) {
+                response.renderJavascriptReference(TinyMCESettings.javaScriptReference());
+            }
+        }));
         //mivel nem lehet két azonos wicket:id
-        TextArea<String> text = new TextArea<String>("valuationText2", new PropertyModel<String>(valuation, "valuationText"));
-        text.setRequired(true);
-        form.add(text);
+        TinyMCEContainer tinyMce = new TinyMCEContainer("valuationText2", new PropertyModel<String>(valuation, "valuationText"), true);
+        form.add(tinyMce);
         form.setVisible(false);
 
         container.add(form);
         container.setOutputMarkupId(true);
         add(container);
 
-        AjaxFallbackLink ajaxLink = new AjaxFallbackLink("modifyText") {
+        AjaxFallbackLink<Void> ajaxLink = new AjaxFallbackLink<Void>("modifyText") {
 
             @Override
             public void onClick(AjaxRequestTarget target) {

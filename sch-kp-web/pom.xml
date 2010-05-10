@@ -99,6 +99,12 @@
             <artifactId>wicket-tree</artifactId>
             <version>0.4.1</version>
         </dependency>
+        <!-- TinyMCE függőségek -->
+        <dependency>
+            <groupId>org.wicketstuff</groupId>
+            <artifactId>tinymce</artifactId>
+            <version>1.4.7-SNAPSHOT</version>
+        </dependency>
         <!-- Logoláshoz függőségek -->
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -34,11 +34,11 @@ package hu.sch.web.kp.pages.valuation;
 import hu.sch.domain.Group;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.wicket.components.TinyMCEContainer;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.string.StringValueConversionException;
@@ -51,8 +51,8 @@ public class NewValuation extends SecuredPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
-    String valuationText = "";
     private final Group group;
+    private String valuationText = "";
 
     public NewValuation(PageParameters params) {
         Long groupId;
@@ -83,29 +83,19 @@ public class NewValuation extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                if (getValuationText().isEmpty()) {
+                if (valuationText.isEmpty()) {
                     getSession().error(getLocalizer().getString("err.NincsBeszamolo", this));
                     return;
                 }
-                valuationManager.ujErtekeles(group, getUser(), getValuationText());
+                valuationManager.ujErtekeles(group, getUser(), valuationText);
                 getSession().info(getLocalizer().getString("info.ErtekelesMentve", this));
                 setResponsePage(Valuations.class);
                 return;
             }
         };
 
-        TextArea valuationTextArea = new TextArea("valuationText", new PropertyModel(this, "valuationText"));
-        valuationTextArea.setRequired(true);
-
-        newValuationForm.add(valuationTextArea);
+        TinyMCEContainer tinyMce = new TinyMCEContainer("valuationText", new PropertyModel<String>(this, "valuationText"), true);
+        newValuationForm.add(tinyMce);
         add(newValuationForm);
-    }
-
-    public String getValuationText() {
-        return valuationText;
-    }
-
-    public void setValuationTextArea(String valuationText) {
-        this.valuationText = valuationText;
     }
 }
