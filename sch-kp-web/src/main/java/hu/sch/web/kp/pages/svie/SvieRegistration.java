@@ -127,7 +127,6 @@ public final class SvieRegistration extends SecuredPageTemplate {
         form.add(new AttributeAjaxFallbackLink("homePostalAddressAttributeLink", "homePostalAddressAttributeImg", "homePostalAddress"));
 
         final RadioGroup<SvieMembershipType> radioGroup = new RadioGroup<SvieMembershipType>("choices", new PropertyModel<SvieMembershipType>(this, "choosed"));
-        form.add(radioGroup);
         List<SvieMembershipType> msTypes = new ArrayList<SvieMembershipType>();
         msTypes.add(SvieMembershipType.PARTOLOTAG);
         msTypes.add(SvieMembershipType.RENDESTAG);
@@ -140,6 +139,8 @@ public final class SvieRegistration extends SecuredPageTemplate {
             }
         };
         radioGroup.add(lv);
+        radioGroup.setRequired(true);
+        form.add(radioGroup);
 
         add(form);
     }
