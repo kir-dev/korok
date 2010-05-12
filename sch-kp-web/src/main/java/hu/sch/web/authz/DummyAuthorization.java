@@ -115,4 +115,14 @@ public final class DummyAuthorization implements UserAuthorization {
             Request wicketRequest) {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getRemoteUser(Request wicketRequest) {
+        return "aldaris";
+    }
+
+
 }

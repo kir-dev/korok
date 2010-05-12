@@ -190,6 +190,10 @@ public abstract class SecuredPageTemplate extends WebPage {
         return userManager.findUserWithCsoporttagsagokById(getSession().getUserId());
     }
 
+    protected final String getRemoteUser() {
+        return getAuthorizationComponent().getRemoteUser(getRequest());
+    }
+
     @Override
     public VirSession getSession() {
         return (VirSession) super.getSession();
