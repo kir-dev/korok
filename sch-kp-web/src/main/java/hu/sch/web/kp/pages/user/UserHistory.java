@@ -117,15 +117,7 @@ public class UserHistory extends SecuredPageTemplate {
             groups.add(csoporttagsag.getGroup().getName());
         }
 
-        List<PointRequest> origPointRequests = userManager.getPontIgenyekForUser(user);
-
-        // csak az elfogadott pontok legyenek megjelenítve
-        ArrayList<PointRequest> pointRequests = new ArrayList<PointRequest>();
-        for (PointRequest pointRequest : origPointRequests) {
-                pointRequests.add(pointRequest);
-        }
-        
-        //
+        List<PointRequest> pointRequests = userManager.getPontIgenyekForUser(user);
         DropDownChoice<String> ddc = new DropDownChoice<String>("group", new PropertyModel<String>(this, "selected_text"), groups) {
 
             @Override
