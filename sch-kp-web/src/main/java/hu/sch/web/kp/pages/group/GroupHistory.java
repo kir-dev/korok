@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
@@ -85,7 +84,7 @@ public class GroupHistory extends SecuredPageTemplate {
 
         group = userManager.findGroupById(id);
         valuationList.clear();
-        valuationList.addAll(valuationManager.findApprovedValuations(group));
+        valuationList.addAll(valuationManager.findErtekeles(group));
         final List<String> semesters = new ArrayList<String>();
         for (Valuation valuation : valuationList) {
             semesters.add(valuation.getSemester().toString());

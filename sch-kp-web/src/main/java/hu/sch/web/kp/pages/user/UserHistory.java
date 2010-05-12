@@ -122,9 +122,7 @@ public class UserHistory extends SecuredPageTemplate {
         // csak az elfogadott pontok legyenek megjelenítve
         ArrayList<PointRequest> pointRequests = new ArrayList<PointRequest>();
         for (PointRequest pointRequest : origPointRequests) {
-            if (pointRequest.getValuation().getPointStatus().equals(ValuationStatus.ELFOGADVA)) {
                 pointRequests.add(pointRequest);
-            }
         }
         
         //
