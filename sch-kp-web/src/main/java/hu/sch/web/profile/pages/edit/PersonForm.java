@@ -332,7 +332,7 @@ public class PersonForm extends Form<Person> {
 
     private void createSvieFields() {
         TextField<String> mothersNameTF = new TextField<String>("mothersName");
-        mothersNameTF.add(new PatternValidator(PatternHolder.MOTHER_NAME_PATTERN));
+        mothersNameTF.add(new PatternValidator(PatternHolder.NAME_PATTERN));
         mothersNameTF.add(new ValidationStyleBehavior());
         add(mothersNameTF);
         mothersNameTF.setLabel(new Model<String>("Anyja neve"));
