@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.valuation;
 
 import hu.sch.domain.ConsideredValuation;
@@ -163,8 +162,18 @@ public class EntrantRequestViewer extends SecuredPageTemplate {
                     setResponsePage(new ConsiderExplainPage(list));
                 }
             };
+
+            Link messagesLink = new Link("messages") {
+                @Override
+                public void onClick() {
+                    setResponsePage(new ValuationMessages(val.getId()));
+                }
+            };
+
+
             add(acceptLink);
             add(rejectLink);
+            add(messagesLink);
 
         }
     }
