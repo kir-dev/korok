@@ -466,3 +466,42 @@ h5 {
 .subdata table {
 width:100%;
 }
+
+/* Regisztrációs varázsló */
+.wicketExtensionsWizardOuterTable {
+    margin: 0 auto;
+    width: 600px;
+    padding-top: 24px;
+}
+.wicketExtensionsWizardInnerTable {
+	width: 600px;
+}
+.wicketExtensionsWizardHeaderRow {
+	height: 20px;
+}
+.wicketExtensionsWizardHeaderSummary {
+	font-style: italic;
+        padding-bottom: 20px;
+}
+.wicketExtensionsWizardView {
+	border: thin solid black;
+}
+.wicketExtensionsWizardViewInner {
+	margin-left: 30px;
+}
+.wicketExtensionsWizardViewInner table label {
+    display: block;
+}
+.wicketExtensionsWizardViewRow {
+	height: 140px;
+}
+.wicketExtensionsWizardButtonBar {
+	text-align: right;
+}
+.wicketExtensionsWizardButtonBar input {
+	width: 80px;
+}
+.wicketExtensionsWizardHeaderTitle {
+	font-weight: bold;
+        padding-bottom: 5px;
+}

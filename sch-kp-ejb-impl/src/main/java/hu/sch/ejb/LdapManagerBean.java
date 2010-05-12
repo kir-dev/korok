@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.config.Configuration;
@@ -39,12 +38,18 @@ import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.domain.util.PatternHolder;
+import hu.sch.services.MailManagerLocal;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.naming.Name;
 import javax.naming.NamingException;
@@ -84,6 +89,13 @@ public class LdapManagerBean implements LdapManagerLocal {
      * A logolashoz szukseges objektum.
      */
     private static final Logger log = Logger.getLogger(LdapManagerBean.class);
+    private static final String[] objectClasses = new String[]{
+        "top", "schacLinkageIdentifiers", "sunAMAuthAccountLockout", "schacContactLocation",
+        "person", "schacPersonalCharacteristics", "inetUser", "inetorgperson",
+        "schacLinkageIdentifiers", "organizationalPerson", "schacEmployeeInfo", "sch-vir",
+        "sunFMSAML2NameIdentifier", "top", "schacEntryConfidentiality", "eduPerson",
+        "schacEntryMetadata", "schacUserEntitlements"
+    };
     /**
      * Bean objektum, letrehozasakor jon letre maga az ldapTemplate.
      */
@@ -96,6 +108,8 @@ public class LdapManagerBean implements LdapManagerLocal {
      * Ez az objektum kezeli az osszes Ldap-ban levo adat elereset, modositasat, mindent.
      */
     private static LdapTemplate ldapTemplate;
+    @EJB(name = "MailManagerBean")
+    MailManagerLocal mailManager;
 
     /**
      * Callback fuggveny, az INSTANCE letrehozasa utan hivodik meg, beallitva ezzel az ldapTemplate-et.
@@ -465,42 +479,76 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     @Override
-    public void bindPerson(Person p) {
+    public void registerPerson(Person p) {
+        //az attribútumok formára hozása
+        SecureRandom random = new SecureRandom();
+        String randomPass = new BigInteger(45, random).toString(32);
+
+        bindPerson(p, randomPass);
+        StringBuilder sb = new StringBuilder(300);
+        sb.append("Kedves leendő VIR felhasználó!\n\n");
+        sb.append("Azért kapod ezt a levelet, mert Te, vagy valaki a nevedben regisztrált ");
+        sb.append("a Villanykari Információs Rendszerbe.\n");
+        sb.append("Ha nem Te voltál az, akkor ezt a levelet nyugodtan törölheted, ellenkező ");
+        sb.append("esetben meg kell erősítened a regisztrációdat. Ehhez nem kell mást tenned, mint ");
+        sb.append("egy böngészőbe beírni az alábbi URL-t: ");
+        sb.append("https://korok.sch.bme.hu/korok/confirm/uid/").append(p.getUid());
+        sb.append("/confirmationcode/").append(getConfirmationCode(p)).append("\n\n");
+        sb.append("Üdvözlettel:\n");
+        sb.append("Kir-Dev");
+
+        mailManager.sendEmail(p.getMail(), "VIR Regisztráció", sb.toString());
+    }
+
+    //TODO: LDAP-attribútumnevek konstanssá átalakítása!!
+    private void bindPerson(Person p, String password) {
+        p.setToSave();
         try {
             Name dn = buildDn(p.getUid());
             Attributes attrs = new BasicAttributes();
             BasicAttribute ocattr = new BasicAttribute("objectclass");
-            ocattr.add("top");
-            ocattr.add("schacLinkageIdentifiers");
-            ocattr.add("sunAMAuthAccountLockout");
-            ocattr.add("schacContactLocation");
-            ocattr.add("person");
-            ocattr.add("schacPersonalCharacteristics");
-            ocattr.add("inetUser");
-            ocattr.add("inetorgperson");
-            ocattr.add("schacLinkageIdentifiers");
-            ocattr.add("organizationalPerson");
-            ocattr.add("schacEmployeeInfo");
-            ocattr.add("sch-vir");
-            ocattr.add("sunFMSAML2NameIdentifier");
-            ocattr.add("top");
-            ocattr.add("schacEntryConfidentiality");
-            ocattr.add("eduPerson");
-            ocattr.add("schacEntryMetadata");
-            ocattr.add("schacUserEntitlements");
+            for (String oc : objectClasses) {
+                ocattr.add(oc);
+            }
 
             attrs.put(ocattr);
-            attrs.put("sn", p.getLastName());
-            attrs.put("givenName", p.getFirstName());
-            attrs.put("cn", p.getLastName() + " " + p.getFirstName());
-            attrs.put("mail", p.getMail());
-            attrs.put("schacUserStatus", p.getStudentUserStatus());
-            attrs.put("inetUserStatus", p.getStatus());
+            addNotNullAttribute(attrs, "sn", p.getLastName());
+            addNotNullAttribute(attrs, "givenName", p.getFirstName());
+            addNotNullAttribute(attrs, "cn", p.getFullName());
+            addNotNullAttribute(attrs, "mail", p.getMail());
+            addNotNullAttribute(attrs, "schacUserStatus", p.getStudentUserStatus());
+            addNotNullAttribute(attrs, "inetUserStatus", p.getStatus());
+            addNotNullAttribute(attrs, "schacDateOfBirth", p.getDateOfBirth());
+            addNotNullAttribute(attrs, "schacGender", p.getGender());
+            addNotNullAttribute(attrs, "schacPersonalUniqueCode", p.getPersonalUniqueCode());
+            addNotNullAttribute(attrs, "displayName", p.getNickName());
+            addNotNullAttribute(attrs, "schacPersonalUniqueId", p.getPersonalUniqueID());
+            addNotNullAttribute(attrs, "userPassword", password);
 
             ldapTemplate.bind(dn, null, attrs);
         } catch (Exception ex) {
             log.error("Nem sikerült menteni a felhasználót", ex);
             throw new RuntimeException("nem sikerült létrehozni a felhasználót", ex);
         }
+    }
+
+    private void addNotNullAttribute(Attributes attrs, String key, Object value) {
+        if (value != null) {
+            attrs.put(key, value);
+        }
+    }
+
+    private String getConfirmationCode(Person p) {
+        try {
+            String confirmationString = p.getUid() + p.getMail() + p.getFullName();
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            m.update(confirmationString.getBytes(), 0, confirmationString.length());
+            String confirmationStringMD5 = new BigInteger(1, m.digest()).toString(16);
+
+            return confirmationStringMD5;
+        } catch (NoSuchAlgorithmException ex) {
+        }
+
+        return null;
     }
 }

@@ -29,47 +29,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package hu.sch.services;
+package hu.sch.web.idm.pages;
 
-import hu.sch.domain.profile.Person;
-import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.services.exceptions.InvalidPasswordException;
-import java.util.List;
-import javax.ejb.Local;
+import hu.sch.web.idm.pages.wizard.RegisterWizard;
+import hu.sch.web.kp.templates.SecuredPageTemplate;
+import org.apache.wicket.RestartResponseException;
 
 /**
  *
  * @author aldaris
  */
-@Local
-public interface LdapManagerLocal {
+public class RegistrationPage extends SecuredPageTemplate {
 
-    public void changePassword(String uid, String oldPassword, String newPassword)
-            throws InvalidPasswordException;
-
-    void deletePersonByUid(String uid) throws PersonNotFoundException;
-
-    Person getPersonByUid(String uid) throws PersonNotFoundException;
-
-    Person getPersonByVirId(String virId) throws PersonNotFoundException;
-
-    Person getPersonByNeptun(String neptun) throws PersonNotFoundException;
-
-    List<Person> getPersonsWhoHasBirthday(String searchDate);
-
-    void update(Person p);
-
-    List<Person> search(List<String> searchWords);
-
-    List<Person> searchByAdmin(List<String> searchWords);
-
-    List<Person> searchInactives();
-
-    List<Person> searchMyUid(String mail);
-
-    List<Person> getPersonByDn(List<String> dnList);
-
-    void initialization();
-
-    void registerPerson(Person p);
+    public RegistrationPage() {
+        setHeaderLabelText("Regisztráció");
+        if (getRemoteUser() != null) {
+            getSession().error("Már be vagy jelentkezve, miért is szeretnél újra regisztrálni?");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+        add(new RegisterWizard("wizard"));
+    }
 }

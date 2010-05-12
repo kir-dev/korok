@@ -29,47 +29,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package hu.sch.services;
+package hu.sch.web.idm.pages;
 
-import hu.sch.domain.profile.Person;
-import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.services.exceptions.InvalidPasswordException;
-import java.util.List;
-import javax.ejb.Local;
+import hu.sch.web.kp.templates.SecuredPageTemplate;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
  *
  * @author aldaris
  */
-@Local
-public interface LdapManagerLocal {
+public class RegistrationFinishedPage extends SecuredPageTemplate {
 
-    public void changePassword(String uid, String oldPassword, String newPassword)
-            throws InvalidPasswordException;
-
-    void deletePersonByUid(String uid) throws PersonNotFoundException;
-
-    Person getPersonByUid(String uid) throws PersonNotFoundException;
-
-    Person getPersonByVirId(String virId) throws PersonNotFoundException;
-
-    Person getPersonByNeptun(String neptun) throws PersonNotFoundException;
-
-    List<Person> getPersonsWhoHasBirthday(String searchDate);
-
-    void update(Person p);
-
-    List<Person> search(List<String> searchWords);
-
-    List<Person> searchByAdmin(List<String> searchWords);
-
-    List<Person> searchInactives();
-
-    List<Person> searchMyUid(String mail);
-
-    List<Person> getPersonByDn(List<String> dnList);
-
-    void initialization();
-
-    void registerPerson(Person p);
+    public RegistrationFinishedPage() {
+        setHeaderLabelText("Regisztráció");
+        add(new FeedbackPanel("pagemessages"));
+    }
 }

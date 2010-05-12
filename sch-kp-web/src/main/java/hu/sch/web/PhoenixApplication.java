@@ -46,6 +46,8 @@ import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.idm.pages.UserNameReminder;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.PageExpiredError;
+import hu.sch.web.idm.pages.RegistrationFinishedPage;
+import hu.sch.web.idm.pages.RegistrationPage;
 import hu.sch.web.kp.pages.admin.CreateGroup;
 import hu.sch.web.kp.pages.admin.CreateNewPerson;
 import hu.sch.web.kp.pages.admin.EditSettings;
@@ -60,6 +62,7 @@ import hu.sch.web.kp.pages.search.SearchResultsPage;
 import hu.sch.web.kp.pages.svie.SvieAccount;
 import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
 import hu.sch.web.kp.pages.svie.SvieUserMgmt;
+import hu.sch.web.profile.pages.confirmation.ConfirmPage;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.util.EntrantTypeConverter;
 import hu.sch.web.wicket.util.PostTypeConverter;
@@ -80,6 +83,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.target.coding.HybridUrlCodingStrategy;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.lang.PackageName;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
@@ -121,8 +125,8 @@ public class PhoenixApplication extends WebApplication {
         //körök linkek
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);
-        mountBookmarkablePage("/reminder", UserNameReminder.class);
         mountBookmarkablePage("/search", SearchResultsPage.class);
+        mountBookmarkablePage("/confirm", ConfirmPage.class);
 
         mountBookmarkablePage("/showgroup", ShowGroup.class);
         mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
@@ -143,6 +147,10 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/creategroup", CreateGroup.class);
         mountBookmarkablePage("/createperson", CreateNewPerson.class);
 
+        //IDM linkek
+        mountBookmarkablePage("/reminder", UserNameReminder.class);
+        mount(new HybridUrlCodingStrategy("/register", RegistrationPage.class));
+        mountBookmarkablePage("/registerfinished", RegistrationFinishedPage.class);
         mountBookmarkablePage("/logout", Logout.class);
 
 

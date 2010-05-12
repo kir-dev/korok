@@ -56,7 +56,7 @@ public class UserNameReminder extends SecuredPageTemplate {
     public UserNameReminder() {
         setHeaderLabelText("Felhasználói név emlékeztető");
         if (getRemoteUser() != null) {
-            getSession().error("Már be vagy jelentkezve, miért is szeretnél újra regisztrálni?");
+            getSession().error("Már be vagy jelentkezve, akkor mire nem emlékszel?");
             throw new RestartResponseException(getApplication().getHomePage());
         }
 

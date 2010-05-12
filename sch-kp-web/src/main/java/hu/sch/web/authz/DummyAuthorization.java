@@ -123,6 +123,4 @@ public final class DummyAuthorization implements UserAuthorization {
     public String getRemoteUser(Request wicketRequest) {
         return "aldaris";
     }
-
-
 }
