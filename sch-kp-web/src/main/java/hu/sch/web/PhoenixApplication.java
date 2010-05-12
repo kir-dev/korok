@@ -53,7 +53,6 @@ import hu.sch.web.kp.pages.admin.ShowInactive;
 import hu.sch.web.kp.pages.consider.ConsiderPage;
 import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.pages.valuation.NewValuation;
-import hu.sch.web.kp.pages.group.AddGroupMember;
 import hu.sch.web.kp.pages.group.ChangeDelegates;
 import hu.sch.web.kp.pages.group.ChangePost;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
@@ -81,7 +80,6 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.protocol.http.WebResponse;
-import org.apache.wicket.protocol.http.request.InvalidUrlException;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.lang.PackageName;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
@@ -129,7 +127,6 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/showgroup", ShowGroup.class);
         mountBookmarkablePage("/grouphierarchy", GroupHierarchy.class);
         mountBookmarkablePage("/grouphistory", GroupHistory.class);
-        mountBookmarkablePage("/addgroupmember", AddGroupMember.class);
         mountBookmarkablePage("/editgroupinfo", EditGroupInfo.class);
         mountBookmarkablePage("/changepost", ChangePost.class);
 
