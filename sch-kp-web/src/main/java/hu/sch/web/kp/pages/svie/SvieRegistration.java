@@ -104,7 +104,7 @@ public final class SvieRegistration extends SecuredPageTemplate {
         form.setModel(new CompoundPropertyModel<Person>(person));
 
         RequiredTextField<String> mothersNameTF = new RequiredTextField<String>("mothersName");
-        mothersNameTF.add(new PatternValidator(PatternHolder.MOTHER_NAME_PATTERN));
+        mothersNameTF.add(new PatternValidator(PatternHolder.NAME_PATTERN));
         mothersNameTF.add(new ValidationStyleBehavior());
         mothersNameTF.setLabel(new Model<String>("Anyja neve *"));
         form.add(mothersNameTF);
