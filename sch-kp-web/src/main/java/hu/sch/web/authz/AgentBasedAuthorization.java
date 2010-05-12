@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
@@ -263,5 +262,13 @@ public final class AgentBasedAuthorization implements UserAuthorization {
         }
 
         return null;
+    }
+
+    /*
+     * {@inheritDoc}
+     */
+    @Override
+    public String getRemoteUser(Request wicketRequest) {
+        return ((WebRequest) wicketRequest).getHttpServletRequest().getRemoteUser();
     }
 }

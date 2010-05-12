@@ -93,4 +93,12 @@ public interface UserAuthorization {
      * @return Az Agent által átadott felhasználói attribútumok
      */
     User getUserAttributes(Request wicketRequest);
+
+    /**
+     * Az aktuálisan bejelentkezett felhasználó uid-jét adja vissza
+     *
+     * @param wicketRequest
+     * @return A felhasználó egyedi azonosítója
+     */
+    String getRemoteUser(Request wicketRequest);
 }

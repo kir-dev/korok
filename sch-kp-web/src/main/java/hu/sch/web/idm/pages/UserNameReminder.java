@@ -36,6 +36,7 @@ import hu.sch.services.MailManagerLocal;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -54,6 +55,11 @@ public class UserNameReminder extends SecuredPageTemplate {
 
     public UserNameReminder() {
         setHeaderLabelText("Felhasználói név emlékeztető");
+        if (getRemoteUser() != null) {
+            getSession().error("Már be vagy jelentkezve, miért is szeretnél újra regisztrálni?");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+
         add(new FeedbackPanel("pagemessages"));
 
         StatelessForm<Void> reminderForm = new StatelessForm<Void>("reminderForm") {
