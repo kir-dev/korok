@@ -63,11 +63,9 @@ public class UserNameReminder extends SecuredPageTemplate {
                 List<Person> results = ldapManager.searchMyUid(mail);
                 if (results.isEmpty()) {
                     getSession().error(getLocalizer().getString("err.NoSuchEmail", this));
-                    setResponsePage(UserNameReminder.class);
                     return;
                 } else if (results.size() > 1) {
                     getSession().error(getLocalizer().getString("err.DuplicatedUsers", this));
-                    setResponsePage(UserNameReminder.class);
                     return;
                 } else {
                     Person person = results.get(0);
@@ -77,11 +75,9 @@ public class UserNameReminder extends SecuredPageTemplate {
                                 + person.getUid() + "'.\n\nÜdv,\nKir-Dev");
                     } catch (Exception e) {
                         getSession().error(getLocalizer().getString("err.MailError", this));
-                        setResponsePage(UserNameReminder.class);
                         return;
                     }
                     getSession().info(getLocalizer().getString("info.ReminderSent", this));
-                    setResponsePage(UserNameReminder.class);
                     return;
                 }
             }
