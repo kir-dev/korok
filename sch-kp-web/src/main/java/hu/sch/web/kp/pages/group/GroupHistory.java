@@ -33,7 +33,6 @@ package hu.sch.web.kp.pages.group;
 import hu.sch.domain.Group;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.Semester;
-import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.pages.valuation.ValuationDetailPanel;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
@@ -88,12 +87,7 @@ public class GroupHistory extends SecuredPageTemplate {
         valuationList.addAll(valuationManager.findErtekeles(group));
         final List<String> semesters = new ArrayList<String>();
         for (Valuation valuation : valuationList) {
-            if ((valuation.getEntrantStatus() != ValuationStatus.ELFOGADVA) || valuation.getPointStatus() != ValuationStatus.ELFOGADVA) {
-                semesters.add("("+valuation.getSemester().toString()+")");
-            } else {
-                semesters.add(valuation.getSemester().toString());
-            }
-            
+            semesters.add(valuation.getSemester().toString());
         }
 
         add(new Label("name", group.getName()));
