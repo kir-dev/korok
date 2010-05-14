@@ -35,6 +35,7 @@ import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
+import hu.sch.web.wicket.components.AjaxWizardButtonBar;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,6 +48,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
+import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.wizard.IWizardModel;
@@ -128,7 +130,7 @@ public class RegisterWizard extends Wizard {
         super.onFinish();
         person.setStatus("Inactive");
         try {
-        ldapManager.registerPerson(person);
+            ldapManager.registerPerson(person);
         } catch (RuntimeException re) {
             getSession().error("A regisztráció közben hiba lépett fel!");
             throw new RestartResponseException(RegistrationFinishedPage.class);
@@ -138,10 +140,11 @@ public class RegisterWizard extends Wizard {
     }
 
     //lásd AjaxWizardButtonBar JavaDoc
-//    @Override
-//    protected Component newButtonBar(String id) {
-//        return new AjaxWizardButtonBar(id, this);
-//    }
+    @Override
+    protected Component newButtonBar(String id) {
+        return new AjaxWizardButtonBar(id, this);
+    }
+
     private boolean checkExistingPerson() throws IllegalArgumentException {
         try {
             Person dummy = ldapManager.getPersonByNeptun(neptun);
