@@ -232,10 +232,12 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
+    @Override
     public Group findGroupById(Long id) {
         return em.find(Group.class, id);
     }
 
+    @Override
     public void deleteMembership(Membership ms) {
         Membership temp = em.find(Membership.class, ms.getId());
         User user = ms.getUser();
@@ -266,6 +268,7 @@ public class UserManagerBean implements UserManagerLocal {
         logManager.createLogEntry(ms.getGroup(), ms.getUser(), DELETEMEMBERSHIP_EVENT);
     }
 
+    @Override
     public List<User> getCsoporttagokWithoutOregtagok(Long csoportId) {
         Query q =
                 em.createQuery("SELECT ms.user FROM Membership ms JOIN "
@@ -278,6 +281,7 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<User> getUsersWithPrimaryMembership(Long groupId) {
         Query q = em.createQuery("SELECT ms.user FROM Membership ms "
                 + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms "
@@ -287,6 +291,7 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<User> getMembersForGroup(Long csoportId) {
         //Group cs = em.find(Group.class, csoportId);
         Query q =
@@ -300,6 +305,7 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<EntrantRequest> getBelepoIgenyekForUser(User felhasznalo) {
         Query q = em.createQuery("SELECT e FROM EntrantRequest e "
                 + "WHERE e.user=:user "
@@ -309,6 +315,7 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<PointRequest> getPontIgenyekForUser(User felhasznalo) {
         Query q = em.createQuery("SELECT p FROM PointRequest p "
                 + "WHERE p.user=:user "
@@ -318,6 +325,7 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<Group> getGroupHierarchy() {
         Query q = em.createNamedQuery(Group.groupHierarchy);
         List<Group> csoportok = q.getResultList();
@@ -337,6 +345,7 @@ public class UserManagerBean implements UserManagerLocal {
         return rootCsoportok;
     }
 
+    @Override
     public User findUserWithCsoporttagsagokById(Long userId) {
         Query q = em.createNamedQuery(User.findWithMemberships);
         q.setParameter("id", userId);
@@ -349,6 +358,7 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
+    @Override
     public Group findGroupWithCsoporttagsagokById(Long id) {
         Query q = em.createNamedQuery(Group.findWithMemberships);
         q.setParameter("id", id);
@@ -361,6 +371,7 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
+    @Override
     public void groupInfoUpdate(Group cs) {
         Group csoport = em.find(Group.class, cs.getId());
         csoport.setFounded(cs.getFounded());
@@ -385,16 +396,19 @@ public class UserManagerBean implements UserManagerLocal {
         return (Membership) q.getSingleResult();
     }
 
+    @Override
     public void setMemberToOldBoy(Membership ms) {
         ms.setEnd(new Date());
         em.merge(ms);
     }
 
+    @Override
     public void setUserDelegateStatus(User user, boolean isDelegated) {
         user.setDelegated(isDelegated);
         em.merge(user);
     }
 
+    @Override
     public void setOldBoyToActive(Membership ms) {
         ms.setEnd(null);
         em.merge(ms);
@@ -426,6 +440,7 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
+    @Override
     public List<Group> getAllGroupsWithCount() {
         Query q = em.createQuery("SELECT new hu.sch.domain.Group(g, "
                 + "(SELECT COUNT(*) FROM Membership ms WHERE ms.user.sviePrimaryMembership = ms "
@@ -435,6 +450,7 @@ public class UserManagerBean implements UserManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<User> searchForUserByName(String name) {
         Query q = em.createQuery("SELECT u FROM User u WHERE UPPER(concat(concat(u.lastName, ' '), "
                 + "u.firstName)) LIKE UPPER(:name) "
@@ -447,6 +463,7 @@ public class UserManagerBean implements UserManagerLocal {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Semester> getAllValuatedSemesterForUser(User user) {
         return em.createNamedQuery(User.getAllValuatedSemesterForUser).setParameter("user", user).getResultList();
     }
@@ -454,6 +471,7 @@ public class UserManagerBean implements UserManagerLocal {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getSemesterPointForUser(User user, Semester semester) {
         // Beszerezzük a pontokat
         List<PointRequest> pontigenyek = getPontIgenyekForUser(user);
