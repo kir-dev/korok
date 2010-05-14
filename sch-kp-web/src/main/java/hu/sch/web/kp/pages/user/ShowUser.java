@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.user;
 
 import hu.sch.domain.Group;
@@ -164,7 +163,7 @@ public class ShowUser extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null);
+                userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null, isUserGroupLeader(addToCsoportSelected));
                 getSession().info("A felhasználó a " + addToCsoportSelected + " körbe felvéve");
                 setResponsePage(ShowUser.class, new PageParameters("id=" + user.getId()));
             }

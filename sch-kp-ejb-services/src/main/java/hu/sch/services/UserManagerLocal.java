@@ -54,7 +54,16 @@ public interface UserManagerLocal {
 
     User findUserWithCsoporttagsagokById(Long userId);
 
-    void addUserToGroup(User user, Group group, Date membershipStart, Date membershipEnd);
+    /**
+     * Felhasználó felvétele csoportba.
+     *
+     * @param user              felvett felhasználó
+     * @param group             célcsoport, ahova felvesszük
+     * @param membershipStart   tagság kezdete
+     * @param membershipEnd     tagság vége
+     * @param isAuthorized      amennyiben ez igaz, a felhasználó automatikusan "tag" posztot kap.
+     */
+    void addUserToGroup(User user, Group group, Date membershipStart, Date membershipEnd, boolean isAuthorized);
 
     List<Group> getAllGroups();
 

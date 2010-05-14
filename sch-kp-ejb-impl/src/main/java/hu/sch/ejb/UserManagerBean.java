@@ -137,8 +137,11 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void addUserToGroup(User user, Group group, Date start, Date veg) {
+    public void addUserToGroup(User user, Group group, Date start, Date veg, boolean isAuthorized) {
         Membership ms = new Membership();
         User _user = em.find(User.class, user.getId());
         Group _group = em.find(Group.class, group.getId());
@@ -147,21 +150,26 @@ public class UserManagerBean implements UserManagerLocal {
         ms.setGroup(_group);
         ms.setStart(start);
         ms.setEnd(null);
-        Post post = new Post();
-        post.setMembership(ms);
 
-        Query q = em.createNamedQuery(PostType.searchForPostType);
-        q.setParameter("pn", "feldolgozás alatt");
-        PostType postType = (PostType) q.getSingleResult();
+        if (!isAuthorized) {
+            Post post = new Post();
+            post.setMembership(ms);
 
-        post.setPostType(postType);
-        List<Post> posts = new ArrayList<Post>();
-        posts.add(post);
-        ms.setPosts(posts);
+            Query q = em.createNamedQuery(PostType.searchForPostType);
+            q.setParameter("pn", "feldolgozás alatt");
+            PostType postType = (PostType) q.getSingleResult();
+
+            post.setPostType(postType);
+            List<Post> posts = new ArrayList<Post>();
+            posts.add(post);
+            ms.setPosts(posts);
+            
+            em.persist(post);
+        }
+
         _user.getMemberships().add(ms);
         _group.getMemberships().add(ms);
 
-        em.persist(post);
         em.persist(ms);
         em.merge(_user);
         em.merge(_group);

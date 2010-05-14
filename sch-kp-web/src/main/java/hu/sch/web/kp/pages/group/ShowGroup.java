@@ -142,7 +142,7 @@ public class ShowGroup extends SecuredPageTemplate {
 
             @Override
             public void onClick() {
-                userManager.addUserToGroup(user, group, new Date(), null);
+                userManager.addUserToGroup(user, group, new Date(), null, false);
                 getSession().info("Sikeres jelentkezés");
                 setResponsePage(ShowUser.class);
                 return;
