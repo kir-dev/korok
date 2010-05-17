@@ -83,10 +83,6 @@ public class NewValuation extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                if (valuationText.isEmpty()) {
-                    getSession().error(getLocalizer().getString("err.NincsBeszamolo", this));
-                    return;
-                }
                 valuationManager.ujErtekeles(group, getUser(), valuationText);
                 getSession().info(getLocalizer().getString("info.ErtekelesMentve", this));
                 setResponsePage(Valuations.class);
