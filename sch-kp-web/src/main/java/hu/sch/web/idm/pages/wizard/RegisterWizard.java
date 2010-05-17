@@ -130,7 +130,7 @@ public class RegisterWizard extends Wizard {
         super.onFinish();
         person.setStatus("Inactive");
         try {
-            ldapManager.registerPerson(person);
+            ldapManager.registerPerson(person, newPass);
         } catch (RuntimeException re) {
             getSession().error("A regisztráció közben hiba lépett fel!");
             throw new RestartResponseException(RegistrationFinishedPage.class);

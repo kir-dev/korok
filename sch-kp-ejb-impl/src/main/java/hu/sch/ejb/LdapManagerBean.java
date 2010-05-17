@@ -479,12 +479,15 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     @Override
-    public void registerPerson(Person p) {
+    public void registerPerson(Person p, String password) {
+        boolean sendPass = (password == null);
         //az attribútumok formára hozása
-        SecureRandom random = new SecureRandom();
-        String randomPass = new BigInteger(45, random).toString(32);
+        if (sendPass) {
+            SecureRandom random = new SecureRandom();
+            password = new BigInteger(45, random).toString(32);
+        }
 
-        bindPerson(p, randomPass);
+        bindPerson(p, password);
         StringBuilder sb = new StringBuilder(300);
         sb.append("Kedves leendő VIR felhasználó!\n\n");
         sb.append("Azért kapod ezt a levelet, mert Te, vagy valaki a nevedben regisztrált ");
@@ -494,6 +497,12 @@ public class LdapManagerBean implements LdapManagerLocal {
         sb.append("egy böngészőbe beírni az alábbi URL-t: ");
         sb.append("https://korok.sch.bme.hu/korok/confirm/uid/").append(p.getUid());
         sb.append("/confirmationcode/").append(getConfirmationCode(p)).append("\n\n");
+
+        if (sendPass) {
+            sb.append("Felhasználói neved: ").append(p.getUid()).append('\n');
+            sb.append("Jelszavad: ").append(password).append("\n\n");
+        }
+
         sb.append("Üdvözlettel:\n");
         sb.append("Kir-Dev");
 

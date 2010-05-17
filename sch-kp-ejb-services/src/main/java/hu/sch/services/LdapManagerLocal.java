@@ -71,5 +71,5 @@ public interface LdapManagerLocal {
 
     void initialization();
 
-    void registerPerson(Person p);
+    void registerPerson(Person p, String password);
 }
