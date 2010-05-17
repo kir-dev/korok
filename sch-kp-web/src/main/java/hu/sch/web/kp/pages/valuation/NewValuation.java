@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.valuation;
 
 import hu.sch.domain.Group;
@@ -52,7 +51,8 @@ public class NewValuation extends SecuredPageTemplate {
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
     private final Group group;
-    private String valuationText = "";
+    private String valuationText;
+    private String principle;
 
     public NewValuation(PageParameters params) {
         Long groupId;
@@ -79,11 +79,11 @@ public class NewValuation extends SecuredPageTemplate {
             setResponsePage(Valuations.class);
             return;
         }
-        Form newValuationForm = new Form("newValuationForm") {
+        Form<Void> newValuationForm = new Form<Void>("newValuationForm") {
 
             @Override
             protected void onSubmit() {
-                valuationManager.ujErtekeles(group, getUser(), valuationText);
+                valuationManager.ujErtekeles(group, getUser(), valuationText + "<br/><br/>" + principle);
                 getSession().info(getLocalizer().getString("info.ErtekelesMentve", this));
                 setResponsePage(Valuations.class);
                 return;
@@ -92,6 +92,8 @@ public class NewValuation extends SecuredPageTemplate {
 
         TinyMCEContainer tinyMce = new TinyMCEContainer("valuationText", new PropertyModel<String>(this, "valuationText"), true);
         newValuationForm.add(tinyMce);
+        TinyMCEContainer principleMce = new TinyMCEContainer("principle", new PropertyModel<String>(this, "principle"), false);
+        newValuationForm.add(principleMce);
         add(newValuationForm);
     }
 }
