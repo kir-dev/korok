@@ -77,7 +77,9 @@ public class PostManagerBean implements PostManagerLocal {
         for (Post post : removable) {
             log.info(post.getPostType().toString());
             Post temp = em.find(Post.class, post.getId());
-            em.remove(temp);
+            // mi van, ha időközben már töröltük? Akkor ne akarjuk mégegyszer!
+            if(temp != null)
+                em.remove(temp);
         }
         log.info("létrehozandók");
         for (PostType postType : creatable) {
