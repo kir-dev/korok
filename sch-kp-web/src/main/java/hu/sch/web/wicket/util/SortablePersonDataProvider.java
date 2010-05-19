@@ -48,7 +48,7 @@ import org.apache.wicket.model.IModel;
 public class SortablePersonDataProvider extends SortableDataProvider<Person> {
 
     private List<Person> persons;
-    private Collator huCollator = Collator.getInstance(new Locale("hu"));
+    private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
 
     public SortablePersonDataProvider(List<Person> persons) {
         this.persons = persons;
