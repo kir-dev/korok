@@ -428,6 +428,9 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             throw new RuntimeException("Elfogadott értékelésen nem változtathat");
         }
         for (PointRequest igeny : igenyek) {
+            if (igeny.getPoint() == null) { // ha egy mező üresen marad, az olyan mintha 0 lenne ott!
+                igeny.setPoint(0);
+            }
             if (igeny.getValuation() == null) { //Új
                 if (igeny.getPoint() > 0) {
                     add(ertekeles, igeny);
