@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.EntrantRequest;
@@ -438,9 +437,20 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             } else { //módosítás
                 PointRequest ig = em.find(PointRequest.class, igeny.getId());
                 if (igeny.getPoint().equals(0)) {
-                    em.remove(ig);
+                    // lehet, hogy időközben már törölte helyettünk, akkor nincs gond.
+                    if (ig != null) {
+                        em.remove(ig);
+                    }
                 } else {
-                    ig.setPoint(igeny.getPoint());
+                    // mi van, ha időközben valaki törölte helyettünk? Akkor hozzuk létre!
+                    if (ig != null) {
+                        ig.setPoint(igeny.getPoint());
+                    } else {
+                        // időközben törölték az igényünket, ezért új igényt kell létrehozni
+                        // lemásoljuk 1:1-ben az előző igeny-t.
+                        PointRequest ujIgeny = new PointRequest(igeny.getUser(), igeny.getPoint());
+                        add(ertekeles, ujIgeny);
+                    }
                 }
             }
         }
