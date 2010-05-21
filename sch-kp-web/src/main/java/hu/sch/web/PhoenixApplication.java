@@ -119,9 +119,6 @@ public class PhoenixApplication extends WebApplication {
                     + classname, ex);
         }
 
-        //Beállítások beolvasása az alkalmazás properties fájljából
-        Configuration.init();
-
         //körök linkek
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);

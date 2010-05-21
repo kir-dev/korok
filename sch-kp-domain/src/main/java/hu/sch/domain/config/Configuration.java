@@ -49,10 +49,7 @@ public class Configuration {
     private static Properties properties = new Properties();
     private static String baseDir;
 
-    private Configuration() {
-    }
-
-    public static void init() {
+    static {
         baseDir = System.getProperty(PROPERTY_NAME);
         if (baseDir == null) {
             throw new IllegalArgumentException(
@@ -67,6 +64,9 @@ public class Configuration {
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error while loading properties file!", ex);
         }
+    }
+
+    private Configuration() {
     }
 
     public static String getSpringLdapPath() {
