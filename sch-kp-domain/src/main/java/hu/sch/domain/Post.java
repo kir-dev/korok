@@ -56,12 +56,12 @@ import javax.persistence.Table;
     query = "SELECT p.membership.user FROM Post p "
     + "WHERE p.postType.postName = 'körvezető' AND p.membership.group.id = :id"),
     @NamedQuery(name = "getUserDelegatedPost",
-    query = " SELECT p FROM Post p WHERE p.postType.delegatedPost = true "
+    query = "SELECT p FROM Post p WHERE p.postType.delegatedPost = true "
     + "AND p.membership.group = :group "
     + "AND p.membership.user = :user"),
     @NamedQuery(name = "getByTypeAndGroup", query = "SELECT p FROM Post p "
     + "WHERE p.postType = :pt AND p.membership.group = :group"),
-    @NamedQuery(name = "getByName", query = "SELECT p FROM PostType p "
+    @NamedQuery(name = "getPostTypeByName", query = "SELECT p FROM PostType p "
     + "WHERE p.postName = :pn")
 })
 @SequenceGenerator(name = "poszt_seq", sequenceName = "poszt_seq")
@@ -72,7 +72,7 @@ public class Post implements Serializable {
     public static final String getGroupLeaderForGroup = "findGroupLeader";
     public static final String getUserDelegatedPost = "getUserDelegatedPost";
     public static final String getByTypeAndGroup = "getByTypeAndGroup";
-    public static final String getByName = "getByName";
+    public static final String getPostTypeByName = "getPostTypeByName";
     
     /*
     id            | integer | not null default nextval('poszt_seq'::regclass)

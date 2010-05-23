@@ -98,7 +98,7 @@ public class PostManagerBean implements PostManagerLocal {
         q.setParameter("pt", groupLeaderType);
         q.setParameter("group", membership.getGroup());
         Post post = (Post) q.getSingleResult();
-        Query q2 = em.createQuery(Post.getByName);
+        Query q2 = em.createNamedQuery(Post.getPostTypeByName);
         q2.setParameter("pn", "volt körvezető");
         PostType postType = (PostType) q2.getSingleResult();
         post.setPostType(postType);
