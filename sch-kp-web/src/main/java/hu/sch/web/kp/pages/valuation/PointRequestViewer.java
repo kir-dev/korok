@@ -34,6 +34,7 @@ import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
+import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
@@ -59,7 +60,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 public class PointRequestViewer extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
-    ValuationManagerLocal ertekelesManager;
+    ValuationManagerLocal valuationManager;
 
     public PointRequestViewer(final Valuation val) {
 
@@ -91,6 +92,11 @@ public class PointRequestViewer extends SecuredPageTemplate {
                 item.add(new Label("point"));
             }
         };
+
+        ValuationStatistic stat = valuationManager.getStatisticForValuation(val.getId());
+        add(new Label("stat.averagePoint", stat.getAveragePoint().toString()));
+        add(new Label("stat.sumPoint", stat.getSummaPoint().toString()));
+
 //        Form considerForm = new ConsiderForm("considerForm") {
 //
 //            @Override
@@ -119,7 +125,7 @@ public class PointRequestViewer extends SecuredPageTemplate {
 
     private List<PointRequest> prepareRequests(Valuation ert) {
         List<User> activeMembers = userManager.getCsoporttagokWithoutOregtagok(ert.getGroup().getId());
-        List<PointRequest> requests = ertekelesManager.findPontIgenyekForErtekeles(ert.getId());
+        List<PointRequest> requests = valuationManager.findPontIgenyekForErtekeles(ert.getId());
 
         //tagok és igények összefésülése
         if (requests.isEmpty()) {

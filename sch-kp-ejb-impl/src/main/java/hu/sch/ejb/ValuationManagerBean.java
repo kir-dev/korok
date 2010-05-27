@@ -111,6 +111,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         sortMapForErtekelesLista.put("belepoStatusz", "v.entrantStatus DESC");
     }
 
+    @Override
     public void createErtekeles(Valuation ertekeles) {
         em.persist(ertekeles);
         em.flush();
@@ -128,6 +129,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
     }
 
+    @Override
     public List<ValuationStatistic> getStatisztikaForErtekelesek(List<Long> ertekelesId) {
         String ids = StringUtils.join(ertekelesId.iterator(), ", ");
         Query q = em.createQuery(statisztikaQuery + "WHERE v.id in (" + ids + ")");
@@ -135,6 +137,14 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return q.getResultList();
     }
 
+    @Override
+    public ValuationStatistic getStatisticForValuation(Long valuationId) {
+        Query q = em.createQuery(statisztikaQuery + "WHERE v.id = " + valuationId);
+
+        return (ValuationStatistic) q.getSingleResult();
+    }
+
+    @Override
     public List<ValuationStatistic> findErtekelesStatisztikaForSzemeszter(Semester szemeszter) {
         return findErtekelesStatisztikaForSzemeszter(szemeszter, defaultSortColumnForErtekelesLista);
     }
@@ -150,6 +160,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<ValuationStatistic> findElbiralatlanErtekelesStatisztika() {
         Query q = em.createQuery(statisztikaQuery + "WHERE v.semester=:semester "
                 + "AND (v.pointStatus=:pointStatus OR v.entrantStatus=:entrantStatus)");
