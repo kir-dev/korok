@@ -30,6 +30,7 @@
  */
 package hu.sch.ejb;
 
+import hu.sch.domain.GivenPoint;
 import hu.sch.domain.ValuationData;
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
@@ -620,5 +621,14 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
         val.setLastModified(new Date());
         em.merge(val);
+    }
+
+    @Override
+    public List<GivenPoint> getPointsForKfbExport(Semester semester) {
+        Query q = em.createNamedQuery(GivenPoint.getDormitoryPoints);
+        q.setParameter("semester", semester.getId());
+        q.setParameter("prevSemester", semester.getPrevious().getId());
+
+        return q.getResultList();
     }
 }

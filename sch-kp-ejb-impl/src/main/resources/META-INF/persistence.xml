@@ -39,6 +39,7 @@
         <!-- ez fontos, mert a kulon .jar csomag miatt nem talalja meg magatol -->
         <class>hu.sch.domain.EntrantRequest</class>
         <class>hu.sch.domain.EntrantType</class>
+        <class>hu.sch.domain.GivenPoint</class>
         <class>hu.sch.domain.Group</class>
         <class>hu.sch.domain.GroupStatus</class>
         <class>hu.sch.domain.Membership</class>

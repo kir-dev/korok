@@ -38,6 +38,7 @@ import hu.sch.web.wicket.components.customlinks.CsvReportLink;
 import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
 import hu.sch.web.kp.pages.svie.SvieUserMgmt;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.wicket.components.customlinks.CsvExportForKfbLink;
 import java.util.Arrays;
 import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
@@ -180,7 +181,8 @@ public class EditSettings extends SecuredPageTemplate {
             super(id, markupId, null, null);
             add(new BookmarkablePageLink<SvieUserMgmt>("userMgmt", SvieUserMgmt.class));
             add(new BookmarkablePageLink<SvieGroupMgmt>("groupMgmt", SvieGroupMgmt.class));
-            add(new CsvReportLink("csvPanel"));
+            add(new CsvReportLink("csvReport"));
+            add(new CsvExportForKfbLink("csvExport"));
         }
     }
 

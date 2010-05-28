@@ -37,6 +37,7 @@ import hu.sch.domain.Semester;
 import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.ApprovedEntrant;
+import hu.sch.domain.GivenPoint;
 import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.User;
@@ -214,4 +215,6 @@ public interface ValuationManagerLocal {
     Valuation findValuations(Long valuationId);
 
     void updateValuation(Long valuationId, String text);
+
+    List<GivenPoint> getPointsForKfbExport(Semester semester);
 }
