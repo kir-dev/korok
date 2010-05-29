@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.user;
 
 import hu.sch.domain.EntrantRequest;
@@ -147,11 +146,11 @@ public class UserHistory extends SecuredPageTemplate {
 
         add(ddc);
 
-		List<SemesterPoint> semesterPoints = new ArrayList<SemesterPoint>();
-		for (Semester s : userManager.getAllValuatedSemesterForUser(user)) {
-			semesterPoints.add(new SemesterPoint(s, userManager.getSemesterPointForUser(user, s)));
-		}
-        
+        List<SemesterPoint> semesterPoints = new ArrayList<SemesterPoint>();
+        for (Semester s : userManager.getAllValuatedSemesterForUser(user)) {
+            semesterPoints.add(new SemesterPoint(s, userManager.getSemesterPointForUser(user, s)));
+        }
+
         // megjelenítés...
         ListView<SemesterPoint> splv = new ListView<SemesterPoint>("semesterPointList", semesterPoints) {
 
@@ -191,15 +190,7 @@ public class UserHistory extends SecuredPageTemplate {
         add(plv);
 
         // Belépő igények táblázat
-        List<EntrantRequest> origEntrantRequests = userManager.getBelepoIgenyekForUser(user);
-
-        // csak az elfogadott belépők legyenek megjelenítve
-        ArrayList<EntrantRequest> entrantRequests = new ArrayList();
-        for (EntrantRequest entrantRequest : origEntrantRequests) {
-            if (entrantRequest.getValuation().getEntrantStatus().equals(ValuationStatus.ELFOGADVA)) {
-                entrantRequests.add(entrantRequest);
-            }
-        }
+        List<EntrantRequest> entrantRequests = userManager.getBelepoIgenyekForUser(user);
 
         if (selected != null) {
             // szűrés adott csoportra
