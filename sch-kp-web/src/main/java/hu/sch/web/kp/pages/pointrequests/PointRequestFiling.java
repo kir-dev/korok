@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.pointrequests;
 
 import hu.sch.domain.Valuation;
@@ -37,6 +36,7 @@ import hu.sch.domain.PointRequest;
 import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -96,6 +96,8 @@ public class PointRequestFiling extends SecuredPageTemplate {
             }
         };
 
+        pointRequestsForm.add(new KeepAliveBehavior());
+
         // Bevitelhez táblázat létrehozása
         ListView<PointRequest> listView = new ListView<PointRequest>("requestList", requestList) {
 
@@ -126,6 +128,7 @@ public class PointRequestFiling extends SecuredPageTemplate {
                 //olyan validátor, ami akkor dob hibát ha 0 és 5 pont között adott meg
                 pont.add(new IValidator<Integer>() {
 
+                    @Override
                     public void validate(IValidatable<Integer> arg0) {
                         final Integer pont = arg0.getValue();
                         if (0 < pont && pont < 5) {

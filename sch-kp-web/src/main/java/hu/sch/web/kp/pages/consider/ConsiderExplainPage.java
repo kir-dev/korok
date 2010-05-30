@@ -28,12 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.consider;
 
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
@@ -71,6 +71,7 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
                 }
             }
         };
+        considerForm.add(new KeepAliveBehavior());
 
         considerForm.add(new ListView<ConsideredValuation>("consideredValuation", underConsider) {
 

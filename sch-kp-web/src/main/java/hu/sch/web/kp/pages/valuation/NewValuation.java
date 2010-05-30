@@ -33,6 +33,7 @@ package hu.sch.web.kp.pages.valuation;
 import hu.sch.domain.Group;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.TinyMCEContainer;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
@@ -89,6 +90,7 @@ public class NewValuation extends SecuredPageTemplate {
                 return;
             }
         };
+        newValuationForm.add(new KeepAliveBehavior());
 
         TinyMCEContainer tinyMce = new TinyMCEContainer("valuationText", new PropertyModel<String>(this, "valuationText"), true);
         newValuationForm.add(tinyMce);

@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.entrantrequests;
 
 import hu.sch.domain.EntrantRequest;
@@ -38,6 +37,7 @@ import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.wicket.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -55,7 +55,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 public class EntrantRequestExplanation extends SecuredPageTemplate {
 
     @EJB(name = "ErtekelesManagerBean")
-    ValuationManagerLocal ertekelesManager;
+    ValuationManagerLocal valuationManager;
 
     public EntrantRequestExplanation(final Valuation ert, final List<EntrantRequest> igenyek) {
         List<EntrantRequest> indoklando = kellIndoklas(igenyek);
@@ -66,7 +66,7 @@ public class EntrantRequestExplanation extends SecuredPageTemplate {
             @Override
             protected void onSubmit() {
 
-                if (ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenyek)) {
+                if (valuationManager.belepoIgenyekLeadasa(ert.getId(), igenyek)) {
                     getSession().info(getLocalizer().getString("info.BelepoIgenylesMentve", this));
                     //getSession().info("Belépőigények elmentve");
                     setResponsePage(Valuations.class);
@@ -80,6 +80,7 @@ public class EntrantRequestExplanation extends SecuredPageTemplate {
 
             }
         };
+        indoklasform.add(new KeepAliveBehavior());
 
         DataView<EntrantRequest> dview = new DataView<EntrantRequest>("indoklas", new ListDataProviderCompoundPropertyModelImpl<EntrantRequest>(indoklando)) {
 
