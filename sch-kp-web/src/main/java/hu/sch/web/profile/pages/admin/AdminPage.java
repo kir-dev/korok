@@ -48,9 +48,12 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -96,10 +99,10 @@ public class AdminPage extends ProfilePage {
             public void onInit() {
                 super.onInit();
 
-                TextField neptunTF = (TextField) new TextField("neptun").setRequired(true);
+                final TextField neptunTF = (TextField) new TextField("neptun").setRequired(false);
                 neptunTF.add(new ValidationStyleBehavior());
                 add(neptunTF);
-                neptunTF.setLabel(new Model<String>("Neptun *"));
+                neptunTF.setLabel(new Model<String>("Neptun"));
                 add(new ValidationSimpleFormComponentLabel("neptunInputLabel", neptunTF));
 
                 TextField virIdTF = new TextField("virId");
@@ -134,12 +137,30 @@ public class AdminPage extends ProfilePage {
                         return l;
                     }
                 };
-                DropDownChoice<KeyValuePairInForm> studentStatusDropDownChoice = new DropDownChoice<KeyValuePairInForm>("studentStatus", studentStatus);
+                final DropDownChoice<KeyValuePairInForm> studentStatusDropDownChoice = new DropDownChoice<KeyValuePairInForm>("studentStatus", studentStatus);
                 studentStatusDropDownChoice.setNullValid(true);
                 studentStatusDropDownChoice.setChoiceRenderer(new DropDownChoiceRenderer());
                 add(studentStatusDropDownChoice);
                 studentStatusDropDownChoice.setLabel(new Model<String>("Hallgatói státusz"));
                 add(new SimpleFormComponentLabel("studentStatusLabel", studentStatusDropDownChoice));
+
+                // a neptun kód ne legyen kötelező, ha a hallgatói státusz egyéb
+                add(new AbstractFormValidator() {
+
+                    @Override
+                    public FormComponent<?>[] getDependentFormComponents() {
+                        return new FormComponent[]{neptunTF, studentStatusDropDownChoice};
+                    }
+
+                    @Override
+                    public void validate(Form<?> form) {
+                        if (neptunTF.getValue().isEmpty()
+                                && (studentStatusDropDownChoice.getValue().equals("active")
+                                || studentStatusDropDownChoice.getValue().equals("graduated"))) {
+                            error(neptunTF, "reg.err.neptunNelkuliAktiv");
+                        }
+                    }
+                });
             }
 
             @Override
@@ -157,11 +178,13 @@ public class AdminPage extends ProfilePage {
 
     private static class DropDownChoiceRenderer implements IChoiceRenderer<Object> {
 
+        @Override
         public Object getDisplayValue(Object object) {
             KeyValuePairInForm status = (KeyValuePairInForm) object;
             return status.getValue();
         }
 
+        @Override
         public String getIdValue(Object object, int index) {
             return object.toString();
         }

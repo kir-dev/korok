@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.template;
 
 import java.io.Serializable;
@@ -39,11 +38,13 @@ import hu.sch.web.profile.pages.birthday.BirthDayPage;
 import hu.sch.web.profile.pages.edit.EditPage;
 import hu.sch.web.profile.pages.passwordchange.ChangePasswordPage;
 import javax.ejb.EJB;
+import org.apache.wicket.Application;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.WebRequest;
 
 /**
  *
@@ -51,9 +52,16 @@ import org.apache.wicket.model.Model;
  */
 public abstract class ProfilePage extends WebPage {
 
+    private static boolean isDevMode = false;
     @EJB(name = "LdapManagerBean")
     protected LdapManagerLocal ldapManager;
     private Label headerLabel;
+
+    static {
+        if (!Application.get().getConfigurationType().equalsIgnoreCase("deployment")) {
+            isDevMode = true;
+        }
+    }
 
     public ProfilePage() {
 
@@ -66,13 +74,17 @@ public abstract class ProfilePage extends WebPage {
     }
 
     protected String getUid() {
-        //return ((WebRequest) getRequest()).getHttpServletRequest().getRemoteUser();
-        return "aldaris";
+        if (isDevMode) {
+            return "aldaris";
+        }
+        return ((WebRequest) getRequest()).getHttpServletRequest().getRemoteUser();
     }
 
     public boolean isCurrentUserAdmin() {
-        //return ((WebRequest) getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
-        return true;
+        if (isDevMode) {
+            return true;
+        }
+        return ((WebRequest) getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
     }
 
     public void setHeaderLabelText(String text) {
