@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.User;
@@ -37,39 +36,27 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 
 /**
+ * Egyszerű panel, ami egy {@link BookmarkablePageLink}et tartalmaz, ami a
+ * felhasználót leíró oldalra mutat.
  *
- * @author hege
+ * @author  hege
+ * @author  messo
+ * @see     ShowUser
  */
 public class UserLink extends Panel {
 
     public UserLink(String id, User user) {
-        super(id, new CompoundPropertyModel(user));
-        init();
-    }
+        super(id, new CompoundPropertyModel<User>(user));
 
-    private void init() {
-        final User felh = (User) getDefaultModelObject();
-        if (felh != null) {
-            add(new NotNullFragment("displayFragment", "notnull", felh.getId(), felh.getName()));
-        } else {
-            add(new Fragment("displayFragment", "null", null, null));
-        }
+        Link<ShowUser> l = new BookmarkablePageLink<ShowUser>("link", ShowUser.class,
+                new PageParameters("id=" + user.getId()));
+        l.add(new Label("name", user.getName()));
 
-    }
-
-    private class NotNullFragment extends Fragment {
-
-        public NotNullFragment(String id, String markupId, Long userId, String userName) {
-            super(id, markupId, null, null);
-            Link fl = new BookmarkablePageLink("felhLink", ShowUser.class, new PageParameters("id=" + userId));
-            fl.setModel(getDefaultModel());
-            fl.add(new Label("name", userName));
-            add(fl);
-        }
+        add(l);
     }
 }
