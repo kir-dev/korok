@@ -43,6 +43,7 @@ public class RegistrationPage extends SecuredPageTemplate {
 
     public RegistrationPage() {
         setHeaderLabelText("Regisztráció");
+        createNavbarWithSupportId(33);
         if (getRemoteUser() != null) {
             getSession().error("Már be vagy jelentkezve, miért is szeretnél újra regisztrálni?");
             throw new RestartResponseException(getApplication().getHomePage());
