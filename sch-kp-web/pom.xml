@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>javaee-inject</artifactId>
-            <version>1.4.7-SNAPSHOT</version>
+            <version>${wicketstuff.version}</version>
         </dependency>
         <dependency>
             <groupId>wicket-tree</groupId>
@@ -103,7 +103,7 @@
         <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>tinymce</artifactId>
-            <version>1.4.7-SNAPSHOT</version>
+            <version>${wicketstuff.version}</version>
         </dependency>
         <!-- Logoláshoz függőségek -->
         <dependency>
@@ -138,5 +138,6 @@
     </dependencies>
     <properties>
         <wicket.version>1.4.8</wicket.version>
+        <wicketstuff.version>1.4.8</wicketstuff.version>
     </properties>
 </project>
