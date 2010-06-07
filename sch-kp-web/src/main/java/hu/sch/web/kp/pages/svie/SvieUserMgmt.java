@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.svie;
 
 import hu.sch.domain.SvieStatus;
@@ -53,6 +52,7 @@ import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFal
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -92,24 +92,29 @@ public final class SvieUserMgmt extends SecuredPageTemplate {
         List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
         columns.add(new AbstractColumn<User>(new Model<String>("Név"), "name") {
 
+            @Override
             public void populateItem(Item<ICellPopulator<User>> cellItem, String componentId, IModel<User> rowModel) {
                 cellItem.add(new UserLink(componentId, rowModel.getObject()));
             }
         });
         columns.add(new AbstractColumn<User>(new Model<String>("Tagság típusa"), "svieMembershipType") {
 
+            @Override
             public void populateItem(Item<ICellPopulator<User>> cellItem, String componentId, IModel<User> rowModel) {
                 cellItem.add(new MembershipTypeChooser(componentId, rowModel.getObject()));
             }
         });
         columns.add(new AbstractColumn<User>(new Model<String>("Tagság állapota")) {
 
+            @Override
             public void populateItem(Item<ICellPopulator<User>> cellItem, String componentId, IModel<User> rowModel) {
                 cellItem.add(new SvieStatusChooser(componentId, rowModel.getObject()));
             }
         });
+        columns.add(new PropertyColumn<User>(new Model<String>("Elsődleges kör"), "sviePrimaryMembershipText"));
         columns.add(new AbstractColumn<User>(new Model<String>("Felvételi kérvény")) {
 
+            @Override
             public void populateItem(Item<ICellPopulator<User>> cellItem, String componentId,
                     IModel<User> model) {
                 User user = model.getObject();
