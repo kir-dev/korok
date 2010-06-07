@@ -31,91 +31,43 @@
 package hu.sch.domain;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 /**
+ * Egy felhasználó értékelését jellemzi (pont- és belépőkérelem)
  *
- * @author hege
+ * @author  messo
+ * @since   2.3.1
+ * @see     PointRequest
+ * @see     EntrantRequest
  */
-@Entity
-@Table(name = "pontigenyles")
-public class PointRequest implements Serializable {
+public class ValuationData implements Serializable {
 
-    protected Long id;
-    protected Valuation valuation;
-    protected Integer point;
     protected User user;
-    private Long userId;
+    protected PointRequest pReq;
+    protected EntrantRequest eReq;
 
-    public PointRequest() {
-        point = 0;
-    }
-
-    public PointRequest(User user, Integer point) {
-        this.point = point;
+    public ValuationData(User user, PointRequest pointRequest, EntrantRequest entrantRequest) {
         this.user = user;
+        this.pReq = pointRequest;
+        this.eReq = entrantRequest;
+
+        if (pReq == null) {
+            pReq = new PointRequest();
+        }
+        if (eReq == null) {
+            eReq = new EntrantRequest();
+        }
     }
 
-    @ManyToOne
-    @JoinColumn(name = "ertekeles_id", nullable = false)
-    public Valuation getValuation() {
-        return valuation;
-    }
-
-    public void setValuation(Valuation valuation) {
-        this.valuation = valuation;
-    }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Column(name = "pont")
-    public Integer getPoint() {
-        return point;
-    }
-
-    public void setPoint(Integer point) {
-        this.point = point;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usr_id")
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public EntrantRequest getEntrantRequest() {
+        return eReq;
     }
 
-    /**
-     * Felhasználó ID-ja akié a pontkérelem. Azért kell nekünk egy ilyen külön,
-     * mert ha nem akarjuk lekérni a User objektumot, akkor is kíváncsiak lehetünk
-     * az ID-ra, amit fel tudunk használni.
-     *
-     * @return  felhasználó azonosítója, akié a pontkérelem.
-     */
-    @Column(name = "usr_id", insertable = false, updatable = false)
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public PointRequest getPointRequest() {
+        return pReq;
     }
 }

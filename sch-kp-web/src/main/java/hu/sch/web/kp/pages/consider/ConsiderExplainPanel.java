@@ -31,61 +31,63 @@
 package hu.sch.web.kp.pages.consider;
 
 import hu.sch.domain.ConsideredValuation;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
-import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.kp.pages.valuation.ValuationMessages;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
-import java.util.List;
-import javax.ejb.EJB;
-import org.apache.wicket.markup.html.basic.Label;
+import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 /**
+ * Elbíráló panel (pont/belépő elfogadás/elutasítás, indoklással)
  *
- * @author hege
+ * @author  messo
+ * @since   2.3.1
  */
-public class ConsiderExplainPage extends SecuredPageTemplate {
+public abstract class ConsiderExplainPanel extends Panel {
 
-    @EJB(name = "ValuationManagerBean")
-    ValuationManagerLocal valuationManager;
+    ConsideredValuation underConsider;
 
-    public ConsiderExplainPage(final List<ConsideredValuation> underConsider) {
+    public ConsiderExplainPanel(String id, ConsideredValuation underConsider) {
+        super(id);
+        this.underConsider = underConsider;
+
+        initComponents();
+    }
+
+    void initComponents() {
         add(new FeedbackPanel("pagemessages"));
-        setHeaderLabelText("Elbírálás indoklása");
 
-        Form considerForm = new Form("considerExplainForm") {
+        Form<ConsideredValuation> considerForm;
+
+        // Mentés
+        add(considerForm = new Form<ConsideredValuation>("considerExplainForm") {
 
             @Override
             protected void onSubmit() {
-                if (valuationManager.ErtekeleseketElbiral(underConsider, getUser())) {
-                    getSession().info("Az elbírálás sikeres volt.");
-                    setResponsePage(ConsiderPage.class);
-                } else {
-                    getSession().error("Minden elutasított értékeléshez kell indoklást mellékelni!");
-                }
+                ConsiderExplainPanel.this.onSubmit(underConsider);
             }
-        };
+        });
         considerForm.add(new KeepAliveBehavior());
 
-        considerForm.add(new ListView<ConsideredValuation>("consideredValuation", underConsider) {
+        // Üzenetek megtekintése
+        considerForm.add(new Link<ValuationMessages>("messages") {
 
             @Override
-            protected void populateItem(ListItem<ConsideredValuation> item) {
-                final ConsideredValuation cv = item.getModelObject();
-                item.setModel(new CompoundPropertyModel<ConsideredValuation>(cv));
-                item.add(new Label("valuation.group.name"));
-                item.add(new Label("pointStatus"));
-                item.add(new Label("entrantStatus"));
-                FormComponent ta = new TextArea("explanation");
-                item.add(ta);
+            public void onClick() {
+                setResponsePage(new ValuationMessages(underConsider.getValuation().getId()));
             }
         });
 
-        add(considerForm);
+        // Elbírálás - indoklás
+        considerForm.setModel(new CompoundPropertyModel<ConsideredValuation>(underConsider));
+        considerForm.add(new ValuationStatusChooser("pointStatus"));
+        considerForm.add(new ValuationStatusChooser("entrantStatus"));
+        considerForm.add(new TextArea<String>("explanation"));
     }
+
+    public abstract void onSubmit(ConsideredValuation underConsider);
 }

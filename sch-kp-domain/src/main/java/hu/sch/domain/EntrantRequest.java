@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -36,6 +35,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,8 +57,10 @@ public class EntrantRequest implements Serializable {
     protected String valuationText;
     protected EntrantType entrantType;
     protected User user;
+    private Long userId;
 
     public EntrantRequest() {
+        entrantType = EntrantType.KDO;
     }
 
     public EntrantRequest(User user, EntrantType entrantType) {
@@ -96,7 +98,7 @@ public class EntrantRequest implements Serializable {
         this.valuation = valuation;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usr_id")
     public User getUser() {
         return user;
@@ -106,6 +108,22 @@ public class EntrantRequest implements Serializable {
         this.user = user;
     }
 
+    /**
+     * Felhasználó ID-ja akié a belépőkérelem. Azért kell nekünk egy ilyen külön,
+     * mert ha nem akarjuk lekérni a User objektumot, akkor is kíváncsiak lehetünk
+     * az ID-ra, amit fel tudunk használni.
+     *
+     * @return  felhasználó azonosítója, akié a belépőkérelem.
+     */
+    @Column(name = "usr_id", insertable = false, updatable = false)
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096)
     public String getValuationText() {
         return valuationText;
@@ -113,5 +131,10 @@ public class EntrantRequest implements Serializable {
 
     public void setValuationText(String valuationText) {
         this.valuationText = valuationText;
+    }
+
+    @Override
+    public String toString() {
+        return "EntrantRequest: " + entrantType + " (" + valuationText + ")";
     }
 }
