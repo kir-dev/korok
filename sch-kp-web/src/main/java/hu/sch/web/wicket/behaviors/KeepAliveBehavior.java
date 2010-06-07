@@ -37,7 +37,8 @@ import org.apache.wicket.util.time.Duration;
 /**
  * Egy olyan Behavior, ami lehetővé teszi, hogy időnként megpingeljük a servert, így
  * a kritikus helyeken, ahol erre szükség van, nem járhat le a session.
- * Lásd: http://chillenious.wordpress.com/2007/06/19/how-to-create-a-text-area-with-a-heart-beat-with-wicket/
+ * 
+ * @see <a href="http://chillenious.wordpress.com/2007/06/19/how-to-create-a-text-area-with-a-heart-beat-with-wicket/">How to create a text area with a heart beat with Wicket</a>
  */
 public class KeepAliveBehavior extends AbstractAjaxTimerBehavior {
 
