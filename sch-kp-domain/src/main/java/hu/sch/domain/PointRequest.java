@@ -28,12 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package hu.sch.domain;
 
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -53,10 +53,8 @@ public class PointRequest implements Serializable {
     protected Valuation valuation;
     protected Integer point;
     protected User user;
-    private Long userId;
 
     public PointRequest() {
-        point = 0;
     }
 
     public PointRequest(User user, Integer point) {
@@ -93,7 +91,7 @@ public class PointRequest implements Serializable {
         this.point = point;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "usr_id")
     public User getUser() {
         return user;
@@ -101,21 +99,5 @@ public class PointRequest implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    /**
-     * Felhasználó ID-ja akié a pontkérelem. Azért kell nekünk egy ilyen külön,
-     * mert ha nem akarjuk lekérni a User objektumot, akkor is kíváncsiak lehetünk
-     * az ID-ra, amit fel tudunk használni.
-     *
-     * @return  felhasználó azonosítója, akié a pontkérelem.
-     */
-    @Column(name = "usr_id", insertable = false, updatable = false)
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

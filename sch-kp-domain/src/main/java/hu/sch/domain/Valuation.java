@@ -28,6 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -35,7 +36,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -92,8 +92,6 @@ public class Valuation implements Serializable {
     protected Date lastModified;
     protected List<EntrantRequest> entrantRequests;
     protected List<PointRequest> pointRequests;
-    protected Set<EntrantRequest> entrantRequestsAsSet;
-    protected Set<PointRequest> pointRequestsAsSet;
     protected List<ValuationMessage> messages;
     protected Float averagePoint;
 
@@ -186,7 +184,6 @@ public class Valuation implements Serializable {
         this.pointStatus = pointStatus;
     }
 
-    @Deprecated
     @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
     public List<EntrantRequest> getEntrantRequests() {
         return entrantRequests;
@@ -197,31 +194,12 @@ public class Valuation implements Serializable {
     }
 
     @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
-    public Set<EntrantRequest> getEntrantRequestsAsSet() {
-        return entrantRequestsAsSet;
-    }
-
-    public void setEntrantRequestsAsSet(Set<EntrantRequest> entrantRequestsAsSet) {
-        this.entrantRequestsAsSet = entrantRequestsAsSet;
-    }
-
-    @Deprecated
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
     public List<PointRequest> getPointRequests() {
         return pointRequests;
     }
 
     public void setPointRequests(List<PointRequest> pointRequests) {
         this.pointRequests = pointRequests;
-    }
-
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
-    public Set<PointRequest> getPointRequestsAsSet() {
-        return pointRequestsAsSet;
-    }
-
-    public void setPointRequestsAsSet(Set<PointRequest> pointRequestsAsSet) {
-        this.pointRequestsAsSet = pointRequestsAsSet;
     }
 
     @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096, nullable = false)
@@ -275,7 +253,6 @@ public class Valuation implements Serializable {
             Collections.sort(this.getMessages(),
                     new Comparator<ValuationMessage>() {
 
-                        @Override
                         public int compare(ValuationMessage o1, ValuationMessage o2) {
                             return o1.getDate().compareTo(o2.getDate()) * -1;
                         }

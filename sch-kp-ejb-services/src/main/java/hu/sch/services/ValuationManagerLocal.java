@@ -28,6 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package hu.sch.services;
 
 import hu.sch.domain.EntrantRequest;
@@ -37,7 +38,6 @@ import hu.sch.domain.Semester;
 import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.ApprovedEntrant;
-import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.User;
 import java.util.Collection;
@@ -174,14 +174,6 @@ public interface ValuationManagerLocal {
      * @return Értékeléshez tartozó pontigények
      */
     List<PointRequest> findPontIgenyekForErtekeles(Long ertekelesId);
-
-    /**
-     * Adott értékeléshez kapcsolódó pont és belépőigényeket adja vissza
-     *
-     * @param valuationId
-     * @return Értékeléshez tartozó kombinált igények (pont és belépő)
-     */
-    List<ValuationData> findRequestsForValuation(Long valuationId);
 
     /**
      * Az adott értékelésekhez kapcsolódó statisztikát adja vissza

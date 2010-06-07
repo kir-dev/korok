@@ -212,14 +212,6 @@ input.btn {
     height: 22px;
     padding: 0 7px 3px 7px;
 }
-a.btn-like {
-    font: bold 14px verdana, arial, sans;
-    color: #ffffff;
-    background: #517D9D;
-    border: 1px solid #345F7D;
-    height: 22px;
-    padding: 1px 7px 2px 7px;
-}
 form label {
     display: block;
     float: left;

@@ -30,7 +30,6 @@
  */
 package hu.sch.ejb;
 
-import hu.sch.domain.ValuationData;
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Group;
@@ -50,7 +49,6 @@ import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -119,7 +117,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         em.flush();
     }
 
-    @Override
     public Valuation findErtekeles(Group csoport, Semester szemeszter) {
         Query q = em.createNamedQuery(Valuation.findBySemesterAndGroup);
         q.setParameter("semester", szemeszter);
@@ -152,7 +149,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return findErtekelesStatisztikaForSzemeszter(szemeszter, defaultSortColumnForErtekelesLista);
     }
 
-    @Override
     public List<ValuationStatistic> findErtekelesStatisztikaForSzemeszter(Semester szemeszter, String sortColumn) {
         String sc = sortMapForErtekelesLista.get(sortColumn);
         if (sc == null) {
@@ -204,7 +200,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    @Override
     public boolean ErtekeleseketElbiral(Collection<ConsideredValuation> elbiralas, User felhasznalo) {
         for (ConsideredValuation ee : elbiralas) {
 
@@ -257,7 +252,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return true;
     }
 
-    @Override
     public void Uzen(Long ertekelesId, User uzeno, String uzenetStr) {
         Valuation ertekeles = em.find(Valuation.class, ertekelesId);
 
@@ -285,7 +279,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
     }
 
-    @Override
     public Valuation getErtekelesWithUzenetek(Long ertekelesId) {
         Query q = em.createNamedQuery(Valuation.findByIdMessageJoined);
         q.setParameter("id", ertekelesId);
@@ -320,7 +313,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         em.persist(pontIgeny);
     }
 
-    @Override
     public List<Valuation> findErtekeles(Group csoport) {
         Query q = em.createNamedQuery(Valuation.findByGroup);
         q.setParameter("group", csoport);
@@ -328,7 +320,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return q.getResultList();
     }
 
-    @Override
     public List<Valuation> findApprovedValuations(Group group) {
         Query q = em.createQuery("SELECT v FROM Valuation v WHERE v.group=:group "
                 + "AND (v.pointStatus = :approved OR v.pointStatus = :none) "
@@ -341,7 +332,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return q.getResultList();
     }
 
-    @Override
     public void ujErtekeles(Group csoport, User felado, String szovegesErtekeles) {
         Valuation e = new Valuation();
         e.setSender(felado);
@@ -359,7 +349,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         em.persist(e);
     }
 
-    @Override
     public boolean isErtekelesLeadhato(Group csoport) {
         try {
             if (systemManager.getErtekelesIdoszak()
@@ -379,7 +368,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return false;
     }
 
-    @Override
     public void ujErtekelesUzenet(Long ertekelesId, User felado, String uzenet) {
         Valuation e = findErtekelesById(ertekelesId);
         ValuationMessage uz = new ValuationMessage();
@@ -432,7 +420,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     // megmondja, hogy az adott user JETis-e
-    private boolean isJETi(User felhasznalo) {
+    public boolean isJETi(User felhasznalo) {
         List<Group> csoportok = felhasznalo.getGroups();
 
         for (Group csoport : csoportok) {
@@ -444,7 +432,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return false;
     }
 
-    @Override
     public void pontIgenyekLeadasa(Long ertekelesId, List<PointRequest> igenyek) {
         Valuation ertekeles = findErtekelesById(ertekelesId);
         if (ertekeles.getPointStatus().equals(ValuationStatus.ELFOGADVA)) {
@@ -482,7 +469,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         ertekeles.setLastModified(new Date());
     }
 
-    @Override
     public boolean belepoIgenyekLeadasa(Long ertekelesId, List<EntrantRequest> igenyek) {
         Valuation ertekeles = findErtekelesById(ertekelesId);
         if (ertekeles.getEntrantStatus().equals(ValuationStatus.ELFOGADVA)) {
@@ -513,12 +499,10 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return true;
     }
 
-    @Override
     public Valuation findErtekelesById(Long ertekelesId) {
         return em.find(Valuation.class, ertekelesId);
     }
 
-    @Override
     public List<EntrantRequest> findBelepoIgenyekForErtekeles(Long ertekelesId) {
         Query q = em.createQuery("SELECT e FROM EntrantRequest e JOIN FETCH e.user "
                 + "JOIN e.valuation WHERE e.valuation.id=:valuationId "
@@ -528,7 +512,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return q.getResultList();
     }
 
-    @Override
     public List<PointRequest> findPontIgenyekForErtekeles(Long ertekelesId) {
         Query q = em.createQuery("SELECT p FROM PointRequest p JOIN FETCH p.user "
                 + "JOIN p.valuation "
@@ -539,36 +522,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return q.getResultList();
     }
 
-    @Override
-    public List<ValuationData> findRequestsForValuation(Long valuationId) {
-        Query q = em.createQuery("SELECT v FROM Valuation v "
-                + "JOIN FETCH v.pointRequestsAsSet "
-                + "JOIN FETCH v.entrantRequestsAsSet "
-                + "WHERE v.id = :valuationId ");
-        q.setParameter("valuationId", valuationId);
-
-        Valuation v = (Valuation) q.getSingleResult();
-
-        HashMap<Long, PointRequest> pointMap = new HashMap<Long, PointRequest>(v.getPointRequestsAsSet().size());
-        for (PointRequest pReq : v.getPointRequestsAsSet()) {
-            pointMap.put(pReq.getUserId(), pReq);
-        }
-
-        HashMap<Long, EntrantRequest> entrantMap = new HashMap<Long, EntrantRequest>(v.getEntrantRequestsAsSet().size());
-        for (EntrantRequest eReq : v.getEntrantRequestsAsSet()) {
-            entrantMap.put(eReq.getUserId(), eReq);
-        }
-
-        List<User> list = v.getGroup().getActiveMembers();
-        List<ValuationData> result = new ArrayList<ValuationData>(list.size());
-        for (User u : list) {
-            result.add(new ValuationData(u, pointMap.get(u.getId()), entrantMap.get(u.getId())));
-        }
-
-        return result;
-    }
-
-    @Override
     public List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter) {
         Query q = em.createQuery("SELECT new hu.sch.domain.ApprovedEntrant(e.user.neptunCode,"
                 + "e.entrantType) FROM EntrantRequest e "

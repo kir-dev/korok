@@ -28,21 +28,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package hu.sch.web.kp.pages.valuation;
 
-import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.Valuation;
-import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
-import hu.sch.web.kp.pages.consider.ConsiderExplainPanel;
-import hu.sch.web.kp.pages.consider.ConsiderPage;
 import hu.sch.web.wicket.components.TinyMCEContainer;
-import hu.sch.web.wicket.components.tables.ValuationTable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -57,7 +53,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -65,11 +61,8 @@ import org.apache.wicket.model.PropertyModel;
 import wicket.contrib.tinymce.settings.TinyMCESettings;
 
 /**
- * Egy csoporthoz tartozó adott félévhez köthető értékelés teljes megtekintése,
- * statisztikától, pont- és belépőkérelmektől kezdve az elbírálásig.
  *
- * @author  hege
- * @author  messo
+ * @author hege
  */
 public class ValuationDetails extends SecuredPageTemplate {
 
@@ -85,32 +78,52 @@ public class ValuationDetails extends SecuredPageTemplate {
         IModel<Valuation> model = new CompoundPropertyModel<Valuation>(valuation);
 
         setDefaultModel(model);
+        /*Link backlink = new Link("backlink") {
 
-        // Főbb adatok
+        @Override
+        public void onClick() {
+        setResponsePage(prevPage);
+        }
+        };
+        if (prevPage == null) {
+        backlink.setVisible(false);
+        }
+        add(backlink);*/
         add(new Label("group.name"));
-        add(new Label("semester"));
         if (valuation.getSender() != null) {
             add(new UserLink("sender", valuation.getSender()));
         } else {
             add(new Label("sender", "Nincs megadva"));
         }
-        add(DateLabel.forDatePattern("lastModified", "yyyy. MM. dd. kk:mm"));
-        add(DateLabel.forDatePattern("lastConsidered", "yyyy. MM. dd. kk:mm"));
+        add(new Label("semester"));
         add(new Label("entrantStatus"));
         add(new Label("pointStatus"));
 
-        // Staisztika
-        ValuationStatistic stat = valuationManager.getStatisticForValuation(valuation.getId());
+        add(new Link<EntrantRequestViewer>("entrantLink") {
+
+            @Override
+            public void onClick() {
+                setResponsePage(new EntrantRequestViewer(valuation));
+            }
+        });
+        add(new Link<PointRequestViewer>("pointLink") {
+
+            @Override
+            public void onClick() {
+                setResponsePage(new PointRequestViewer(valuation));
+            }
+        });
+
+        List<Long> ids = new ArrayList<Long>();
+        ids.add(valuation.getId());
+        List<ValuationStatistic> statList = valuationManager.getStatisztikaForErtekelesek(ids);
+        ValuationStatistic stat = statList.iterator().next();
         add(new Label("stat.averagePont", new Model<Double>(stat.getAveragePoint())));
         add(new Label("stat.summaPoint", new Model<Long>(stat.getSummaPoint())));
         add(new Label("stat.givenKDO", new Model<Long>(stat.getGivenKDO())));
         add(new Label("stat.givenKB", new Model<Long>(stat.getGivenKB())));
         add(new Label("stat.givenAB", new Model<Long>(stat.getGivenAB())));
 
-        final List<ValuationData> igenylista = valuationManager.findRequestsForValuation(valuation.getId());
-        add(new ValuationTable("requests", igenylista, 20).getDataTable());
-
-        // Szöveges értékelés
         final WebMarkupContainer container = new WebMarkupContainer("container");
         final MultiLineLabel textLabel = new MultiLineLabel("valuationText");
         textLabel.setEscapeModelStrings(false);
@@ -122,6 +135,7 @@ public class ValuationDetails extends SecuredPageTemplate {
                 valuationManager.updateValuation(valuation.getId(), valuation.getValuationText());
                 getSession().info("A féléves értékelés sikeresen frissítve.");
                 setResponsePage(Valuations.class);
+                return;
             }
         };
 
@@ -143,8 +157,7 @@ public class ValuationDetails extends SecuredPageTemplate {
         container.setOutputMarkupId(true);
         add(container);
 
-        AjaxFallbackLink<Void> ajaxLink;
-        container.add(ajaxLink = new AjaxFallbackLink<Void>("modifyText") {
+        AjaxFallbackLink<Void> ajaxLink = new AjaxFallbackLink<Void>("modifyText") {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -154,12 +167,8 @@ public class ValuationDetails extends SecuredPageTemplate {
                     target.addComponent(container);
                 }
             }
-        });
-
-        // Nem szerkeszthet az értékelés szövegén, ha
-        // 1. már nincsen értékelés leadás
-        // 2. egy régebbi félévről származik
-        // 3. ha a pontozást, vagy a belépőkérelmeket elfogadták
+        };
+        container.add(ajaxLink);
         if ((!systemManager.getErtekelesIdoszak().equals(ValuationPeriod.ERTEKELESLEADAS)
                 || !systemManager.getSzemeszter().equals(valuation.getSemester())
                 || (valuation.getPointStatus().equals(ValuationStatus.ELFOGADVA)
@@ -167,26 +176,7 @@ public class ValuationDetails extends SecuredPageTemplate {
             ajaxLink.setVisible(false);
         }
 
-        // Elbírálás
-        if (isCurrentUserJETI()) {
-            ConsideredValuation cv = new ConsideredValuation(valuation);
-            Panel jetifragment = new ConsiderExplainPanel("jeti", cv) {
-
-                @Override
-                public void onSubmit(ConsideredValuation underConsider) {
-                    ArrayList<ConsideredValuation> list = new ArrayList<ConsideredValuation>(1);
-                    list.add(underConsider);
-                    if (valuationManager.ErtekeleseketElbiral(list, getUser())) {
-                        getSession().info("Az elbírálás sikeres volt.");
-                        setResponsePage(ConsiderPage.class);
-                    } else {
-                        getSession().error("Minden elutasított értékeléshez kell indoklást mellékelni!");
-                    }
-                }
-            };
-            add(jetifragment);
-        } else {
-            add(new Label("jeti", ""));
-        }
+        add(DateLabel.forDatePattern("lastModified", "yyyy.MM.dd. kk:mm"));
+        add(DateLabel.forDatePattern("lastConsidered", "yyyy.MM.dd. kk:mm"));
     }
 }
