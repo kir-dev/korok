@@ -45,7 +45,7 @@
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>ERROR</dispatcher>
     </filter-mapping-->
-    
+
     <filter>
         <filter-name>Wicket</filter-name>
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
@@ -53,18 +53,8 @@
             <param-name>applicationClassName</param-name>
             <param-value>hu.sch.web.PhoenixApplication</param-value>
         </init-param>
-        <init-param>
-            <param-name>wicket.configuration</param-name>
-	    <!--<param-value>deployment</param-value>-->
-             <param-value>development</param-value>
-        </init-param>
-        <init-param>
-            <param-name>authorizationComponent</param-name>
-            <!--<param-value>hu.sch.web.authz.AgentBasedAuthorization</param-value>-->
-            <param-value>hu.sch.web.authz.DummyAuthorization</param-value>
-        </init-param>
     </filter>
-    
+
     <filter-mapping>
         <filter-name>Wicket</filter-name>
         <url-pattern>/*</url-pattern>
@@ -82,7 +72,7 @@
             60
         </session-timeout>
     </session-config>
-    
+
     <security-role>
         <role-name>ADMIN</role-name>
     </security-role>

@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -66,7 +65,7 @@ import javax.persistence.Transient;
     @NamedQuery(name = "findUserByNeptunCode",
     query = "SELECT u FROM User u WHERE u.neptunCode = :neptun"),
     @NamedQuery(name = "findUser", query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
-            + "upper(u.emailAddress) = upper(:emailcim)"),
+    + "upper(u.emailAddress) = upper(:emailcim)"),
     @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
 })
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
@@ -276,6 +275,7 @@ public class User implements Serializable, Comparable<User> {
             Collections.sort(this.getMemberships(),
                     new Comparator<Membership>() {
 
+                        @Override
                         public int compare(Membership o1, Membership o2) {
                             if (o1.getEnd() == null ^ o2.getEnd() == null) {
                                 return o1.getEnd() == null ? -1 : 1;
@@ -284,6 +284,23 @@ public class User implements Serializable, Comparable<User> {
                         }
                     });
         }
+    }
+
+    /**
+     * Az elsődleges kör szöveges reprezentációja
+     *
+     * @return  az elsődleges kör neve, ha van, különben egy üres string.
+     */
+    @Transient
+    public String getSviePrimaryMembershipText() {
+        String name = null;
+        if (sviePrimaryMemberhip != null) {
+            name = sviePrimaryMemberhip.getGroup().getName();
+        } else {
+            name = "Nincs megadva";
+        }
+
+        return name;
     }
 
     @Override

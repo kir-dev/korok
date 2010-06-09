@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.consider;
 
 import hu.sch.domain.ConsideredValuation;
@@ -44,6 +43,7 @@ import hu.sch.web.kp.pages.valuation.PointRequestViewer;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -123,6 +123,7 @@ public class ConsiderPage extends SecuredPageTemplate {
                 }
             }
         };
+        form.add(new KeepAliveBehavior());
         add(form);
 
         form.add(new DataView<ValuationStatistic>("valuationList", dp) {

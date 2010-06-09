@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain.config;
 
 import java.io.File;
@@ -37,10 +36,32 @@ import java.util.Properties;
 
 /**
  *
- * @author aldaris
+ * @author  aldaris
  */
 public class Configuration {
 
+    /**
+     * Környezetet leíró enum a finomhangolásért
+     */
+    public enum Environment {
+
+        /**
+         * Fejlesztői környezet, ilyenkor a Wicket is DEV módban van
+         */
+        DEVELOPMENT,
+        /**
+         * Mielőtt kiraknánk a serverre a kész rendszert, szükség lehet arra, hogy
+         * DEV módban menjen a Wicket, de az autorizáció modul már ne a DummyAuthorization
+         * legyen, hanem a rendes AgentBasedAuthorization.
+         */
+        STAGING,
+        /**
+         * A kész publikus verzió mindenképp ilyen környezettel legyen deploy-olva,
+         * mert ilyenkor a wicket már rendesen a DEPLOYMENT-et látja, mint
+         * configurationType.
+         */
+        PRODUCTION
+    };
     private static final String PROPERTY_NAME = "application.resource.dir";
     private static final String SPRINGLDAP_FILE = "springldap.file";
     private static final String TIMES_FONT_FILE = "times.font.file";
@@ -48,6 +69,7 @@ public class Configuration {
     private static final String CONFIG_FILE = "config.properties";
     private static Properties properties = new Properties();
     private static String baseDir;
+    private static Environment environment = null;
 
     static {
         baseDir = System.getProperty(PROPERTY_NAME);
@@ -64,6 +86,23 @@ public class Configuration {
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error while loading properties file!", ex);
         }
+    }
+
+    public static Environment getEnvironment() {
+        if (environment == null) {
+            String env = properties.getProperty("wicket.configuration", "DEVELOPMENT");
+            try {
+                environment = Environment.valueOf(env);
+            } catch (IllegalArgumentException ex) {
+                System.err.println("Illegal 'wicket.configuration' in the config.properties. Fallbacking to DEVELOPMENT.");
+                environment = Environment.DEVELOPMENT;
+            }
+        }
+        return environment;
+    }
+
+    public static String getDevEmail() {
+        return properties.getProperty("devMail");
     }
 
     private Configuration() {

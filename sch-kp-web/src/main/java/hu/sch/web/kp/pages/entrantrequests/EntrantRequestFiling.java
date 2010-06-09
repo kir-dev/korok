@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.entrantrequests;
 
 import hu.sch.domain.EntrantRequest;
@@ -40,6 +39,7 @@ import hu.sch.web.kp.pages.valuation.Valuations;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.wicket.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
@@ -83,6 +83,7 @@ public class EntrantRequestFiling extends SecuredPageTemplate {
                 setResponsePage(Valuations.class);
             }
         };
+        igform.add(new KeepAliveBehavior());
         IDataProvider<EntrantRequest> provider = new ListDataProviderCompoundPropertyModelImpl<EntrantRequest>(igenylista);
         DataView<EntrantRequest> dview = new DataView<EntrantRequest>("igenyek", provider) {
 
