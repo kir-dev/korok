@@ -28,9 +28,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
+import hu.sch.domain.config.Configuration;
+import hu.sch.domain.config.Configuration.Environment;
 import hu.sch.services.MailManagerLocal;
 import java.util.Date;
 import javax.annotation.Resource;
@@ -75,13 +76,14 @@ public class MailManagerBean implements MailManagerLocal {
 
         Message msg = new MimeMessage(mailSession);
         try {
-            // teszt címzés
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("majorpetya@sch.bme.hu", false));
-            // rendes címzés
             if (log.isDebugEnabled()) {
                 log.debug("Eredeti cím: " + to);
             }
-//            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            if (Configuration.getEnvironment() == Environment.DEVELOPMENT
+                    || Configuration.getEnvironment() == Environment.STAGING) {
+                to = Configuration.getDevEmail();
+            }
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
 
             msg.setSubject("[VIR Körök] " + subject);
             msg.setText(message);

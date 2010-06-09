@@ -28,14 +28,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web;
 
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Membership;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.config.Configuration;
+import hu.sch.domain.config.Configuration.Environment;
 import hu.sch.services.TimerServiceLocal;
+import hu.sch.web.authz.AgentBasedAuthorization;
+import hu.sch.web.authz.DummyAuthorization;
 import hu.sch.web.kp.pages.group.EditGroupInfo;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.pages.group.ShowGroup;
@@ -94,9 +96,28 @@ import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
  */
 public class PhoenixApplication extends WebApplication {
 
-    private static final String AUTHZ_COMPONENT_PARAM = "authorizationComponent";
     private static Logger log = Logger.getLogger(PhoenixApplication.class);
     private UserAuthorization authorizationComponent;
+
+    /**
+     * Mivel nem elég a jelenleg támogatott kétféle configurationType
+     * (DEPLOYMENT és DEVELOPMENT), ezért
+     * felüldefiniáljuk ezt a metódust és az {@link Environment}-től függően térünk vissza
+     * az előbbiek valamelyikével.
+     *
+     * @return  DEPLOYMENT vagy DEVELOPMENT
+     */
+    @Override
+    public String getConfigurationType() {
+        Environment env = Configuration.getEnvironment();
+
+        if (env == Environment.DEVELOPMENT || env == Environment.STAGING) {
+            return DEVELOPMENT;
+        } else {
+            // jelenleg csak akkor kell DEPLOYMENT, ha az environment PRODUCTION
+            return DEPLOYMENT;
+        }
+    }
 
     @Override
     public Class<ShowUser> getHomePage() {
@@ -108,15 +129,10 @@ public class PhoenixApplication extends WebApplication {
         addComponentInstantiationListener(new JavaEEComponentInjector(this));
 
         //autorizációs komponens inicializálása
-        String classname = getInitParameter(AUTHZ_COMPONENT_PARAM);
-        try {
-            authorizationComponent = Class.forName(classname).
-                    asSubclass(UserAuthorization.class).newInstance();
-            authorizationComponent.init(this);
-        } catch (Exception ex) {
-            log.fatal("Failed to initialize authorization", ex);
-            throw new IllegalStateException("Cannot instantiate authorization component"
-                    + classname, ex);
+        if (Configuration.getEnvironment() == Environment.DEVELOPMENT) {
+            authorizationComponent = new DummyAuthorization();
+        } else { // ha STAGING vagy PRODUCTION, akkor az AgentBased kell nekünk
+            authorizationComponent = new AgentBasedAuthorization();
         }
 
         //körök linkek
