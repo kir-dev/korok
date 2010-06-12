@@ -80,7 +80,7 @@ public class GroupHistory extends SecuredPageTemplate {
 
         setHeaderLabelText("Időszakválasztás");
         //add(new FeedbackPanel("pagemessages"));
-        add(new BookmarkablePageLink("simpleView", ShowGroup.class, new PageParameters("id=" + id.toString())));
+        add(new BookmarkablePageLink<ShowGroup>("simpleView", ShowGroup.class, new PageParameters("id=" + id.toString())));
 
         group = userManager.findGroupById(id);
         valuationList.clear();
@@ -121,10 +121,10 @@ public class GroupHistory extends SecuredPageTemplate {
 
         add(ddc);
 
-        setDefaultModel(new CompoundPropertyModel(selectedValuation));
+        setDefaultModel(new CompoundPropertyModel<Valuation>(selectedValuation));
 
         valuationPanel = new ValuationDetailPanel("valuationInfo");
-        valuationPanel.updateDatas(selectedValuation);
+        valuationPanel.updateValuation(selectedValuation);
         valuationPanel.setVisible(false);
         add(valuationPanel);
 
@@ -139,7 +139,7 @@ public class GroupHistory extends SecuredPageTemplate {
                 semester = selectedValuation.getSemester();
                 if (semester.toString().equals(selected)) {
                     setHeaderLabelText("A kör részletes pontozásai");
-                    valuationPanel.updateDatas(selectedValuation);
+                    valuationPanel.updateValuation(selectedValuation);
                     valuationPanel.setVisible(true);
                     break;
                 }

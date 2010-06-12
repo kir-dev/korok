@@ -28,50 +28,56 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.web.kp.pages.valuation;
+package hu.sch.domain;
 
-import hu.sch.domain.Valuation;
-import hu.sch.services.ValuationManagerLocal;
-import hu.sch.web.wicket.components.tables.ValuationTable;
-import javax.ejb.EJB;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
+import java.io.Serializable;
 
 /**
- * Egy egyszerű panel, ami megmutatja az értékelés szövegét és a pontokat/belépőket.
+ * Egy felhasználó értékelését jellemzi (pont- és belépőkérelem)
  *
- * @author  aldaris
  * @author  messo
+ * @since   2.3.1
+ * @see     PointRequest
+ * @see     EntrantRequest
  */
-public class ValuationDetailPanel extends Panel {
+public class ValuationData implements Serializable {
 
-    @EJB(name = "ValuationManagerBean")
-    private ValuationManagerLocal valuationManager;
-    private ValuationTable valuationTable;
-    private MultiLineLabel valuationText;
+    protected User user;
+    protected PointRequest pReq;
+    protected EntrantRequest eReq;
 
-    public ValuationDetailPanel(String id) {
-        super(id);
-        generateValuationText();
-        generateTable();
-    }
+    public ValuationData(User user, PointRequest pointRequest, EntrantRequest entrantRequest) {
+        this.user = user;
+        this.pReq = pointRequest;
+        this.eReq = entrantRequest;
 
-    public void generateValuationText() {
-        valuationText = new MultiLineLabel("valuationText");
-        valuationText.setEscapeModelStrings(false);
-        add(valuationText);
-    }
-
-    private void generateTable() {
-        valuationTable = new ValuationTable("valuationTable", null, 20);
-        add(valuationTable.getDataTable());
-    }
-
-    public void updateValuation(Valuation ertekeles) {
-        if (ertekeles != null) {
-            valuationTable.updateList(valuationManager.findRequestsForValuation(ertekeles.getId()));
-            valuationText.setDefaultModel(new Model<String>(ertekeles.getValuationText()));
+        if (pReq == null) {
+            pReq = new PointRequest();
+        }
+        if (eReq == null) {
+            eReq = new EntrantRequest();
         }
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public EntrantRequest getEntrantRequest() {
+        return eReq;
+    }
+
+    public void setEntrantRequest(EntrantRequest eReq) {
+        this.eReq = eReq;
+    }
+
+    public PointRequest getPointRequest() {
+        return pReq;
+    }
+
+    public void setPointRequest(PointRequest pReq) {
+        this.pReq = pReq;
+    }
+
+
 }

@@ -173,14 +173,16 @@ public class Group implements Serializable, Comparable<Group> {
      * Aktív tagságok
      */
     @XmlTransient
-    private List<Membership> activeMembers;
+    private List<Membership> activeMemberships;
     /**
      * Öregtagok
      */
     @XmlTransient
-    private List<Membership> inactiveMembers;
+    private List<Membership> inactiveMemberships;
     @XmlTransient
     private List<Log> logs;
+    @XmlTransient
+    private List<User> activeUsers;
 
     public Group() {
     }
@@ -234,7 +236,7 @@ public class Group implements Serializable, Comparable<Group> {
 
     @Transient
     public User getGroupLeader() {
-        for (Membership ms : activeMembers) {
+        for (Membership ms : activeMemberships) {
             for (Post post : ms.getPosts()) {
                 if (post.getPostType().getPostName().equals(PostType.KORVEZETO)) {
                     return ms.getUser();
@@ -353,17 +355,29 @@ public class Group implements Serializable, Comparable<Group> {
         return members;
     }
 
+    @Transient
+    public List<User> getActiveMembers() {
+        if (members == null) {
+            loadMembers();
+        }
+        return activeUsers;
+    }
+
     private void loadMembers() {
         sortMemberships();
-        members = new ArrayList<User>();
-        activeMembers = new ArrayList<Membership>();
-        inactiveMembers = new ArrayList<Membership>();
-        for (Membership cst : getMemberships()) {
+        List<Membership> list = getMemberships();
+
+        members = new ArrayList<User>(list.size());
+        activeMemberships = new ArrayList<Membership>();
+        inactiveMemberships = new ArrayList<Membership>();
+        activeUsers = new ArrayList<User>(list.size());
+        for (Membership cst : list) {
             members.add(cst.getUser());
             if (cst.getEnd() == null) {
-                activeMembers.add(cst);
+                activeUsers.add(cst.getUser());
+                activeMemberships.add(cst);
             } else {
-                inactiveMembers.add(cst);
+                inactiveMemberships.add(cst);
             }
         }
     }
@@ -373,7 +387,7 @@ public class Group implements Serializable, Comparable<Group> {
         if (members == null) {
             loadMembers();
         }
-        return activeMembers;
+        return activeMemberships;
     }
 
     @Transient
@@ -381,7 +395,7 @@ public class Group implements Serializable, Comparable<Group> {
         if (members == null) {
             loadMembers();
         }
-        return inactiveMembers;
+        return inactiveMemberships;
     }
 
     public void sortMemberships() {
