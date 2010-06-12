@@ -67,7 +67,6 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
                     setResponsePage(ConsiderPage.class);
                 } else {
                     getSession().error("Minden elutasított értékeléshez kell indoklást mellékelni!");
-                    setResponsePage(new ConsiderExplainPage(underConsider));
                 }
             }
         };
