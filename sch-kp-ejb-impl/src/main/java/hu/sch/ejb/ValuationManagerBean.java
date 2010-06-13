@@ -542,10 +542,10 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     @Override
     public List<ValuationData> findRequestsForValuation(Long valuationId) {
         Query q = em.createQuery("SELECT v FROM Valuation v "
-                + "JOIN FETCH v.pointRequestsAsSet p "
-                + "JOIN FETCH p.user pu "
-                + "JOIN FETCH v.entrantRequestsAsSet e "
-                + "JOIN FETCH e.user eu "
+                + "LEFT JOIN FETCH v.pointRequestsAsSet p "
+                + "LEFT JOIN FETCH p.user pu "
+                + "LEFT JOIN FETCH v.entrantRequestsAsSet e "
+                + "LEFT JOIN FETCH e.user eu "
                 + "WHERE v.id = :valuationId ");
         q.setParameter("valuationId", valuationId);
 
@@ -554,7 +554,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         // legjobb esetben ha a size != 0, akkor az összes felhasználónk meglesz
         // és nem kell a map méretén növelni
         int size = v.getEntrantRequestsAsSet().size();
-        if( size == 0 ) {
+        if (size == 0) {
             // ha nincsen belépő kérelem, akkor csak pontok vannak, és annak a mérete elég.
             size = v.getPointRequestsAsSet().size();
         }
@@ -570,7 +570,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         ValuationData vData;
         for (PointRequest pReq : v.getPointRequestsAsSet()) {
             vData = vDataMap.get(pReq.getUserId());
-            if( vData == null ) {
+            if (vData == null) {
                 vDataMap.put(pReq.getUserId(), new ValuationData(pReq.getUser(), pReq, null));
             } else {
                 vData.setPointRequest(pReq);
