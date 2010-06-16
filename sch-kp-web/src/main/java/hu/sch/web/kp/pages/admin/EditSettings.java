@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.admin;
 
 import hu.sch.domain.ValuationPeriod;
@@ -182,7 +181,6 @@ public class EditSettings extends SecuredPageTemplate {
             add(new BookmarkablePageLink<SvieUserMgmt>("userMgmt", SvieUserMgmt.class));
             add(new BookmarkablePageLink<SvieGroupMgmt>("groupMgmt", SvieGroupMgmt.class));
             add(new CsvReportLink("csvReport"));
-            add(new CsvExportForKfbLink("csvExport"));
         }
     }
 
@@ -193,6 +191,7 @@ public class EditSettings extends SecuredPageTemplate {
             add(new BookmarkablePageLink<ShowInactive>("showinactive", ShowInactive.class));
             add(new BookmarkablePageLink<CreateGroup>("createGroup", CreateGroup.class));
             add(new BookmarkablePageLink<CreateNewPerson>("createPerson", CreateNewPerson.class));
+            add(new CsvExportForKfbLink("csvExport"));
         }
     }
 }
