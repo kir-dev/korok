@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.User;
@@ -49,7 +48,7 @@ import org.apache.wicket.util.resource.IResourceStream;
  *
  * @author aldaris
  */
-public final class CsvReportLink extends Panel {
+public final class CsvReportLink extends Link<Void> {
 
     private static Logger logger = Logger.getLogger(CsvReportLink.class);
     @EJB(name = "SvieManagerBean")
@@ -57,26 +56,25 @@ public final class CsvReportLink extends Panel {
 
     public CsvReportLink(String id) {
         super(id);
-        add(new Link<Void>("csvLink") {
+    }
 
-            public void onClick() {
-                try {
-                    IResourceStream resourceStream = new ByteArrayResourceStream(
-                            ((ByteArrayOutputStream) generateContent()).toByteArray(),
-                            "text/csv");
-                    getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
+    @Override
+    public void onClick() {
+        try {
+            IResourceStream resourceStream = new ByteArrayResourceStream(
+                    ((ByteArrayOutputStream) generateContent()).toByteArray(),
+                    "text/csv");
+            getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
 
-                        @Override
-                        public String getFileName() {
-                            return ("export.csv");
-                        }
-                    });
-                } catch (Exception ex) {
-                    getSession().error("Hiba történt a CSV export generálása közben!");
-                    logger.error("Error while generating CSV export about delegates", ex);
+                @Override
+                public String getFileName() {
+                    return ("export.csv");
                 }
-            }
-        });
+            });
+        } catch (Exception ex) {
+            getSession().error("Hiba történt a CSV export generálása közben!");
+            logger.error("Error while generating CSV export about delegates", ex);
+        }
     }
 
     public OutputStream generateContent() throws IOException {
