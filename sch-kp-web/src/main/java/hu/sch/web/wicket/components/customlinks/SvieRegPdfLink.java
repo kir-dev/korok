@@ -71,7 +71,7 @@ public class SvieRegPdfLink extends Panel {
 
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
-    private static Logger log = Logger.getLogger(SvieRegPdfLink.class);
+    private static final Logger logger = Logger.getLogger(SvieRegPdfLink.class);
     private static final long serialVersionUID = 1L;
     private static Image schLogo;
     private static Image signImage;
@@ -146,7 +146,7 @@ public class SvieRegPdfLink extends Panel {
             permissionStatement.setSpacingBefore(15f);
             permissionStatement.setSpacingAfter(15f);
         } catch (Exception ex) {
-            log.warn("Error while creating static content for PDF", ex);
+            logger.warn("Error while creating static content for PDF", ex);
         }
     }
 
@@ -185,7 +185,7 @@ public class SvieRegPdfLink extends Panel {
                     });
                 } catch (Exception ex) {
                     getSession().error("Hiba történt a PDF generálása közben!");
-                    ex.printStackTrace();
+                    logger.error("Could not generate svieregpdf", ex);
                 }
             }
         });

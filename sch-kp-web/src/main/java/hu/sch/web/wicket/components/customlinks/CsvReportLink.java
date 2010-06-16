@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import javax.ejb.EJB;
+import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
@@ -50,6 +51,7 @@ import org.apache.wicket.util.resource.IResourceStream;
  */
 public final class CsvReportLink extends Panel {
 
+    private static Logger logger = Logger.getLogger(CsvReportLink.class);
     @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;
 
@@ -71,7 +73,7 @@ public final class CsvReportLink extends Panel {
                     });
                 } catch (Exception ex) {
                     getSession().error("Hiba történt a CSV export generálása közben!");
-                    ex.printStackTrace();
+                    logger.error("Error while generating CSV export about delegates", ex);
                 }
             }
         });

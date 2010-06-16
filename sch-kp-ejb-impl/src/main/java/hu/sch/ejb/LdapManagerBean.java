@@ -88,7 +88,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     /**
      * A logolashoz szukseges objektum.
      */
-    private static final Logger log = Logger.getLogger(LdapManagerBean.class);
+    private static final Logger logger = Logger.getLogger(LdapManagerBean.class);
     private static final String[] objectClasses = new String[]{
         "top", "schacLinkageIdentifiers", "sunAMAuthAccountLockout", "schacContactLocation",
         "person", "schacPersonalCharacteristics", "inetUser", "inetorgperson",
@@ -312,8 +312,8 @@ public class LdapManagerBean implements LdapManagerLocal {
         Person p = null;
         try {
             p = (Person) getLdapTemplate().lookup(dn, getContextMapper());
-        } catch (Throwable e) {
-            e.printStackTrace();
+        } catch (Throwable t) {
+            logger.error("Could not get person by uid!", t);
         }
 
         if (p == null) {
@@ -536,7 +536,7 @@ public class LdapManagerBean implements LdapManagerLocal {
 
             ldapTemplate.bind(dn, null, attrs);
         } catch (Exception ex) {
-            log.error("Nem sikerült menteni a felhasználót", ex);
+            logger.error("Nem sikerült menteni a felhasználót", ex);
             throw new RuntimeException("nem sikerült létrehozni a felhasználót", ex);
         }
     }

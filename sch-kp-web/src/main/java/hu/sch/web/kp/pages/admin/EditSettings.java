@@ -39,6 +39,7 @@ import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
 import hu.sch.web.kp.pages.svie.SvieUserMgmt;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.Arrays;
+import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -59,6 +60,8 @@ import org.apache.wicket.validation.validator.RangeValidator;
  * @author aldaris
  */
 public class EditSettings extends SecuredPageTemplate {
+
+    private static Logger logger = Logger.getLogger(EditSettings.class);
 
     public EditSettings() {
         //Jogosultságellenőrzés
@@ -128,7 +131,7 @@ public class EditSettings extends SecuredPageTemplate {
                         getSession().info(getLocalizer().getString("info.BeallitasokMentve", this));
                     } catch (Exception e) {
                         getSession().error(getLocalizer().getString("err.BeallitasokFailed", this));
-                        e.printStackTrace();
+                        logger.error("Error while saving settings.", e);
                     }
                 }
             };

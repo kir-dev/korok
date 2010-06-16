@@ -42,6 +42,7 @@ import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
@@ -63,6 +64,7 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class ShowUser extends SecuredPageTemplate {
 
+    private static Logger logger = Logger.getLogger(ShowUser.class);
     private Long id;
     private boolean ownProfile = false;
     private Group addToCsoportSelected;
@@ -178,7 +180,7 @@ public class ShowUser extends SecuredPageTemplate {
         try {
             id = parameters.getLong("id");
         } catch (Throwable t) {
-            t.printStackTrace();
+            logger.warn("Could not interpret pageparameter: " + parameters);
         }
         initComponents();
     }

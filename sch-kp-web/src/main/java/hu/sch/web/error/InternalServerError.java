@@ -48,7 +48,7 @@ import org.apache.wicket.protocol.http.WebRequest;
  */
 public final class InternalServerError extends SecuredPageTemplate {
 
-    private static Logger log = Logger.getLogger(InternalServerError.class);
+    private static Logger logger = Logger.getLogger(InternalServerError.class);
     @EJB(name = "MailManagerBean")
     MailManagerLocal mailManager;
 
@@ -81,7 +81,7 @@ public final class InternalServerError extends SecuredPageTemplate {
             mailManager.sendEmail("jee-dev@sch.bme.hu", "Programhiba", sb.toString());
         } catch (Exception e) {
             e.initCause(ex);
-            log.error("Error while sending the error e-mail!", e);
+            logger.error("Error while sending the error e-mail!", e);
         }
     }
 }
