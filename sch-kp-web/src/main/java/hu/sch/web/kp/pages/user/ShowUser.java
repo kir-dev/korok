@@ -138,7 +138,7 @@ public class ShowUser extends SecuredPageTemplate {
                     }
                 };
                 oldBoyLink.add(new ConfirmationBehavior("Biztosan öregtaggá szeretnél válni?"));
-                if (!ownProfile) {
+                if (!ownProfile || ms.getEnd() != null) {
                     oldBoyLink.setVisible(false);
                 }
                 item.add(oldBoyLink);
