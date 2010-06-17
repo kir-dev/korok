@@ -33,6 +33,7 @@ package hu.sch.domain.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -62,6 +63,7 @@ public class Configuration {
          */
         PRODUCTION
     };
+    private static final Logger logger = Logger.getLogger(Configuration.class);
     private static final String PROPERTY_NAME = "application.resource.dir";
     private static final String SPRINGLDAP_FILE = "springldap.file";
     private static final String TIMES_FONT_FILE = "times.font.file";
@@ -97,6 +99,7 @@ public class Configuration {
                 System.err.println("Illegal 'wicket.configuration' in the config.properties. Fallbacking to DEVELOPMENT.");
                 environment = Environment.DEVELOPMENT;
             }
+            logger.warn("The application is running in " + environment.toString() + " mode!");
         }
         return environment;
     }
