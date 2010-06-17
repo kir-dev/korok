@@ -150,13 +150,13 @@ public final class AgentBasedAuthorization implements UserAuthorization {
     @Override
     public boolean isGroupLeaderInGroup(Request wicketRequest, Group group) {
         List<Long> memberships = parseEntitlements(wicketRequest);
-        if (!memberships.contains(group.getId())) {
-            return false;
+        if (memberships.contains(group.getId())) {
+            return true;
         }
 
-        //Mivel csak körvezetői tagságokat tárolunk, így ha volt találat, akkor az
-        //biztosan körvezetői tagság volt.
-        return true;
+        //Mivel csak körvezetői tagságokat tárolunk, így ha nem volt találat,
+        //akkor a felhasználó biztosan nem körvezető az adott körben.
+        return false;
     }
 
     /**
