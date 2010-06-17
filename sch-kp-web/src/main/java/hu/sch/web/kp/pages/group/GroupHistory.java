@@ -66,7 +66,7 @@ public class GroupHistory extends SecuredPageTemplate {
 
     public GroupHistory() {
         getSession().error("Túl kevés paraméter!");
-        throw new RestartResponseException(GroupHierarchy.class);
+        throw new RestartResponseException(getApplication().getHomePage());
     }
 
     public GroupHistory(PageParameters parameters) {
@@ -75,7 +75,7 @@ public class GroupHistory extends SecuredPageTemplate {
             id = Long.parseLong(p.toString());
         } catch (NumberFormatException e) {
             getSession().error("Érvénytelen paraméter");
-            throw new RestartResponseException(GroupHierarchy.class);
+            throw new RestartResponseException(getApplication().getHomePage());
         }
 
         setHeaderLabelText("Időszakválasztás");
@@ -83,6 +83,11 @@ public class GroupHistory extends SecuredPageTemplate {
         add(new BookmarkablePageLink<ShowGroup>("simpleView", ShowGroup.class, new PageParameters("id=" + id.toString())));
 
         group = userManager.findGroupById(id);
+        if (group == null) {
+            getSession().error("Hibás paraméter, nincs ilyen kör!");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+
         valuationList.clear();
         valuationList.addAll(valuationManager.findErtekeles(group));
         final List<String> semesters = new ArrayList<String>();
