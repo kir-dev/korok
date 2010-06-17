@@ -36,7 +36,6 @@ import hu.sch.domain.User;
 import hu.sch.web.wicket.components.EditDelegatesForm;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
@@ -69,22 +68,13 @@ public final class ChangeDelegates extends SecuredPageTemplate {
         }
 
         setHeaderLabelText("Küldöttek beállítása");
+        add(new FeedbackPanel("pagemessages"));
         add(new Label("numberOfDelegates",
                 (group.getDelegateNumber() == null ? "Nincs beállítva" : Integer.toString(group.getDelegateNumber()))));
         add(new Label("groupName", group.getName()));
 
+
         List<User> users = userManager.getUsersWithPrimaryMembership(groupId);
-        Iterator<User> it = users.iterator();
-        long groupLeaderId = userManager.getGroupLeaderForGroup(groupId).getId();
-        if ((getSession()).getUserId() != groupLeaderId) {
-            log.warn("Illetéktelen hozzáférési kísérlet a küldöttek állításához, felhasználó: " + getSession().getUserId());
-            getSession().error("Ezt az oldalt, csak a kör körvezetője láthatja!");
-            throw new RestartResponseException(ShowGroup.class,
-                    new PageParameters("id=" + groupId.toString()));
-        }
-
-        add(new FeedbackPanel("pagemessages"));
-
         add(new EditDelegatesForm("form", users) {
 
             @Override
