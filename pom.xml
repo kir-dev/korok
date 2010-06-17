@@ -162,11 +162,11 @@
             <url>http://download.java.net/maven/2</url>
         </repository>
         <!-- our repository -->
-        <repository>
+<!--        <repository>
             <id>maszat</id>
             <layout>default</layout>
             <url>http://maszat.sch.bme.hu/maven2</url>
-        </repository>
+        </repository>-->
         <repository>
             <id>wicket-stuff</id>
             <layout>default</layout>
@@ -176,6 +176,10 @@
             <id>wicket-tree</id>
             <name>Wicket-tree Repository</name>
             <url>http://wicket-tree.googlecode.com/svn/repo</url>
+        </repository>
+        <repository>
+            <id>glassfish</id>
+            <url>http://download.java.net/maven/glassfish</url>
         </repository>
     </repositories>
 
