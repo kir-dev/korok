@@ -29,12 +29,15 @@
       <property name="UnknownLength" value="2147483647" />
       <property name="User" value="kir" />
     </jdbc-connection-pool>
-    <jdbc-resource pool-name="schkptest" jndi-name="jdbc/test" />
+    <jdbc-resource pool-name="schkptest" jndi-name="jdbc/sch" />
+    <mail-resource host="localhost" jndi-name="mail/korokMail" from="majorpetya@sch.bme.hu" user="aldaris" />
   </resources>
   <servers>
     <server name="server" config-ref="server-config"> 
       <resource-ref ref="jdbc/__TimerPool" />
       <resource-ref ref="jdbc/__default" />
+      <resource-ref ref="jdbc/sch" />
+      <resource-ref ref="mail/korokMail" />
     </server>
   </servers>
  <configs>

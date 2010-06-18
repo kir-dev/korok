@@ -3,7 +3,7 @@ package hu.sch.ejb;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import hu.sch.services.UserManagerLocal;
+import hu.sch.services.MailManagerLocal;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import org.junit.BeforeClass;
@@ -14,9 +14,9 @@ import static org.junit.Assert.*;
  *
  * @author aldaris
  */
-public class UserManagerTest {
+public class MailManagerTest {
 
-    private static UserManagerLocal userManager;
+    private static MailManagerLocal mailManager;
 
     @BeforeClass
     public static void initialize() {
@@ -25,7 +25,7 @@ public class UserManagerTest {
             properties.put(EJBContainer.MODULES, new File("target/classes"));
             EJBContainer ejb = EJBContainer.createEJBContainer(properties);
             Context ic = ejb.getContext();
-            userManager = (UserManagerLocal) ic.lookup("java:global/classes/UserManagerBean");
+            mailManager = (MailManagerLocal) ic.lookup("java:global/classes/MailManagerBean");
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -33,7 +33,6 @@ public class UserManagerTest {
 
     @Test
     public void doSomething() {
-        assertTrue(userManager != null);
+        assertTrue(mailManager != null);
     }
-
 }
