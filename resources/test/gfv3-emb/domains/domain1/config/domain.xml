@@ -30,7 +30,7 @@
       <property name="User" value="kir" />
     </jdbc-connection-pool>
     <jdbc-resource pool-name="schkptest" jndi-name="jdbc/sch" />
-    <mail-resource host="localhost" jndi-name="mail/korokMail" from="majorpetya@sch.bme.hu" user="aldaris" />
+    <mail-resource host="localhost" jndi-name="mail/korokMail" from="valami@sch.bme.hu" user="aldaris" />
   </resources>
   <servers>
     <server name="server" config-ref="server-config"> 
@@ -131,7 +131,11 @@
       </security-service>
       <monitoring-service>
         <module-monitoring-levels />
-      </monitoring-service>      
+      </monitoring-service>
+      <java-config>
+        <jvm-options>-Dapplication.resource.dir=/home/aldaris/kir-dev/test</jvm-options>
+        <jvm-options>-Dlog4j.configuration=file://${application.resource.dir}/korok/log4j.properties</jvm-options>
+      </java-config> 
       <transaction-service tx-log-dir="${com.sun.aas.instanceRoot}/logs" >
       </transaction-service>
       <network-config>

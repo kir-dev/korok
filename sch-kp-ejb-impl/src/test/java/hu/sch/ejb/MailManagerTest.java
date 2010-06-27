@@ -1,11 +1,8 @@
 package hu.sch.ejb;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import hu.sch.test.base.AbstractTest;
 import hu.sch.services.MailManagerLocal;
-import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
+import javax.naming.NamingException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -14,20 +11,16 @@ import static org.junit.Assert.*;
  *
  * @author aldaris
  */
-public class MailManagerTest {
+public class MailManagerTest extends AbstractTest {
 
     private static MailManagerLocal mailManager;
 
     @BeforeClass
     public static void initialize() {
         try {
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put(EJBContainer.MODULES, new File("target/classes"));
-            EJBContainer ejb = EJBContainer.createEJBContainer(properties);
-            Context ic = ejb.getContext();
-            mailManager = (MailManagerLocal) ic.lookup("java:global/classes/MailManagerBean");
-        } catch (Throwable t) {
-            t.printStackTrace();
+            mailManager = lookupEJB(MailManagerBean.class);
+        } catch (NamingException ne) {
+            ne.printStackTrace();
         }
     }
 

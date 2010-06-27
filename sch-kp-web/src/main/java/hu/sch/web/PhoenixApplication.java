@@ -70,9 +70,7 @@ import hu.sch.web.wicket.util.EntrantTypeConverter;
 import hu.sch.web.wicket.util.PostTypeConverter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
 import hu.sch.web.wicket.util.ServerTimerFilter;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
@@ -80,6 +78,7 @@ import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -89,14 +88,24 @@ import org.apache.wicket.request.target.coding.HybridUrlCodingStrategy;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.lang.PackageName;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
+import org.wicketstuff.javaee.naming.global.AppJndiNamingStrategy;
+import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
 
 /**
+ * PhoenixApplication, amelyben a Phoenix arra utal, hogy ez az alkalmazás a VIR
+ * hamvaiból éledt újjá, és az idő folyamán a cél egy a régi VIR-hez
+ * valamennyire hasonlító közösségi portál megtestesítése.
  *
+ * @author aldaris
  * @author hege
+ * @author messo
  */
 public class PhoenixApplication extends WebApplication {
 
+    private static final String EJB_MODULE_NAME = "korok-ejb";
     private static Logger log = Logger.getLogger(PhoenixApplication.class);
+    @EJB(name = "TimerServiceBean")
+    private TimerServiceLocal timerService;
     private UserAuthorization authorizationComponent;
 
     /**
@@ -111,14 +120,18 @@ public class PhoenixApplication extends WebApplication {
     public String getConfigurationType() {
         Environment env = Configuration.getEnvironment();
 
-        if (env == Environment.DEVELOPMENT || env == Environment.STAGING) {
-            return DEVELOPMENT;
-        } else {
+        if (env == Environment.PRODUCTION) {
             // jelenleg csak akkor kell DEPLOYMENT, ha az environment PRODUCTION
             return DEPLOYMENT;
+        } else {
+            return DEVELOPMENT;
         }
     }
 
+    /**
+     * Az alapértelmezett kezdőlap
+     * @return A kezdőlap osztálya
+     */
     @Override
     public Class<ShowUser> getHomePage() {
         return ShowUser.class;
@@ -126,13 +139,20 @@ public class PhoenixApplication extends WebApplication {
 
     @Override
     protected void init() {
-        addComponentInstantiationListener(new JavaEEComponentInjector(this));
-
-        //autorizációs komponens inicializálása
-        if (Configuration.getEnvironment() == Environment.DEVELOPMENT) {
+        //A környezetfüggő beállítások elvégzése
+        Environment env = Configuration.getEnvironment();
+        if (env == Environment.TESTING) {
+            addComponentInstantiationListener(new JavaEEComponentInjector(this,
+                    new GlobalJndiNamingStrategy(EJB_MODULE_NAME)));
             authorizationComponent = new DummyAuthorization();
-        } else { // ha STAGING vagy PRODUCTION, akkor az AgentBased kell nekünk
-            authorizationComponent = new AgentBasedAuthorization();
+        } else {
+            addComponentInstantiationListener(new JavaEEComponentInjector(this, new AppJndiNamingStrategy(EJB_MODULE_NAME)));
+            if (env == Environment.DEVELOPMENT) {
+                //Ha DEVELOPMENT környezetben vagyunk, akkor Dummyt használunk
+                authorizationComponent = new DummyAuthorization();
+            } else { // ha STAGING vagy PRODUCTION, akkor az AgentBased kell nekünk
+                authorizationComponent = new AgentBasedAuthorization();
+            }
         }
 
         //körök linkek
@@ -166,7 +186,6 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/registerfinished", RegistrationFinishedPage.class);
         mountBookmarkablePage("/logout", Logout.class);
 
-
         mount("/error", PackageName.forClass(InternalServerError.class));
 
 //        mountBookmarkablePage("/profile", ShowPersonPage.class);
@@ -184,8 +203,9 @@ public class PhoenixApplication extends WebApplication {
             log.info("Successfully enabled ServerTimerFilter");
         }
 
-        //TimerService-ek inicializálása
-        TimerServiceLocal timerService = lookupTimerServiceBean();
+        //TimerService injektálása
+        InjectorHolder.getInjector().inject(this);
+        //Timerek inicializálása
         timerService.scheduleTimers();
 
         log.warn("Application has been successfully initiated");
@@ -226,15 +246,5 @@ public class PhoenixApplication extends WebApplication {
 
     public UserAuthorization getAuthorizationComponent() {
         return authorizationComponent;
-    }
-
-    private TimerServiceLocal lookupTimerServiceBean() {
-        try {
-            Context c = new InitialContext();
-            return (TimerServiceLocal) c.lookup("java:comp/env/TimerServiceLocal");
-        } catch (NamingException ne) {
-            log.error("Error while lookup for TimerService", ne);
-            throw new RuntimeException(ne);
-        }
     }
 }

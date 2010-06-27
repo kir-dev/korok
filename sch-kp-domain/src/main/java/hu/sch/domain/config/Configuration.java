@@ -61,7 +61,13 @@ public class Configuration {
          * mert ilyenkor a wicket már rendesen a DEPLOYMENT-et látja, mint
          * configurationType.
          */
-        PRODUCTION
+        PRODUCTION,
+        /**
+         * A funkcionális, illetve egyéb JUnit tesztekhez használatos konfiguráció,
+         * ebben az esetben a DummyAuthorization modul kerül használatra, mivel
+         * nincs ebben a környezetben agent.
+         */
+        TESTING
     };
     private static final Logger logger = Logger.getLogger(Configuration.class);
     private static final String PROPERTY_NAME = "application.resource.dir";

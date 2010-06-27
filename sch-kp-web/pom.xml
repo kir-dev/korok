@@ -11,23 +11,6 @@
     <packaging>war</packaging>
     <name>SCH KP Application web project (Wicket-${wicket.version})</name>
     <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -42,7 +25,11 @@
                 </excludes>
             </resource>
         </resources>
+
         <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
             <testResource>
                 <directory>src/test/java</directory>
                 <includes>
@@ -61,13 +48,17 @@
             <groupId>hu.sch</groupId>
             <artifactId>sch-kp-domain</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-kp-ejb-services</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>hu.sch</groupId>
+            <artifactId>sch-kp-test</artifactId>
         </dependency>
         <!-- Wicket függőségek -->
         <dependency>
@@ -93,7 +84,7 @@
         <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>javaee-inject</artifactId>
-            <version>${wicketstuff.version}</version>
+            <version>1.4.10-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>wicket-tree</groupId>
@@ -106,18 +97,9 @@
             <artifactId>tinymce</artifactId>
             <version>${wicketstuff.version}</version>
         </dependency>
-        <!-- Logoláshoz függőségek -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.5.8</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-            <scope>provided</scope>
         </dependency>
         <!-- PDF generáláshoz kell -->
         <dependency>
@@ -132,6 +114,16 @@
             <version>2.4</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Teszt függőségek -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+        </dependency>
+        <!-- Mindenképp később kell legyen mint a GF embedded, különben ClassFormatError lesz teszteknél!! -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>

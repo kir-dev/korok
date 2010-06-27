@@ -1,11 +1,10 @@
 package hu.sch.ejb;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import hu.sch.test.base.AbstractTest;
+import hu.sch.domain.Group;
+import java.util.List;
 import hu.sch.services.UserManagerLocal;
-import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
+import javax.naming.NamingException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -14,20 +13,16 @@ import static org.junit.Assert.*;
  *
  * @author aldaris
  */
-public class UserManagerTest {
+public class UserManagerTest extends AbstractTest {
 
     private static UserManagerLocal userManager;
 
     @BeforeClass
     public static void initialize() {
         try {
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put(EJBContainer.MODULES, new File("target/classes"));
-            EJBContainer ejb = EJBContainer.createEJBContainer(properties);
-            Context ic = ejb.getContext();
-            userManager = (UserManagerLocal) ic.lookup("java:global/classes/UserManagerBean");
-        } catch (Throwable t) {
-            t.printStackTrace();
+            userManager = lookupEJB(UserManagerBean.class);
+        } catch (NamingException ne) {
+            ne.printStackTrace();
         }
     }
 
@@ -36,4 +31,10 @@ public class UserManagerTest {
         assertTrue(userManager != null);
     }
 
+    @Test
+    public void testGroups() {
+        List<Group> groups = userManager.getAllGroups();
+        System.out.println("Size of list is: " + groups.size());
+        assertTrue(!groups.isEmpty());
+    }
 }
