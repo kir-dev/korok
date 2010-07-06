@@ -71,6 +71,8 @@ import javax.persistence.Transient;
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
 public class User implements Serializable, Comparable<User> {
 
+    private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
+
     private static final long serialVersionUID = 1L;
     public static final String findByLoginName = "findUserByLoginName";
     public static final String findWithMemberships = "findUserWithMemberships";
@@ -206,6 +208,11 @@ public class User implements Serializable, Comparable<User> {
         return svieStatus;
     }
 
+    @Transient
+    public String getSvieMemberText() {
+        return svieStatus.equals(SvieStatus.ELFOGADVA) ? "igen" : "nem";
+    }
+
     public void setSvieStatus(SvieStatus svieStatus) {
         this.svieStatus = svieStatus;
     }
@@ -314,8 +321,11 @@ public class User implements Serializable, Comparable<User> {
 
     @Override
     public int compareTo(User o) {
-        Collator huCollator = Collator.getInstance(new Locale("hu"));
         return huCollator.compare(getName(), o.getName());
+    }
+
+    public int compareToBySvieMemberText(User o) {
+        return huCollator.compare(getSvieMemberText(), o.getSvieMemberText());
     }
 
     @Override

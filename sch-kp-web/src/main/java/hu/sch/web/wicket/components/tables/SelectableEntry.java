@@ -28,39 +28,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package hu.sch.web.wicket.components;
-
-import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.domain.Membership;
-import java.util.List;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
+package hu.sch.web.wicket.components.tables;
 
 /**
+ * Ha egy táblázatban valamelyik bejegyzést ki akarunk tudni jelölni, akkor
+ * implementálja ezt az interfészt. Ha egy táblázathoz akarunk jelölhető (ha admin
+ * jogosultsága van) és csak listázható (sima user) entitásokat és ezeket egy
+ * táblázatban akarjuk kezelni, akkor ez egy jó módszer lehet.
  *
- * @author aldaris
+ * @author  messo
+ * @since   2.3.1
  */
-public final class ActiveMembershipsPanel extends Panel {
+public interface SelectableEntry {
 
-    public ActiveMembershipsPanel(String id, List<Membership> activeMembers) {
-        super(id);
-        ListView<Membership> membershipsList = new ListView<Membership>("memberships", activeMembers) {
+    public boolean getSelected();
 
-            @Override
-            protected void populateItem(ListItem<Membership> item) {
-                Membership ms = item.getModelObject();
-                item.setModel(new CompoundPropertyModel<Membership>(ms));
-                item.add(new UserLink("userLink", ms.getUser()));
-                item.add(new Label("user.nickName"));
-                item.add(new Label("rights", getConverter(Membership.class).convertToString(ms, getLocale())));
-                item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
-            }
-        };
-        add(membershipsList);
-    }
+    public void setSelected(boolean isSelected);
 }

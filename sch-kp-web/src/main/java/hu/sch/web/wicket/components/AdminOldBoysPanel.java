@@ -28,40 +28,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components;
 
+import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.domain.Membership;
+import hu.sch.services.UserManagerLocal;
 import hu.sch.web.kp.pages.group.ShowGroup;
+import hu.sch.web.wicket.components.tables.DateIntervalPropertyColumn;
+import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 
 /**
+ * Ezt a panelt látja a user akkor, ha jogosult arra, hogy aktiválhassa az öregtagokat.
+ * A körítésen (lásd markup) kívül lehet rendezgetni a táblázatot.
  *
  * @author aldaris
+ * @author messo
+ * @see MembershipTable
  */
 public final class AdminOldBoysPanel extends Panel {
 
+    @EJB(name = "UserManagerBean")
+    UserManagerLocal userManager;
+
     private static Logger log = Logger.getLogger(AdminOldBoysPanel.class);
+    List<SelectableMembership> lines;
 
     public AdminOldBoysPanel(String id, final List<Membership> inactiveMembers) {
         super(id);
-        add(new EditEntitlementsForm("oldForm", inactiveMembers) {
 
-            @Override
-            public void onPopulateItem(ListItem<ExtendedGroup> item, Membership ms) {
-                item.add(DateLabel.forDatePattern("membership.start", "yyyy.MM.dd."));
-                item.add(DateLabel.forDatePattern("membership.end", "yyyy.MM.dd."));
-            }
+        Form form;
+
+        lines = new ArrayList<SelectableMembership>(inactiveMembers.size());
+        for (Membership ms : inactiveMembers) {
+            lines.add(new SelectableMembership(ms));
+        }
+
+        add(form = new Form("oldForm") {
 
             @Override
             public void onSubmit() {
                 try {
-                    for (ExtendedGroup extendedGroup : getLines()) {
+                    for (SelectableMembership extendedGroup : lines) {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
                             userManager.setOldBoyToActive(ms);
@@ -74,6 +89,16 @@ public final class AdminOldBoysPanel extends Panel {
                 }
                 setResponsePage(ShowGroup.class, new PageParameters("id=" + inactiveMembers.get(0).getGroup().getId()));
             }
+            
         });
+
+        form.add(new MembershipTable<SelectableMembership>("table", lines, SelectableMembership.class) {
+
+            @Override
+            public void onPopulateColumns(List<IColumn<SelectableMembership>> columns) {
+                columns.add(new DateIntervalPropertyColumn<SelectableMembership>(
+                        new Model<String>("Tagság ideje"), "membershipStartEnd", "membership.start", "membership.end"));
+            }
+        }.getDataTable());
     }
 }

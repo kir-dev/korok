@@ -28,24 +28,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.group;
 
+import hu.sch.web.wicket.components.tables.DateIntervalPropertyColumn;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
-import hu.sch.web.wicket.components.ActiveMembershipsPanel;
 import hu.sch.web.wicket.components.AdminMembershipsPanel;
 import hu.sch.web.wicket.components.AdminOldBoysPanel;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
-import hu.sch.web.wicket.components.OldBoysPanel;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.wicket.components.MembershipTablePanel;
+import hu.sch.web.wicket.components.tables.DatePropertyColumn;
+import hu.sch.web.wicket.components.tables.MembershipTable;
 import java.util.Date;
 import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -53,6 +55,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 
 /**
  * Az egyes körökről ezen az oldalon jelenítünk meg részletes adatokat. A
@@ -163,8 +166,25 @@ public class ShowGroup extends SecuredPageTemplate {
             adminOrActivePanel = new AdminMembershipsPanel("adminOrActive", activeMembers);
             adminOrOldBoysPanel = new AdminOldBoysPanel("adminOrOldBoy", inactiveMembers);
         } else {
-            adminOrActivePanel = new ActiveMembershipsPanel("adminOrActive", activeMembers);
-            adminOrOldBoysPanel = new OldBoysPanel("adminOrOldBoy", inactiveMembers);
+            adminOrActivePanel = new MembershipTablePanel("adminOrActive", new MembershipTable<Membership>("table",
+                    activeMembers, Membership.class) {
+
+                @Override
+                public void onPopulateColumns(List<IColumn<Membership>> columns) {
+                    columns.add(new DatePropertyColumn<Membership>(new Model<String>("Tagság kezdete"),
+                            MembershipTable.SORT_BY_MEMBERSHIP_DURATION, "start"));
+                }
+            });
+
+            adminOrOldBoysPanel = new MembershipTablePanel("adminOrOldBoy", new MembershipTable<Membership>("table",
+                    inactiveMembers, Membership.class) {
+
+                @Override
+                public void onPopulateColumns(List<IColumn<Membership>> columns) {
+                    columns.add(new DateIntervalPropertyColumn<Membership>(new Model<String>("Tagság ideje"),
+                            MembershipTable.SORT_BY_MEMBERSHIP_DURATION, "start", "end"));
+                }
+            });
         }
         add(adminOrActivePanel);
         add(adminOrOldBoysPanel);

@@ -57,11 +57,13 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
         setSort("name", true);
     }
 
+    @Override
     public Iterator<User> iterator(int first, int count) {
         SortParam sp = getSort();
         return find(first, count, sp.getProperty(), sp.isAscending()).iterator();
     }
 
+    @Override
     public int size() {
         return users.size();
     }
@@ -74,6 +76,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
             if (asc) {
                 Collections.sort(users, new Comparator<User>() {
 
+                    @Override
                     public int compare(User o1, User o2) {
                         return huCollator.compare(o1.getName(), o2.getName());
                     }
@@ -81,6 +84,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
             } else {
                 Collections.sort(users, new Comparator<User>() {
 
+                    @Override
                     public int compare(User o1, User o2) {
                         return huCollator.compare(o2.getName(), o1.getName());
                     }
@@ -90,6 +94,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
             if (asc) {
                 Collections.sort(users, new Comparator<User>() {
 
+                    @Override
                     public int compare(User o1, User o2) {
                         if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
                             return huCollator.compare(o1.getName(), o2.getName());
@@ -101,6 +106,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
             } else {
                 Collections.sort(users, new Comparator<User>() {
 
+                    @Override
                     public int compare(User o1, User o2) {
                         if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
                             return huCollator.compare(o2.getName(), o1.getName());
@@ -117,6 +123,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
         return users;
     }
 
+    @Override
     public IModel<User> model(User object) {
         return new Model<User>(object);
     }

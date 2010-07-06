@@ -1,4 +1,4 @@
-<wicket:panel wicket:id="oldAdmin">
+<wicket:panel>
     <div class="subdata">
         <div class="notifybox">
             Öregtagot újra aktív taggá tenni az Aktíválandó oszlopban található
@@ -7,26 +7,7 @@
             megújítását.
         </div>
         <form wicket:id="oldForm">
-            <table wicket:id="table" class="withheader">
-                <tr class="headers">
-                    <th style="width: 250px;">Felhasználó neve</th>
-                    <th>Becenév</th>
-                    <th>Betöltött poszt</th>
-                    <th>Tagság ideje</th>
-                    <th style="text-align: center;">Aktíválandó</th>
-                </tr>
-                <tr wicket:id="members">
-                    <td>
-                <wicket:panel wicket:id="userLink" />
-                </td>
-                <td wicket:id="membership.user.nickName" />
-                <td wicket:id="rights" />
-                <td><span wicket:id="membership.start" /> - <span wicket:id="membership.end" /></td>
-                <td style="text-align: center;">
-                    <input wicket:id="check" type="checkbox" />
-                </td>
-                </tr>
-            </table>
+            <table wicket:id="table" class="withheader"></table>
             <input type="submit" class="btn" value="Aktivál" />
         </form>
     </div>
