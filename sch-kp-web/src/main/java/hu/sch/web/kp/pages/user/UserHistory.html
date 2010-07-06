@@ -24,37 +24,8 @@
 
     Szűkítés: <select wicket:id="group" style="width: 500px;"/>
 
-    <h2>Részletes közösségi pontozás</h2>
+    <h2>Részletes közösségi pontozás, belépők</h2>
     <div class="subdata">
-        <table id="pontigenyek" class="withheader">
-            <tr class="headers">
-                <th style="width: 140px;">Szemeszter</th>
-                <th>Kör</th>
-                <th style="width: 80px;">Pontszám</th>
-            </tr>
-            <tr wicket:id="pointRequestList">
-                <td><span wicket:id="valuation.semester" /></td>
-                <td><span wicket:id="valuation.group.name" /></td>
-                <td><span wicket:id="point" /></td>
-            </tr>
-        </table>
-    </div>
-
-    <h2>Belépők</h2>
-    <div class="subdata">
-        <table id="belepoigenyek" class="withheader">
-            <tr class="headers">
-                <th style="width: 140px;">Szemeszter</th>
-                <th style="width: 130px;">Kör</th>
-                <th>Igényelt belépő</th>
-                <th style="width: 400px;">Szöveges indoklás</th>
-            </tr>
-            <tr wicket:id="entrantRequestList">
-                <td><span wicket:id="valuation.semester" /></td>
-                <td><span wicket:id="valuation.group.name" /></td>
-                <td><span wicket:id="entrantType" /></td>
-                <td><span wicket:id="valuationText" /></td>
-            </tr>
-        </table>
+        <table wicket:id="table" id="pontigenyek" class="withheader"></table>
     </div>
 </wicket:extend>

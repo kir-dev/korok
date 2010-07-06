@@ -41,7 +41,7 @@ import javax.persistence.Transient;
  * @author hege
  */
 @Embeddable
-public class Semester implements Serializable {
+public class Semester implements Serializable, Comparable<Semester> {
 
     /**
      * Semester azonosító, ÉV1ÉV2FÉLÉV formában
@@ -185,5 +185,10 @@ public class Semester implements Serializable {
         int hash = 3;
         hash = 47 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public int compareTo(Semester o) {
+        return id.compareTo(o.id);
     }
 }

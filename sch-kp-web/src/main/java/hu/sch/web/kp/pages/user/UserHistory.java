@@ -30,18 +30,19 @@
  */
 package hu.sch.web.kp.pages.user;
 
-import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
-import hu.sch.domain.ValuationStatus;
+import hu.sch.domain.ValuationData;
+import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.wicket.components.tables.ValuationTableForUser;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
@@ -56,16 +57,19 @@ import org.apache.wicket.model.PropertyModel;
 
 /**
  *
- * @author Adam Lantos
+ * @author  Adam Lantos
+ * @author  messo
  */
 public class UserHistory extends SecuredPageTemplate {
 
     private static final Logger log = Logger.getLogger(UserHistory.class);
     Long id;
-    public Long selected = null;
+    public Long selectedGroupId = null;
     final String EVERY_GROUP = "Összes kör";
     public String selected_text = EVERY_GROUP;
     private boolean own_profile = false;
+    @EJB(name = "ValuationManagerBean")
+    ValuationManagerLocal valuationManager;
 
     public UserHistory() {
         own_profile = true;
@@ -75,11 +79,11 @@ public class UserHistory extends SecuredPageTemplate {
     public UserHistory(PageParameters parameters) {
         try {
             id = parameters.getLong("id");
-            selected = parameters.getLong("group", 0l);
-            if (selected != 0l) {
-                selected_text = userManager.findGroupById(selected).getName();
+            selectedGroupId = parameters.getLong("group", 0l);
+            if (selectedGroupId != 0l) {
+                selected_text = userManager.findGroupById(selectedGroupId).getName();
             } else {
-                selected = null;
+                selectedGroupId = null;
             }
         } catch (Throwable t) {
             log.warn("Error while loading parameters.", t);
@@ -116,7 +120,6 @@ public class UserHistory extends SecuredPageTemplate {
             groups.add(csoporttagsag.getGroup().getName());
         }
 
-        List<PointRequest> pointRequests = userManager.getPontIgenyekForUser(user);
         DropDownChoice<String> ddc = new DropDownChoice<String>("group", new PropertyModel<String>(this, "selected_text"), groups) {
 
             @Override
@@ -163,89 +166,9 @@ public class UserHistory extends SecuredPageTemplate {
         };
         add(splv);
 
-        // Pontigények táblázat
-        if (selected != null) {
-            // szűrés adott csoportra
+        List<ValuationData> list = valuationManager.findRequestsForUser(user, selectedGroupId);
 
-            ArrayList<PointRequest> obj = new ArrayList<PointRequest>();
-            for (PointRequest pontIgeny : pointRequests) {
-                if (pontIgeny.getValuation().getGroup().getId().equals(selected)) {
-                    obj.add(pontIgeny);
-                }
-            }
-            pointRequests = obj;
-        }
-
-        ListView<PointRequest> plv = new ListView<PointRequest>("pointRequestList", pointRequests) {
-
-            @Override
-            protected void populateItem(ListItem<PointRequest> item) {
-                item.setModel(new CompoundPropertyModel<PointRequest>(item.getModelObject()));
-
-                item.add(new Label("valuation.semester"));
-                item.add(new Label("valuation.group.name"));
-                item.add(new Label("point"));
-            }
-        };
-        add(plv);
-
-        // Belépő igények táblázat
-        List<EntrantRequest> entrantRequests = userManager.getBelepoIgenyekForUser(user);
-
-        if (selected != null) {
-            // szűrés adott csoportra
-
-            ArrayList<EntrantRequest> obj = new ArrayList<EntrantRequest>();
-            for (EntrantRequest belepoIgeny : entrantRequests) {
-                if (belepoIgeny.getValuation().getGroup().getId().equals(selected)) {
-                    obj.add(belepoIgeny);
-                }
-            }
-            entrantRequests = obj;
-        }
-
-        ListView<EntrantRequest> blv = new ListView<EntrantRequest>("entrantRequestList", entrantRequests) {
-
-            @Override
-            protected void populateItem(ListItem<EntrantRequest> item) {
-                item.setModel(new CompoundPropertyModel<EntrantRequest>(item.getModelObject()));
-
-                item.add(new Label("valuation.semester"));
-                item.add(new Label("valuation.group.name"));
-                item.add(new Label("entrantType"));
-                item.add(new Label("valuationText"));
-            }
-        };
-        add(blv);
-    }
-}
-
-class SemesterGroupPoint {
-
-    private Semester semester;
-    private Long groupId;
-    private Integer point;
-
-    public SemesterGroupPoint(Semester semester, Integer point, Long groupId) {
-        this.semester = semester;
-        this.point = point;
-        this.groupId = groupId;
-    }
-
-    public Semester getSemester() {
-        return semester;
-    }
-
-    public Integer getPoint() {
-        return point;
-    }
-
-    public Long getGroupId() {
-        return groupId;
-    }
-
-    public void add(Integer i) {
-        point = point + i;
+        add(new ValuationTableForUser("table", list).getDataTable());
     }
 }
 

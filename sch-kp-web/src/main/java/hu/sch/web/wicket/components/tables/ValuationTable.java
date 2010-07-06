@@ -31,67 +31,62 @@
 package hu.sch.web.wicket.components.tables;
 
 import hu.sch.domain.ValuationData;
-import hu.sch.web.wicket.components.customlinks.UserLink;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
 
 /**
- * Értékelési táblázat, amely neveket, pont- és belépőkérelmeket tartalmaz.
- * A fontosabb oszlopok alapján rendezhető természetesen
+ * Értékelési táblázat, amely {@link ValuationData}-kat tud megjeleníteni.
+ * A fontosabb oszlopok alapján rendezhető, de ezt a konkrét implementáció dönti el.
  *
  * @author  messo
  * @since   2.3.1
  * @see     AjaxFallbackDefaultDataTable
  * @see     ValuationData
  */
-public class ValuationTable implements Serializable {
+public abstract class ValuationTable implements Serializable {
 
     AjaxFallbackDefaultDataTable<ValuationData> table;
     MySortableDataProvider provider;
 
-    public ValuationTable(String id, List<ValuationData> items, int rowsPerPage) {
-        List<IColumn<ValuationData>> columns = new ArrayList<IColumn<ValuationData>>(4);
-        columns.add(new AbstractColumn<ValuationData>(new Model<String>("Név"), MySortableDataProvider.SORT_BY_NAME) {
-
-            @Override
-            public void populateItem(Item<ICellPopulator<ValuationData>> cellItem, String componentId, IModel<ValuationData> rowModel) {
-                cellItem.add(new UserLink(componentId, rowModel.getObject().getUser()));
-            }
-        });
-
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Pont"), MySortableDataProvider.SORT_BY_POINT, "pointRequest.point"));
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Belépő típusa"), MySortableDataProvider.SORT_BY_ENTRANT, "entrantRequest.entrantType"));
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Szöveges értékelés"), "entrantRequest.valuationText") {
-
-            @Override
-            public void populateItem(Item<ICellPopulator<ValuationData>> item, String componentId, IModel<ValuationData> rowModel) {
-                super.populateItem(item, componentId, rowModel);
-                item.add(new SimpleAttributeModifier("style", "width: 400px"));
-            }
-        });
-
-        table = new AjaxFallbackDefaultDataTable<ValuationData>(id, columns, provider = new MySortableDataProvider(items), rowsPerPage);
+    protected ValuationTable() {
     }
+
+    /**
+     * Konstruktor, amely létrehozza a táblázatot a megfelelő oszlopokkal és adatokkal
+     *
+     * @param id            a Wicket ID-ja annak a table-nek, ahova be akarjuk majd szúrni a táblázatot
+     * @param items         a lista, amit a táblázatban meg akarunk jeleníteni
+     * @param rowsPerPage   egy oldalon hány elem jelenjne meg?
+     */
+    public ValuationTable(String id, List<ValuationData> items, int rowsPerPage) {
+        provider = new MySortableDataProvider(items);
+
+        List<IColumn<ValuationData>> columns = new ArrayList<IColumn<ValuationData>>(5);
+        populateColumns(columns);
+
+        table = new AjaxFallbackDefaultDataTable<ValuationData>(id, columns, provider, rowsPerPage);
+    }
+
+    protected abstract void populateColumns(List<IColumn<ValuationData>> columns);
 
     public AjaxFallbackDefaultDataTable<ValuationData> getDataTable() {
         return table;
     }
 
+    /**
+     * Frissítjük a listát.
+     *
+     * @param list  az új lista, amit a táblázatban szerepeltetni szeretnénk
+     */
     public void updateList(List<ValuationData> list) {
         provider.items = list;
     }
@@ -99,13 +94,14 @@ public class ValuationTable implements Serializable {
     class MySortableDataProvider extends SortableDataProvider<ValuationData> {
 
         private List<ValuationData> items;
-        public static final String SORT_BY_NAME = "name";
+        public static final String SORT_BY_USER = "user";
         public static final String SORT_BY_POINT = "point";
         public static final String SORT_BY_ENTRANT = "entrant";
+        public static final String SORT_BY_SEMESTER = "semester";
+        public static final String SORT_BY_GROUP = "group";
 
         public MySortableDataProvider(List<ValuationData> items) {
             this.items = items;
-            setSort(SORT_BY_NAME, true);
         }
 
         @Override
@@ -142,7 +138,7 @@ public class ValuationTable implements Serializable {
                 return;
             }
 
-            if (prop.equals(SORT_BY_NAME)) {
+            if (prop.equals(SORT_BY_USER)) {
                 Collections.sort(items, new Comparator<ValuationData>() {
 
                     @Override
@@ -164,6 +160,22 @@ public class ValuationTable implements Serializable {
                     @Override
                     public int compare(ValuationData v1, ValuationData v2) {
                         return asc * v1.getEntrantRequest().getEntrantType().compareTo(v2.getEntrantRequest().getEntrantType());
+                    }
+                });
+            } else if (prop.equals(SORT_BY_SEMESTER)) {
+                Collections.sort(items, new Comparator<ValuationData>() {
+
+                    @Override
+                    public int compare(ValuationData v1, ValuationData v2) {
+                        return asc * v1.getSemester().compareTo(v2.getSemester());
+                    }
+                });
+            }  else if (prop.equals(SORT_BY_GROUP)) {
+                Collections.sort(items, new Comparator<ValuationData>() {
+
+                    @Override
+                    public int compare(ValuationData v1, ValuationData v2) {
+                        return asc * v1.getGroup().compareTo(v2.getGroup());
                     }
                 });
             }

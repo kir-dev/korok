@@ -582,6 +582,55 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
+    public List<ValuationData> findRequestsForUser(User u, Long groupId) {
+        String whereAnd = "";
+        if (groupId != null) {
+            whereAnd = "AND v.groupId = :groupId ";
+        }
+
+        Query q = em.createQuery("SELECT pReq FROM PointRequest pReq "
+                + "LEFT JOIN FETCH pReq.user u "
+                + "LEFT JOIN FETCH pReq.valuation v "
+                + "LEFT JOIN FETCH v.group g "
+                + "WHERE pReq.userId = :userId " + whereAnd);
+        q.setParameter("userId", u.getId());
+        if (groupId != null) {
+            q.setParameter("groupId", groupId);
+        }
+        List<PointRequest> pReqs = (List<PointRequest>) q.getResultList();
+
+        q = em.createQuery("SELECT eReq FROM EntrantRequest eReq "
+                + "LEFT JOIN FETCH eReq.user u "
+                + "LEFT JOIN FETCH eReq.valuation v "
+                + "LEFT JOIN FETCH v.group g "
+                + "WHERE eReq.userId = :userId " + whereAnd);
+        q.setParameter("userId", u.getId());
+        if (groupId != null) {
+            q.setParameter("groupId", groupId);
+        }
+        List<EntrantRequest> eReqs = (List<EntrantRequest>) q.getResultList();
+
+        int size = 10;
+        Map<Long, ValuationData> map = new HashMap<Long, ValuationData>(size);
+
+        for (PointRequest p : pReqs) {
+            map.put(p.getValuationId(), new ValuationData(p.getUser(), p, null));
+        }
+
+        ValuationData vd;
+        for (EntrantRequest e : eReqs) {
+            vd = map.get(e.getValuationId());
+            if (vd == null) {
+                map.put(e.getValuationId(), new ValuationData(e.getUser(), null, e));
+            } else {
+                vd.setEntrantRequest(e);
+            }
+        }
+
+        return new ArrayList<ValuationData>(map.values());
+    }
+
+    @Override
     public List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter) {
         Query q = em.createQuery("SELECT new hu.sch.domain.ApprovedEntrant(e.user.neptunCode,"
                 + "e.entrantType) FROM EntrantRequest e "

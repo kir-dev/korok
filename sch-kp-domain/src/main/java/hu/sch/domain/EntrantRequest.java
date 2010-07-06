@@ -58,6 +58,7 @@ public class EntrantRequest implements Serializable {
     protected EntrantType entrantType;
     protected User user;
     private Long userId;
+    private Long valuationId;
 
     public EntrantRequest() {
         entrantType = EntrantType.KDO;
@@ -96,6 +97,15 @@ public class EntrantRequest implements Serializable {
 
     public void setValuation(Valuation valuation) {
         this.valuation = valuation;
+    }
+
+    @Column(name = "ertekeles_id", updatable = false, insertable = false)
+    public Long getValuationId() {
+        return valuationId;
+    }
+
+    public void setValuationId(Long valuationId) {
+        this.valuationId = valuationId;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

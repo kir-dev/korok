@@ -43,19 +43,28 @@ import java.io.Serializable;
 public class ValuationData implements Serializable {
 
     protected User user;
-    protected PointRequest pReq;
-    protected EntrantRequest eReq;
+    protected Valuation valuation = null;
+    protected PointRequest pointRequest;
+    protected EntrantRequest entrantRequest;
 
     public ValuationData(User user, PointRequest pointRequest, EntrantRequest entrantRequest) {
         this.user = user;
-        this.pReq = pointRequest;
-        this.eReq = entrantRequest;
+        this.pointRequest = pointRequest;
+        this.entrantRequest = entrantRequest;
 
-        if (pReq == null) {
-            pReq = new PointRequest();
+        init();
+    }
+
+    private void init() {
+        if (pointRequest == null) {
+            pointRequest = new PointRequest();
+            // ha a pontkérelem null, akkor lennie kell belépőnek
+            valuation = entrantRequest.getValuation();
         }
-        if (eReq == null) {
-            eReq = new EntrantRequest();
+        if (entrantRequest == null) {
+            entrantRequest = new EntrantRequest();
+            // ha a belépőkérelem null, akkor lennie kell pontnak
+            valuation = pointRequest.getValuation();
         }
     }
 
@@ -63,21 +72,27 @@ public class ValuationData implements Serializable {
         return user;
     }
 
+    public Group getGroup() {
+        return valuation.getGroup();
+    }
+
+    public Semester getSemester() {
+        return valuation.getSemester();
+    }
+
     public EntrantRequest getEntrantRequest() {
-        return eReq;
+        return entrantRequest;
     }
 
     public void setEntrantRequest(EntrantRequest eReq) {
-        this.eReq = eReq;
+        this.entrantRequest = eReq;
     }
 
     public PointRequest getPointRequest() {
-        return pReq;
+        return pointRequest;
     }
 
     public void setPointRequest(PointRequest pReq) {
-        this.pReq = pReq;
+        this.pointRequest = pReq;
     }
-
-
 }
