@@ -15,7 +15,7 @@ public class ShowUserTest extends AbstractTest {
     private static WicketTester tester;
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         tester = new WicketTester(new PhoenixApplication());
     }
 
