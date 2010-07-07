@@ -204,12 +204,12 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
                     }
                 });
             } else if (prop.equals(SORT_BY_MEMBERSHIP)) {
+                final IConverter ms = Application.get().getConverterLocator().getConverter(Membership.class);
+                final Locale hu = new Locale("hu");
                 Collections.sort(items, new Comparator<T>() {
 
                     @Override
                     public int compare(T t0, T t1) {
-                        IConverter ms = Application.get().getConverterLocator().getConverter(Membership.class);
-                        Locale hu = new Locale("hu");
                         return r * ms.convertToString(t0.getMembership(), hu).compareTo(ms.convertToString(t1.getMembership(), hu));
                     }
                 });

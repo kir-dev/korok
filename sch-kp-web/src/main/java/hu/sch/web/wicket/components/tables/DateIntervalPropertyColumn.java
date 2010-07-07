@@ -91,7 +91,10 @@ public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
         Date end = (Date) new PropertyModel(rowModel, endPropertyExpression).getObject();
 
         StringBuilder sb = new StringBuilder(df.format(start));
-        sb.append(" - ").append(df.format(end));
+        sb.append(" - ");
+        if (end != null) {
+            sb.append(df.format(end));
+        }
 
         item.add(new Label(componentId, sb.toString()));
     }
