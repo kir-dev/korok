@@ -28,10 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
-import java.io.Serializable;
+import hu.sch.domain.interfaces.MembershipTableEntry;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -48,6 +47,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  * Csoporttagságot reprezentáló entity
@@ -55,28 +55,26 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "grp_membership")
-@NamedQueries(value={
-@NamedQuery(name = "getMembership",
-query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
-@NamedQuery(name = "getMembers",
-query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
-@NamedQuery(name = "getDelegatedMemberForGroup",
-query = "SELECT ms.user FROM Membership ms "
+@NamedQueries(value = {
+    @NamedQuery(name = "getMembership",
+    query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
+    @NamedQuery(name = "getMembers",
+    query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
+    @NamedQuery(name = "getDelegatedMemberForGroup",
+    query = "SELECT ms.user FROM Membership ms "
     + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true"),
-@NamedQuery(name = "getAllDelegated",
-query = "SELECT u FROM User u WHERE u.delegated = true "
+    @NamedQuery(name = "getAllDelegated",
+    query = "SELECT u FROM User u WHERE u.delegated = true "
     + "ORDER BY u.lastName, u.firstName")
-}		
-)
+})
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq")
-public class Membership implements Serializable {
+public class Membership implements MembershipTableEntry {
 
     private static final long serialVersionUID = 1L;
     public static final String getMembership = "getMembership";
     public static final String getMembers = "getMembers";
     public static final String getDelegatedMemberForGroup = "getDelegatedMemberForGroup";
     public static final String getAllDelegated = "getAllDelegated";
-    
     /*
     id               | integer | not null default nextval('grp_members_seq'::regclass)
     grp_id           | integer |
@@ -194,5 +192,14 @@ public class Membership implements Serializable {
         hash = 29 * hash + (this.end != null ? this.end.hashCode() : 0);
         hash = 29 * hash + (this.posts != null ? this.posts.hashCode() : 0);
         return hash;
+    }
+
+    /**
+     * Ez csak azért kell, hogy általánosítani lehessen a MembershipTable logikáját.
+     */
+    @Transient
+    @Override
+    public Membership getMembership() {
+        return this;
     }
 }

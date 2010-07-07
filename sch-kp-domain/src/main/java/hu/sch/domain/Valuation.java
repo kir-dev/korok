@@ -71,7 +71,9 @@ import javax.persistence.Transient;
     query = "SELECT v FROM Valuation v LEFT JOIN FETCH v.messages "
     + "WHERE v.id=:id"),
     @NamedQuery(name = "findValuationByGroup",
-    query = "SELECT v FROM Valuation v WHERE v.group=:group "
+    query = "SELECT v FROM Valuation v "
+    + "JOIN FETCH v.sender "
+    + "WHERE v.group=:group "
     + "ORDER BY v.semester DESC")
 })
 public class Valuation implements Serializable {
@@ -81,6 +83,7 @@ public class Valuation implements Serializable {
     public static final String findByGroup = "findValuationByGroup";
     protected Long id;
     protected Group group;
+    protected Long groupId;
     protected User sender;
     protected User consideredBy;
     protected String valuationText;
@@ -107,6 +110,15 @@ public class Valuation implements Serializable {
         this.group = group;
     }
 
+    @Column(name = "grp_id", insertable = false, updatable = false)
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
@@ -117,7 +129,7 @@ public class Valuation implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "felado_usr_id")
     public User getSender() {
         return sender;
@@ -242,7 +254,7 @@ public class Valuation implements Serializable {
         setEntrantStatus(ValuationStatus.NINCS);
     }
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "elbiralo_usr_id")
     public User getConsideredBy() {
         return consideredBy;
@@ -281,5 +293,10 @@ public class Valuation implements Serializable {
                         }
                     });
         }
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("Valuation: ").append(semester).append(" ").append(group.getName()).toString();
     }
 }

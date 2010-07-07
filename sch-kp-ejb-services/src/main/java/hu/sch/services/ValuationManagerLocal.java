@@ -184,6 +184,8 @@ public interface ValuationManagerLocal {
      */
     List<ValuationData> findRequestsForValuation(Long valuationId);
 
+    List<ValuationData> findRequestsForUser(User u, Long groupId);
+
     /**
      * Az adott értékelésekhez kapcsolódó statisztikát adja vissza
      * (pontátlag, kiosztott belépők típusonként)

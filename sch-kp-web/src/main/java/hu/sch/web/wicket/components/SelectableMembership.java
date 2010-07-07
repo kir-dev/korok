@@ -28,71 +28,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.domain;
+package hu.sch.web.wicket.components;
 
-import java.io.Serializable;
+import hu.sch.domain.Membership;
+import hu.sch.domain.interfaces.MembershipTableEntry;
+import hu.sch.web.wicket.components.tables.SelectableEntry;
 
 /**
- * Egy felhasználó értékelését jellemzi (pont- és belépőkérelem)
+ * {@link Membership} objektumokhoz egy wrapper, hogy el tudjuk tárolni, hogy ki
+ * van-e jelölve a listában vagy nincs. Származtatni bonyolult lenne, mert akkor
+ * meg kéne írni a downcastot.
  *
- * @author  messo
- * @since   2.3.1
- * @see     PointRequest
- * @see     EntrantRequest
+ * @author      messo
+ * @since       2.3.1
  */
-public class ValuationData implements Serializable {
+public class SelectableMembership implements MembershipTableEntry, SelectableEntry {
 
-    protected User user;
-    protected Valuation valuation = null;
-    protected PointRequest pointRequest;
-    protected EntrantRequest entrantRequest;
+    private Membership membership;
+    private boolean selected;
 
-    public ValuationData(User user, PointRequest pointRequest, EntrantRequest entrantRequest) {
-        this.user = user;
-        this.pointRequest = pointRequest;
-        this.entrantRequest = entrantRequest;
-
-        init();
+    public SelectableMembership(Membership membership) {
+        this.membership = membership;
     }
 
-    private void init() {
-        if (pointRequest == null) {
-            pointRequest = new PointRequest();
-            // ha a pontkérelem null, akkor lennie kell belépőnek
-            valuation = entrantRequest.getValuation();
-        }
-        if (entrantRequest == null) {
-            entrantRequest = new EntrantRequest();
-            // ha a belépőkérelem null, akkor lennie kell pontnak
-            valuation = pointRequest.getValuation();
-        }
+    @Override
+    public Membership getMembership() {
+        return membership;
     }
 
-    public User getUser() {
-        return user;
+    public void setMembership(Membership membership) {
+        this.membership = membership;
     }
 
-    public Group getGroup() {
-        return valuation.getGroup();
+    @Override
+    public boolean getSelected() {
+        return selected;
     }
 
-    public Semester getSemester() {
-        return valuation.getSemester();
-    }
-
-    public EntrantRequest getEntrantRequest() {
-        return entrantRequest;
-    }
-
-    public void setEntrantRequest(EntrantRequest eReq) {
-        this.entrantRequest = eReq;
-    }
-
-    public PointRequest getPointRequest() {
-        return pointRequest;
-    }
-
-    public void setPointRequest(PointRequest pReq) {
-        this.pointRequest = pReq;
+    @Override
+    public void setSelected(boolean isSelected) {
+        this.selected = isSelected;
     }
 }

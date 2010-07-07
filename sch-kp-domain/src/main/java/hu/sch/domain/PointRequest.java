@@ -54,6 +54,7 @@ public class PointRequest implements Serializable {
     protected Integer point;
     protected User user;
     private Long userId;
+    private Long valuationId;
 
     public PointRequest() {
         point = 0;
@@ -72,6 +73,15 @@ public class PointRequest implements Serializable {
 
     public void setValuation(Valuation valuation) {
         this.valuation = valuation;
+    }
+
+    @Column(name = "ertekeles_id", updatable = false, insertable = false)
+    public Long getValuationId() {
+        return valuationId;
+    }
+
+    public void setValuationId(Long valuationId) {
+        this.valuationId = valuationId;
     }
 
     @Id

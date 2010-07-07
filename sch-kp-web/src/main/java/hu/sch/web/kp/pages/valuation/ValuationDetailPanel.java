@@ -33,6 +33,7 @@ package hu.sch.web.kp.pages.valuation;
 import hu.sch.domain.Valuation;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.components.tables.ValuationTable;
+import hu.sch.web.wicket.components.tables.ValuationTableForGroup;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -64,7 +65,7 @@ public class ValuationDetailPanel extends Panel {
     }
 
     private void generateTable() {
-        valuationTable = new ValuationTable("valuationTable", null, 20);
+        valuationTable = new ValuationTableForGroup("valuationTable", null);
         add(valuationTable.getDataTable());
     }
 

@@ -28,71 +28,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.domain;
+package hu.sch.web.wicket.components;
 
-import java.io.Serializable;
+import hu.sch.web.wicket.components.tables.MembershipTable;
+import org.apache.wicket.markup.html.panel.Panel;
 
 /**
- * Egy felhasználó értékelését jellemzi (pont- és belépőkérelem)
+ * {@link MembershipTable} objektumhoz egy {@link Panel}, amivel egy div-be foglalhatjuk.
+ * Azért kell ez, mert van ahol speckó borítást akarunk adni a MembershipTable-nek, ott
+ * külön csinálunk ehhez panelt, de akkor a sima megjelenítéshez, kell egy általános megoldás,
+ * erre született ez a {@link Panel}.
  *
  * @author  messo
  * @since   2.3.1
- * @see     PointRequest
- * @see     EntrantRequest
  */
-public class ValuationData implements Serializable {
+public class MembershipTablePanel extends Panel {
 
-    protected User user;
-    protected Valuation valuation = null;
-    protected PointRequest pointRequest;
-    protected EntrantRequest entrantRequest;
-
-    public ValuationData(User user, PointRequest pointRequest, EntrantRequest entrantRequest) {
-        this.user = user;
-        this.pointRequest = pointRequest;
-        this.entrantRequest = entrantRequest;
-
-        init();
-    }
-
-    private void init() {
-        if (pointRequest == null) {
-            pointRequest = new PointRequest();
-            // ha a pontkérelem null, akkor lennie kell belépőnek
-            valuation = entrantRequest.getValuation();
-        }
-        if (entrantRequest == null) {
-            entrantRequest = new EntrantRequest();
-            // ha a belépőkérelem null, akkor lennie kell pontnak
-            valuation = pointRequest.getValuation();
-        }
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Group getGroup() {
-        return valuation.getGroup();
-    }
-
-    public Semester getSemester() {
-        return valuation.getSemester();
-    }
-
-    public EntrantRequest getEntrantRequest() {
-        return entrantRequest;
-    }
-
-    public void setEntrantRequest(EntrantRequest eReq) {
-        this.entrantRequest = eReq;
-    }
-
-    public PointRequest getPointRequest() {
-        return pointRequest;
-    }
-
-    public void setPointRequest(PointRequest pReq) {
-        this.pointRequest = pReq;
+    /**
+     * Létrehozunk egy panelt, amihez egyből hozzáadjuk a táblázatot.
+     *
+     * @param id    panel azonosítója
+     * @param tb    táblázat objektum, aminek az ID-jának "table"-nek kell lennie!
+     */
+    public MembershipTablePanel(String id, MembershipTable tb) {
+        super(id);
+        add(tb.getDataTable());
     }
 }

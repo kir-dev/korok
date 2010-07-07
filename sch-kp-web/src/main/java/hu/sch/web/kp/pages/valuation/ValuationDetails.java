@@ -42,7 +42,7 @@ import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.pages.consider.ConsiderExplainPanel;
 import hu.sch.web.kp.pages.consider.ConsiderPage;
 import hu.sch.web.wicket.components.TinyMCEContainer;
-import hu.sch.web.wicket.components.tables.ValuationTable;
+import hu.sch.web.wicket.components.tables.ValuationTableForGroup;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -108,7 +108,7 @@ public class ValuationDetails extends SecuredPageTemplate {
         add(new Label("stat.givenAB", new Model<Long>(stat.getGivenAB())));
 
         final List<ValuationData> igenylista = valuationManager.findRequestsForValuation(valuation.getId());
-        add(new ValuationTable("requests", igenylista, 20).getDataTable());
+        add(new ValuationTableForGroup("requests", igenylista).getDataTable());
 
         // Szöveges értékelés
         final WebMarkupContainer container = new WebMarkupContainer("container");

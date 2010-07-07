@@ -28,40 +28,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package hu.sch.domain.interfaces;
 
-package hu.sch.web.wicket.components;
-
-import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.domain.Membership;
-import java.util.List;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
+import java.io.Serializable;
 
 /**
+ * Ezt kell megvalósítani, ha valamelyik objektumot a MembershipTable-ben akarjuk
+ * listáztatni.
  *
- * @author aldaris
+ * @author      messo
+ * @since       2.3.1
  */
-public final class OldBoysPanel extends Panel {
+public interface MembershipTableEntry extends Serializable {
 
-    public OldBoysPanel(String id, List<Membership> inactiveMembers) {
-        super(id);
-        ListView<Membership> oldBoys = new ListView<Membership>("oldBoy", inactiveMembers) {
-
-            @Override
-            protected void populateItem(ListItem<Membership> item) {
-                Membership ms = item.getModelObject();
-                item.setModel(new CompoundPropertyModel<Membership>(ms));
-                item.add(new UserLink("userLink", ms.getUser()));
-                item.add(new Label("user.nickName"));
-                item.add(new Label("rights", getConverter(Membership.class).convertToString(ms, getLocale())));
-                item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
-                item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
-            }
-        };
-        add(oldBoys);
-    }
+    public Membership getMembership();
 }

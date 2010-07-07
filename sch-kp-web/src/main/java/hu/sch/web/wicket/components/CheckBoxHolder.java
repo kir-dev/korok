@@ -28,71 +28,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.domain;
+package hu.sch.web.wicket.components;
 
-import java.io.Serializable;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 
 /**
- * Egy felhasználó értékelését jellemzi (pont- és belépőkérelem)
+ * Egy olyan panel, amiben egyetlen CheckBox van, ami attól függően van bejelölve,
+ * hogy az átadott IModel-be ágyazott objektum getSelected() függvénye mit ad vissza.
  *
  * @author  messo
  * @since   2.3.1
- * @see     PointRequest
- * @see     EntrantRequest
  */
-public class ValuationData implements Serializable {
+public class CheckBoxHolder<T> extends Panel {
 
-    protected User user;
-    protected Valuation valuation = null;
-    protected PointRequest pointRequest;
-    protected EntrantRequest entrantRequest;
-
-    public ValuationData(User user, PointRequest pointRequest, EntrantRequest entrantRequest) {
-        this.user = user;
-        this.pointRequest = pointRequest;
-        this.entrantRequest = entrantRequest;
-
-        init();
-    }
-
-    private void init() {
-        if (pointRequest == null) {
-            pointRequest = new PointRequest();
-            // ha a pontkérelem null, akkor lennie kell belépőnek
-            valuation = entrantRequest.getValuation();
-        }
-        if (entrantRequest == null) {
-            entrantRequest = new EntrantRequest();
-            // ha a belépőkérelem null, akkor lennie kell pontnak
-            valuation = pointRequest.getValuation();
-        }
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Group getGroup() {
-        return valuation.getGroup();
-    }
-
-    public Semester getSemester() {
-        return valuation.getSemester();
-    }
-
-    public EntrantRequest getEntrantRequest() {
-        return entrantRequest;
-    }
-
-    public void setEntrantRequest(EntrantRequest eReq) {
-        this.entrantRequest = eReq;
-    }
-
-    public PointRequest getPointRequest() {
-        return pointRequest;
-    }
-
-    public void setPointRequest(PointRequest pReq) {
-        this.pointRequest = pReq;
+    /**
+     * Létrehoz egy CheckBoxHolder panelt.
+     *
+     * @param id        a panel wicket idja
+     * @param model     model
+     * @param property  a property neve, amivel bindoljuk a checkboxot
+     * @see             Panel
+     */
+    public CheckBoxHolder(String id, IModel<T> model, String property) {
+        super(id);
+        add(new CheckBox("check", new PropertyModel<Boolean>(model, property)));
     }
 }

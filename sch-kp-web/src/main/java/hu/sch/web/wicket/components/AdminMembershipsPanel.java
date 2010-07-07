@@ -28,58 +28,85 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components;
 
+import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.domain.Membership;
-import hu.sch.domain.SvieStatus;
-import hu.sch.web.wicket.components.EditEntitlementsForm.ExtendedGroup;
+import hu.sch.services.UserManagerLocal;
 import hu.sch.web.wicket.components.customlinks.ChangePostLink;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.session.VirSession;
+import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
+ * Ezt a panelt látja a user akkor, ha jogosult arra, hogy valakit öregtaggá avasson, vagy
+ * töröljön valakit a listáról.
  *
  * @author aldaris
+ * @author messo
+ * @see MembershipTable
  */
 public final class AdminMembershipsPanel extends Panel {
 
+    @EJB(name = "UserManagerBean")
+    UserManagerLocal userManager;
     private static Logger log = Logger.getLogger(AdminMembershipsPanel.class);
+    List<SelectableMembership> lines;
 
     public AdminMembershipsPanel(String id, final List<Membership> activeMembers) {
         super(id);
-        //TODO: szebbé tenni
-        final EditEntitlementsForm entForm = new EditEntitlementsForm("form", activeMembers) {
+
+        lines = new ArrayList<SelectableMembership>(activeMembers.size());
+        for (Membership ms : activeMembers) {
+            lines.add(new SelectableMembership(ms));
+        }
+
+        Form entForm = new Form("form");
+
+        add(entForm);
+
+        entForm.add(new MembershipTable<SelectableMembership>("table", lines, SelectableMembership.class) {
 
             @Override
-            public void onPopulateItem(ListItem<ExtendedGroup> item, Membership ms) {
-                ExtendedGroup extGroup = item.getModelObject();
-                item.add(new Label("isSvieMember", extGroup.getMembership().getUser().getSvieStatus().equals(SvieStatus.ELFOGADVA) ? "igen" : "nem"));
-                item.add(new ChangePostLink("postLink", extGroup.getMembership()));
-            }
+            public void onPopulateColumns(List<IColumn<SelectableMembership>> columns) {
+                columns.add(new PropertyColumn<SelectableMembership>(new Model<String>("SVIE tag?"),
+                        MembershipTable.SORT_BY_SVIE, "membership.user.svieMemberText"));
+                
+                columns.add(new AbstractColumn<SelectableMembership>(new Model<String>("Jogok")) {
 
-            @Override
-            public void onSubmit() {
+                    @Override
+                    public void populateItem(Item<ICellPopulator<SelectableMembership>> cellItem, String id, IModel<SelectableMembership> model) {
+                        cellItem.add(new ChangePostLink(id, model.getObject().getMembership()));
+                    }
+                });
             }
-        };
+        }.getDataTable());
+
         entForm.add(new Button("oldBoyButton") {
 
             @Override
             public void onSubmit() {
                 try {
                     long myId = ((VirSession) getSession()).getUserId();
-                    for (ExtendedGroup extendedGroup : entForm.getLines()) {
+                    for (SelectableMembership extendedGroup : lines) {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
                             if (!ms.getUser().getId().equals(myId)) {
-                                entForm.userManager.setMemberToOldBoy(ms);
+                                userManager.setMemberToOldBoy(ms);
                             }
                         }
                     }
@@ -103,11 +130,11 @@ public final class AdminMembershipsPanel extends Panel {
             public void onSubmit() {
                 try {
                     long myId = ((VirSession) getSession()).getUserId();
-                    for (ExtendedGroup extendedGroup : entForm.getLines()) {
+                    for (SelectableMembership extendedGroup : lines) {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
                             if (!ms.getUser().getId().equals(myId)) {
-                                entForm.userManager.deleteMembership(ms);
+                                userManager.deleteMembership(ms);
                             }
                         }
                     }
@@ -119,6 +146,5 @@ public final class AdminMembershipsPanel extends Panel {
                 setResponsePage(ShowGroup.class, new PageParameters("id=" + activeMembers.get(0).getGroup().getId()));
             }
         });
-        add(entForm);
     }
 }
