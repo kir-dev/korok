@@ -30,14 +30,13 @@
  */
 package hu.sch.web.kp.pages.user;
 
-import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
+import hu.sch.web.wicket.components.tables.UsersMembershipTable;
+import hu.sch.domain.Group;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
 import hu.sch.domain.User;
-import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
-import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,15 +44,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
@@ -74,7 +68,16 @@ public class ShowUser extends SecuredPageTemplate {
         initComponents();
     }
 
-    public void initComponents() {
+    public ShowUser(PageParameters parameters) {
+        try {
+            id = parameters.getLong("id");
+        } catch (Throwable t) {
+            logger.warn("Could not interpret pageparameter: " + parameters);
+        }
+        initComponents();
+    }
+
+    public final void initComponents() {
         try {
             if (id == null) {
                 id = getSession().getUserId();
@@ -104,47 +107,23 @@ public class ShowUser extends SecuredPageTemplate {
         add(new ExternalLink("profilelink",
                 "/profile/show/virid/" + id.toString()));
         user.sortMemberships();
-        ListView<Membership> csoptagsagok = new ListView<Membership>("csoptagsag", user.getMemberships()) {
+
+        add(new UsersMembershipTable("csoptagsag", user.getMemberships(), ownProfile, 20) {
 
             @Override
-            protected void populateItem(ListItem<Membership> item) {
-                final Membership ms = item.getModelObject();
-                item.setModel(new CompoundPropertyModel<Membership>(ms));
-                BookmarkablePageLink csoplink =
-                        new BookmarkablePageLink<ShowGroup>("csoplink", ShowGroup.class,
-                        new PageParameters("id="
-                        + ms.getGroup().getId().toString()));
-                csoplink.add(new Label("group.name"));
-                item.add(csoplink);
-                item.add(new Label("rights", getConverter(Membership.class).convertToString(ms, getLocale())));
-                item.add(DateLabel.forDatePattern("start", "yyyy.MM.dd."));
-                item.add(DateLabel.forDatePattern("end", "yyyy.MM.dd."));
-
-                Link<Void> oldBoyLink = new Link<Void>("oldBoyLink") {
-
-                    @Override
-                    public void onClick() {
-                        for (Post post : ms.getPosts()) {
-                            if (post.getPostType().getPostName().equals(PostType.KORVEZETO)) {
-                                getSession().error("Körvezetőként nem teheted magad öregtaggá!");
-                                setResponsePage(ShowUser.class);
-                                return;
-                            }
-                        }
-                        userManager.setMemberToOldBoy(ms);
-                        getSession().info("Az öregtaggá válás sikeresen megtörtént");
-                        setResponsePage(ShowUser.class);
+            protected void onWannabeOldBoy(Membership ms) {
+                for (Post post : ms.getPosts()) {
+                    if (post.getPostType().getPostName().equals(PostType.KORVEZETO)) {
+                        getSession().error("Körvezetőként nem teheted magad öregtaggá!");
                         return;
                     }
-                };
-                oldBoyLink.add(new ConfirmationBehavior("Biztosan öregtaggá szeretnél válni?"));
-                if (!ownProfile || ms.getEnd() != null) {
-                    oldBoyLink.setVisible(false);
                 }
-                item.add(oldBoyLink);
+                userManager.setMemberToOldBoy(ms);
+                getSession().info("Az öregtaggá válás sikeresen megtörtént");
             }
-        };
-        add(csoptagsagok);
+        }.getDataTable());
+
+        // Nézzük meg, hogy milyen csoportokba hívhatjuk meg a felhasználót.
         List<Group> groups;
 
         if (getUser() == null) {
@@ -174,15 +153,6 @@ public class ShowUser extends SecuredPageTemplate {
         add(csoportbaFelvetel);
         csoportbaFelvetel.setVisible(!korvezetoicsoportok.isEmpty()
                 && isUserGroupLeaderInSomeGroup());
-    }
-
-    public ShowUser(PageParameters parameters) {
-        try {
-            id = parameters.getLong("id");
-        } catch (Throwable t) {
-            logger.warn("Could not interpret pageparameter: " + parameters);
-        }
-        initComponents();
     }
 
     public Group getAddToCsoportSelected() {

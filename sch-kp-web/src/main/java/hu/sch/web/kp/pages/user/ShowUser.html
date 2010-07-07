@@ -11,24 +11,7 @@
 
     <h2>Tagságok</h2>
     <div class="subdata">
-        <table class="withheader">
-            <tr class="headers">
-                <th>Kör neve</th>
-                <th>Betöltött poszt</th>
-                <th>Tagsági idő</th>
-                <th></th>
-            </tr>
-            <tr wicket:id="csoptagsag">
-                <td>
-                    <a href="#" wicket:id="csoplink">
-                        <span wicket:id="group.name"/>
-                    </a>
-                </td>
-                <td wicket:id="rights" />
-                <td><span wicket:id="start"/> - <span wicket:id="end"/></td>
-                <td><a wicket:id="oldBoyLink">Öregtaggá válás</a></td>
-            </tr>
-        </table>
+        <table class="withheader" wicket:id="csoptagsag" />
     </div>
     <form wicket:id="csoportbaFelvetel">
         <h2>Felvétel körbe</h2>

@@ -32,6 +32,7 @@ package hu.sch.web.wicket.components.tables;
 
 import java.text.DateFormat;
 import java.util.Date;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.basic.Label;
@@ -97,5 +98,6 @@ public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
         }
 
         item.add(new Label(componentId, sb.toString()));
+        item.add(new SimpleAttributeModifier("style", "width: 180px"));
     }
 }
