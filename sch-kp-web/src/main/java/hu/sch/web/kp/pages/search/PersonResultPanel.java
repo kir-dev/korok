@@ -31,18 +31,15 @@
 package hu.sch.web.kp.pages.search;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.services.LdapManagerLocal;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
 import hu.sch.web.wicket.components.customlinks.SearchLink;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
@@ -54,8 +51,6 @@ public class PersonResultPanel extends Panel {
 
     public PersonResultPanel(String id, List<Person> persons) {
         super(id);
-
-        InjectorHolder.getInjector().inject(this);
 
         List<IColumn<Person>> columns = new ArrayList<IColumn<Person>>();
         columns.add(new PanelColumn<Person>("Név", "name") {
