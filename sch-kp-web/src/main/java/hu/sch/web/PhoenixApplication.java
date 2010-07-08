@@ -218,7 +218,7 @@ public class PhoenixApplication extends WebApplication {
 
     @Override
     public RequestCycle newRequestCycle(Request request, Response response) {
-        if (getConfigurationType().equals(DEVELOPMENT)) {
+        if (!Configuration.getEnvironment().equals(Environment.PRODUCTION)) {
             return super.newRequestCycle(request, response);
         } else {
             return new WebRequestCycle(this, (WebRequest) request, (WebResponse) response) {
