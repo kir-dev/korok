@@ -171,7 +171,7 @@ public class Valuations extends SecuredPageTemplate {
                         // group kiválasztása (mert nem feltétlen volt legördülővel...)
                         if (val == null) {
                             // ha egyáltalán nincs még értékelés az adott csoporthoz
-                            // és szemeszterhez, akkor elősször szöveges értékelés kell
+                            // és szemeszterhez, akkor először szöveges értékelés kell
                             setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
                         } else {
                             // pontigény leadása a szöveges értékelés mellé
@@ -195,10 +195,8 @@ public class Valuations extends SecuredPageTemplate {
                     public void onClick() {
                         // group kiválasztása (mert nem feltétlen volt legördülővel...)
                         if (val == null) {
-                            /*
-                             * ha egyáltalán nincs még értékelés az adott csoporthoz
-                             * és szemeszterhez, akkor elősször szöveges értékelés kell
-                             */
+                            // ha egyáltalán nincs még értékelés az adott csoporthoz
+                            // és szemeszterhez, akkor először szöveges értékelés kell
                             setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
                         } else {
                             // belépőigény leadása a szöveges értékelés mellé
