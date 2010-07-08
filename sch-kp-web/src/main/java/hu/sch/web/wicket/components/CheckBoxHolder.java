@@ -48,12 +48,12 @@ public class CheckBoxHolder<T> extends Panel {
      * Létrehoz egy CheckBoxHolder panelt.
      *
      * @param id        a panel wicket idja
-     * @param model     model
+     * @param obj       objektum
      * @param property  a property neve, amivel bindoljuk a checkboxot
      * @see             Panel
      */
-    public CheckBoxHolder(String id, IModel<T> model, String property) {
+    public CheckBoxHolder(String id, T obj, String property) {
         super(id);
-        add(new CheckBox("check", new PropertyModel<Boolean>(model, property)));
+        add(new CheckBox("check", new PropertyModel<Boolean>(obj, property)));
     }
 }

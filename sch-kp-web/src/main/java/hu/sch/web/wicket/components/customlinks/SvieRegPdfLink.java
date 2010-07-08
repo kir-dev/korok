@@ -67,7 +67,7 @@ import org.apache.wicket.util.resource.IResourceStream;
  *
  * @author aldaris
  */
-public class SvieRegPdfLink extends Panel {
+public class SvieRegPdfLink extends LinkPanel<User> {
 
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
@@ -151,7 +151,7 @@ public class SvieRegPdfLink extends Panel {
     }
 
     public SvieRegPdfLink(String id, User user2) {
-        super(id);
+        super(id, user2);
         this.user = user2;
         cachedmsType = user.getSvieMembershipType().toString();
         try {

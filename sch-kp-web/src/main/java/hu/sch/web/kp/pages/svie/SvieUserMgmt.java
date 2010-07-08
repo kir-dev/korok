@@ -35,9 +35,11 @@ import hu.sch.domain.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.components.choosers.MembershipTypeChooser;
 import hu.sch.web.wicket.components.choosers.SvieStatusChooser;
+import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import hu.sch.web.wicket.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.wicket.components.tables.LinkColumn;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import hu.sch.web.wicket.util.SortableUserDataProvider;
 import java.util.ArrayList;
@@ -110,15 +112,16 @@ public final class SvieUserMgmt extends SecuredPageTemplate {
             }
         });
         columns.add(new PropertyColumn<User>(new Model<String>("Elsődleges kör"), "sviePrimaryMembershipText"));
-        columns.add(new PanelColumn<User>("Felvételi kérvény") {
+        columns.add(new LinkColumn<User>("Felvételi kérvény") {
 
             @Override
-            protected Panel getPanel(String componentId, User user) {
-                SvieRegPdfLink svieRegLink = new SvieRegPdfLink(componentId, user);
-                if (user.getSvieStatus().equals(SvieStatus.ELFOGADVA)) {
-                    svieRegLink.setVisible(false);
-                }
-                return svieRegLink;
+            protected boolean isVisible(User user) {
+                return !user.getSvieStatus().equals(SvieStatus.ELFOGADVA);
+            }
+
+            @Override
+            protected LinkPanel getLinkPanel(String componentId, User user) {
+                return new SvieRegPdfLink(componentId, user);
             }
         });
 

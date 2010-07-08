@@ -37,8 +37,8 @@ import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.wicket.components.CheckBoxHolder;
 import hu.sch.web.wicket.components.SvieDelegateNumberField;
-import hu.sch.web.wicket.components.SvieGroupStatusSelector;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import hu.sch.web.wicket.util.SortableGroupDataProvider;
 import java.util.ArrayList;
@@ -51,16 +51,12 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
@@ -92,7 +88,7 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
         groups = userManager.getAllGroupsWithCount();
         filteredGroups = new ArrayList<Group>(groups);
 
-        List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
+        List<IColumn<Group>> columns = new ArrayList<IColumn<Group>>();
         columns.add(new PanelColumn<Group>("Név", "name") {
 
             @Override
@@ -110,11 +106,11 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
             }
         });
         columns.add(new PropertyColumn<Group>(new Model<String>("Elsődleges tagok száma"), "numberOfPrimaryMembers"));
-        columns.add(new AbstractColumn<Group>(new Model<String>("SVIE tag?")) {
+        columns.add(new PanelColumn<Group>("SVIE tag?") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
-                cellItem.add(new SvieGroupStatusSelector(componentId, rowModel.getObject()));
+            protected Panel getPanel(String componentId, Group g) {
+                return new CheckBoxHolder<Group>(componentId, g, "isSvie");
             }
         });
         columns.add(new PanelColumn<Group>("Küldöttek száma") {

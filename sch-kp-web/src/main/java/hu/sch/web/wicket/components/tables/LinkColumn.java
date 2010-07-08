@@ -68,9 +68,12 @@ public abstract class LinkColumn<T> extends AbstractColumn<T> {
     }
 
     /**
-     * Akkor hívódik meg, amikor rákapcsolunk a linkre
+     * Akkor hívhatjuk meg, amikor linkre kapcsolunk így átadhatjuk az eseményvezérlést
+     * a táblázatnak, amennyiben ottani adatoktól is függ a cselekmény.
      */
-    public abstract void onClick(T obj);
+    public void onClick(T obj) {
+
+    }
 
     /**
      * Itt mondhatjuk meg, hogy látható legyen-e a link, amihez segítségül

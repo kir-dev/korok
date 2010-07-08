@@ -44,15 +44,11 @@ import java.util.List;
 import java.util.Locale;
 import org.apache.wicket.Application;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.convert.IConverter;
@@ -107,11 +103,11 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
         onPopulateColumns(columns);
 
         if (SelectableEntry.class.isAssignableFrom(c)) {
-            columns.add(new AbstractColumn<T>(new Model<String>(""), "checkbox") {
+            columns.add(new PanelColumn<T>("", "checkbox") {
 
                 @Override
-                public void populateItem(Item<ICellPopulator<T>> cellItem, String componentId, IModel<T> rowModel) {
-                    cellItem.add(new CheckBoxHolder<T>(componentId, rowModel, "selected"));
+                protected Panel getPanel(String componentId, T obj) {
+                    return new CheckBoxHolder<T>(componentId, obj, "selected");
                 }
             });
         }
