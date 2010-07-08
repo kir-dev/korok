@@ -65,7 +65,10 @@ import javax.persistence.Transient;
     + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true"),
     @NamedQuery(name = "getAllDelegated",
     query = "SELECT u FROM User u WHERE u.delegated = true "
-    + "ORDER BY u.lastName, u.firstName")
+    + "ORDER BY u.lastName, u.firstName"),
+    @NamedQuery(name = Membership.findMembershipsForGroup, query =
+    "SELECT ms FROM Membership ms "
+    + "WHERE ms.groupId = :id")
 })
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq")
 public class Membership implements MembershipTableEntry {
@@ -75,6 +78,8 @@ public class Membership implements MembershipTableEntry {
     public static final String getMembers = "getMembers";
     public static final String getDelegatedMemberForGroup = "getDelegatedMemberForGroup";
     public static final String getAllDelegated = "getAllDelegated";
+    public static final String findMembershipsForGroup = "findMembershipsForGroup";
+
     /*
     id               | integer | not null default nextval('grp_members_seq'::regclass)
     grp_id           | integer |
@@ -90,6 +95,7 @@ public class Membership implements MembershipTableEntry {
      * Melyik csoport tagja
      */
     private Group group;
+    private Long groupId;
     /**
      * Ki a tagja a csoportnak
      */
@@ -126,6 +132,15 @@ public class Membership implements MembershipTableEntry {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    @Column(name = "grp_id", insertable = false, updatable = false)
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     @ManyToOne(optional = false)

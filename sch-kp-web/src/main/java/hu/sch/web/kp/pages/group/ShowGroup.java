@@ -60,7 +60,9 @@ import org.apache.wicket.model.Model;
 /**
  * Az egyes körökről ezen az oldalon jelenítünk meg részletes adatokat. A
  * körvezetők számára lehetőség van a kör egyes feladatait kezelni.
- * @author hege
+ *
+ * @author  hege
+ * @author  messo
  */
 public class ShowGroup extends SecuredPageTemplate {
 
@@ -88,15 +90,16 @@ public class ShowGroup extends SecuredPageTemplate {
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        final Group group = userManager.findGroupWithCsoporttagsagokById(id);
-        final User user = userManager.findUserWithCsoporttagsagokById(getSession().getUserId());
+        final Group group = userManager.findGroupWithMembershipsById(id);
+        final User user = getUser();
         //ha a kör nem létezik
         if (group == null) {
             error("A megadott kör nem létezik!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        //headercímke szövegének megadása, csalni kell MAVE hosszú neve miatt..
+        // TODO: elegánsabb megoldást szerkesszünk ide (rövidített név mező?)
+        // headercímke szövegének megadása, csalni kell MAVE hosszú neve miatt..
         if (group.getName().contains("Informatikus-hallgatók")) {
             setHeaderLabelText("MAVE adatlapja");
         } else {
@@ -162,7 +165,8 @@ public class ShowGroup extends SecuredPageTemplate {
         List<Membership> inactiveMembers = group.getInactiveMemberships();
         Panel adminOrActivePanel;
         Panel adminOrOldBoysPanel;
-        if (isUserGroupLeader(group) || hasUserDelegatedPostInGroup(group)) {
+
+        if (isUserGroupLeader(group) || hasUserDelegatedPostInGroup(user, group)) {
             adminOrActivePanel = new AdminMembershipsPanel("adminOrActive", activeMembers);
             adminOrOldBoysPanel = new AdminOldBoysPanel("adminOrOldBoy", inactiveMembers);
         } else {

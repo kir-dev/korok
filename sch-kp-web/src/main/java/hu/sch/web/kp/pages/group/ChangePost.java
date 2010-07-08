@@ -87,7 +87,8 @@ public final class ChangePost extends SecuredPageTemplate {
 
         add(new FeedbackPanel("pagemessages"));
         //kell, hogy a csoporttagságok is betöltődjenek
-        Group group = userManager.findGroupWithCsoporttagsagokById(ms.getGroup().getId());
+        Group group = ms.getGroup();
+        userManager.loadMemberships(group);
         User user = ms.getUser();
 
         if (!isUserGroupLeader(group) && !hasUserDelegatedPostInGroup(group)) {

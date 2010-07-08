@@ -187,7 +187,7 @@ public abstract class SecuredPageTemplate extends WebPage {
         if (getSession().getUserId() != virId) {
             loadUser();
         }
-        return userManager.findUserWithCsoporttagsagokById(getSession().getUserId());
+        return userManager.findUserWithMembershipsById(getSession().getUserId());
     }
 
     protected final String getRemoteUser() {
@@ -229,8 +229,28 @@ public abstract class SecuredPageTemplate extends WebPage {
         return getAuthorizationComponent().isGroupLeaderInSomeGroup(getRequest());
     }
 
+    /**
+     * A beloginolt felhasználót ellenőrizzük, hogy van-e delegált posztja az adott csoportban
+     *
+     * @param group     melyik csoportban vizsgálódunk
+     * @return          Van-e delegált posztja a csoportban?
+     */
     protected final boolean hasUserDelegatedPostInGroup(Group group) {
         User user = getUser();
+        if (user == null) {
+            return false;
+        }
+        return postManager.hasUserDelegatedPostInGroup(group, user);
+    }
+
+    /**
+     * Az adott felhasználót ellenőrizzük, hogy van-e delegált posztja az adott csoportban
+     *
+     * @param user      kérdéses felhasználó
+     * @param group     melyik csoportban vizsgálódunk
+     * @return          Van-e delegált posztja a csoportban?
+     */
+    protected final boolean hasUserDelegatedPostInGroup(User user, Group group) {
         if (user == null) {
             return false;
         }

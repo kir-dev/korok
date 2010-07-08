@@ -96,7 +96,7 @@ public class UserHistory extends SecuredPageTemplate {
         if (id == null) {
             id = getSession().getUserId();
         }
-        user = userManager.findUserWithCsoporttagsagokById(id);
+        user = userManager.findUserWithMembershipsById(id);
         if (user == null) {
             log.warn("Not founded user for UserHistory page with id: " + id);
             error("A megadott felhasználóhoz nem tartozik közösségi történet!");

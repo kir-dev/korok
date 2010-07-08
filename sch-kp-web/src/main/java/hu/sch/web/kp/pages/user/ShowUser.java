@@ -90,7 +90,7 @@ public class ShowUser extends SecuredPageTemplate {
             throw new RestartResponseException(getApplication().getHomePage());
         }
         add(new FeedbackPanel("pagemessages"));
-        final User user = userManager.findUserWithCsoporttagsagokById(id);
+        final User user = userManager.findUserWithMembershipsById(id);
         if (user == null) {
             info("A felhasználó nem található");
             throw new RestartResponseException(GroupHierarchy.class);
@@ -125,12 +125,13 @@ public class ShowUser extends SecuredPageTemplate {
 
         // Nézzük meg, hogy milyen csoportokba hívhatjuk meg a felhasználót.
         List<Group> groups;
-
-        if (getUser() == null) {
+        User currentUser = getUser();
+        if (currentUser == null) {
             groups = new ArrayList<Group>();
         } else {
-            groups = getUser().getGroups();
+            groups = currentUser.getGroups();
         }
+        
         List<Group> korvezetoicsoportok = new ArrayList<Group>();
         for (Group cs : groups) {
             if (isUserGroupLeader(cs) && !user.getGroups().contains(cs)) {

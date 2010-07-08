@@ -52,7 +52,7 @@ public interface UserManagerLocal {
 
     User findUserById(Long userId);
 
-    User findUserWithCsoporttagsagokById(Long userId);
+    User findUserWithMembershipsById(Long userId);
 
     /**
      * Felhasználó felvétele csoportba.
@@ -77,7 +77,9 @@ public interface UserManagerLocal {
 
     Group findGroupById(Long id);
 
-    Group findGroupWithCsoporttagsagokById(Long id);
+    Group findGroupWithMembershipsById(Long id);
+
+    void loadMemberships(Group g);
 
     void deleteMembership(Membership ms);
 

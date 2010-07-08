@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.EntrantRequest;
@@ -48,13 +47,11 @@ import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.UserManagerLocal;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -62,7 +59,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
+import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 
 /**
@@ -163,7 +160,7 @@ public class UserManagerBean implements UserManagerLocal {
             List<Post> posts = new ArrayList<Post>();
             posts.add(post);
             ms.setPosts(posts);
-            
+
             em.persist(post);
         }
 
@@ -346,12 +343,12 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public User findUserWithCsoporttagsagokById(Long userId) {
-        Query q = em.createNamedQuery(User.findWithMemberships);
+    public User findUserWithMembershipsById(Long userId) {
+        TypedQuery<User> q = em.createNamedQuery(User.findWithMemberships, User.class);
         q.setParameter("id", userId);
+
         try {
-            User user = (User) q.getSingleResult();
-            return user;
+            return q.getSingleResult();
         } catch (Exception ex) {
             log.warn("Can't find user with memberships for this id: " + userId);
             return null;
@@ -359,15 +356,27 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public Group findGroupWithCsoporttagsagokById(Long id) {
-        Query q = em.createNamedQuery(Group.findWithMemberships);
+    public Group findGroupWithMembershipsById(Long id) {
+        TypedQuery<Group> q = em.createNamedQuery(Group.findWithMemberships, Group.class);
         q.setParameter("id", id);
+
         try {
-            Group group = (Group) q.getSingleResult();
-            return group;
+            return q.getSingleResult();
         } catch (Exception ex) {
             log.warn("Can't find group with memberships", ex);
             return null;
+        }
+    }
+
+    @Override
+    public void loadMemberships(Group g) {
+        TypedQuery<Membership> q = em.createNamedQuery(Membership.findMembershipsForGroup, Membership.class);
+        q.setParameter("id", g.getId());
+
+        try {
+            g.setMemberships(q.getResultList());
+        } catch (Exception ex) {
+            log.warn("Can't find group with memberships", ex);
         }
     }
 
@@ -383,8 +392,7 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public Membership getMembership(Long memberId) {
-        Membership cst = em.find(Membership.class, memberId);
-        return cst;
+        return em.find(Membership.class, memberId);
     }
 
     @Override

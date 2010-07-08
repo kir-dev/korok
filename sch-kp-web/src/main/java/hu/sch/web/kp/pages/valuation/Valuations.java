@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.valuation;
 
 import hu.sch.domain.Group;
@@ -112,7 +111,7 @@ public class Valuations extends SecuredPageTemplate {
         groupName.setVisible(false);
         add(groupName);
 
-        User user = userManager.findUserWithCsoporttagsagokById(id);
+        User user = userManager.findUserWithMembershipsById(id);
         if (user == null) {
             //Ez egy soha sorra nem kerulo feltetel, mivel csak korvezetonek jelenhet meg
             //az opcio, igy legalabb tuti nem szall el
@@ -171,10 +170,8 @@ public class Valuations extends SecuredPageTemplate {
                     public void onClick() {
                         // group kiválasztása (mert nem feltétlen volt legördülővel...)
                         if (val == null) {
-                            /*
-                             * ha egyáltalán nincs még értékelés az adott csoporthoz
-                             * és szemeszterhez, akkor elősször szöveges értékelés kell
-                             */
+                            // ha egyáltalán nincs még értékelés az adott csoporthoz
+                            // és szemeszterhez, akkor elősször szöveges értékelés kell
                             setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
                         } else {
                             // pontigény leadása a szöveges értékelés mellé
