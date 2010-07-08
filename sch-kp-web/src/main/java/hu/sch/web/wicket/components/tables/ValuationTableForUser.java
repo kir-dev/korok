@@ -9,9 +9,9 @@ import hu.sch.web.wicket.components.customlinks.GroupLink;
 import java.util.List;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -46,11 +46,11 @@ public class ValuationTableForUser extends ValuationTable {
             }
         });
 
-        columns.add(new AbstractColumn<ValuationData>(new Model<String>("Kör"), MySortableDataProvider.SORT_BY_GROUP) {
+        columns.add(new PanelColumn<ValuationData>("Kör", MySortableDataProvider.SORT_BY_GROUP) {
 
             @Override
-            public void populateItem(Item<ICellPopulator<ValuationData>> cellItem, String componentId, IModel<ValuationData> rowModel) {
-                cellItem.add(new GroupLink(componentId, rowModel.getObject().getGroup()));
+            protected Panel getPanel(String componentId, ValuationData vd) {
+                return new GroupLink(componentId, vd.getGroup());
             }
         });
 

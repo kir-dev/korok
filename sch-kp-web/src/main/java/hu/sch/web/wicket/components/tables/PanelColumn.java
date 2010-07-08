@@ -53,6 +53,14 @@ public abstract class PanelColumn<T> extends AbstractColumn<T> {
         this(new Model<String>(header), sortProperty);
     }
 
+    public PanelColumn(IModel<String> displayModel) {
+        this(displayModel, null);
+    }
+
+    public PanelColumn(String header) {
+        this(header, null);
+    }
+
     @Override
     public void populateItem(Item<ICellPopulator<T>> item, String componentId, IModel<T> rowModel) {
         item.add(getPanel(componentId, rowModel.getObject()));

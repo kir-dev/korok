@@ -39,6 +39,7 @@ import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.web.wicket.components.SvieDelegateNumberField;
 import hu.sch.web.wicket.components.SvieGroupStatusSelector;
+import hu.sch.web.wicket.components.tables.PanelColumn;
 import hu.sch.web.wicket.util.SortableGroupDataProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +58,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColu
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -91,30 +93,35 @@ public final class SvieGroupMgmt extends SecuredPageTemplate {
         filteredGroups = new ArrayList<Group>(groups);
 
         List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
-        columns.add(new AbstractColumn<Group>(new Model<String>("Név"), "name") {
+        columns.add(new PanelColumn<Group>("Név", "name") {
 
-            public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
-                cellItem.add(new GroupLink(componentId, rowModel.getObject()));
+            @Override
+            protected Panel getPanel(String componentId, Group g) {
+                return new GroupLink(componentId, g);
             }
         });
-        columns.add(new AbstractColumn<Group>(new Model<String>("Körvezető neve")) {
+        columns.add(new PanelColumn<Group>("Körvezető neve") {
 
-            public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
-                User korvezeto = userManager.getGroupLeaderForGroup(rowModel.getObject().getId());
-                cellItem.add(new UserLink(componentId, korvezeto));
+            @Override
+            protected Panel getPanel(String componentId, Group g) {
+                // FIXME: nagyon gány, soronként 1 lekérdezés!!!
+                User korvezeto = userManager.getGroupLeaderForGroup(g.getId());
+                return new UserLink(componentId, korvezeto);
             }
         });
-        columns.add(new PropertyColumn<Integer>(new Model<String>("Elsődleges tagok száma"), "numberOfPrimaryMembers"));
+        columns.add(new PropertyColumn<Group>(new Model<String>("Elsődleges tagok száma"), "numberOfPrimaryMembers"));
         columns.add(new AbstractColumn<Group>(new Model<String>("SVIE tag?")) {
 
+            @Override
             public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
                 cellItem.add(new SvieGroupStatusSelector(componentId, rowModel.getObject()));
             }
         });
-        columns.add(new AbstractColumn<Group>(new Model<String>("Küldöttek száma")) {
+        columns.add(new PanelColumn<Group>("Küldöttek száma") {
 
-            public void populateItem(Item<ICellPopulator<Group>> cellItem, String componentId, IModel<Group> rowModel) {
-                cellItem.add(new SvieDelegateNumberField(componentId, rowModel.getObject()));
+            @Override
+            protected Panel getPanel(String componentId, Group g) {
+                return new SvieDelegateNumberField(componentId, g);
             }
         });
 

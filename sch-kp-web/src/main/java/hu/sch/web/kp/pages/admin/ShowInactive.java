@@ -28,26 +28,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.admin;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.web.wicket.components.customlinks.DeletePersonLink;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
+import hu.sch.web.wicket.components.tables.LinkColumn;
+import hu.sch.web.wicket.components.tables.PanelColumn;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.IModel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 /**
@@ -66,22 +65,22 @@ public class ShowInactive extends SecuredPageTemplate {
         add(new FeedbackPanel("pagemessages"));
         List<Person> inactivePersons = ldapManager.searchInactives();
 
-        List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
-        columns.add(new AbstractColumn<Person>(new Model<String>("Név"), "name") {
+        List<IColumn<Person>> columns = new ArrayList<IColumn<Person>>();
+        columns.add(new PanelColumn<Person>("Név", "name") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<Person>> item, String componentId, IModel<Person> imodel) {
-                item.add(new PersonLinkPanel(componentId, imodel.getObject()));
+            protected Panel getPanel(String componentId, Person p) {
+                return new PersonLinkPanel(componentId, p);
             }
         });
         columns.add(new PropertyColumn<Person>(new Model<String>("Uid"), "uid", "uid"));
         columns.add(new PropertyColumn<Person>(new Model<String>("E-mail"), "mail"));
         columns.add(new PropertyColumn<Person>(new Model<String>("Neptun kód"), "neptun", "neptun"));
-        columns.add(new AbstractColumn<Person>(new Model<String>("Törlés")) {
+        columns.add(new PanelColumn<Person>("Törlés") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<Person>> item, String componentId, IModel<Person> imodel) {
-                item.add(new DeletePersonLink(componentId, imodel.getObject(), ShowInactive.class));
+            protected Panel getPanel(String componentId, Person p) {
+                return new DeletePersonLink(componentId, p, ShowInactive.class);
             }
         });
 

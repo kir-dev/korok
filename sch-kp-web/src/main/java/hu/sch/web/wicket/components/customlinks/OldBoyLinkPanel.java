@@ -43,8 +43,8 @@ import org.apache.wicket.markup.html.link.Link;
  */
 public class OldBoyLinkPanel extends LinkPanel<Membership> {
 
-    public OldBoyLinkPanel(String id) {
-        super(id);
+    public OldBoyLinkPanel(String id, Membership ms) {
+        super(id, ms);
 
         Link<Void> link = new Link<Void>("link") {
 

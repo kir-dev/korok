@@ -59,9 +59,8 @@ public abstract class LinkColumn<T> extends AbstractColumn<T> {
     public void populateItem(Item<ICellPopulator<T>> item, String componentId, IModel<T> rowModel) {
         T obj = rowModel.getObject();
         if (isVisible(obj)) {
-            LinkPanel panel = getLinkPanel(componentId);
+            LinkPanel panel = getLinkPanel(componentId, obj);
             panel.setColumn(this);
-            panel.setObject(obj);
             item.add(panel);
         } else {
             item.add(new Label(componentId, ""));
@@ -78,14 +77,17 @@ public abstract class LinkColumn<T> extends AbstractColumn<T> {
      * hívhatjuk az objektumunkat.
      *
      * @param obj   ami segíthet a válaszolásban
-     * @return  látható-e
+     * @return  látható-e (alapértelemzetten igen)
      */
-    protected abstract boolean isVisible(T obj);
+    protected boolean isVisible(T obj) {
+        return true;
+    }
 
     /**
      * Ezzel kérjük le a konkrét LinkPanel implementációt.
      * @param componentId
+     * @param obj
      * @return
      */
-    protected abstract LinkPanel getLinkPanel(String componentId);
+    protected abstract LinkPanel getLinkPanel(String componentId, T obj);
 }

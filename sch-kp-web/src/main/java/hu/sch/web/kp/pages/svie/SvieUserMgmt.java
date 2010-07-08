@@ -38,6 +38,7 @@ import hu.sch.web.wicket.components.choosers.SvieStatusChooser;
 import hu.sch.web.wicket.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.wicket.components.tables.PanelColumn;
 import hu.sch.web.wicket.util.SortableUserDataProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,15 +50,12 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.IModel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
@@ -89,40 +87,38 @@ public final class SvieUserMgmt extends SecuredPageTemplate {
         users = svieManager.getSvieMembers();
         filteredUsers = new ArrayList<User>(users);
 
-        List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
-        columns.add(new AbstractColumn<User>(new Model<String>("Név"), "name") {
+        List<IColumn<User>> columns = new ArrayList<IColumn<User>>();
+        columns.add(new PanelColumn<User>("Név", "name") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<User>> cellItem, String componentId, IModel<User> rowModel) {
-                cellItem.add(new UserLink(componentId, rowModel.getObject()));
+            protected Panel getPanel(String componentId, User u) {
+                return new UserLink(componentId, u);
             }
         });
-        columns.add(new AbstractColumn<User>(new Model<String>("Tagság típusa"), "svieMembershipType") {
+        columns.add(new PanelColumn<User>("Tagság típusa", "svieMembershipType") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<User>> cellItem, String componentId, IModel<User> rowModel) {
-                cellItem.add(new MembershipTypeChooser(componentId, rowModel.getObject()));
+            protected Panel getPanel(String componentId, User u) {
+                return new MembershipTypeChooser(componentId, u);
             }
         });
-        columns.add(new AbstractColumn<User>(new Model<String>("Tagság állapota")) {
+        columns.add(new PanelColumn<User>("Tagság állapota") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<User>> cellItem, String componentId, IModel<User> rowModel) {
-                cellItem.add(new SvieStatusChooser(componentId, rowModel.getObject()));
+            protected Panel getPanel(String componentId, User u) {
+                return new SvieStatusChooser(componentId, u);
             }
         });
         columns.add(new PropertyColumn<User>(new Model<String>("Elsődleges kör"), "sviePrimaryMembershipText"));
-        columns.add(new AbstractColumn<User>(new Model<String>("Felvételi kérvény")) {
+        columns.add(new PanelColumn<User>("Felvételi kérvény") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<User>> cellItem, String componentId,
-                    IModel<User> model) {
-                User user = model.getObject();
+            protected Panel getPanel(String componentId, User user) {
                 SvieRegPdfLink svieRegLink = new SvieRegPdfLink(componentId, user);
-                cellItem.add(svieRegLink);
                 if (user.getSvieStatus().equals(SvieStatus.ELFOGADVA)) {
                     svieRegLink.setVisible(false);
                 }
+                return svieRegLink;
             }
         });
 

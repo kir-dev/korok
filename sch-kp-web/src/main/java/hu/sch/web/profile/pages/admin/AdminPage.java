@@ -42,6 +42,7 @@ import hu.sch.web.profile.pages.edit.PersonForm;
 import hu.sch.web.profile.pages.edit.PersonForm.KeyValuePairInForm;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
+import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.PageParameters;

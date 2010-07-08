@@ -52,15 +52,12 @@ public abstract class LinkPanel<T> extends Panel {
     protected LinkColumn column;
     protected T obj;
 
-    public LinkPanel(String id) {
+    public LinkPanel(String id, T obj) {
         super(id);
+        this.obj = obj;
     }
 
     public void setColumn(LinkColumn column) {
         this.column = column;
-    }
-
-    public void setObject(T obj) {
-        this.obj = obj;
     }
 }

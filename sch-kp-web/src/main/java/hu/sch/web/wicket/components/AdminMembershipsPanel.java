@@ -36,20 +36,17 @@ import hu.sch.services.UserManagerLocal;
 import hu.sch.web.wicket.components.customlinks.ChangePostLink;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.session.VirSession;
+import hu.sch.web.wicket.components.tables.PanelColumn;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 /**
@@ -86,11 +83,11 @@ public final class AdminMembershipsPanel extends Panel {
                 columns.add(new PropertyColumn<SelectableMembership>(new Model<String>("SVIE tag?"),
                         MembershipTable.SORT_BY_SVIE, "membership.user.svieMemberText"));
                 
-                columns.add(new AbstractColumn<SelectableMembership>(new Model<String>("Jogok")) {
+                columns.add(new PanelColumn<SelectableMembership>("Jogok") {
 
                     @Override
-                    public void populateItem(Item<ICellPopulator<SelectableMembership>> cellItem, String id, IModel<SelectableMembership> model) {
-                        cellItem.add(new ChangePostLink(id, model.getObject().getMembership()));
+                    protected Panel getPanel(String id, SelectableMembership obj) {
+                        return new ChangePostLink(id, obj.getMembership());
                     }
                 });
             }

@@ -30,28 +30,20 @@
  */
 package hu.sch.web.kp.pages.search;
 
-import hu.sch.domain.Group;
-import hu.sch.domain.User;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
-import hu.sch.web.wicket.components.customlinks.GroupLink;
 import hu.sch.web.wicket.components.customlinks.SearchLink;
-import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.web.wicket.util.SortableGroupDataProvider;
+import hu.sch.web.wicket.components.tables.PanelColumn;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 /**
@@ -60,28 +52,25 @@ import org.apache.wicket.model.Model;
  */
 public class PersonResultPanel extends Panel {
 
-    @EJB(name = "LdapManagerBean")
-    LdapManagerLocal ldapManager;
-
     public PersonResultPanel(String id, List<Person> persons) {
         super(id);
 
         InjectorHolder.getInjector().inject(this);
 
-        List<IColumn<?>> columns = new ArrayList<IColumn<?>>();
-        columns.add(new AbstractColumn<Person>(new Model<String>("Név"), "name") {
+        List<IColumn<Person>> columns = new ArrayList<IColumn<Person>>();
+        columns.add(new PanelColumn<Person>("Név", "name") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<Person>> cellItem, String componentId, IModel<Person> rowModel) {
-                cellItem.add(new PersonLinkPanel(componentId, rowModel.getObject()));
+            protected Panel getPanel(String componentId, Person p) {
+                return new PersonLinkPanel(componentId, p);
             }
         });
         columns.add(new PropertyColumn<Person>(new Model<String>("Becenév"), "nickName"));
-        columns.add(new AbstractColumn<Person>(new Model<String>("Szobaszám"), "roomNumber") {
+        columns.add(new PanelColumn<Person>("Szobaszám", "roomNumber") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<Person>> cellItem, String componentId, IModel<Person> rowModel) {
-                cellItem.add(new SearchLink(componentId, SearchLink.USER_TYPE, rowModel.getObject().getRoomNumber()));
+            protected Panel getPanel(String componentId, Person p) {
+                return new SearchLink(componentId, SearchLink.USER_TYPE, p.getRoomNumber());
             }
         });
 

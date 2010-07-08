@@ -92,8 +92,8 @@ public abstract class UsersMembershipTable implements Serializable {
                 }
 
                 @Override
-                protected LinkPanel getLinkPanel(String componentId) {
-                    return new OldBoyLinkPanel(componentId);
+                protected LinkPanel getLinkPanel(String componentId, Membership ms) {
+                    return new OldBoyLinkPanel(componentId, ms);
                 }
             });
         }

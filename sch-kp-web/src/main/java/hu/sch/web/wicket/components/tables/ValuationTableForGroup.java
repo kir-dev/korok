@@ -35,9 +35,9 @@ import hu.sch.web.wicket.components.customlinks.UserLink;
 import java.util.List;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -62,11 +62,11 @@ public class ValuationTableForGroup extends ValuationTable {
 
     @Override
     protected void populateColumns(List<IColumn<ValuationData>> columns) {
-        columns.add(new AbstractColumn<ValuationData>(new Model<String>("Név"), MySortableDataProvider.SORT_BY_USER) {
+        columns.add(new PanelColumn<ValuationData>("Név", MySortableDataProvider.SORT_BY_USER) {
 
             @Override
-            public void populateItem(Item<ICellPopulator<ValuationData>> cellItem, String componentId, IModel<ValuationData> rowModel) {
-                cellItem.add(new UserLink(componentId, rowModel.getObject().getUser()));
+            protected Panel getPanel(String componentId, ValuationData vd) {
+                return new UserLink(componentId, vd.getUser());
             }
         });
 

@@ -51,6 +51,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDat
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -93,11 +94,11 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
      */
     public MembershipTable(String id, List<T> items, int rowsPerPage, Class<T> c) {
         List<IColumn<T>> columns = new ArrayList<IColumn<T>>();
-        columns.add(new AbstractColumn<T>(new Model<String>("Felhasználó neve"), SORT_BY_NAME) {
+        columns.add(new PanelColumn<T>("Felhasználó neve", SORT_BY_NAME) {
 
             @Override
-            public void populateItem(Item<ICellPopulator<T>> cellItem, String componentId, IModel<T> rowModel) {
-                cellItem.add(new UserLink(componentId, rowModel.getObject().getMembership().getUser()));
+            protected Panel getPanel(String componentId, T obj) {
+                return new UserLink(componentId, obj.getMembership().getUser());
             }
         });
         columns.add(new PropertyColumn<T>(new Model<String>("Becenév"), SORT_BY_NICKNAME, "membership.user.nickName"));
