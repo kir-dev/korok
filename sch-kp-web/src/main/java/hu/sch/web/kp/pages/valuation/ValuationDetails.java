@@ -73,7 +73,7 @@ import wicket.contrib.tinymce.settings.TinyMCESettings;
  */
 public class ValuationDetails extends SecuredPageTemplate {
 
-    @EJB(name = "ErtekelesManagerBean")
+    @EJB(name = "ValuationManagerBean")
     private ValuationManagerLocal valuationManager;
 
     public ValuationDetails(Valuation valuation) {

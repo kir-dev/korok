@@ -54,7 +54,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
  */
 public class EntrantRequestExplanation extends SecuredPageTemplate {
 
-    @EJB(name = "ErtekelesManagerBean")
+    @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
 
     public EntrantRequestExplanation(final Valuation ert, final List<EntrantRequest> igenyek) {

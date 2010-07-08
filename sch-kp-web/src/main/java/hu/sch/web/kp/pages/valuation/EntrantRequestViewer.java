@@ -60,7 +60,7 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class EntrantRequestViewer extends SecuredPageTemplate {
 
-    @EJB(name = "ErtekelesManagerBean")
+    @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal ertekelesManager;
 
     public EntrantRequestViewer(final Valuation ert) {

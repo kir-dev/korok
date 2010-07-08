@@ -59,7 +59,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public class PointRequestViewer extends SecuredPageTemplate {
 
-    @EJB(name = "ErtekelesManagerBean")
+    @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
 
     public PointRequestViewer(final Valuation val) {

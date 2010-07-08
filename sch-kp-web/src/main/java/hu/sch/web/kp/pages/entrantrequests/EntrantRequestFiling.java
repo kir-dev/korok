@@ -55,7 +55,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public class EntrantRequestFiling extends SecuredPageTemplate {
 
-    @EJB(name = "ErtekelesManagerBean")
+    @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal ertekelesManager;
 
     public EntrantRequestFiling(final Valuation ert) {

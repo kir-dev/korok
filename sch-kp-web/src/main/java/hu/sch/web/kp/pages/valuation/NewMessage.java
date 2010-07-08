@@ -46,7 +46,7 @@ import org.apache.wicket.model.PropertyModel;
  */
 class NewMessage extends SecuredPageTemplate {
 
-    @EJB(name = "ErtekelesManagerBean")
+    @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal ertekelesManager;
     String message = "";
 
