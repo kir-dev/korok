@@ -34,14 +34,11 @@ import hu.sch.domain.Membership;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
 import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import hu.sch.web.wicket.components.customlinks.OldBoyLinkPanel;
+import hu.sch.web.wicket.util.OrderableList;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import org.apache.wicket.Application;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -50,7 +47,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.util.convert.IConverter;
 
 /**
  * Itt listázzuk ki a felhasználó tagságait.
@@ -67,16 +63,16 @@ public abstract class UsersMembershipTable implements Serializable {
         provider = new MySortableDataProvider(memberships);
 
         List<IColumn<Membership>> columns = new ArrayList<IColumn<Membership>>(5);
-        columns.add(new PanelColumn<Membership>("Kör neve", MySortableDataProvider.SORT_BY_GROUP) {
+        columns.add(new PanelColumn<Membership>("Kör neve", Membership.SORT_BY_GROUP) {
 
             @Override
             public Panel getPanel(String componentId, Membership ms) {
                 return new GroupLink(componentId, ms.getGroup());
             }
         });
-        columns.add(new PropertyColumn<Membership>(new Model<String>("Betöltött poszt"), MySortableDataProvider.SORT_BY_POST, "membership"));
+        columns.add(new PropertyColumn<Membership>(new Model<String>("Betöltött poszt"), Membership.SORT_BY_POSTS, "membership"));
         columns.add(new DateIntervalPropertyColumn<Membership>(
-                new Model<String>("Tagsági idő"), MySortableDataProvider.SORT_BY_INTERVAL, "start", "end"));
+                new Model<String>("Tagsági idő"), Membership.SORT_BY_INTERVAL, "start", "end"));
         if (isOwnProfile) {
             // csak akkor kell ez az oszlop, ha ez a mi táblázatunk
             columns.add(new LinkColumn<Membership>("Öregtaggá válás?") {
@@ -99,7 +95,7 @@ public abstract class UsersMembershipTable implements Serializable {
         }
 
         table = new AjaxFallbackDefaultDataTable<Membership>(id, columns, provider, rowsPerPage);
-        provider.setSort(MySortableDataProvider.SORT_BY_GROUP, true);
+        provider.setSort(Membership.SORT_BY_GROUP, true);
     }
 
     public AjaxFallbackDefaultDataTable<Membership> getDataTable() {
@@ -110,20 +106,16 @@ public abstract class UsersMembershipTable implements Serializable {
 
     private class MySortableDataProvider extends SortableDataProvider<Membership> {
 
-        public static final String SORT_BY_GROUP = "group";
-        public static final String SORT_BY_POST = "post";
-        public static final String SORT_BY_INTERVAL = "semester";
-
-        private List<Membership> items;
+        private OrderableList<Membership> items;
 
         private MySortableDataProvider(List<Membership> items) {
-            this.items = items;
+            this.items = new OrderableList<Membership>(items, Membership.class);
         }
 
         @Override
         public Iterator<? extends Membership> iterator(int first, int count) {
-            sort();
-            return items.subList(first, first + count).iterator();
+            items.sort(getSort());
+            return items.getList().subList(first, first + count).iterator();
         }
 
         @Override
@@ -141,44 +133,6 @@ public abstract class UsersMembershipTable implements Serializable {
                     return new Membership();
                 }
             };
-        }
-
-        private void sort() {
-            String prop = getSort().getProperty();
-            final int asc = getSort().isAscending() ? 1 : -1;
-
-            if (prop.equals(SORT_BY_GROUP)) {
-                Collections.sort(items, new Comparator<Membership>() {
-
-                    @Override
-                    public int compare(Membership ms1, Membership ms2) {
-                        return asc * ms1.getGroup().compareTo(ms2.getGroup());
-                    }
-                });
-            } else if(prop.equals(SORT_BY_POST)) {
-                final IConverter c = Application.get().getConverterLocator().getConverter(Membership.class);
-                final Locale hu = new Locale("hu");
-                Collections.sort(items, new Comparator<Membership>() {
-
-                    @Override
-                    public int compare(Membership ms1, Membership ms2) {
-                        return asc * c.convertToString(ms1, hu).compareTo(c.convertToString(ms2, hu));
-                    }
-                });
-            } else if (prop.equals(SORT_BY_INTERVAL)) {
-                Collections.sort(items, new Comparator<Membership>() {
-
-                    @Override
-                    public int compare(Membership ms1, Membership ms2) {
-                        int ret = ms1.getStart().compareTo(ms2.getStart());
-                        if (ret == 0 && ms1.getEnd() != null && ms2.getEnd() != null) {
-                            return asc * ms1.getEnd().compareTo(ms2.getEnd());
-                        } else {
-                            return asc * ret;
-                        }
-                    }
-                });
-            }
         }
     }
 }

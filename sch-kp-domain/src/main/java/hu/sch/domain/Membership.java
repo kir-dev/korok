@@ -30,7 +30,9 @@
  */
 package hu.sch.domain;
 
+import hu.sch.domain.util.DateInterval;
 import hu.sch.domain.interfaces.MembershipTableEntry;
+import hu.sch.domain.util.SortProperty;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -73,6 +75,10 @@ import javax.persistence.Transient;
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq")
 public class Membership implements MembershipTableEntry {
 
+    public static final String SORT_BY_GROUP = "group";
+    public static final String SORT_BY_POSTS = "posts";
+    public static final String SORT_BY_INTERVAL = "interval";
+
     private static final long serialVersionUID = 1L;
     public static final String getMembership = "getMembership";
     public static final String getMembers = "getMembers";
@@ -108,10 +114,12 @@ public class Membership implements MembershipTableEntry {
      * A csoporttagság vége - nem kötelező
      */
     private Date end;
+    private DateInterval interval;
     /**
      * A csoportban betöltött posztok
      */
     private List<Post> posts;
+    private String postsAsString;
 
     @Id
     @GeneratedValue(generator = "grp_members_seq")
@@ -126,6 +134,7 @@ public class Membership implements MembershipTableEntry {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "grp_id", insertable = true, updatable = true)
+    @SortProperty(SORT_BY_GROUP)
     public Group getGroup() {
         return group;
     }
@@ -173,6 +182,15 @@ public class Membership implements MembershipTableEntry {
         this.end = end;
     }
 
+    @Transient
+    @SortProperty(SORT_BY_INTERVAL)
+    public DateInterval getInterval() {
+        if (interval == null) {
+            interval = new DateInterval(start, end);
+        }
+        return interval;
+    }
+
     @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER)
     public List<Post> getPosts() {
         return posts;
@@ -216,5 +234,30 @@ public class Membership implements MembershipTableEntry {
     @Override
     public Membership getMembership() {
         return this;
+    }
+
+    @Transient
+    @SortProperty(SORT_BY_POSTS)
+    public String getPostsAsString() {
+        if (postsAsString == null) {
+            StringBuilder sb = new StringBuilder(posts.size() * 16 + 3);
+            if (end != null) {
+                sb.append("öregtag");
+            }
+
+            for (Post post : posts) {
+                if (sb.length() != 0) {
+                    sb.append(", ");
+                }
+                sb.append(post.getPostType().toString());
+            }
+
+            if (sb.length() == 0) {
+                sb.append("tag");
+            }
+            postsAsString = sb.toString();
+        }
+
+        return postsAsString;
     }
 }

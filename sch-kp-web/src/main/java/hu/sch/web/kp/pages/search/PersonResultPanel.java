@@ -53,15 +53,15 @@ public class PersonResultPanel extends Panel {
         super(id);
 
         List<IColumn<Person>> columns = new ArrayList<IColumn<Person>>();
-        columns.add(new PanelColumn<Person>("Név", "name") {
+        columns.add(new PanelColumn<Person>("Név", Person.SORT_BY_NAME) {
 
             @Override
             protected Panel getPanel(String componentId, Person p) {
                 return new PersonLinkPanel(componentId, p);
             }
         });
-        columns.add(new PropertyColumn<Person>(new Model<String>("Becenév"), "nickName"));
-        columns.add(new PanelColumn<Person>("Szobaszám", "roomNumber") {
+        columns.add(new PropertyColumn<Person>(new Model<String>("Becenév"), Person.SORT_BY_NICKNAME, "nickName"));
+        columns.add(new PanelColumn<Person>("Szobaszám", Person.SORT_BY_ROOMNUMBER) {
 
             @Override
             protected Panel getPanel(String componentId, Person p) {

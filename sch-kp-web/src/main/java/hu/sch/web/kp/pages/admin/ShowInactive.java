@@ -34,10 +34,8 @@ import hu.sch.domain.profile.Person;
 import hu.sch.web.wicket.components.customlinks.DeletePersonLink;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
-import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
-import hu.sch.web.wicket.components.tables.LinkColumn;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +71,9 @@ public class ShowInactive extends SecuredPageTemplate {
                 return new PersonLinkPanel(componentId, p);
             }
         });
-        columns.add(new PropertyColumn<Person>(new Model<String>("Uid"), "uid", "uid"));
-        columns.add(new PropertyColumn<Person>(new Model<String>("E-mail"), "mail"));
-        columns.add(new PropertyColumn<Person>(new Model<String>("Neptun kód"), "neptun", "neptun"));
+        columns.add(new PropertyColumn<Person>(new Model<String>("Uid"), Person.SORT_BY_UID, "uid"));
+        columns.add(new PropertyColumn<Person>(new Model<String>("E-mail"), Person.SORT_BY_MAIL, "mail"));
+        columns.add(new PropertyColumn<Person>(new Model<String>("Neptun kód"), Person.SORT_BY_NEPTUN, "neptun"));
         columns.add(new PanelColumn<Person>("Törlés") {
 
             @Override

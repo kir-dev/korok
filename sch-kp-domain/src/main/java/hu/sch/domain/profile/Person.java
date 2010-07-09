@@ -31,6 +31,7 @@
 
 package hu.sch.domain.profile;
 
+import hu.sch.domain.util.SortProperty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +44,13 @@ import java.util.regex.Pattern;
  * @author konvergal
  */
 public class Person implements Serializable {
+
+    public static final String SORT_BY_UID = "uid";
+    public static final String SORT_BY_NAME = "name";
+    public static final String SORT_BY_NEPTUN = "neptun";
+    public static final String SORT_BY_NICKNAME = "nickName";
+    public static final String SORT_BY_MAIL = "mail";
+    public static final String SORT_BY_ROOMNUMBER = "roomNumber";
 
     private static final String NEPTUN_PREFIX =
             "urn:mace:terena.org:schac:personalUniqueCode:hu:BME-NEPTUN:";
@@ -207,6 +215,7 @@ public class Person implements Serializable {
      */
     private String confirmationCode;
 
+    @SortProperty(SORT_BY_UID)
     public String getUid() {
         return uid;
     }
@@ -215,6 +224,7 @@ public class Person implements Serializable {
         this.uid = uid;
     }
 
+    @SortProperty(SORT_BY_NICKNAME)
     public String getNickName() {
         return nickName;
     }
@@ -239,6 +249,7 @@ public class Person implements Serializable {
         this.lastName = lastName;
     }
 
+    @SortProperty(SORT_BY_NAME)
     public String getFullName() {
         return fullName;
     }
@@ -271,6 +282,7 @@ public class Person implements Serializable {
         return virId;
     }
 
+    @SortProperty(SORT_BY_NEPTUN)
     public String getNeptun() {
         return neptun;
     }
@@ -279,6 +291,7 @@ public class Person implements Serializable {
         this.neptun = neptun;
     }
 
+    @SortProperty(SORT_BY_MAIL)
     public String getMail() {
         return mail;
     }
@@ -303,6 +316,7 @@ public class Person implements Serializable {
         this.homePhone = homePhone;
     }
 
+    @SortProperty(SORT_BY_ROOMNUMBER)
     public String getRoomNumber() {
         return roomNumber;
     }

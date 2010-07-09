@@ -31,8 +31,6 @@
 package hu.sch.web.wicket.util;
 
 import hu.sch.domain.Membership;
-import hu.sch.domain.Post;
-import java.util.List;
 import java.util.Locale;
 import org.apache.log4j.Logger;
 import org.apache.wicket.util.convert.IConverter;
@@ -41,7 +39,7 @@ import org.apache.wicket.util.convert.IConverter;
  *
  * @author aldaris
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings("unchecked")
 public class PostTypeConverter implements IConverter {
 
     private static Logger log = Logger.getLogger(PostTypeConverter.class);
@@ -55,32 +53,10 @@ public class PostTypeConverter implements IConverter {
     public String convertToString(Object value, Locale locale) {
         if (value instanceof Membership) {
             Membership ms = (Membership) value;
-            List<Post> posts = ms.getPosts();
-            StringBuilder sb = new StringBuilder(posts.size() * 16);
-            if (ms.getEnd() != null) {
-                sb.append("öregtag");
-            }
-
-            for (Post post : posts) {
-                if (sb.length() != 0) {
-                    sb.append(", ");
-                }
-                sb.append(actualConverter(post));
-            }
-
-            if (sb.length() == 0) {
-                sb.append("tag");
-            }
-
-            
-            return sb.toString();
+            return ms.getPostsAsString();
         } else {
             log.error("Invalid input type for MembershipTypeConverter");
             return "invalid";
         }
-    }
-
-    public String actualConverter(Post value) {
-        return value.getPostType().toString();
     }
 }
