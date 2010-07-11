@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.edit;
 
 import hu.sch.web.wicket.util.ImageResizer;
@@ -42,6 +41,8 @@ import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
+import hu.sch.web.wicket.util.ImageResizer.InvalidImageTypeException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class PersonForm extends Form<Person> {
 
     @EJB(name = "LdapManagerBean")
     private LdapManagerLocal ldapManager;
-    private static Logger log = Logger.getLogger(PersonForm.class);
+    private static Logger logger = Logger.getLogger(PersonForm.class);
     private final Person person;
     private Date dob;
     private FileUpload upload;
@@ -183,23 +184,19 @@ public class PersonForm extends Form<Person> {
             @Override
             public void onSubmit() {
                 if (upload != null) {
-                    ImageResizer imageResizer = null;
                     try {
-                        imageResizer = new ImageResizer(upload);
-                    } catch (ImageResizer.NotValidImageException e) {
-                        error("A fotó formátuma nem megfelelő! Megfelelő formátumok: jpeg, png, gif.");
-                    } catch (Exception e) {
-                        error("Hiba történt a fotó feldolgozása közben!");
-                    }
+                        ImageResizer imageResizer = new ImageResizer(upload, Person.IMAGE_MAX_SIZE);
 
-                    if (imageResizer != null) {
-                        try {
-                            imageResizer.setMaxSize(320);
+                        if (imageResizer != null) {
                             imageResizer.resizeImage();
                             person.setPhoto(imageResizer.getByteArray());
-                        } catch (Exception e) {
-                            error("Hiba történt a fotó feldolgozása közben!");
                         }
+                    } catch (InvalidImageTypeException nvie) {
+                        logger.warn("Uploaded picture with unknown image format: " + upload.getContentType());
+                        error("A fotó formátuma nem megfelelő! Megfelelő formátumok: jpeg, png, gif.");
+                    } catch (IOException ioe) {
+                        logger.error("IO error occured during image processing", ioe);
+                        error("Hiba történt a fotó feldolgozása közben!");
                     }
                 }
 
@@ -265,7 +262,7 @@ public class PersonForm extends Form<Person> {
             try {
                 dob = new SimpleDateFormat("yyyyMMdd").parse(person.getDateOfBirth());
             } catch (ParseException ex) {
-                log.warn("Error while parsing date");
+                logger.warn("Error while parsing date");
             }
         }
         DateTextField dateTF = new DateTextField("dateOfBirth", new PropertyModel<Date>(this, "dob"), new StyleDateConverter("S-", true)) {

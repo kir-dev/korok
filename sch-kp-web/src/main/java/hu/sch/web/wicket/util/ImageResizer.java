@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.util;
 
 import java.awt.Image;
@@ -39,7 +38,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
-import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 /**
@@ -48,32 +46,25 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
  */
 public class ImageResizer {
 
-    FileUpload fileUpload;
-    BufferedImage originalImage = null;
-    BufferedImage resizedImage = null;
+    private BufferedImage originalImage = null;
+    private BufferedImage resizedImage = null;
     private List<String> validImageContentTypes = Arrays.asList(new String[]{"image/jpeg", "image/png", "image/gif"});
-    int maxSize;
-    int scaleHints = Image.SCALE_SMOOTH;
+    private int maxSize;
 
-    public ImageResizer(FileUpload fileUpload) throws Exception {
-        this.fileUpload = fileUpload;
+    public ImageResizer(FileUpload fileUpload, int maxSize) throws InvalidImageTypeException, IOException {
+        this.maxSize = maxSize;
 
         if (!validImageContentTypes.contains(fileUpload.getContentType())) {
-            throw new NotValidImageException();
+            throw new InvalidImageTypeException();
         }
 
         InputStream is = null;
         try {
             is = fileUpload.getInputStream();
             originalImage = ImageIO.read(is);
-        } catch (Exception ex) {
-            throw new WicketRuntimeException(ex);
         } finally {
             if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                }
+                is.close();
             }
         }
     }
@@ -81,7 +72,6 @@ public class ImageResizer {
     public BufferedImage resizeImage() {
         int originalWidth = originalImage.getWidth();
         int originalHeight = originalImage.getHeight();
-        BufferedImage bufferedImage;
 
         if (originalWidth > maxSize || originalHeight > maxSize) {
             int newWidth;
@@ -94,40 +84,26 @@ public class ImageResizer {
                 newWidth = (maxSize * originalWidth) / originalHeight;
                 newHeight = maxSize;
             }
-            java.awt.Image image = originalImage.getScaledInstance(newWidth, newHeight, scaleHints);
+            Image image = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
 
             // convert Image to BufferedImage
-            bufferedImage = new BufferedImage(newWidth, newHeight,
+            resizedImage = new BufferedImage(newWidth, newHeight,
                     BufferedImage.TYPE_INT_ARGB);
-            bufferedImage.createGraphics().drawImage(image, 0, 0, null);
+            resizedImage.createGraphics().drawImage(image, 0, 0, null);
         } else {
-            bufferedImage = originalImage;
+            resizedImage = originalImage;
         }
 
-        this.resizedImage = bufferedImage;
-
-        return bufferedImage;
+        return resizedImage;
     }
 
-    public byte[] getByteArray() {
-        try {
-            // Create output stream
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    public byte[] getByteArray() throws IOException {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ImageIO.write(resizedImage, "png", out);
 
-            // Write image using any matching ImageWriter
-            ImageIO.write(resizedImage, "png", out);
-
-            // Return the image data
-            return out.toByteArray();
-        } catch (IOException e) {
-            throw new WicketRuntimeException("Unable to convert dynamic image to stream", e);
-        }
+        return out.toByteArray();
     }
 
-    public void setMaxSize(int maxSize) {
-        this.maxSize = maxSize;
-    }
-
-    public class NotValidImageException extends Exception {
+    public class InvalidImageTypeException extends Exception {
     }
 }

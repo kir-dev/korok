@@ -59,6 +59,10 @@ public class Person implements Serializable {
     private static final String VIRID_PREFIX =
             "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:";
     /**
+     * A felhasználó által feltölthető kép maximális mérete. Átméretezéshez kell
+     */
+    public static final int IMAGE_MAX_SIZE = 320;
+    /**
      * Címtár megfelelő: uid
      * A felhasználó egyedi azonosítója a címtárban.
      */
