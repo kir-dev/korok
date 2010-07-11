@@ -47,13 +47,17 @@
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-kp-domain</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- Tranzitív függőség miatt rá kell függeni az EJB modulra is teszteknél :( -->
+        <dependency>
+            <groupId>hu.sch</groupId>
+            <artifactId>sch-kp-ejb-impl</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-kp-ejb-services</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
