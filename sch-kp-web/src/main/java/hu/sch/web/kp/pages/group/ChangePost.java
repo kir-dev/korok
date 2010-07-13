@@ -71,7 +71,7 @@ public final class ChangePost extends SecuredPageTemplate {
     public ChangePost(final PageParameters params) {
         Long memberId;
         try {
-            memberId = new Long(params.getLong("memberid"));
+            memberId = Long.valueOf(params.getLong("memberid"));
         } catch (StringValueConversionException svce) {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());

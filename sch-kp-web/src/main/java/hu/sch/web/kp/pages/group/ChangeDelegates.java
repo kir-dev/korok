@@ -56,7 +56,7 @@ public final class ChangeDelegates extends SecuredPageTemplate {
     public ChangeDelegates(final PageParameters params) {
         Long groupId;
         try {
-            groupId = new Long(params.getLong("id"));
+            groupId = Long.valueOf(params.getLong("id"));
         } catch (StringValueConversionException svce) {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());

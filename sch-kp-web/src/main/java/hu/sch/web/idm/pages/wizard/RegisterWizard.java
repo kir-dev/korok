@@ -44,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.sql.DataSource;
@@ -339,6 +340,13 @@ public class RegisterWizard extends Wizard {
                         logger.error("Unable to close database connection!", ex);
                     }
                 }
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (SQLException ex) {
+                        logger.error("Unable to close the Statement object!", ex);
+                    }
+                }
             }
             return false;
         }
@@ -416,6 +424,13 @@ public class RegisterWizard extends Wizard {
                     } catch (Exception dbe) {
                         logger.warn("Fail to close database:", dbe);
                         throw new IllegalArgumentException("Hiba lépett fel a regisztráció közben!");
+                    }
+                }
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (SQLException ex) {
+                        logger.error("Unable to close the Statement object!", ex);
                     }
                 }
             }

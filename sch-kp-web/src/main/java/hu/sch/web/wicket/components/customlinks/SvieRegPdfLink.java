@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import com.itextpdf.text.Document;
@@ -59,7 +58,6 @@ import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.util.resource.IResourceStream;
 
@@ -165,6 +163,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
         }
         add(new Link<Void>("pdfLink") {
 
+            @Override
             public void onClick() {
                 try {
                     person = ldapManager.getPersonByVirId(user.getId().toString());
@@ -275,11 +274,21 @@ public class SvieRegPdfLink extends LinkPanel<User> {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] bytes = new byte[512];
         int readBytes = 0;
-        while ((readBytes = schLogoStream.read(bytes)) > 0) {
-            output.write(bytes, 0, readBytes);
+        try {
+            while ((readBytes = schLogoStream.read(bytes)) > 0) {
+                output.write(bytes, 0, readBytes);
+            }
+        } catch (IOException ex) {
+            // dobjuk tovább, kint kezeljük
+            throw ex;
+        } finally {
+            try {
+                schLogoStream.close();
+            } catch (IOException ex) {
+                logger.error("Nem sikerült lezárni egy resource streamet!", ex);
+            }
         }
         schLogo = Image.getInstance(output.toByteArray());
-        schLogoStream.close();
         return schLogo;
     }
 
@@ -292,11 +301,20 @@ public class SvieRegPdfLink extends LinkPanel<User> {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] bytes = new byte[512];
         int readBytes = 0;
-        while ((readBytes = schLogoStream.read(bytes)) > 0) {
-            output.write(bytes, 0, readBytes);
+        try {
+            while ((readBytes = schLogoStream.read(bytes)) > 0) {
+                output.write(bytes, 0, readBytes);
+            }
+        } catch (IOException ex) {
+            throw ex;
+        } finally {
+            try {
+                schLogoStream.close();
+            } catch (IOException ex) {
+                logger.error("Nem sikerült lezárni egy resource streamet!", ex);
+            }
         }
         signImage = Image.getInstance(output.toByteArray());
-        schLogoStream.close();
         return signImage;
     }
 }

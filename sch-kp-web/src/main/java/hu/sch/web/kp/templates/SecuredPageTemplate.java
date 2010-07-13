@@ -133,11 +133,11 @@ public abstract class SecuredPageTemplate extends WebPage {
             @Override
             protected void onSubmit() {
                 if (searchType == null || searchTerm == null) {
-                    getSession().error("Hibás keresési feltétel!");
+                    super.getSession().error("Hibás keresési feltétel!");
                     throw new RestartResponseException(getApplication().getHomePage());
                 }
                 if (searchTerm.length() < 3) {
-                    getSession().error("Túl rövid keresési feltétel!");
+                    super.getSession().error("Túl rövid keresési feltétel!");
                     throw new RestartResponseException(getApplication().getHomePage());
                 }
                 PageParameters params = new PageParameters();
@@ -277,7 +277,7 @@ public abstract class SecuredPageTemplate extends WebPage {
                 + "printNavbar(navbarConf);"));
     }
 
-    private final UserAuthorization getAuthorizationComponent() {
+    private UserAuthorization getAuthorizationComponent() {
         return ((PhoenixApplication) getApplication()).getAuthorizationComponent();
     }
 }

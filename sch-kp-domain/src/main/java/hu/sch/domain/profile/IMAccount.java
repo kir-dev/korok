@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain.profile;
 
 import java.io.Serializable;
@@ -81,7 +80,20 @@ public class IMAccount implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        IMAccount o2 = (IMAccount) obj;
-        return o2.getUuid().equals(uuid);
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof IMAccount) {
+            IMAccount o2 = (IMAccount) obj;
+            return o2.getUuid().equals(uuid);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + (this.uuid != null ? this.uuid.hashCode() : 0);
+        return hash;
     }
 }
