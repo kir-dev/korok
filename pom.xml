@@ -360,4 +360,8 @@
         <module>sch-kp-ear</module>
         <module>sch-kp-test</module>
     </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>
