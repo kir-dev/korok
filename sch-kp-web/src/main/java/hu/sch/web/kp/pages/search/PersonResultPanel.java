@@ -67,7 +67,9 @@ public class PersonResultPanel extends Panel {
 
             @Override
             protected Panel getPanel(String componentId, Person p) {
-                return new SearchLink(componentId, SearchLink.USER_TYPE, p.getRoomNumber());
+                Panel panel = new SearchLink(componentId, SearchLink.USER_TYPE, p.getRoomNumber());
+                panel.setVisible(!p.isPrivateAttribute("roomNumber") && p.getRoomNumber() != null);
+                return panel;
             }
         });
 
