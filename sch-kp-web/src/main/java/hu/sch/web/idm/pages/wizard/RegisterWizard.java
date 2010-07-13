@@ -44,7 +44,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.sql.DataSource;
@@ -291,6 +290,7 @@ public class RegisterWizard extends Wizard {
                     logger.error("Usr_id parse error in: " + virAuthString);
                     throw new IllegalArgumentException("Hiba lépett fel a regisztráció közben");
                 }
+                stmt.close();
 
                 // select user attributes
                 stmt = conn.prepareStatement(ATTRIBUTES_SQL);

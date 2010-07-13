@@ -326,7 +326,7 @@ public class CreateCommunityProfile extends ProfilePage {
                 throw new RuntimeException("A közösségi profil létrehozás után null az ID");
             }
 
-            if (f.getId() != person.getVirId()) {
+            if (!f.getId().equals(person.getVirId())) {
                 log.info("A VIRID megváltozott, mentés lokálisan");
                 log.info("Új VIRID: " + f.getId());
                 person.setVirId(f.getId());

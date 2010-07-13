@@ -95,7 +95,7 @@ public abstract class EditDelegatesForm extends Form {
     @Override
     protected abstract void onSubmit();
 
-    protected class ExtendedUser implements Serializable {
+    protected static class ExtendedUser implements Serializable {
 
         private User user;
         private boolean selected;

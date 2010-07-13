@@ -91,7 +91,7 @@ public abstract class ValuationTable implements Serializable {
         provider.items = list;
     }
 
-    class MySortableDataProvider extends SortableDataProvider<ValuationData> {
+    static class MySortableDataProvider extends SortableDataProvider<ValuationData> {
 
         private List<ValuationData> items;
         public static final String SORT_BY_USER = "user";

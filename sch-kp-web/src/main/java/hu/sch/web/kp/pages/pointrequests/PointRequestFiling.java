@@ -106,7 +106,7 @@ public class PointRequestFiling extends SecuredPageTemplate {
             // A többi group pontozásvalidátora
             final IValidator<Integer> pontValidator = new RangeValidator<Integer>(0, 50);
             // QPA group ID-ja
-            private final long SCH_QPA_ID = 27L;
+            private static final long SCH_QPA_ID = 27L;
 
             @Override
             protected void populateItem(ListItem<PointRequest> item) {

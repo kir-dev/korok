@@ -143,7 +143,9 @@ public class SvieRegPdfLink extends LinkPanel<User> {
             permissionStatement.setAlignment(Paragraph.ALIGN_JUSTIFIED);
             permissionStatement.setSpacingBefore(15f);
             permissionStatement.setSpacingAfter(15f);
-        } catch (Exception ex) {
+        } catch (DocumentException ex) {
+            logger.warn("Error while creating static content for PDF", ex);
+        } catch (IOException ex) {
             logger.warn("Error while creating static content for PDF", ex);
         }
     }
@@ -278,9 +280,6 @@ public class SvieRegPdfLink extends LinkPanel<User> {
             while ((readBytes = schLogoStream.read(bytes)) > 0) {
                 output.write(bytes, 0, readBytes);
             }
-        } catch (IOException ex) {
-            // dobjuk tovább, kint kezeljük
-            throw ex;
         } finally {
             try {
                 schLogoStream.close();
@@ -305,8 +304,6 @@ public class SvieRegPdfLink extends LinkPanel<User> {
             while ((readBytes = schLogoStream.read(bytes)) > 0) {
                 output.write(bytes, 0, readBytes);
             }
-        } catch (IOException ex) {
-            throw ex;
         } finally {
             try {
                 schLogoStream.close();

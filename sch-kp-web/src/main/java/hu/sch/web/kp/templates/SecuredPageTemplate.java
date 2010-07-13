@@ -166,7 +166,7 @@ public abstract class SecuredPageTemplate extends WebPage {
 
     private void loadUser() {
         Long virId = getAuthorizationComponent().getUserid(getRequest());
-        if (getSession().getUserId() != virId) {
+        if (!getSession().getUserId().equals(virId)) {
 
             if (virId != null) {
                 User userAttrs =
@@ -184,7 +184,7 @@ public abstract class SecuredPageTemplate extends WebPage {
 
     protected final User getUser() {
         Long virId = getAuthorizationComponent().getUserid(getRequest());
-        if (getSession().getUserId() != virId) {
+        if (!getSession().getUserId().equals(virId)) {
             loadUser();
         }
         return userManager.findUserWithMembershipsById(getSession().getUserId());

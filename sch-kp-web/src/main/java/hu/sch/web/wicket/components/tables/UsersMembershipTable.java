@@ -104,7 +104,7 @@ public abstract class UsersMembershipTable implements Serializable {
 
     protected abstract void onWannabeOldBoy(Membership ms);
 
-    private class MySortableDataProvider extends SortableDataProvider<Membership> {
+    static class MySortableDataProvider extends SortableDataProvider<Membership> {
 
         private SortableList<Membership> items;
 
