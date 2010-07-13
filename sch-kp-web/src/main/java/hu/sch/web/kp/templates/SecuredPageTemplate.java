@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.templates;
 
 import java.io.Serializable;
@@ -166,17 +165,14 @@ public abstract class SecuredPageTemplate extends WebPage {
 
     private void loadUser() {
         Long virId = getAuthorizationComponent().getUserid(getRequest());
-        if (!getSession().getUserId().equals(virId)) {
-
-            if (virId != null) {
-                User userAttrs =
-                        getAuthorizationComponent().getUserAttributes(getRequest());
-                if (userAttrs != null) {
-                    userAttrs.setId(virId);
-                    userManager.updateUserAttributes(userAttrs);
-                }
-                getSession().setUserId(virId);
+        if (virId != null && !virId.equals(getSession().getUserId())) {
+            User userAttrs =
+                    getAuthorizationComponent().getUserAttributes(getRequest());
+            if (userAttrs != null) {
+                userAttrs.setId(virId);
+                userManager.updateUserAttributes(userAttrs);
             }
+            getSession().setUserId(virId);
         } else {
             getSession().setUserId(0L);
         }
@@ -184,7 +180,8 @@ public abstract class SecuredPageTemplate extends WebPage {
 
     protected final User getUser() {
         Long virId = getAuthorizationComponent().getUserid(getRequest());
-        if (!getSession().getUserId().equals(virId)) {
+        Long userId = getSession().getUserId();
+        if (userId == null || !userId.equals(virId)) {
             loadUser();
         }
         return userManager.findUserWithMembershipsById(getSession().getUserId());
