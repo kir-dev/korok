@@ -206,7 +206,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
-    public boolean ErtekeleseketElbiral(Collection<ConsideredValuation> elbiralas, User felhasznalo) {
+    public boolean ertekeleseketElbiral(Collection<ConsideredValuation> elbiralas, User felhasznalo) {
         for (ConsideredValuation ee : elbiralas) {
 
             if ((ee.getPointStatus().equals(ValuationStatus.ELUTASITVA)
@@ -252,14 +252,14 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 BelepoIgenyElbiral(ee.getValuation(), felhasznalo, ee.getEntrantStatus().equals(ValuationStatus.ELFOGADVA));
             }
             if (ee.getExplanation() != null) {
-                Uzen(ee.getValuation().getId(), felhasznalo, ee.getExplanation());
+                addMessageToValuation(ee.getValuation().getId(), felhasznalo, ee.getExplanation());
             }
         }
         return true;
     }
 
     @Override
-    public void Uzen(Long ertekelesId, User uzeno, String uzenetStr) {
+    public void addMessageToValuation(Long ertekelesId, User uzeno, String uzenetStr) {
         Valuation ertekeles = em.find(Valuation.class, ertekelesId);
 
         ValuationMessage uzenet = new ValuationMessage();
@@ -279,7 +279,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 + "Ez egy automatikusan generált e-mail.";
 
         // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
-        List<Membership> tagsag = ertekeles.getGroup().getActiveMemberships();
         User groupLeader = userManager.getGroupLeaderForGroup(ertekeles.getGroup().getId());
         if (groupLeader != null) {
             mailManager.sendEmail(groupLeader.getEmailAddress(), "Módosult értékelés", emailText);

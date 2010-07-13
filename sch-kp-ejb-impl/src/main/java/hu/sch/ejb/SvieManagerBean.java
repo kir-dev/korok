@@ -181,7 +181,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     }
 
     @Override
-    public void OrdinalToAdvocate(User user) {
+    public void ordinalToAdvocate(User user) {
         if (user.getSviePrimaryMembership() != null) {
             sendPrimaryMembershipChangedMail(user);
         }

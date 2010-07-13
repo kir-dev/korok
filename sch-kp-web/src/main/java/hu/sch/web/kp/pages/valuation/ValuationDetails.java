@@ -176,7 +176,7 @@ public class ValuationDetails extends SecuredPageTemplate {
                 public void onSubmit(ConsideredValuation underConsider) {
                     ArrayList<ConsideredValuation> list = new ArrayList<ConsideredValuation>(1);
                     list.add(underConsider);
-                    if (valuationManager.ErtekeleseketElbiral(list, getUser())) {
+                    if (valuationManager.ertekeleseketElbiral(list, getUser())) {
                         getSession().info("Az elbírálás sikeres volt.");
                         setResponsePage(ConsiderPage.class);
                     } else {

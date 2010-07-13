@@ -96,7 +96,7 @@ public interface ValuationManagerLocal {
 
     List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter);
 
-    boolean ErtekeleseketElbiral(Collection<ConsideredValuation> elbiralas, User felhasznalo);
+    boolean ertekeleseketElbiral(Collection<ConsideredValuation> elbiralas, User felhasznalo);
 
     /**
      * Új üzenet fűzése egy értékeléshez
@@ -105,7 +105,7 @@ public interface ValuationManagerLocal {
      * @param uzeno
      * @param uzenetStr
      */
-    void Uzen(Long ertekelesId, User uzeno, String uzenetStr);
+    void addMessageToValuation(Long ertekelesId, User uzeno, String uzenetStr);
 
     /**
      * Új értékelés létrehozása az aktuális szemeszterben

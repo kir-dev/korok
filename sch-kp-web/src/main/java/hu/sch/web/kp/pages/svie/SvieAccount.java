@@ -156,7 +156,7 @@ public final class SvieAccount extends SecuredPageTemplate {
 
                 @Override
                 public void onClick() {
-                    svieManager.OrdinalToAdvocate(user);
+                    svieManager.ordinalToAdvocate(user);
                     getSession().info("Sikeresen pártoló taggá váltál");
                     setResponsePage(SvieAccount.class);
                 }

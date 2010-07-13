@@ -62,7 +62,7 @@ public interface SvieManagerLocal {
 
     void advocateToOrdinal(User user);
 
-    void OrdinalToAdvocate(User user);
+    void ordinalToAdvocate(User user);
 
     void endMembership(User user);
 

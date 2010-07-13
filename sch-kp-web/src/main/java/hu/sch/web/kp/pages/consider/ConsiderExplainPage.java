@@ -62,7 +62,7 @@ public class ConsiderExplainPage extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                if (valuationManager.ErtekeleseketElbiral(underConsider, getUser())) {
+                if (valuationManager.ertekeleseketElbiral(underConsider, getUser())) {
                     getSession().info("Az elbírálás sikeres volt.");
                     setResponsePage(ConsiderPage.class);
                 } else {
