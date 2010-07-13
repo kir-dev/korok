@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.test.base;
 
 import java.io.FileInputStream;
@@ -50,10 +49,19 @@ class TestConfig {
         if (configFile == null) {
             System.out.println("Hiba az inicailázálás során, nincsen konfiguráció megadva!");
         }
+        InputStreamReader isr = null;
         try {
-            configuration.load(new InputStreamReader(new FileInputStream(configFile)));
+            isr = new InputStreamReader(new FileInputStream(configFile));
+            configuration.load(isr);
         } catch (IOException ioe) {
             throw new RuntimeException("Error, couldn't load configuration!");
+        } finally {
+            try {
+                if (isr != null) {
+                    isr.close();
+                }
+            } catch (IOException ex) {
+            }
         }
     }
 

@@ -32,7 +32,9 @@ package hu.sch.domain.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -88,11 +90,19 @@ public class Configuration {
         if (!baseDir.endsWith("/")) {
             baseDir += "/";
         }
+        FileInputStream fis = null;
         try {
-            FileInputStream fis = new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE));
+            fis = new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE));
             properties.load(fis);
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error while loading properties file!", ex);
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (IOException ex) {
+            }
         }
     }
 
