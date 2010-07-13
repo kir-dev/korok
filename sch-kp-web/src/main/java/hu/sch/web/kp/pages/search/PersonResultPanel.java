@@ -49,6 +49,8 @@ import org.apache.wicket.model.Model;
  */
 public class PersonResultPanel extends Panel {
 
+    private final SortablePersonDataProvider provider;
+
     public PersonResultPanel(String id, List<Person> persons) {
         super(id);
 
@@ -69,8 +71,12 @@ public class PersonResultPanel extends Panel {
             }
         });
 
-        SortablePersonDataProvider provider = new SortablePersonDataProvider(persons);
+        provider = new SortablePersonDataProvider(persons);
         AjaxFallbackDefaultDataTable table = new AjaxFallbackDefaultDataTable("personTable", columns, provider, 50);
         add(table);
+    }
+
+    public SortablePersonDataProvider getPersonDataProvider() {
+        return provider;
     }
 }
