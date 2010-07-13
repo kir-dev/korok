@@ -65,7 +65,6 @@ public class DatePropertyColumn<T> extends PropertyColumn<T> {
      *
      * @param displayModel          display model
      * @param propertyExpression    wicket property expression
-     * @see PropertyModel
      */
     public DatePropertyColumn(IModel<String> displayModel, String propertyExpression) {
         super(displayModel, null, propertyExpression);

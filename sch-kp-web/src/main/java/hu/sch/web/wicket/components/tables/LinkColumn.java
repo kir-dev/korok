@@ -90,7 +90,7 @@ public abstract class LinkColumn<T> extends AbstractColumn<T> {
      * Ezzel kérjük le a konkrét LinkPanel implementációt.
      * @param componentId
      * @param obj
-     * @return
+     * @return  a megjelenítendő LinkPanel
      */
     protected abstract LinkPanel getLinkPanel(String componentId, T obj);
 }
