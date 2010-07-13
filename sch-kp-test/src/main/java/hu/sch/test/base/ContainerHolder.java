@@ -43,13 +43,11 @@ import javax.naming.Context;
  */
 class ContainerHolder {
 
-    private static final String LOGGING_CONFIG = "java.util.logging.config.file";
     private static final String EMB_GF_INSTALL_ROOT = "org.glassfish.ejb.embedded.glassfish.installation.root";
     private static volatile EJBContainer ejb = null;
 
     public static synchronized void fireUpEJBContainer() {
         if (ejb == null) {
-            System.setProperty(LOGGING_CONFIG, TestConfig.getProperty(TestConfig.GF_ROOT) + "/domains/domain1/config/logging.properties");
             Map<String, Object> properties = new HashMap<String, Object>();
             //TODO?: Ez egy kicsit hekknek tűnik, viszont így nem száll el tranziens
             //módon exceptionnel, plusz a GF is sokkal gyorsabban elindul.

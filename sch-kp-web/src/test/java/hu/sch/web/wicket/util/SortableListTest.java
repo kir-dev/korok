@@ -30,6 +30,7 @@
  */
 package hu.sch.web.wicket.util;
 
+import hu.sch.test.base.AbstractTest;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,7 +43,7 @@ import static org.junit.Assert.*;
  *
  * @author  messo
  */
-public class SortableListTest {
+public class SortableListTest extends AbstractTest {
 
     private static class TestObject {
 

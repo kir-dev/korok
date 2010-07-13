@@ -28,10 +28,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.test.base;
 
-import javax.naming.NamingException;
 import org.junit.BeforeClass;
 
 /**
@@ -40,14 +38,10 @@ import org.junit.BeforeClass;
  */
 public abstract class AbstractTest {
 
-    private static final String MODULE_NAME = "korok-ejb";
+    private static final String LOGGING_CONFIG = "java.util.logging.config.file";
 
     @BeforeClass
     public static void setup() {
-        ContainerHolder.fireUpEJBContainer();
-    }
-
-    public static <T> T lookupEJB(Class<T> clazz) throws NamingException {
-        return (T) ContainerHolder.getContext().lookup("java:global/" + MODULE_NAME + "/" + clazz.getSimpleName());
+        System.setProperty(LOGGING_CONFIG, TestConfig.getProperty(TestConfig.GF_ROOT) + "/domains/domain1/config/logging.properties");
     }
 }

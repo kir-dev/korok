@@ -30,7 +30,7 @@
  */
 package hu.sch.web.kp.pages.user;
 
-import hu.sch.test.base.AbstractTest;
+import hu.sch.test.base.ContainerAwareAbstractTest;
 import hu.sch.web.PhoenixApplication;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.BeforeClass;
@@ -40,7 +40,7 @@ import org.junit.Test;
  *
  * @author aldaris
  */
-public class ShowUserTest extends AbstractTest {
+public class ShowUserTest extends ContainerAwareAbstractTest {
 
     private static WicketTester tester;
 

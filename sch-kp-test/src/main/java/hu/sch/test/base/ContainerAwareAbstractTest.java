@@ -28,44 +28,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package hu.sch.test.base;
 
-package hu.sch.ejb;
-
-import hu.sch.test.base.ContainerAwareAbstractTest;
-import hu.sch.domain.Group;
-import java.util.List;
-import hu.sch.services.UserManagerLocal;
 import javax.naming.NamingException;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author aldaris
  */
-public class UserManagerTest extends ContainerAwareAbstractTest {
+public abstract class ContainerAwareAbstractTest extends AbstractTest {
 
-    private static UserManagerLocal userManager;
+    private static final String MODULE_NAME = "korok-ejb";
 
     @BeforeClass
-    public static void initialize() {
-        try {
-            userManager = lookupEJB(UserManagerBean.class);
-        } catch (NamingException ne) {
-            ne.printStackTrace();
-        }
+    public static void setup() {
+        AbstractTest.setup();
+        ContainerHolder.fireUpEJBContainer();
     }
 
-    @Test
-    public void doSomething() {
-        assertTrue(userManager != null);
-    }
-
-    @Test
-    public void testGroups() {
-        List<Group> groups = userManager.getAllGroups();
-        System.out.println("Size of list is: " + groups.size());
-        assertTrue(!groups.isEmpty());
+    public static <T> T lookupEJB(Class<T> clazz) throws NamingException {
+        return (T) ContainerHolder.getContext().lookup("java:global/" + MODULE_NAME + "/" + clazz.getSimpleName());
     }
 }

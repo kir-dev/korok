@@ -28,11 +28,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
-import hu.sch.test.base.AbstractTest;
 import hu.sch.services.MailManagerLocal;
+import hu.sch.test.base.ContainerAwareAbstractTest;
 import javax.naming.NamingException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +41,7 @@ import static org.junit.Assert.*;
  *
  * @author aldaris
  */
-public class MailManagerTest extends AbstractTest {
+public class MailManagerTest extends ContainerAwareAbstractTest {
 
     private static MailManagerLocal mailManager;
 

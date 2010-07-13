@@ -30,7 +30,7 @@
  */
 package hu.sch.web.profile.pages.edit;
 
-import hu.sch.test.base.AbstractTest;
+import hu.sch.test.base.ContainerAwareAbstractTest;
 import hu.sch.web.PhoenixApplication;
 import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.tester.FormTester;
@@ -42,7 +42,7 @@ import org.junit.BeforeClass;
  *
  * @author aldaris
  */
-public class EditPageTest extends AbstractTest {
+public class EditPageTest extends ContainerAwareAbstractTest {
 
     private static WicketTester tester;
 
