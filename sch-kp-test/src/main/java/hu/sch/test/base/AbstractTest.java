@@ -41,7 +41,7 @@ public abstract class AbstractTest {
     private static final String LOGGING_CONFIG = "java.util.logging.config.file";
 
     @BeforeClass
-    public static void setup() {
+    public static void initSystemProperties() {
         System.setProperty(LOGGING_CONFIG, TestConfig.getProperty(TestConfig.GF_ROOT) + "/domains/domain1/config/logging.properties");
     }
 }

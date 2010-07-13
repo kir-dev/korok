@@ -43,7 +43,6 @@ public abstract class ContainerAwareAbstractTest extends AbstractTest {
 
     @BeforeClass
     public static void setup() {
-        AbstractTest.setup();
         ContainerHolder.fireUpEJBContainer();
     }
 
