@@ -37,8 +37,8 @@ import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.profile.pages.admin.AdminPage;
 import hu.sch.web.profile.pages.community.CreateCommunityProfile;
-import hu.sch.web.profile.pages.search.DormitoryRoomNumberLinkPanel;
 import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.wicket.components.customlinks.SearchLink;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -159,8 +159,7 @@ public class ShowPersonPage extends ProfilePage {
         WebMarkupContainer roomNumberWMC =
                 new WebMarkupContainer("roomNumberWMC");
 
-        roomNumberWMC.add(new DormitoryRoomNumberLinkPanel("roomNumber", person));
-//        roomNumberWMC.add(new Label("roomNumber"));
+        roomNumberWMC.add(new SearchLink("roomNumber", SearchLink.USER_TYPE, person.getRoomNumber()));
         roomNumberWMC.setVisible(
                 !person.isPrivateAttribute("roomNumber")
                 && person.getRoomNumber() != null);

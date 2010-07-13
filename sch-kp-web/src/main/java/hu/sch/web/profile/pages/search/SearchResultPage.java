@@ -31,6 +31,8 @@
 
 package hu.sch.web.profile.pages.search;
 
+import hu.sch.domain.profile.Person;
+import hu.sch.web.kp.pages.search.PersonResultPanel;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -49,7 +51,7 @@ public final class SearchResultPage extends ProfilePage {
 
     //public List<Person> persons = new ArrayList();
     //PersonDataProvider personDataProvider;
-    PersonsSearchResultsTable personsTable;
+    PersonResultPanel personsTable;
 
     public class SearchForm extends Form {
 
@@ -151,14 +153,14 @@ public final class SearchResultPage extends ProfilePage {
 
     public SearchResultPage(String searchString) {
         super();
+        setHeaderLabelText("Keresés");
         add(new FeedbackPanel("feedbackPanel"));
 
         SearchForm searchForm = new SearchForm("searchForm");
         searchForm.searchString = searchString;
         add(searchForm);
 
-        //personDataProvider = new PersonDataProvider(persons);
-        personsTable = new PersonsSearchResultsTable("resultsTable");
+        personsTable = new PersonResultPanel("resultsTable", new ArrayList<Person>());
         add(personsTable);
 
         setPersonsBySearchString(searchString);

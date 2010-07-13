@@ -32,7 +32,6 @@ package hu.sch.domain;
 
 import hu.sch.domain.util.DateInterval;
 import hu.sch.domain.interfaces.MembershipTableEntry;
-import hu.sch.domain.util.SortProperty;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -76,7 +75,7 @@ import javax.persistence.Transient;
 public class Membership implements MembershipTableEntry {
 
     public static final String SORT_BY_GROUP = "group";
-    public static final String SORT_BY_POSTS = "posts";
+    public static final String SORT_BY_POSTS = "postsAsString";
     public static final String SORT_BY_INTERVAL = "interval";
 
     private static final long serialVersionUID = 1L;
@@ -134,7 +133,6 @@ public class Membership implements MembershipTableEntry {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "grp_id", insertable = true, updatable = true)
-    @SortProperty(SORT_BY_GROUP)
     public Group getGroup() {
         return group;
     }
@@ -183,7 +181,6 @@ public class Membership implements MembershipTableEntry {
     }
 
     @Transient
-    @SortProperty(SORT_BY_INTERVAL)
     public DateInterval getInterval() {
         if (interval == null) {
             interval = new DateInterval(start, end);
@@ -237,7 +234,6 @@ public class Membership implements MembershipTableEntry {
     }
 
     @Transient
-    @SortProperty(SORT_BY_POSTS)
     public String getPostsAsString() {
         if (postsAsString == null) {
             StringBuilder sb = new StringBuilder(posts.size() * 16 + 3);

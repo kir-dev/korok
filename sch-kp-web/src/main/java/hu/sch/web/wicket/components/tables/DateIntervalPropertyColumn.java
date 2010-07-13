@@ -57,7 +57,9 @@ public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
      *            display model
      * @param sortProperty
      *            sort property
-     * @param propertyExpression
+     * @param startPropertyExpression
+     *            wicket property expression used by PropertyModel
+     * @param endPropertyExpression
      *            wicket property expression used by PropertyModel
      */
     public DateIntervalPropertyColumn(IModel<String> displayModel, String sortProperty,

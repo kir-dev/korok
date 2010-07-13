@@ -360,3 +360,28 @@ select.wide { width: 355px; }
 .subdata {
     margin: 5px 14px;
 }
+
+/* style.css-ból copyzva, de azért a #hits-el szinkronba */
+table.withheader {
+    margin: 5px 0 10px 0;
+    width: 805px;
+    border-spacing: 0px;
+}
+table.withheader th, table.withheader td {
+    border-bottom:1px solid #9DC5D6;
+    font-size: 12px;
+    padding: 5px 0 4px 10px;
+    empty-cells: show;
+}
+th {
+    height: 26px;
+    background: #6A93AE;
+    font-weight: bold;
+    text-align: left;
+    color: #ffffff;
+}
+.withheader tr:hover { background: #E1EBF1; }
+#data {
+    margin: 0 30px;
+    padding-bottom: 235px;
+}

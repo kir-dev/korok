@@ -33,7 +33,6 @@ package hu.sch.web.wicket.util;
 import hu.sch.domain.profile.Person;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
 
@@ -46,8 +45,8 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
     private OrderableList<Person> persons;
 
     public SortablePersonDataProvider(List<Person> persons) {
-        this.persons = new OrderableList<Person>(persons, Person.class);
-        setSort("name", true);
+        this.persons = new OrderableList<Person>(persons);
+        setSort(Person.SORT_BY_NAME, true);
     }
 
     @Override
@@ -64,5 +63,14 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
     @Override
     public int size() {
         return persons.size();
+    }
+
+    public List<Person> getPersons() {
+        return persons.getList();
+    }
+
+    public void setPersons(List<Person> list) {
+        persons.setList(list);
+        persons.sort(getSort());
     }
 }
