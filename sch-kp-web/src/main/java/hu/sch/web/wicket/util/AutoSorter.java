@@ -28,36 +28,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package hu.sch.web.wicket.util;
 
-import hu.sch.domain.util.SortProperty;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.text.Collator;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Locale;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
+import org.apache.wicket.model.PropertyModel;
 
 /**
- * Automatikusan rendezhetünk vele listákat, ha a megfelelő gettereket (amelyeknek
- * {@link java.lang.Comparable Comparable} interfészt megvalósító objektummal kell
- * visszatérnie) megannotáltuk a {@link SortProperty @SortProperty} annotációval.
- *
- * <p>TODO - adjunk bele egy kis cache-t (Map&lt;Class, Map&lt;String, Method&gt;)</p>
+ * Automatikusan rendezhetünk vele listákat, felhasználva a {@link PropertyModel}t.
  *
  * @author  messo
  * @since   2.3.1
  */
 public class AutoSorter {
 
-    public static <T> void sort(final List<T> list, final Class<T> clazz, SortParam sortParam) {
+    private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
+
+    public static <T> void sort(final List<T> list, SortParam sortParam) {
         final String prop = sortParam.getProperty();
         final int r = sortParam.isAscending() ? 1 : -1;
 
@@ -66,43 +57,27 @@ public class AutoSorter {
             return;
         }
 
-        Method[] methods = clazz.getMethods();
-        for (final Method m : methods) {
-            final SortProperty sp = m.getAnnotation(SortProperty.class);
-            if (sp == null) {
-                continue;
-            }
-            if (sp.value().equals(prop)) {
-                // megvan, hogy a rendezést melyik metódusra kéne meghívni
-                Collections.sort(list, new Comparator<T>() {
+        Collections.sort(list, new Comparator<T>() {
 
-                    @Override
-                    public int compare(T o1, T o2) {
-                        // ha az elem null, akkor az elől legyen.
-                        try {
-                            Comparable a = (Comparable) m.invoke(o1);
-                            if (a == null) {
-                                // ha null, akkor az elől legyen.
-                                return -r;
-                            }
-                            Comparable b = (Comparable) m.invoke(o2);
-                            if (b == null) {
-                                return r;
-                            }
-                            return r * a.compareTo(b);
-                        } catch (IllegalAccessException ex) {
-                            Logger.getLogger(AutoSorter.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IllegalArgumentException ex) {
-                            Logger.getLogger(AutoSorter.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (InvocationTargetException ex) {
-                            Logger.getLogger(AutoSorter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        return 0;
+            @Override
+            public int compare(T o1, T o2) {
+                Comparable m1 = (Comparable) new PropertyModel<T>(o1, prop).getObject();
+                Comparable m2 = (Comparable) new PropertyModel<T>(o2, prop).getObject();
+
+                if (m1 == null && m2 == null) {
+                    return 0;
+                } else if (m1 == null) {
+                    return -r;
+                } else if (m2 == null) {
+                    return r;
+                } else {
+                    if( m1 instanceof String && m2 instanceof String ) {
+                        return r * huCollator.compare(m1, m2);
+                    } else {
+                        return r * m1.compareTo(m2);
                     }
-                });
-                return;
+                }
             }
-        }
-        throw new IllegalArgumentException("A property (" + prop + ") alapján nem lehet automatikusan rendezni!");
+        });
     }
 }

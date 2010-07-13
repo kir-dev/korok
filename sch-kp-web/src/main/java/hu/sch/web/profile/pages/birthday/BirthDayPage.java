@@ -28,13 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.birthday;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.web.wicket.util.PersonDataProvider;
 import hu.sch.web.profile.pages.template.ProfilePage;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
+import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,15 +50,13 @@ import org.apache.wicket.model.Model;
  */
 public class BirthDayPage extends ProfilePage {
 
-    public List<Person> persons = new ArrayList<Person>();
-    PersonDataProvider personDataProvider;
+    SortablePersonDataProvider personDataProvider;
 
     public BirthDayPage() {
         super();
         add(new FeedbackPanel("feedbackPanel"));
         setHeaderLabelModel(new Model("Szülinaposok"));
-        personDataProvider = new PersonDataProvider(persons);
-        birthDaySearch();
+        personDataProvider = new SortablePersonDataProvider(birthDaySearch());
 
         final DataView<Person> dataView = new DataView<Person>("simple", personDataProvider) {
 
@@ -72,14 +69,14 @@ public class BirthDayPage extends ProfilePage {
         add(dataView);
     }
 
-    public void birthDaySearch() {
-        persons.clear();
+    public final List<Person> birthDaySearch() {
+        List<Person> persons = new ArrayList<Person>();
         Date date = Calendar.getInstance().getTime();
         String date2 = new SimpleDateFormat("MMdd").format(date);
         persons.addAll(ldapManager.getPersonsWhoHasBirthday(date2));
-        personDataProvider.setPersons(persons);
         if (persons.isEmpty()) {
             info("Ma senki se ünnepel:(");
         }
+        return persons;
     }
 }

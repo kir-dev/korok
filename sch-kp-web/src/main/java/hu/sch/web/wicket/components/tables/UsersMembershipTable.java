@@ -109,7 +109,7 @@ public abstract class UsersMembershipTable implements Serializable {
         private OrderableList<Membership> items;
 
         private MySortableDataProvider(List<Membership> items) {
-            this.items = new OrderableList<Membership>(items, Membership.class);
+            this.items = new OrderableList<Membership>(items);
         }
 
         @Override

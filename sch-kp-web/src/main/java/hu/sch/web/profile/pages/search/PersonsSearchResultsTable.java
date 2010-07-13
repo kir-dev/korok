@@ -32,7 +32,7 @@
 package hu.sch.web.profile.pages.search;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.web.wicket.util.PersonDataProvider;
+import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import java.util.ArrayList;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
@@ -50,7 +50,7 @@ import org.apache.wicket.model.Model;
  */
 public class PersonsSearchResultsTable extends Panel {
 
-    private PersonDataProvider personDataProvider = new PersonDataProvider(new ArrayList<Person>());
+    private SortablePersonDataProvider personDataProvider = new SortablePersonDataProvider(new ArrayList<Person>());
 
     public PersonsSearchResultsTable(String id) {
         super(id);
@@ -83,7 +83,7 @@ public class PersonsSearchResultsTable extends Panel {
     /**
      * @return the personDataProvider
      */
-    public PersonDataProvider getPersonDataProvider() {
+    public SortablePersonDataProvider getPersonDataProvider() {
         return personDataProvider;
     }
 }

@@ -64,7 +64,7 @@ public class ShowInactive extends SecuredPageTemplate {
         List<Person> inactivePersons = ldapManager.searchInactives();
 
         List<IColumn<Person>> columns = new ArrayList<IColumn<Person>>();
-        columns.add(new PanelColumn<Person>("Név", "name") {
+        columns.add(new PanelColumn<Person>("Név", Person.SORT_BY_NAME) {
 
             @Override
             protected Panel getPanel(String componentId, Person p) {
