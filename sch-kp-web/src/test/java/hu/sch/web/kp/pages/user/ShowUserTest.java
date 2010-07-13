@@ -28,11 +28,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package hu.sch.web;
+package hu.sch.web.kp.pages.user;
 
 import hu.sch.test.base.AbstractTest;
-import hu.sch.web.kp.pages.user.ShowUser;
+import hu.sch.web.PhoenixApplication;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.BeforeClass;
 import org.junit.Test;
