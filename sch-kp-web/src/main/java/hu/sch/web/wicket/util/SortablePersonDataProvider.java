@@ -42,10 +42,10 @@ import org.apache.wicket.model.IModel;
  */
 public class SortablePersonDataProvider extends SortableDataProvider<Person> {
 
-    private OrderableList<Person> persons;
+    private SortableList<Person> persons;
 
     public SortablePersonDataProvider(List<Person> persons) {
-        this.persons = new OrderableList<Person>(persons);
+        this.persons = new SortableList<Person>(persons);
         setSort(Person.SORT_BY_NAME, true);
     }
 

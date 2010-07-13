@@ -34,7 +34,7 @@ import hu.sch.domain.Membership;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
 import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import hu.sch.web.wicket.components.customlinks.OldBoyLinkPanel;
-import hu.sch.web.wicket.util.OrderableList;
+import hu.sch.web.wicket.util.SortableList;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -106,10 +106,10 @@ public abstract class UsersMembershipTable implements Serializable {
 
     private class MySortableDataProvider extends SortableDataProvider<Membership> {
 
-        private OrderableList<Membership> items;
+        private SortableList<Membership> items;
 
         private MySortableDataProvider(List<Membership> items) {
-            this.items = new OrderableList<Membership>(items);
+            this.items = new SortableList<Membership>(items);
         }
 
         @Override

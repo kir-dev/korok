@@ -41,12 +41,15 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
  * @since   2.3.1
  * @see AutoSorter
  */
-public class OrderableList<T> implements Serializable {
+public class SortableList<T> implements Serializable {
 
-    protected List<T> list;
+    protected List<T> list = null;
     protected SortParam lastSortParam = null;
 
-    public OrderableList(List<T> list) {
+    public SortableList() {
+    }
+
+    public SortableList(List<T> list) {
         this.list = list;
     }
 
