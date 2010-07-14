@@ -47,7 +47,7 @@ public class MetaHeaderContributor extends HeaderContributor {
         super(headerContributor);
     }
 
-    public static final MetaHeaderContributor forMeta(final Class<? extends Page> scope) {
+    public static MetaHeaderContributor forMeta(final Class<? extends Page> scope) {
 
         return new MetaHeaderContributor(new IHeaderContributor() {
 

@@ -55,29 +55,36 @@ public class ByteArrayResourceStream implements IResourceStream {
         this.contentType = contentType;
     }
 
+    @Override
     public void close() throws IOException {
     }
 
+    @Override
     public String getContentType() {
         return (contentType);
     }
 
+    @Override
     public InputStream getInputStream() throws ResourceStreamNotFoundException {
         return (new ByteArrayInputStream(content));
     }
 
+    @Override
     public Locale getLocale() {
         return (locale);
     }
 
+    @Override
     public long length() {
         return (content.length);
     }
 
+    @Override
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
 
+    @Override
     public Time lastModifiedTime() {
         return null;
     }

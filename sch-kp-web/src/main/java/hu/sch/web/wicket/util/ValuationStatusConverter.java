@@ -42,10 +42,12 @@ import org.apache.wicket.util.convert.IConverter;
  */
 public class ValuationStatusConverter implements IConverter {
 
+    @Override
     public Object convertToObject(String value, Locale locale) {
         throw new UnsupportedOperationException("ErtekelesStatusz nem konvertálható");
     }
 
+    @Override
     public String convertToString(Object value, Locale locale) {
         switch ((ValuationStatus) value) {
             case NINCS:
