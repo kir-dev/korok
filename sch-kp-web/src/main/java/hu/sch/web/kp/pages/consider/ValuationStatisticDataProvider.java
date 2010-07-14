@@ -53,7 +53,7 @@ public class ValuationStatisticDataProvider implements IDataProvider<ValuationSt
 
     public ValuationStatisticDataProvider(Semester semester) {
         InjectorHolder.getInjector().inject(this);
-        statList = valuationManager.findValuationStatisticForSemester(semester);
+        statList = valuationManager.findValuationStatisticForSemester();
     }
 
     @Override
