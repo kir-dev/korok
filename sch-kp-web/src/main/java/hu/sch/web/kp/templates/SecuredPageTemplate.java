@@ -165,7 +165,13 @@ public abstract class SecuredPageTemplate extends WebPage {
 
     private void loadUser() {
         Long virId = getAuthorizationComponent().getUserid(getRequest());
-        if (virId != null && !virId.equals(getSession().getUserId())) {
+        if (virId == null) {
+            // nincs virId, ilyenkor userId := 0?
+            getSession().setUserId(0L);
+            return;
+        }
+        if (!virId.equals(getSession().getUserId())) {
+            // nem egyezik, de van virId, akkor írjuk felül az eddig ismertet
             User userAttrs =
                     getAuthorizationComponent().getUserAttributes(getRequest());
             if (userAttrs != null) {
@@ -173,17 +179,10 @@ public abstract class SecuredPageTemplate extends WebPage {
                 userManager.updateUserAttributes(userAttrs);
             }
             getSession().setUserId(virId);
-        } else {
-            getSession().setUserId(0L);
         }
     }
 
     protected final User getUser() {
-        Long virId = getAuthorizationComponent().getUserid(getRequest());
-        Long userId = getSession().getUserId();
-        if (userId == null || !userId.equals(virId)) {
-            loadUser();
-        }
         return userManager.findUserWithMembershipsById(getSession().getUserId());
     }
 
