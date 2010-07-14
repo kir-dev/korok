@@ -53,13 +53,13 @@ import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.PropertyModel;
 
 /**
@@ -97,7 +97,7 @@ public class ConsiderPage extends SecuredPageTemplate {
         setHeaderLabelText("Leadott értékelések elbírálása");
         add(new FeedbackPanel("pagemessages"));
         add(new Label("semester", getSemester().toString()));
-        SortableDataProvider<ValuationStatistic> dp = new SortableValuationStatisticDataProvider(valuationManager, getSemester());
+        IDataProvider<ValuationStatistic> dp = new ValuationStatisticDataProvider(getSemester());
 
         Form form = new Form("considerForm") {
 

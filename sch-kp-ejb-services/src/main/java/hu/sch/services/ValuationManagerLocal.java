@@ -204,9 +204,13 @@ public interface ValuationManagerLocal {
      */
     ValuationStatistic getStatisticForValuation(Long valuationId);
 
-    List<ValuationStatistic> findErtekelesStatisztikaForSzemeszter(Semester szemeszter, String sortColumn);
-
-    List<ValuationStatistic> findErtekelesStatisztikaForSzemeszter(Semester szemeszter);
+    /**
+     * Az adott szemeszterhez tartozó értékelésstatisztikát adja vissza
+     * (pontátlag, összpontszám, belépők típusonként)
+     *
+     * @return értékelésekhez tartozó statisztikák listája
+     */
+    List<ValuationStatistic> findValuationStatisticForSemester();
 
     /**
      * A megadott id-hez tartozó értékelést adja vissza úgy, hogy az tartalmazza

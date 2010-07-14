@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.consider;
 
 import hu.sch.domain.ValuationStatistic;
@@ -36,8 +35,9 @@ import hu.sch.domain.Semester;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import javax.ejb.EJB;
+import org.apache.wicket.injection.web.InjectorHolder;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
@@ -45,36 +45,33 @@ import org.apache.wicket.model.IModel;
  *
  * @author hege
  */
-public class SortableValuationStatisticDataProvider extends SortableDataProvider<ValuationStatistic> {
+public class ValuationStatisticDataProvider implements IDataProvider<ValuationStatistic> {
 
-    ValuationManagerLocal ertekelesManager;
+    @EJB(name = "ValuationManagerBean")
+    private ValuationManagerLocal valuationManager;
     private List<ValuationStatistic> statList;
-    private Semester szemeszter;
 
-    public SortableValuationStatisticDataProvider(ValuationManagerLocal ertekelesManager, Semester szemeszter) {
-        this.ertekelesManager = ertekelesManager;
-        this.szemeszter = szemeszter;
-        setSort(new SortParam("csoportNev", true));
+    public ValuationStatisticDataProvider(Semester semester) {
+        InjectorHolder.getInjector().inject(this);
+        statList = valuationManager.findValuationStatisticForSemester(semester);
     }
 
+    @Override
     public Iterator<ValuationStatistic> iterator(int first, int count) {
-        // cache-elt példány
-        //statList = null;
-        return getStatList().iterator();
+        return statList.subList(first, first + count).iterator();
     }
 
+    @Override
     public int size() {
-        return getStatList().size();
+        return statList.size();
     }
 
-    public List<ValuationStatistic> getStatList() {
-        if (statList == null) {
-            statList = ertekelesManager.findErtekelesStatisztikaForSzemeszter(szemeszter, getSort().getProperty());
-        }
-        return statList;
-    }
-
+    @Override
     public IModel<ValuationStatistic> model(ValuationStatistic object) {
         return new CompoundPropertyModel<ValuationStatistic>(object);
+    }
+
+    @Override
+    public void detach() {
     }
 }

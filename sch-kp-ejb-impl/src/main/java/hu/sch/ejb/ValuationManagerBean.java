@@ -35,7 +35,6 @@ import hu.sch.domain.ValuationData;
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Group;
-import hu.sch.domain.Membership;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.ApprovedEntrant;
 import hu.sch.domain.Valuation;
@@ -57,17 +56,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.mail.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -80,8 +76,6 @@ import org.apache.log4j.Logger;
 public class ValuationManagerBean implements ValuationManagerLocal {
 
     private static final Logger logger = Logger.getLogger(ValuationManagerBean.class);
-    private static final String defaultSortColumnForErtekelesLista = "csoportNev";
-    private static final Map<String, String> sortMapForErtekelesLista;
     private static final String statisztikaQuery = "SELECT new hu.sch.domain.ValuationStatistic(v, "
             + "(SELECT avg(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as averagePoint, "
             + "(SELECT sum(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as summaPoint, "
@@ -89,8 +83,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             + "(SELECT count(*) as numKB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KB\') as givenKB, "
             + "(SELECT count(*) as numAB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'AB\') as givenAB"
             + ") FROM Valuation v ";
-    @Resource(name = "mail/korokMail")
-    private Session mailSession;
     @PersistenceContext
     EntityManager em;
     @EJB
@@ -99,20 +91,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     SystemManagerLocal systemManager;
     @EJB
     MailManagerLocal mailManager;
-
-    static {
-        /* Hibernate BUG:
-         * http://opensource.atlassian.com/projects/hibernate/browse/HHH-1902
-         */
-        sortMapForErtekelesLista = new HashMap<String, String>();
-        sortMapForErtekelesLista.put("csoportNev", "v.group.name ASC");
-        sortMapForErtekelesLista.put("atlagPont", "col_1_0_ DESC");
-        sortMapForErtekelesLista.put("kiosztottKDO", "col_2_0_ DESC");
-        sortMapForErtekelesLista.put("kiosztottKB", "col_3_0_ DESC");
-        sortMapForErtekelesLista.put("kiosztottAB", "col_4_0_ DESC");
-        sortMapForErtekelesLista.put("pontStatusz", "v.pointStatus DESC");
-        sortMapForErtekelesLista.put("belepoStatusz", "v.entrantStatus DESC");
-    }
 
     @Override
     public void createErtekeles(Valuation ertekeles) {
@@ -149,17 +127,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public List<ValuationStatistic> findErtekelesStatisztikaForSzemeszter(Semester szemeszter) {
-        return findErtekelesStatisztikaForSzemeszter(szemeszter, defaultSortColumnForErtekelesLista);
-    }
-
-    @Override
-    public List<ValuationStatistic> findErtekelesStatisztikaForSzemeszter(Semester szemeszter, String sortColumn) {
-        String sc = sortMapForErtekelesLista.get(sortColumn);
-        if (sc == null) {
-            throw new RuntimeException("Az eredményt nem lehet a megadott attribútum alapján rendezni");
-        }
-        Query q = em.createQuery(statisztikaQuery + "WHERE v.semester=:semester ORDER BY " + sc);
+    public List<ValuationStatistic> findValuationStatisticForSemester() {
+        Query q = em.createQuery(statisztikaQuery + "WHERE v.semester=:semester");
         q.setParameter("semester", systemManager.getSzemeszter());
 
         return q.getResultList();
