@@ -97,7 +97,8 @@ public class ConsiderPage extends SecuredPageTemplate {
         setHeaderLabelText("Leadott értékelések elbírálása");
         add(new FeedbackPanel("pagemessages"));
         add(new Label("semester", getSemester().toString()));
-        IDataProvider<ValuationStatistic> dp = new ValuationStatisticDataProvider(getSemester());
+        IDataProvider<ValuationStatistic> dp = new ValuationStatisticDataProvider(
+                valuationManager.findValuationStatisticForSemester());
 
         Form form = new Form("considerForm") {
 

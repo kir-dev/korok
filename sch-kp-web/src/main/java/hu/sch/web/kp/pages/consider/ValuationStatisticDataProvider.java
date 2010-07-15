@@ -31,11 +31,8 @@
 package hu.sch.web.kp.pages.consider;
 
 import hu.sch.domain.ValuationStatistic;
-import hu.sch.domain.Semester;
-import hu.sch.services.ValuationManagerLocal;
 import java.util.Iterator;
 import java.util.List;
-import javax.ejb.EJB;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -47,13 +44,11 @@ import org.apache.wicket.model.IModel;
  */
 public class ValuationStatisticDataProvider implements IDataProvider<ValuationStatistic> {
 
-    @EJB(name = "ValuationManagerBean")
-    private ValuationManagerLocal valuationManager;
     private List<ValuationStatistic> statList;
 
-    public ValuationStatisticDataProvider(Semester semester) {
+    public ValuationStatisticDataProvider(List<ValuationStatistic> list) {
         InjectorHolder.getInjector().inject(this);
-        statList = valuationManager.findValuationStatisticForSemester();
+        statList = list;
     }
 
     @Override
