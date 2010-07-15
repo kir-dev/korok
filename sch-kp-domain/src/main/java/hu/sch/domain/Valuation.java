@@ -64,23 +64,39 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "ertekelesek")
 @NamedQueries({
-    @NamedQuery(name = "findValuationBySemesterAndGroup",
+    @NamedQuery(name = Valuation.findBySemesterAndGroup,
     query = "SELECT v FROM Valuation v WHERE v.semester=:semester "
     + "AND v.group=:group"),
-    @NamedQuery(name = "findValuationByIdMessageJoined",
+    @NamedQuery(name = Valuation.findByIdMessageJoined,
     query = "SELECT v FROM Valuation v LEFT JOIN FETCH v.messages "
     + "WHERE v.id=:id"),
-    @NamedQuery(name = "findValuationByGroup",
+    @NamedQuery(name = Valuation.findByGroup,
     query = "SELECT v FROM Valuation v "
     + "JOIN FETCH v.sender "
     + "WHERE v.group=:group "
-    + "ORDER BY v.semester DESC")
+    + "ORDER BY v.semester DESC"),
+    @NamedQuery(name = Valuation.findStatisticBySemester, query = Valuation.statQuery + "WHERE v.semester = :semester"),
+    @NamedQuery(name = Valuation.findStatisticByValuation, query = Valuation.statQuery + "WHERE v.id = :valuationId"),
+    @NamedQuery(name = Valuation.findStatisticByValuations, query = Valuation.statQuery + "WHERE v.id in (:ids)"),
+    @NamedQuery(name = Valuation.findStatisticBySemesterAndStatuses, query = Valuation.statQuery
+    + "WHERE v.semester=:semester AND (v.pointStatus=:pointStatus OR v.entrantStatus=:entrantStatus)")
 })
 public class Valuation implements Serializable {
 
     public static final String findByIdMessageJoined = "findValuationByIdMessageJoined";
     public static final String findBySemesterAndGroup = "findValuationBySemesterAndGroup";
     public static final String findByGroup = "findValuationByGroup";
+    public static final String findStatisticByValuation = "findStatisticForValuation";
+    public static final String findStatisticByValuations = "findStatisticForValuations";
+    public static final String findStatisticBySemester = "findStatisticBySemester";
+    public static final String findStatisticBySemesterAndStatuses = "findStatisticBySemesterAndStatuses";
+    protected static final String statQuery = "SELECT new hu.sch.domain.ValuationStatistic(v, "
+            + "(SELECT avg(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as averagePoint, "
+            + "(SELECT sum(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as summaPoint, "
+            + "(SELECT count(*) as numKDO FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KDO\') as givenKDO, "
+            + "(SELECT count(*) as numKB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KB\') as givenKB, "
+            + "(SELECT count(*) as numAB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'AB\') as givenAB"
+            + ") FROM Valuation v ";
     protected Long id;
     protected Group group;
     protected Long groupId;

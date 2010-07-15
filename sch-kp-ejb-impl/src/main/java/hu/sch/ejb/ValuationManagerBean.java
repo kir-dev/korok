@@ -76,13 +76,6 @@ import org.apache.log4j.Logger;
 public class ValuationManagerBean implements ValuationManagerLocal {
 
     private static final Logger logger = Logger.getLogger(ValuationManagerBean.class);
-    private static final String statisztikaQuery = "SELECT new hu.sch.domain.ValuationStatistic(v, "
-            + "(SELECT avg(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as averagePoint, "
-            + "(SELECT sum(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as summaPoint, "
-            + "(SELECT count(*) as numKDO FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KDO\') as givenKDO, "
-            + "(SELECT count(*) as numKB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KB\') as givenKB, "
-            + "(SELECT count(*) as numAB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'AB\') as givenAB"
-            + ") FROM Valuation v ";
     @PersistenceContext
     EntityManager em;
     @EJB
@@ -112,23 +105,24 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public List<ValuationStatistic> getStatisztikaForErtekelesek(List<Long> ertekelesId) {
-        String ids = StringUtils.join(ertekelesId.iterator(), ", ");
-        Query q = em.createQuery(statisztikaQuery + "WHERE v.id in (" + ids + ")");
+    public List<ValuationStatistic> getStatisztikaForErtekelesek(List<Long> valIds) {
+        Query q = em.createNamedQuery(Valuation.findStatisticByValuations);
+        q.setParameter("ids", valIds);
 
         return q.getResultList();
     }
 
     @Override
     public ValuationStatistic getStatisticForValuation(Long valuationId) {
-        Query q = em.createQuery(statisztikaQuery + "WHERE v.id = " + valuationId);
+        Query q = em.createNamedQuery(Valuation.findStatisticByValuation);
+        q.setParameter("valuationId", valuationId);
 
         return (ValuationStatistic) q.getSingleResult();
     }
 
     @Override
     public List<ValuationStatistic> findValuationStatisticForSemester() {
-        Query q = em.createQuery(statisztikaQuery + "WHERE v.semester=:semester");
+        Query q = em.createNamedQuery(Valuation.findStatisticBySemester);
         q.setParameter("semester", systemManager.getSzemeszter());
 
         return q.getResultList();
@@ -136,9 +130,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
     @Override
     public List<ValuationStatistic> findElbiralatlanErtekelesStatisztika() {
-        Query q = em.createQuery(statisztikaQuery + "WHERE v.semester=:semester "
-                + "AND (v.pointStatus=:pointStatus OR v.entrantStatus=:entrantStatus)");
-
+        Query q = em.createNamedQuery(Valuation.findStatisticBySemesterAndStatuses);
         q.setParameter("semester", systemManager.getSzemeszter());
         q.setParameter("pointStatus", ValuationStatus.ELBIRALATLAN);
         q.setParameter("entrantStatus", ValuationStatus.ELBIRALATLAN);
