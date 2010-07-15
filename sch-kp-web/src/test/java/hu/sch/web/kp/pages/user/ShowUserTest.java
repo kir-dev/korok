@@ -30,24 +30,14 @@
  */
 package hu.sch.web.kp.pages.user;
 
-import hu.sch.test.base.ContainerAwareAbstractTest;
-import hu.sch.web.PhoenixApplication;
-import org.apache.wicket.util.tester.WicketTester;
-import org.junit.BeforeClass;
+import hu.sch.web.test.WebTest;
 import org.junit.Test;
 
 /**
  *
  * @author aldaris
  */
-public class ShowUserTest extends ContainerAwareAbstractTest {
-
-    private static WicketTester tester;
-
-    @BeforeClass
-    public static void setUp() {
-        tester = new WicketTester(new PhoenixApplication());
-    }
+public class ShowUserTest extends WebTest {
 
     @Test
     public void testMyPage() {

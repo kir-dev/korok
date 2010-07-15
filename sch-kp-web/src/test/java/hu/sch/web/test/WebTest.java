@@ -28,35 +28,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.web.profile.pages.edit;
+package hu.sch.web.test;
 
-import hu.sch.web.test.WebTest;
-import org.apache.wicket.util.file.File;
-import org.apache.wicket.util.tester.FormTester;
-import org.junit.Test;
+import hu.sch.test.base.ContainerAwareAbstractTest;
+import hu.sch.web.PhoenixApplication;
+import org.apache.wicket.util.tester.WicketTester;
+import org.junit.BeforeClass;
 
 /**
  *
- * @author aldaris
+ * @author  messo
+ * @since   2.3.1
  */
-public class EditPageTest extends WebTest {
+public abstract class WebTest extends ContainerAwareAbstractTest {
 
-    @Test
-    public void testPageCreation() {
-        tester.startPage(EditPage.class);
-        tester.assertRenderedPage(EditPage.class);
-    }
+    protected static WicketTester tester;
 
-    @Test
-    public void testImageMimeType() {
-        FormTester formTester = tester.newFormTester("personForm", false);
-        formTester.setFile("fileInput", new File("src/main/webapp/images/public.gif"), "html");
-        formTester.submit("submitButton");
-        tester.assertErrorMessages(new String[]{"A fotó formátuma nem megfelelő! Megfelelő formátumok: jpeg, png, gif."});
-
-        formTester = tester.newFormTester("personForm", false);
-        formTester.setFile("fileInput", new File("src/main/webapp/images/public.gif"), "image/gif");
-        formTester.submit("submitButton");
-        tester.assertNoErrorMessage();
+    @BeforeClass
+    public static void initWicketTester() {
+        tester = new WicketTester(new PhoenixApplication());
     }
 }
