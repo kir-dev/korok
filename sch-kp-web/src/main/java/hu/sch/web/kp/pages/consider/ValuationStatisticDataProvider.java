@@ -33,7 +33,6 @@ package hu.sch.web.kp.pages.consider;
 import hu.sch.domain.ValuationStatistic;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -47,7 +46,6 @@ public class ValuationStatisticDataProvider implements IDataProvider<ValuationSt
     private List<ValuationStatistic> statList;
 
     public ValuationStatisticDataProvider(List<ValuationStatistic> list) {
-        InjectorHolder.getInjector().inject(this);
         statList = list;
     }
 
