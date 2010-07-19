@@ -43,5 +43,6 @@ public class ShowUserTest extends WebTest {
     public void testMyPage() {
         tester.startPage(ShowUser.class);
         tester.assertRenderedPage(ShowUser.class);
+        tester.assertNoErrorMessage();
     }
 }
