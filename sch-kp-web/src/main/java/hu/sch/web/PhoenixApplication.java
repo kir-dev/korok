@@ -213,7 +213,9 @@ public class PhoenixApplication extends WebApplication {
 
     @Override
     public Session newSession(Request request, Response response) {
-        return new VirSession(request);
+        Session session = new VirSession(request);
+        session.setStyle("newbie");
+        return session;
     }
 
     @Override
