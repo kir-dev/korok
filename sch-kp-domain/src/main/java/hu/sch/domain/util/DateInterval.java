@@ -28,13 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package hu.sch.domain.util;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -43,7 +39,7 @@ import java.util.Date;
  * @author  messo
  * @since   2.3.1
  */
-public class DateInterval implements Comparable<DateInterval> {
+public class DateInterval implements Comparable<DateInterval>, Serializable {
 
     protected Date start;
     protected Date end;
