@@ -181,14 +181,19 @@ public class Person implements Serializable {
     /**
      * Címtár megfelelő: schacUserStatus
      * A felhasználó hallgatói státusza. Ezek lehetnek:
-     * 'akt': urn:mace:terena.org:schac:status:sch.hu:student_status:active
-     * 'egy': urn:mace:terena.org:schac:status:sch.hu:student_status:other
-     * 'veg': urn:mace:terena.org:schac:status:sch.hu:student_status:graduated
+     * urn:mace:terena.org:schac:status:sch.hu:student_status:active
+     * urn:mace:terena.org:schac:status:sch.hu:student_status:newbie
+     * urn:mace:terena.org:schac:status:sch.hu:student_status:other
+     * urn:mace:terena.org:schac:status:sch.hu:student_status:graduated
      */
     private String studentUserStatus;
     /**
      * Címtár megfelelő: nincs!
-     * Származtatott érték, a hallgatói státuszt tárolja.
+     * Származtatott érték, a hallgatói státuszt tárolja. Lehetnek:
+     * active
+     * newbie
+     * other
+     * graduated
      */
     private String studentStatus;
     /**
