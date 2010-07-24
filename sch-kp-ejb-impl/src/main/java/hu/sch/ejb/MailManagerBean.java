@@ -79,8 +79,7 @@ public class MailManagerBean implements MailManagerLocal {
             if (log.isDebugEnabled()) {
                 log.debug("Eredeti cím: " + to);
             }
-            if (Configuration.getEnvironment() == Environment.DEVELOPMENT
-                    || Configuration.getEnvironment() == Environment.STAGING) {
+            if (Configuration.getEnvironment() != Environment.PRODUCTION) {
                 to = Configuration.getDevEmail();
             }
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
