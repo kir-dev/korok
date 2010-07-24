@@ -93,7 +93,7 @@
         <dependency>
             <groupId>wicket-tree</groupId>
             <artifactId>wicket-tree</artifactId>
-            <version>0.4.1</version>
+            <version>0.4.2</version>
         </dependency>
         <!-- TinyMCE függőségek -->
         <dependency>
