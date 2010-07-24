@@ -159,7 +159,9 @@ public class RegisterWizard extends Wizard {
     private enum RegistrationMode {
 
         VIR_ACCOUNT("Meglévő VIR regisztráció"),
-        NEPTUN_CODE("Aktív villanykaros hallgató NEPTUN kód");
+        //NEPTUN_CODE("Aktív villanykaros hallgató NEPTUN kód");
+        NEPTUN_CODE("Gólya regisztráció");
+
         private String name;
 
         private RegistrationMode(String name) {
@@ -407,7 +409,8 @@ public class RegisterWizard extends Wizard {
                 if (results.next()) {
                     person.setNeptun(neptun);
                     checkExistingPerson();
-                    person.setStudentStatus("akt");
+                    //person.setStudentStatus("active");
+                    person.setStudentStatus("newbie");
                     person.setDateOfBirth(new SimpleDateFormat("yyyyMMdd").format(birthDate));
 
                     return true;
