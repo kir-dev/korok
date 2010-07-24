@@ -145,7 +145,10 @@ public class Valuation implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    // FIXME(messo): lásd http://idp-old.sch.bme.hu:3000/issues/890
+    // ilyet, hogy eager, csak olyankor írjunk, amikor tényleg mindig kell
+    // erről itt szó sincs
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "felado_usr_id")
     public User getSender() {
         return sender;
