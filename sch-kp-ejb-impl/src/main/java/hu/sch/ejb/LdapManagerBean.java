@@ -480,6 +480,15 @@ public class LdapManagerBean implements LdapManagerLocal {
 
     @Override
     public void registerPerson(Person p, String password) {
+        register(p, password, false);
+    }
+
+    @Override
+    public void registerNewbie(Person p, String password) {
+        register(p, password, true);
+    }
+
+    private void register(Person p, String password, boolean isNewbie) {
         boolean sendPass = (password == null);
         //az attribútumok formára hozása
         if (sendPass) {
@@ -489,18 +498,27 @@ public class LdapManagerBean implements LdapManagerLocal {
 
         bindPerson(p, password);
         StringBuilder sb = new StringBuilder(300);
-        sb.append("Kedves leendő VIR felhasználó!\n\n");
-        sb.append("Azért kapod ezt a levelet, mert Te, vagy valaki a nevedben regisztrált ");
-        sb.append("a Villanykari Információs Rendszerbe.\n");
-        sb.append("Ha nem Te voltál az, akkor ezt a levelet nyugodtan törölheted, ellenkező ");
-        sb.append("esetben meg kell erősítened a regisztrációdat. Ehhez nem kell mást tenned, mint ");
-        sb.append("egy böngészőbe beírni az alábbi URL-t: ");
+        if (isNewbie) {
+            sb.append("Tisztelt leendő VIR felhasználó!\n\n");
+            sb.append("Azért kapja ezt a levelet, mert Ön, vagy valaki a nevében regisztrált ");
+            sb.append("a Villanykari Információs Rendszerbe.\n");
+            sb.append("Ha nem Ön volt az, akkor ezt a levelet nyugodtan törölheti, ellenkező ");
+            sb.append("esetben meg kell erősítenie a regisztrációját. Ehhez nem kell mást tennie, mint ");
+            sb.append("egy böngészőbe beírni az alábbi URL-t: ");
+        } else {
+            sb.append("Kedves leendő VIR felhasználó!\n\n");
+            sb.append("Azért kapod ezt a levelet, mert Te, vagy valaki a nevedben regisztrált ");
+            sb.append("a Villanykari Információs Rendszerbe.\n");
+            sb.append("Ha nem Te voltál az, akkor ezt a levelet nyugodtan törölheted, ellenkező ");
+            sb.append("esetben meg kell erősítened a regisztrációdat. Ehhez nem kell mást tenned, mint ");
+            sb.append("egy böngészőbe beírni az alábbi URL-t: ");
+        }
         sb.append("https://korok.sch.bme.hu/korok/confirm/uid/").append(p.getUid());
         sb.append("/confirmationcode/").append(getConfirmationCode(p)).append("\n\n");
 
         if (sendPass) {
-            sb.append("Felhasználói neved: ").append(p.getUid()).append('\n');
-            sb.append("Jelszavad: ").append(password).append("\n\n");
+            sb.append("Felhasználói név: ").append(p.getUid()).append('\n');
+            sb.append("Jelszó: ").append(password).append("\n\n");
         }
 
         sb.append("Üdvözlettel:\n");
