@@ -130,7 +130,10 @@ public class RegisterWizard extends Wizard {
         super.onFinish();
         person.setStatus("Inactive");
         try {
-            ldapManager.registerPerson(person, newPass);
+            // FIXME(messo), itt kell valami olyasmit csinálni, hogy annak függvényében
+            // hogy most gólyareg van vagy nincs, melyik metódust hívjuk meg.
+            // jelenleg fixen gólya reg legyen:
+            ldapManager.registerNewbie(person, newPass);
         } catch (RuntimeException re) {
             getSession().error("A regisztráció közben hiba lépett fel!");
             throw new RestartResponseException(RegistrationFinishedPage.class);
