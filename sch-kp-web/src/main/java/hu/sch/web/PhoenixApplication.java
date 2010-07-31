@@ -35,7 +35,6 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.config.Configuration.Environment;
-import hu.sch.services.TimerServiceLocal;
 import hu.sch.web.authz.AgentBasedAuthorization;
 import hu.sch.web.authz.DummyAuthorization;
 import hu.sch.web.kp.pages.group.EditGroupInfo;
@@ -70,7 +69,6 @@ import hu.sch.web.wicket.util.EntrantTypeConverter;
 import hu.sch.web.wicket.util.PostTypeConverter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
 import hu.sch.web.wicket.util.ServerTimerFilter;
-import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
@@ -104,8 +102,6 @@ public class PhoenixApplication extends WebApplication {
 
     private static final String EJB_MODULE_NAME = "korok-ejb";
     private static Logger log = Logger.getLogger(PhoenixApplication.class);
-    @EJB(name = "TimerServiceBean")
-    private TimerServiceLocal timerService;
     private UserAuthorization authorizationComponent;
 
     /**
@@ -205,8 +201,6 @@ public class PhoenixApplication extends WebApplication {
 
         //TimerService injektálása
         InjectorHolder.getInjector().inject(this);
-        //Timerek inicializálása
-        timerService.scheduleTimers();
 
         log.warn("Application has been successfully initiated");
     }

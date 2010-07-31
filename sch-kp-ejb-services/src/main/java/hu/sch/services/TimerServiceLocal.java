@@ -40,5 +40,5 @@ import javax.ejb.Local;
 @Local
 public interface TimerServiceLocal {
 
-    void scheduleTimers();
+    void dailyEvent();
 }

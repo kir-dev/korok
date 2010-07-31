@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.Group;
@@ -39,15 +38,10 @@ import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.TimerServiceLocal;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.domain.util.TimedEvent;
-import java.util.Calendar;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.ejb.Timeout;
-import javax.ejb.Timer;
-import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -67,8 +61,6 @@ public class TimerServiceBean implements TimerServiceLocal {
     private SystemManagerLocal systemManager;
     @EJB(name = "UserManagerBean")
     private UserManagerLocal userManager;
-    @Resource(name = "jdbc/__TimerPool")
-    private TimerService timerService;
     @PersistenceContext
     EntityManager em;
     private static Logger logger = Logger.getLogger(TimerServiceBean.class);
@@ -78,40 +70,14 @@ public class TimerServiceBean implements TimerServiceLocal {
     private static final Long VALASZTMANY_ID = 370L;
 
     @Override
-    public void scheduleTimers() {
-        for (Object timerObj : timerService.getTimers()) {
-            Timer timer = (Timer) timerObj;
-            if (timer.getInfo() instanceof TimedEvent) {
-                timer.cancel();
-            }
-        }
-        Calendar cal = Calendar.getInstance();
-        if (cal.get(Calendar.HOUR_OF_DAY) >= 1) {
-            cal.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        cal.set(Calendar.HOUR_OF_DAY, 1);
-        cal.clear(Calendar.MINUTE);
-
-        timerService.createTimer(cal.getTime(), TimedEvent.DAILY_EVENT.getInterval(), TimedEvent.DAILY_EVENT);
-//        timerService.createTimer(60000L, 60000L, TimedEvent.DAILY_EVENT);
-    }
-
-    @Timeout
-    public void timerFired(Timer timer) {
-        logger.info("event fired");
-        if (timer.getInfo() instanceof TimedEvent) {
-            TimedEvent evt = (TimedEvent) timer.getInfo();
-            switch (evt) {
-                case DAILY_EVENT: {
-                    notifyGroupLeaders();
-                    notifySvieAdmin();
-                    notifySviePresident();
-                    systemManager.setLastLogsDate();
-                    break;
-                }
-            }
-        }
-        logger.info("end of event");
+    @Schedule(hour = "1")
+    public void dailyEvent() {
+        logger.info("daily event fired");
+        notifyGroupLeaders();
+        notifySvieAdmin();
+        notifySviePresident();
+        systemManager.setLastLogsDate();
+        logger.info("end of daily event");
     }
 
     /**
@@ -138,7 +104,7 @@ public class TimerServiceBean implements TimerServiceLocal {
                 }
                 for (Log log : logs) {
                     sb.append(log.getUser().getName()).append(" -> ");
-                    sb.append(showUserLink + log.getUser().getId()).append("\n");
+                    sb.append(showUserLink).append(log.getUser().getId()).append("\n");
                 }
                 if (!logs.isEmpty()) {
                     sb.append("\n\n");
@@ -168,7 +134,7 @@ public class TimerServiceBean implements TimerServiceLocal {
             }
             for (Log log : logs) {
                 sb.append(log.getUser().getName()).append(" -> ");
-                sb.append(showUserLink + log.getUser().getId()).append("\n");
+                sb.append(showUserLink).append(log.getUser().getId()).append("\n");
             }
             if (!logs.isEmpty()) {
                 sb.append("\n\n");
@@ -190,7 +156,7 @@ public class TimerServiceBean implements TimerServiceLocal {
         }
         for (Log log : logs) {
             sb.append(log.getUser().getName()).append(" -> ");
-            sb.append(showUserLink + log.getUser().getId()).append("\n");
+            sb.append(showUserLink).append(log.getUser().getId()).append("\n");
         }
         if (!logs.isEmpty()) {
             sb.append("\n\n");
