@@ -76,7 +76,6 @@ import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
-import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -198,9 +197,6 @@ public class PhoenixApplication extends WebApplication {
             getRequestCycleSettings().addResponseFilter(new ServerTimerFilter());
             log.info("Successfully enabled ServerTimerFilter");
         }
-
-        //TimerService injektálása
-        InjectorHolder.getInjector().inject(this);
 
         log.warn("Application has been successfully initiated");
     }

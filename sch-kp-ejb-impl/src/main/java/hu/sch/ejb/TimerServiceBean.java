@@ -36,7 +36,6 @@ import hu.sch.domain.logging.EventType;
 import hu.sch.domain.logging.Log;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
-import hu.sch.services.TimerServiceLocal;
 import hu.sch.services.UserManagerLocal;
 import java.util.List;
 import javax.ejb.EJB;
@@ -54,7 +53,7 @@ import org.apache.log4j.Logger;
  */
 @Stateless(mappedName = "TimerService")
 @SuppressWarnings("unchecked")
-public class TimerServiceBean implements TimerServiceLocal {
+public class TimerServiceBean {
 
     @EJB(name = "MailManagerBean")
     private MailManagerLocal mailManager;
@@ -70,9 +69,8 @@ public class TimerServiceBean implements TimerServiceLocal {
     private static final String showUserLink = "https://korok.sch.bme.hu/korok/showuser/id/";
     private static final Long VALASZTMANY_ID = 370L;
 
-    @Override
     @Schedule(hour = "1")
-    public void dailyEvent() {
+    protected void dailyEvent() {
         logger.info("daily event fired");
         // lekérjük, hogy melyik ID volt az, amit legutoljára kiküldtünk
         long lastUsedLogId = systemManager.getLastLogId();
