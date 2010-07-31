@@ -28,21 +28,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Semester;
+import hu.sch.domain.logging.Log;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -54,7 +57,9 @@ public class SystemManagerBean implements SystemManagerLocal {
     @PersistenceContext
     EntityManager em;
     private static final String LAST_LOG = "utolso_log_kuldve";
+    private static final Logger logger = Logger.getLogger(SystemManagerBean.class);
 
+    @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {
         try {
             SystemAttribute attr = getAttribute(attributeName);
@@ -72,6 +77,7 @@ public class SystemManagerBean implements SystemManagerLocal {
         return (SystemAttribute) q.getSingleResult();
     }
 
+    @Override
     public void setAttributeValue(String attributeName, String attributeValue) {
         SystemAttribute attr;
         try {
@@ -86,6 +92,7 @@ public class SystemManagerBean implements SystemManagerLocal {
         em.merge(attr);
     }
 
+    @Override
     public Semester getSzemeszter() {
         String s;
         Semester szemeszter = new Semester();
@@ -95,10 +102,12 @@ public class SystemManagerBean implements SystemManagerLocal {
         return szemeszter;
     }
 
+    @Override
     public void setSzemeszter(Semester szemeszter) {
         setAttributeValue("szemeszter", szemeszter.getId());
     }
 
+    @Override
     public ValuationPeriod getErtekelesIdoszak() {
         try {
             return ValuationPeriod.valueOf(getAttributeValue("ertekeles_idoszak"));
@@ -107,21 +116,44 @@ public class SystemManagerBean implements SystemManagerLocal {
         }
     }
 
+    @Override
     public void setErtekelesIdoszak(ValuationPeriod idoszak) {
         setAttributeValue("ertekeles_idoszak", idoszak.toString());
     }
 
-    public Date getLastLogsDate() {
-        Date date;
+    @Override
+    public long getLastLogId() {
+        long id;
+        final String lastLog = getAttributeValue(LAST_LOG);
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(getAttributeValue(LAST_LOG));
-        } catch (Exception ex) {
-            date = null;
+            id = Long.parseLong(lastLog);
+        } catch (NumberFormatException ex) {
+            // TODO - későbbi releasenél (> 2.4) ezt el lehet távolítani, ha biztos,
+            // hogy már átállt a DB-ben a dátum mező ID-re.
+            // nem szám van ott lehet, hogy egy évszám?
+            try {
+                logger.info("A DB-ben a(z) " + LAST_LOG + " rendszerattribútum még dátumot tartalmaz logID helyett.");
+                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(lastLog);
+                Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                c.add(Calendar.DAY_OF_YEAR, -1); // vonjunk ki belőle egyet
+                // lekérdezzük az adott napon a legfrissebb ID-t.
+                Query q = em.createNamedQuery(Log.getLastLogIdByDate);
+                q.setParameter("date", c.getTime());
+                q.setMaxResults(1);
+                // ezzel az előző napi utolsó logID-t kapjuk meg, ami pont jó,
+                // mert akkor feldolgozásra igazából az ezutáni kerül
+                id = (Long) q.getSingleResult();
+            } catch (ParseException ex1) {
+                // se nem szám, se nem évszám, akkor itt gubanc van.
+                throw new RuntimeException("A(z) " + LAST_LOG + " rendszerattribútum se nem szám, se nem dátum, hogy lehetett ez?");
+            }
         }
-        return date;
+        return id;
     }
 
-    public void setLastLogsDate() {
-        setAttributeValue(LAST_LOG, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+    @Override
+    public void setLastLogId(long id) {
+        setAttributeValue(LAST_LOG, String.valueOf(id));
     }
 }

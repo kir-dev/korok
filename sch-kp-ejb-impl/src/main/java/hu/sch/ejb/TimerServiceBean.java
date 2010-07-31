@@ -43,6 +43,7 @@ import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
@@ -73,10 +74,20 @@ public class TimerServiceBean implements TimerServiceLocal {
     @Schedule(hour = "1")
     public void dailyEvent() {
         logger.info("daily event fired");
-        notifyGroupLeaders();
-        notifySvieAdmin();
-        notifySviePresident();
-        systemManager.setLastLogsDate();
+        // lekérjük, hogy melyik ID volt az, amit legutoljára kiküldtünk
+        long lastUsedLogId = systemManager.getLastLogId();
+        // lekérjük a legfrisebb ID-t, ez és az előbbi közti logokat dolgozzuk fel
+        long lastLogId = getLastLogId();
+        if (lastUsedLogId == lastLogId) {
+            logger.info("Nincs új log, amit feldolgozhatnánk");
+        } else {
+            logger.info("A következő logokat dolgozzuk fel: (" + lastUsedLogId + ", " + lastLogId + "]");
+            notifyGroupLeaders(lastUsedLogId, lastLogId);
+            notifySvieAdmin(lastUsedLogId, lastLogId);
+            notifySviePresident(lastUsedLogId, lastLogId);
+            // elmentjük, hogy legközelebb ezeket a logokat már ne dolgozzuk fel
+            systemManager.setLastLogId(lastLogId);
+        }
         logger.info("end of daily event");
     }
 
@@ -84,14 +95,16 @@ public class TimerServiceBean implements TimerServiceLocal {
      * A tagságváltoztatásokról értesíti az egyes körök vezetőit. Ha a problémára
      * tudsz egy szebb megoldást, hát hajrá :)
      */
-    private void notifyGroupLeaders() {
+    private void notifyGroupLeaders(long lastUsedLogId, long lastLogId) {
         Query q = em.createNamedQuery(Log.getGroupsForFreshEntries);
-        q.setParameter("date", systemManager.getLastLogsDate());
+        q.setParameter("lastUsedLogId", lastUsedLogId);
+        q.setParameter("lastLogId", lastLogId);
         List<Group> groups = q.getResultList();
         EventType[] events = {EventType.JELENTKEZES, EventType.TAGSAGTORLES};
 
         Query q2 = em.createNamedQuery(Log.getFreshEventsForEventTypeByGroup);
-        q2.setParameter("date", systemManager.getLastLogsDate());
+        q2.setParameter("lastUsedLogId", lastUsedLogId);
+        q2.setParameter("lastLogId", lastLogId);
         for (Group group : groups) {
             StringBuilder sb = new StringBuilder(welcome.replace("%s", "Körvezető"));
             q2.setParameter("group", group);
@@ -117,10 +130,11 @@ public class TimerServiceBean implements TimerServiceLocal {
         }
     }
 
-    private void notifySvieAdmin() {
+    private void notifySvieAdmin(long lastUsedLogId, long lastLogId) {
         Query q = em.createNamedQuery(Log.getFreshEventsForSvie);
         StringBuilder sb = new StringBuilder(welcome.replace("%s", "SVIE Adminisztrátor"));
-        q.setParameter("date", systemManager.getLastLogsDate());
+        q.setParameter("lastUsedLogId", lastUsedLogId);
+        q.setParameter("lastLogId", lastLogId);
         boolean wasRecord = false;
         EventType[] events = {EventType.PARTOLOVAVALAS,
             EventType.SVIE_JELENTKEZES, EventType.SVIE_TAGSAGTORLES,
@@ -145,10 +159,11 @@ public class TimerServiceBean implements TimerServiceLocal {
         }
     }
 
-    private void notifySviePresident() {
+    private void notifySviePresident(long lastUsedLogId, long lastLogId) {
         Query q = em.createNamedQuery(Log.getFreshEventsForSvie);
         StringBuilder sb = new StringBuilder(welcome.replace("%s", "Választmányi elnök"));
-        q.setParameter("date", systemManager.getLastLogsDate());
+        q.setParameter("lastUsedLogId", lastUsedLogId);
+        q.setParameter("lastLogId", lastLogId);
         q.setParameter("evtType", EventType.ELFOGADASALATT);
         List<Log> logs = q.getResultList();
         if (!logs.isEmpty()) {
@@ -168,5 +183,15 @@ public class TimerServiceBean implements TimerServiceLocal {
         sb.append("Üdvözlettel:\nKir-Dev");
 
         mailManager.sendEmail(emailTo, "Események", sb.toString());
+    }
+
+    private long getLastLogId() {
+        Query q = em.createNamedQuery(Log.getLastId);
+        q.setMaxResults(1);
+        try {
+            return (Long) q.getSingleResult();
+        } catch (NoResultException ex) {
+            return 0;
+        }
     }
 }

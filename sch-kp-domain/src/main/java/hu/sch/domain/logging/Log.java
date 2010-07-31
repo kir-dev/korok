@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain.logging;
 
 import hu.sch.domain.Group;
@@ -56,14 +55,18 @@ import javax.persistence.TemporalType;
 @Table(name = "log")
 @SequenceGenerator(name = "log_seq", sequenceName = "log_seq")
 @NamedQueries({
-    @NamedQuery(name = "getFreshEventsForEventTypeByGroup",
+    @NamedQuery(name = Log.getFreshEventsForEventTypeByGroup,
     query = "SELECT l FROM Log l "
-    + "WHERE l.eventDate >= :date AND l.event.eventType = :evtType AND l.group = :group"),
-    @NamedQuery(name = "getFreshEventsForSvie",
+    + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId AND l.event.eventType = :evtType AND l.group = :group"),
+    @NamedQuery(name = Log.getFreshEventsForSvie,
     query = "SELECT l FROM Log l "
-    + "WHERE l.eventDate >= :date AND l.event.eventType = :evtType AND l.group IS NULL"),
-    @NamedQuery(name = "getGroupsForFreshEntries",
-    query = "SELECT DISTINCT l.group FROM Log l WHERE l.eventDate >=:date")
+    + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId AND l.event.eventType = :evtType AND l.group IS NULL"),
+    @NamedQuery(name = Log.getGroupsForFreshEntries,
+    query = "SELECT DISTINCT l.group FROM Log l WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId"),
+    @NamedQuery(name = Log.getLastId,
+    query = "SELECT l.id FROM Log l ORDER BY l.id DESC"),
+    @NamedQuery(name = Log.getLastLogIdByDate,
+    query = "SELECT l.id FROM Log l WHERE l.eventDate <= :date ORDER BY l.id DESC")
 })
 public class Log implements Serializable {
 
@@ -71,6 +74,8 @@ public class Log implements Serializable {
     public static final String getFreshEventsForEventTypeByGroup = "getFreshEventsForEventTypeByGroup";
     public static final String getGroupsForFreshEntries = "getGroupsForFreshEntries";
     public static final String getFreshEventsForSvie = "getFreshEventsForSvie";
+    public static final String getLastId = "getLastId";
+    public static final String getLastLogIdByDate = "getLastLogIdByDate";
     private Long id;
     private Group group;
     private User user;

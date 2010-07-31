@@ -28,13 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.services;
 
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import java.util.Date;
 import javax.ejb.Local;
 
 /**
@@ -93,13 +91,14 @@ public interface SystemManagerLocal {
     void setErtekelesIdoszak(ValuationPeriod idoszak);
 
     /**
-     * Visszaadja az utolsó logküldési időt
-     * @return Ekkor került kiküldésre utoljára log
+     * Visszaadja, hogy melyik log volt az amelyiket utoljára kiküldtük.
+     *
+     * @return Az utoljára kiküldött log ID-je
      */
-    Date getLastLogsDate();
+    long getLastLogId();
 
     /**
-     * Beállítja az utolsó logküldési időt
+     * Beállítja, hogy melyik log volt az utolsó amit kiküldtünk.
      */
-    void setLastLogsDate();
+    void setLastLogId(long id);
 }
