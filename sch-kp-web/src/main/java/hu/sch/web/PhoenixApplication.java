@@ -211,10 +211,17 @@ public class PhoenixApplication extends WebApplication {
         log.warn("Application has been successfully initiated");
     }
 
+    public boolean isNewbieTime() {
+        // FIXME -- ezt kéne valahonnan máshonnan szerezni
+        return true;
+    }
+
     @Override
     public Session newSession(Request request, Response response) {
         Session session = new VirSession(request);
-        session.setStyle("newbie");
+        if (isNewbieTime()) {
+            session.setStyle("newbie");
+        }
         return session;
     }
 
