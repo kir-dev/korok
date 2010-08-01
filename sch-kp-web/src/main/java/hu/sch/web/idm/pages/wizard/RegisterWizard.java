@@ -474,7 +474,7 @@ public class RegisterWizard extends Wizard {
     private class NewAccountStep extends DynamicWizardStep {
 
         public NewAccountStep(DynamicWizardStep previousStep) {
-            super(previousStep, "Új felhasználói név megadása", "Kérlek add meg az új felhasználói nevedet, valamint a hozzá tartozó jelszavad. A jelszó legalább 6 karakter hosszú kell legyen!");
+            super(previousStep, new StringResourceModel("reg.new.user.title", null), new StringResourceModel("reg.new.user.help", null));
             final RequiredTextField<String> uidField = new RequiredTextField<String>("person.uid");
             uidField.add(new PatternValidator(PatternHolder.UID_PATTERN));
             uidField.add(StringValidator.lengthBetween(2, 10));
