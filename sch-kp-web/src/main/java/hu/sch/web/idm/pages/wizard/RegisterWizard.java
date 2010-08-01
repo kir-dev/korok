@@ -150,7 +150,7 @@ public class RegisterWizard extends Wizard {
         return new AjaxWizardButtonBar(id, this);
     }
 
-    private boolean checkExistingPerson() throws IllegalArgumentException {
+    private boolean checkExistingPerson(String neptun) throws IllegalArgumentException {
         try {
             Person dummy = ldapManager.getPersonByNeptun(neptun);
             throw new IllegalArgumentException("Már rendelkezel felhasználóval (\"" + dummy.getUid()
@@ -319,7 +319,7 @@ public class RegisterWizard extends Wizard {
                 }
 
 
-                checkExistingPerson();
+                checkExistingPerson(neptun);
                 person.setFullName(results.getString("usr_name"));
                 person.setNickName(results.getString("usr_nickname"));
                 person.setFirstName(results.getString("usr_firstname"));
@@ -412,7 +412,7 @@ public class RegisterWizard extends Wizard {
                 results = stmt.executeQuery();
                 if (results.next()) {
                     person.setNeptun(neptun);
-                    checkExistingPerson();
+                    checkExistingPerson(neptun);
                     //person.setStudentStatus("active");
                     person.setStudentStatus("newbie");
                     person.setDateOfBirth(new SimpleDateFormat("yyyyMMdd").format(birthDate));
