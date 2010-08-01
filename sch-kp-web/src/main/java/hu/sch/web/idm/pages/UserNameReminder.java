@@ -28,11 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.idm.pages;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.MailManagerLocal;
+import hu.sch.web.PhoenixApplication;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
@@ -56,7 +56,7 @@ public class UserNameReminder extends SecuredPageTemplate {
     public UserNameReminder() {
         setHeaderLabelText("Felhasználói név emlékeztető");
         if (getRemoteUser() != null) {
-            getSession().error("Már be vagy jelentkezve, akkor mire nem emlékszel?");
+            getSession().error(getLocalizer().getString("err.ReminderAlreadySignedIn", null));
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
@@ -76,9 +76,16 @@ public class UserNameReminder extends SecuredPageTemplate {
                 } else {
                     Person person = results.get(0);
                     try {
-                        mailManager.sendEmail(mail, "Felhasználói név emlékeztető",
-                                "Kedves " + person.getFirstName() + "!\n\nEhhez az e-mail címedhez a következő felhasználói név van regisztrálva a rendszerben: '"
-                                + person.getUid() + "'.\n\nÜdv,\nKir-Dev");
+                        StringBuilder msg = new StringBuilder(200);
+                        if (((PhoenixApplication) getApplication()).isNewbieTime()) {
+                            msg.append("Tisztelt ");
+                        } else {
+                            msg.append("Kedves ");
+                        }
+                        msg.append(person.getFirstName()).append("!\n\n").append("Ehhez az e-mail címhez a következő felhasználói név van regisztrálva a rendszerben: '");
+                        msg.append(person.getUid()).append("'.\n\nÜdv,\nKir-Dev");
+
+                        mailManager.sendEmail(mail, "Felhasználói név emlékeztető", msg.toString());
                     } catch (Exception e) {
                         getSession().error(getLocalizer().getString("err.MailError", this));
                         return;
