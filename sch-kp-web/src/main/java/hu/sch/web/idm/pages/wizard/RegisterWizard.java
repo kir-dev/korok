@@ -34,6 +34,7 @@ import hu.sch.domain.profile.Person;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.web.PhoenixApplication;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
 import hu.sch.web.wicket.components.AjaxWizardButtonBar;
 import java.sql.Connection;
@@ -130,10 +131,11 @@ public class RegisterWizard extends Wizard {
         super.onFinish();
         person.setStatus("Inactive");
         try {
-            // FIXME(messo), itt kell valami olyasmit csinálni, hogy annak függvényében
-            // hogy most gólyareg van vagy nincs, melyik metódust hívjuk meg.
-            // jelenleg fixen gólya reg legyen:
-            ldapManager.registerNewbie(person, newPass);
+            if (((PhoenixApplication) getApplication()).isNewbieTime()) {
+                ldapManager.registerNewbie(person, newPass);
+            } else {
+                ldapManager.registerPerson(person, newPass);
+            }
         } catch (RuntimeException re) {
             getSession().error("A regisztráció közben hiba lépett fel!");
             throw new RestartResponseException(RegistrationFinishedPage.class);
@@ -164,7 +166,6 @@ public class RegisterWizard extends Wizard {
         VIR_ACCOUNT("Meglévő VIR regisztráció"),
         //NEPTUN_CODE("Aktív villanykaros hallgató NEPTUN kód");
         NEPTUN_CODE("Gólya regisztráció");
-
         private String name;
 
         private RegistrationMode(String name) {
