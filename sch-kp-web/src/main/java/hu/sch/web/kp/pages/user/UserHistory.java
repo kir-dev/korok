@@ -63,13 +63,14 @@ import org.apache.wicket.model.PropertyModel;
 public class UserHistory extends SecuredPageTemplate {
 
     private static final Logger log = Logger.getLogger(UserHistory.class);
-    Long id;
-    public Long selectedGroupId = null;
-    final String EVERY_GROUP = "Összes kör";
-    public String selected_text = EVERY_GROUP;
+    private Long id;
+    private Long selectedGroupId = null;
+    private final String EVERY_GROUP = "Összes kör";
+    // DropDownChoiceban használjuk
+    protected String selected_text = EVERY_GROUP;
     private boolean own_profile = false;
     @EJB(name = "ValuationManagerBean")
-    ValuationManagerLocal valuationManager;
+    private ValuationManagerLocal valuationManager;
 
     public UserHistory() {
         own_profile = true;

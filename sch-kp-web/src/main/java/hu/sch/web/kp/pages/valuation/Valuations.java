@@ -101,7 +101,7 @@ public class Valuations extends SecuredPageTemplate {
         init();
     }
 
-    public void init() {
+    private void init() {
         if (id == null) {
             id = getSession().getUserId();
         }
@@ -347,7 +347,7 @@ public class Valuations extends SecuredPageTemplate {
         }
     }
 
-    public void updateErtekelesList() {
+    private void updateErtekelesList() {
         if (group != null) {
             valuationList.clear();
             valuationList.addAll(valuationManager.findErtekeles(group));

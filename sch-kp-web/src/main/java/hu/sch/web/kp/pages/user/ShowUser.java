@@ -77,7 +77,7 @@ public class ShowUser extends SecuredPageTemplate {
         initComponents();
     }
 
-    public final void initComponents() {
+    private void initComponents() {
         try {
             if (id == null) {
                 id = getSession().getUserId();

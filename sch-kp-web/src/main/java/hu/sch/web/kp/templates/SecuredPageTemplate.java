@@ -256,11 +256,11 @@ public abstract class SecuredPageTemplate extends WebPage {
         return postManager.hasUserDelegatedPostInGroup(group, user);
     }
 
-    public void setHeaderLabelText(String text) {
+    protected void setHeaderLabelText(String text) {
         ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model<Serializable>(text));
     }
 
-    protected void createNavbarWithSupportId(int supportId) {
+    protected final void createNavbarWithSupportId(int supportId) {
         navbarScript.setDefaultModel(new Model<String>("var navbarConf = { "
                 + "logoutLink: 'https://idp.sch.bme.hu/opensso/UI/Logout', "
                 + "theme: 'blue', "
