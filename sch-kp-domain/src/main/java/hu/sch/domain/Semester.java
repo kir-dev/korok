@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -51,6 +50,10 @@ public class Semester implements Serializable, Comparable<Semester> {
 
     public Semester() {
         id = "200020011";
+    }
+
+    public Semester(String id) {
+        this.id = id;
     }
 
     public Semester(Integer firstYear, Integer secondYear, boolean isAutumn) {
@@ -141,6 +144,32 @@ public class Semester implements Serializable, Comparable<Semester> {
         }
 
         setId(getFirstYear() + secondYear.toString() + (isAutumn() ? "1" : "2"));
+    }
+
+    @Transient
+    public boolean isValid() {
+        int firstYear = 0;
+        int secondYear = 0;
+        int autumn = 0;
+
+        if (id.length() != 9) {
+            return false;
+        }
+
+        try {
+            firstYear = getFirstYear();
+            secondYear = getSecondYear();
+            autumn = Integer.parseInt(id.substring(8));
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+
+        if (firstYear > 2030 || secondYear <= 1970 || secondYear > 2030
+                || secondYear <= 1970 || (autumn != 1 && autumn != 2)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
