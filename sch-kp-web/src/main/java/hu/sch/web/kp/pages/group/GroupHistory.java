@@ -87,6 +87,7 @@ public class GroupHistory extends SecuredPageTemplate {
             getSession().error("Hibás paraméter, nincs ilyen kör!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
+        setTitleText(group.getName() + " korábbi értékelései");
 
         valuationList.clear();
         valuationList.addAll(valuationManager.findErtekeles(group));

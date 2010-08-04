@@ -82,6 +82,7 @@ public class ValuationDetails extends SecuredPageTemplate {
 
     public ValuationDetails(final Valuation valuation, final Page prevPage) {
         setHeaderLabelText("Leadott értékelés - részletes nézet");
+        setTitleText(String.format("Értékelések - %s (%s)", valuation.getGroup().getName(), valuation.getSemester()));
         IModel<Valuation> model = new CompoundPropertyModel<Valuation>(valuation);
 
         setDefaultModel(model);

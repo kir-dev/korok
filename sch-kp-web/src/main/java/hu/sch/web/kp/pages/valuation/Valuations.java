@@ -71,6 +71,7 @@ public class Valuations extends SecuredPageTemplate {
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
     private static Logger log = Logger.getLogger(Valuations.class);
+    private static final String HEADER_TEXT = "Értékelések";
     private String selected = "";
     List<Valuation> valuationList = new ArrayList<Valuation>();
     private Long id;
@@ -79,7 +80,8 @@ public class Valuations extends SecuredPageTemplate {
     private Label groupName;
 
     public Valuations() {
-        setHeaderLabelText("Értékelések");
+        setHeaderLabelText(HEADER_TEXT);
+        setTitleText(HEADER_TEXT);
         init();
     }
 
@@ -95,6 +97,7 @@ public class Valuations extends SecuredPageTemplate {
         } catch (Exception ex) {
             log.error("Hiba a paraméter feldolgozása közben: " + params.toString(), ex);
         }
+        setHeaderLabelText(HEADER_TEXT);
         init();
     }
 
@@ -349,7 +352,7 @@ public class Valuations extends SecuredPageTemplate {
             valuationList.clear();
             valuationList.addAll(valuationManager.findErtekeles(group));
             selected = group.getName();
-            setHeaderLabelText("Értékelések");
+            setTitleText(HEADER_TEXT + " - " + selected);
             groupName.setDefaultModel(new Model(group.getName()));
             groupName.setVisible(true);
         }

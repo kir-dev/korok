@@ -102,8 +102,10 @@ public class ShowGroup extends SecuredPageTemplate {
         // headercímke szövegének megadása, csalni kell MAVE hosszú neve miatt..
         if (group.getName().contains("Informatikus-hallgatók")) {
             setHeaderLabelText("MAVE adatlapja");
+            setTitleText("MAVE");
         } else {
             setHeaderLabelText(group.getName());
+            setTitleText(group.getName());
         }
 
         //Egy feedbackpanel a felhasználókkal történő kommunikációhoz

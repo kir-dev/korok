@@ -87,9 +87,12 @@ public abstract class SecuredPageTemplate extends WebPage {
     private String searchTerm;
     private String searchType = "felhasználó";
     private Label navbarScript;
+    private Label titleLabel;
 
     public SecuredPageTemplate() {
         loadUser();
+
+        add(titleLabel = new Label("title", "VIR Körök"));
 
         navbarScript = new Label("navbarScript");
         createNavbarWithSupportId(32);
@@ -271,6 +274,16 @@ public abstract class SecuredPageTemplate extends WebPage {
                 + "]"
                 + "}; "
                 + "printNavbar(navbarConf);"));
+    }
+
+    /**
+     * Beállítjuk az adott lapon a &lt;title/&gt;-t, a "VIR Körök - " előtaggal
+     *
+     * @param title a cím, amit a "VIR Körök - " után szerepel
+     * @since 2.4
+     */
+    protected void setTitleText(String title) {
+        titleLabel.setDefaultModelObject("VIR Körök - " + title);
     }
 
     private UserAuthorization getAuthorizationComponent() {

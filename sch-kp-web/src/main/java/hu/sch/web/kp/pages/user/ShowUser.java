@@ -96,6 +96,7 @@ public class ShowUser extends SecuredPageTemplate {
             throw new RestartResponseException(GroupHierarchy.class);
         }
         setDefaultModel(new CompoundPropertyModel<User>(user));
+        setTitleText(user.getName());
         setHeaderLabelText(user.getName() + " felhasználó lapja");
         if (ownProfile) {
             add(new BookmarkablePageLink<UserHistory>("detailView", UserHistory.class));

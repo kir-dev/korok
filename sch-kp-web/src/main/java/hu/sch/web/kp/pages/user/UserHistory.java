@@ -104,6 +104,7 @@ public class UserHistory extends SecuredPageTemplate {
         }
 
         setHeaderLabelText(user.getName() + " közösségi története");
+        setTitleText(user.getName() + " közösségi története");
         if (own_profile) {
             add(new BookmarkablePageLink<ShowUser>("simpleView", ShowUser.class));
         } else {
