@@ -40,6 +40,7 @@ import hu.sch.domain.util.PatternHolder;
 import java.util.Calendar;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -131,6 +132,11 @@ public class EditGroupInfo extends SecuredPageTemplate {
         editInfoForm.add(introductionTA);
         introductionTA.setLabel(new Model<String>("Bemutatkozás"));
         editInfoForm.add(new SimpleFormComponentLabel("introductionLabel", introductionTA));
+
+        CheckBox usersCanApplyCB = new CheckBox("usersCanApply");
+        editInfoForm.add(usersCanApplyCB);
+        usersCanApplyCB.setLabel(new Model<String>("Felhasználók jelentkezhetnek a körbe"));
+        editInfoForm.add(new SimpleFormComponentLabel("usersCanApplyLabel", usersCanApplyCB));
 
         add(editInfoForm);
     }

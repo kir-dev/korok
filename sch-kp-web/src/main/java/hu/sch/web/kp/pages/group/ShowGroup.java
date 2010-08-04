@@ -155,7 +155,7 @@ public class ShowGroup extends SecuredPageTemplate {
             }
         };
         applyLink.add(new ConfirmationBehavior("Biztosan szeretnél jelentkezni a körbe?"));
-        if (user == null || user.getGroups().contains(group)) {
+        if (user == null || user.getGroups().contains(group) || !group.getUsersCanApply()) {
             applyLink.setVisible(false);
         }
         add(applyLink);

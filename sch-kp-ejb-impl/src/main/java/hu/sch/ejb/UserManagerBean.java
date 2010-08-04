@@ -389,6 +389,7 @@ public class UserManagerBean implements UserManagerLocal {
         csoport.setWebPage(cs.getWebPage());
         csoport.setIntroduction(cs.getIntroduction());
         csoport.setMailingList(cs.getMailingList());
+        csoport.setUsersCanApply(cs.getUsersCanApply());
     }
 
     @Override

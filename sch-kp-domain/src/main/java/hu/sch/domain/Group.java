@@ -131,6 +131,10 @@ public class Group implements Serializable, Comparable<Group> {
      */
     private String mailingList;
     /**
+     * Jelentkezhetnek-e új tagok a körbe
+     */
+    private boolean usersCanApply;
+    /**
      * A kör vezetőjének egyéni titulusa
      */
     @XmlTransient
@@ -420,6 +424,15 @@ public class Group implements Serializable, Comparable<Group> {
 
     public void setLogs(List<Log> logs) {
         this.logs = logs;
+    }
+
+    @Column(name = "grp_users_can_apply")
+    public boolean getUsersCanApply() {
+        return usersCanApply;
+    }
+
+    public void setUsersCanApply(boolean canApply) {
+        usersCanApply = canApply;
     }
 
     @Override
