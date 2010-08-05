@@ -47,6 +47,7 @@ import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -138,7 +139,12 @@ public class UserManagerBean implements UserManagerLocal {
      * {@inheritDoc}
      */
     @Override
-    public void addUserToGroup(User user, Group group, Date start, Date veg, boolean isAuthorized) {
+    public void addUserToGroup(User user, Group group, Date start, Date veg, boolean isAuthorized)
+            throws MembershipAlreadyExistsException {
+        if (isMember(group, user)) {
+            throw new MembershipAlreadyExistsException(group, user);
+        }
+
         Membership ms = new Membership();
         User _user = em.find(User.class, user.getId());
         Group _group = em.find(Group.class, group.getId());
@@ -530,5 +536,20 @@ public class UserManagerBean implements UserManagerLocal {
             }
         }
         throw new IllegalArgumentException("No such group");
+    }
+
+    /**
+     * Tagja-e a körnek a felhasználó?
+     * 
+     * @param group kör
+     * @param user  felhasználó
+     * @return
+     */
+    private boolean isMember(Group group, User user) {
+        Query q = em.createNamedQuery(Membership.getMembershipForUserAndGroup);
+        q.setParameter("groupId", group.getId());
+        q.setParameter("userId", user.getId());
+
+        return !q.getResultList().isEmpty();
     }
 }

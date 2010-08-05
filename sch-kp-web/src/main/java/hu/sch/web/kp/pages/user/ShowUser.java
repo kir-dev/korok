@@ -31,6 +31,7 @@
 package hu.sch.web.kp.pages.user;
 
 import hu.sch.domain.Membership;
+import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import hu.sch.web.wicket.components.tables.UsersMembershipTable;
 import hu.sch.domain.Group;
 import hu.sch.domain.Post;
@@ -89,7 +90,11 @@ public class ShowUser extends SecuredPageTemplate {
             getSession().info("Egy körben sem vagy tag");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        add(new FeedbackPanel("pagemessages"));
+
+        FeedbackPanel fb = new FeedbackPanel("pagemessages");
+        fb.setEscapeModelStrings(false);
+        add(fb);
+
         final User user = userManager.findUserWithMembershipsById(id);
         if (user == null) {
             info("A felhasználó nem található");
@@ -132,7 +137,7 @@ public class ShowUser extends SecuredPageTemplate {
         } else {
             groups = currentUser.getGroups();
         }
-        
+
         List<Group> korvezetoicsoportok = new ArrayList<Group>();
         for (Group cs : groups) {
             if (isUserGroupLeader(cs) && !user.getGroups().contains(cs)) {
@@ -146,9 +151,13 @@ public class ShowUser extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null, isUserGroupLeader(addToCsoportSelected));
-                getSession().info("A felhasználó a " + addToCsoportSelected + " körbe felvéve");
-                setResponsePage(ShowUser.class, new PageParameters("id=" + user.getId()));
+                try {
+                    userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null, isUserGroupLeader(addToCsoportSelected));
+                    getSession().info("A felhasználó a <b>" + addToCsoportSelected + "</b> körbe felvéve");
+                    setResponsePage(ShowUser.class, new PageParameters("id=" + user.getId()));
+                } catch (MembershipAlreadyExistsException ex) {
+                    getSession().error("A felhasználó már tagja a körnek!");
+                }
             }
         };
         csoportbaFelvetel.add(csoport);

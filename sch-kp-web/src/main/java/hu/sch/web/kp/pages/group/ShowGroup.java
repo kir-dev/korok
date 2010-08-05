@@ -30,6 +30,7 @@
  */
 package hu.sch.web.kp.pages.group;
 
+import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import hu.sch.web.wicket.components.tables.DateIntervalPropertyColumn;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
@@ -150,10 +151,13 @@ public class ShowGroup extends SecuredPageTemplate {
 
             @Override
             public void onClick() {
-                userManager.addUserToGroup(user, group, new Date(), null, false);
-                getSession().info("Sikeres jelentkezés");
-                setResponsePage(ShowUser.class);
-                return;
+                try {
+                    userManager.addUserToGroup(user, group, new Date(), null, false);
+                    getSession().info("Sikeres jelentkezés");
+                    setResponsePage(ShowUser.class);
+                } catch (MembershipAlreadyExistsException ex) {
+                    getSession().error("Már tagja vagy a körnek!");
+                }
             }
         };
         applyLink.add(new ConfirmationBehavior("Biztosan szeretnél jelentkezni a körbe?"));

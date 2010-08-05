@@ -69,7 +69,9 @@ import javax.persistence.Transient;
     + "ORDER BY u.lastName, u.firstName"),
     @NamedQuery(name = Membership.findMembershipsForGroup, query =
     "SELECT ms FROM Membership ms "
-    + "WHERE ms.groupId = :id")
+    + "WHERE ms.groupId = :id"),
+    @NamedQuery(name = Membership.getMembershipForUserAndGroup, query =
+    "SELECT ms FROM Membership ms WHERE ms.groupId = :groupId AND ms.userId = :userId")
 })
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq")
 public class Membership implements MembershipTableEntry {
@@ -77,13 +79,13 @@ public class Membership implements MembershipTableEntry {
     public static final String SORT_BY_GROUP = "group";
     public static final String SORT_BY_POSTS = "postsAsString";
     public static final String SORT_BY_INTERVAL = "interval";
-
     private static final long serialVersionUID = 1L;
     public static final String getMembership = "getMembership";
     public static final String getMembers = "getMembers";
     public static final String getDelegatedMemberForGroup = "getDelegatedMemberForGroup";
     public static final String getAllDelegated = "getAllDelegated";
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
+    public static final String getMembershipForUserAndGroup = "getMembershipForUserAndGroup";
 
     /*
     id               | integer | not null default nextval('grp_members_seq'::regclass)
@@ -105,6 +107,7 @@ public class Membership implements MembershipTableEntry {
      * Ki a tagja a csoportnak
      */
     private User user;
+    private Long userId;
     /**
      * A csoporttagság idejének kezdete - kötelező
      */
@@ -158,6 +161,15 @@ public class Membership implements MembershipTableEntry {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Column(name = "usr_id", insertable = false, updatable = false)
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @Column(name = "membership_start", nullable = false, columnDefinition = "date")

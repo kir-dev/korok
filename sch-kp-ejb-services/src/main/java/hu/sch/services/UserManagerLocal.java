@@ -37,6 +37,7 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
+import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import javax.ejb.Local;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +64,8 @@ public interface UserManagerLocal {
      * @param membershipEnd     tagság vége
      * @param isAuthorized      amennyiben ez igaz, a felhasználó automatikusan "tag" posztot kap.
      */
-    void addUserToGroup(User user, Group group, Date membershipStart, Date membershipEnd, boolean isAuthorized);
+    void addUserToGroup(User user, Group group, Date membershipStart, Date membershipEnd, boolean isAuthorized)
+            throws MembershipAlreadyExistsException;
 
     List<Group> getAllGroups();
 
