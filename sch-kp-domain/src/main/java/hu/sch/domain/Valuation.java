@@ -103,6 +103,7 @@ public class Valuation implements Serializable {
     protected User sender;
     protected User consideredBy;
     protected String valuationText;
+    protected String principle;
     protected ValuationStatus pointStatus;
     protected ValuationStatus entrantStatus;
     protected Semester semester;
@@ -263,6 +264,15 @@ public class Valuation implements Serializable {
 
     public void setValuationText(String valuationText) {
         this.valuationText = valuationText;
+    }
+
+    @Column(name = "pontozasi_elvek", columnDefinition = "text", nullable = false)
+    public String getPrinciple() {
+        return principle;
+    }
+
+    public void setPrinciple(String principle) {
+        this.principle = principle;
     }
 
     @PrePersist

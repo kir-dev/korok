@@ -64,7 +64,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -303,21 +302,22 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public void ujErtekeles(Group csoport, User felado, String szovegesErtekeles) {
-        Valuation e = new Valuation();
-        e.setSender(felado);
+    public void addNewValuation(Group group, User sender, String valuationText, String principle) {
+        Valuation valuation = new Valuation();
+        valuation.setSender(sender);
         try {
-            e.setSemester(systemManager.getSzemeszter());
+            valuation.setSemester(systemManager.getSzemeszter());
         } catch (NoSuchAttributeException ex) {
             throw new RuntimeException("Fatális hiba: szemeszter nincs beállítva?!", ex);
         }
 
-        e.setGroup(csoport);
-        e.setValuationText(szovegesErtekeles);
+        valuation.setGroup(group);
+        valuation.setValuationText(valuationText);
+        valuation.setPrinciple(principle);
 
         //TODO group flag alapján van-e joga rá?!
 
-        em.persist(e);
+        em.persist(valuation);
     }
 
     @Override
@@ -619,9 +619,23 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public void updateValuation(Long valuationId, String text) {
-        Valuation val = em.find(Valuation.class, valuationId);
-        val.setValuationText(text);
+    public void updateValuationText(Valuation valuation) {
+        Valuation val = em.find(Valuation.class, valuation.getId());
+        val.setValuationText(valuation.getValuationText());
+        if (val.getPointStatus().equals(ValuationStatus.ELUTASITVA)) {
+            val.setPointStatus(ValuationStatus.ELBIRALATLAN);
+        }
+        if (val.getEntrantStatus().equals(ValuationStatus.ELUTASITVA)) {
+            val.setEntrantStatus(ValuationStatus.ELBIRALATLAN);
+        }
+        val.setLastModified(new Date());
+        em.merge(val);
+    }
+
+    @Override
+    public void updatePrinciple(Valuation valuation) {
+        Valuation val = em.find(Valuation.class, valuation.getId());
+        val.setPrinciple(valuation.getPrinciple());
         if (val.getPointStatus().equals(ValuationStatus.ELUTASITVA)) {
             val.setPointStatus(ValuationStatus.ELBIRALATLAN);
         }

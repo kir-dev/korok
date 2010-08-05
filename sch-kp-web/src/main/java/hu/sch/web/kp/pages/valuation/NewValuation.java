@@ -84,10 +84,9 @@ public class NewValuation extends SecuredPageTemplate {
 
             @Override
             protected void onSubmit() {
-                valuationManager.ujErtekeles(group, getUser(), valuationText + "<br/><br/>" + principle);
+                valuationManager.addNewValuation(group, getUser(), valuationText, principle);
                 getSession().info(getLocalizer().getString("info.ErtekelesMentve", this));
                 setResponsePage(Valuations.class);
-                return;
             }
         };
         newValuationForm.add(new KeepAliveBehavior());

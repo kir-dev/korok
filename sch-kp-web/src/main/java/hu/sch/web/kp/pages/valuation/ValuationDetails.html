@@ -47,13 +47,22 @@
     <a wicket:id="pointLink">Pontkérelmek megtekintése</a>
     -->
 
-    <div wicket:id="container" style="padding-bottom: 10px">
-        <h3>Szöveges értékelés - <a wicket:id="modifyText"><wicket:message key="modify.valuation.text" /></a></h3>
+    <div wicket:id="valuationTextContainer">
+        <h3>Szöveges értékelés - <a wicket:id="modifyValuationText"><wicket:message key="modify.valuation.text" /></a></h3>
         <div class="subdata" wicket:id="valuationText">értékelés szöveg</div>
-        <form wicket:id="textForm">
+        <form wicket:id="valuationTextForm">
             <span wicket:id="valuationText2"></span>
             <br />
-            <input class="btn" type="submit" value="Mentés"/>
+            <input wicket:id="saveValuationText" class="btn" type="button" value="Mentés"/>
+        </form>
+    </div>
+    <div wicket:id="principleContainer" style="padding-bottom: 10px">
+        <h3>Pontozási elvek - <a wicket:id="modifyPrinciple"><wicket:message key="modify.valuation.text" /></a></h3>
+        <div class="subdata" wicket:id="principle">pontozási elvek</div>
+        <form wicket:id="principleForm">
+            <span wicket:id="principle2"></span>
+            <br />
+            <input wicket:id="savePrinciple" class="btn" type="button" value="Mentés"/>
         </form>
     </div>
 

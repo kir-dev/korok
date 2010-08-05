@@ -49,6 +49,7 @@ import javax.ejb.EJB;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.IHeaderContributor;
@@ -59,9 +60,9 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import wicket.contrib.tinymce.ajax.TinyMceAjaxSubmitModifier;
 import wicket.contrib.tinymce.settings.TinyMCESettings;
 
 /**
@@ -75,6 +76,8 @@ public class ValuationDetails extends SecuredPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     private ValuationManagerLocal valuationManager;
+    private AjaxFallbackLink<Void> ajaxLinkForValuationText;
+    private AjaxFallbackLink<Void> ajaxLinkForPrinciple;
 
     public ValuationDetails(Valuation valuation) {
         this(valuation, null);
@@ -83,9 +86,8 @@ public class ValuationDetails extends SecuredPageTemplate {
     public ValuationDetails(final Valuation valuation, final Page prevPage) {
         setHeaderLabelText("Leadott értékelés - részletes nézet");
         setTitleText(String.format("Értékelések - %s (%s)", valuation.getGroup().getName(), valuation.getSemester()));
-        IModel<Valuation> model = new CompoundPropertyModel<Valuation>(valuation);
 
-        setDefaultModel(model);
+        setDefaultModel(new CompoundPropertyModel<Valuation>(valuation));
 
         // Főbb adatok
         add(new Label("group.name"));
@@ -111,20 +113,8 @@ public class ValuationDetails extends SecuredPageTemplate {
         final List<ValuationData> igenylista = valuationManager.findRequestsForValuation(valuation.getId());
         add(new ValuationTableForGroup("requests", igenylista).getDataTable());
 
-        // Szöveges értékelés
-        final WebMarkupContainer container = new WebMarkupContainer("container");
-        final MultiLineLabel textLabel = new MultiLineLabel("valuationText");
-        textLabel.setEscapeModelStrings(false);
-        container.add(textLabel);
-        final Form<Valuation> form = new Form<Valuation>("textForm", new CompoundPropertyModel<Valuation>(valuation)) {
-
-            @Override
-            protected void onSubmit() {
-                valuationManager.updateValuation(valuation.getId(), valuation.getValuationText());
-                getSession().info("A féléves értékelés sikeresen frissítve.");
-                setResponsePage(Valuations.class);
-            }
-        };
+        addValuationText(valuation);
+        addPrinciple(valuation);
 
         //TinyMCE csak akkor működik AJAXszal, ha már az oldal betöltődésekor be
         //van töltve a js :(
@@ -135,29 +125,8 @@ public class ValuationDetails extends SecuredPageTemplate {
                 response.renderJavascriptReference(TinyMCESettings.javaScriptReference());
             }
         }));
-        //mivel nem lehet két azonos wicket:id
-        TinyMCEContainer tinyMce = new TinyMCEContainer("valuationText2", new PropertyModel<String>(valuation, "valuationText"), true);
-        form.add(tinyMce);
-        form.setVisible(false);
 
-        container.add(form);
-        container.setOutputMarkupId(true);
-        add(container);
-
-        AjaxFallbackLink<Void> ajaxLink;
-        container.add(ajaxLink = new AjaxFallbackLink<Void>("modifyText") {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                textLabel.setVisible(false);
-                form.setVisible(true);
-                if (target != null) {
-                    target.addComponent(container);
-                }
-            }
-        });
-
-        // Nem szerkeszthet az értékelés szövegén, ha
+        // Nem szerkeszthet az értékelés szövegén/pontozási elveken, ha
         // 1. már nincsen értékelés leadás
         // 2. egy régebbi félévről származik
         // 3. ha a pontozást és belépőkérelmeket elfogadták
@@ -165,7 +134,8 @@ public class ValuationDetails extends SecuredPageTemplate {
                 || !systemManager.getSzemeszter().equals(valuation.getSemester())
                 || (valuation.getPointStatus().equals(ValuationStatus.ELFOGADVA)
                 && valuation.getEntrantStatus().equals(ValuationStatus.ELFOGADVA)))) {
-            ajaxLink.setVisible(false);
+            ajaxLinkForValuationText.setVisible(false);
+            ajaxLinkForPrinciple.setVisible(false);
         }
 
         // Elbírálás
@@ -189,5 +159,108 @@ public class ValuationDetails extends SecuredPageTemplate {
         } else {
             add(new Label("jeti", ""));
         }
+    }
+
+    private void addValuationText(final Valuation valuation) {
+        // TODO -- ehhez és a principle-hez generálni egy AjaxEditableMultiLineLabelUsingTinyMCE-t.
+        final WebMarkupContainer container = new WebMarkupContainer("valuationTextContainer");
+        container.setOutputMarkupId(true);
+        add(container);
+
+        // Szöveges értékelés
+        final MultiLineLabel label = new MultiLineLabel("valuationText");
+        label.setEscapeModelStrings(false);
+        container.add(label);
+
+        final Form<Valuation> form = new Form<Valuation>("valuationTextForm", new CompoundPropertyModel<Valuation>(valuation));
+        form.setVisible(false);
+        container.add(form);
+
+        form.add(new AjaxButton("saveValuationText", form) {
+
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                add(new TinyMceAjaxSubmitModifier());
+            }
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                Valuation valuation = (Valuation) form.getModelObject();
+                valuationManager.updateValuationText(valuation);
+                label.setVisible(true);
+                form.setVisible(false);
+                if (target != null) {
+                    target.addComponent(container);
+                }
+            }
+        });
+
+        container.add(ajaxLinkForValuationText = new AjaxFallbackLink<Void>("modifyValuationText") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                label.setVisible(false);
+                form.setVisible(true);
+                if (target != null) {
+                    target.addComponent(container);
+                }
+            }
+        });
+
+        // Szöveges értékelése TinyMCE doboza
+        final TinyMCEContainer tinyMce = new TinyMCEContainer("valuationText2", new PropertyModel<String>(valuation, "valuationText"), true);
+        form.add(tinyMce);
+    }
+
+    private void addPrinciple(final Valuation valuation) {
+        final WebMarkupContainer container = new WebMarkupContainer("principleContainer");
+        container.setOutputMarkupId(true);
+        add(container);
+
+        // Szöveges értékelés
+        final MultiLineLabel label = new MultiLineLabel("principle");
+        label.setEscapeModelStrings(false);
+        container.add(label);
+
+        final Form<Valuation> form = new Form<Valuation>("principleForm", new CompoundPropertyModel<Valuation>(valuation));
+        form.setVisible(false);
+        container.add(form);
+
+        form.add(new AjaxButton("savePrinciple", form) {
+
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                add(new TinyMceAjaxSubmitModifier());
+            }
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                Valuation valuation = (Valuation) form.getModelObject();
+                valuationManager.updatePrinciple(valuation);
+                label.setVisible(true);
+                form.setVisible(false);
+                if (target != null) {
+                    target.addComponent(container);
+                }
+            }
+        });
+
+        container.add(ajaxLinkForPrinciple = new AjaxFallbackLink<Void>("modifyPrinciple") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                label.setVisible(false);
+                form.setVisible(true);
+                if (target != null) {
+                    target.addComponent(container);
+                }
+            }
+        });
+
+        // Szöveges értékelése TinyMCE doboza
+        final TinyMCEContainer tinyMce = new TinyMCEContainer("principle2", new PropertyModel<String>(valuation, "principle"), true);
+        form.add(tinyMce);
     }
 }

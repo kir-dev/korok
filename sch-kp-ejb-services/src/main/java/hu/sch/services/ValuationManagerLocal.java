@@ -114,7 +114,7 @@ public interface ValuationManagerLocal {
      * @param felado
      * @param szovegesErtekeles
      */
-    void ujErtekeles(Group csoport, User felado, String szovegesErtekeles);
+    void addNewValuation(Group group, User sender, String valuationText, String principle);
 
     /**
      * Az aktuális szemeszterben leadhat-e új értékelést az adott csoport.
@@ -220,7 +220,10 @@ public interface ValuationManagerLocal {
      */
     Valuation findValuations(Long valuationId);
 
-    void updateValuation(Long valuationId, String text);
+    void updateValuationText(Valuation valuation);
+
+    void updatePrinciple(Valuation valuation);
 
     List<GivenPoint> getPointsForKfbExport(Semester semester);
+
 }
