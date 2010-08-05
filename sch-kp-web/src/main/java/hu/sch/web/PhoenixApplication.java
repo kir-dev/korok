@@ -63,6 +63,7 @@ import hu.sch.web.kp.pages.search.SearchResultsPage;
 import hu.sch.web.kp.pages.svie.SvieAccount;
 import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
 import hu.sch.web.kp.pages.svie.SvieUserMgmt;
+import hu.sch.web.kp.pages.valuation.ValuationDetails;
 import hu.sch.web.profile.pages.confirmation.ConfirmPage;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.util.EntrantTypeConverter;
@@ -163,6 +164,7 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/changepost", ChangePost.class);
 
         mountBookmarkablePage("/valuation", Valuations.class);
+        mountBookmarkablePage("/valuationdetails", ValuationDetails.class);
         mountBookmarkablePage("/newvaluation", NewValuation.class);
 
         mountBookmarkablePage("/svieaccount", SvieAccount.class);

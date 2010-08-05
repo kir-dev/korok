@@ -38,6 +38,7 @@ import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.pages.valuation.ValuationDetails;
 import hu.sch.web.test.WebTest;
 import javax.naming.NamingException;
+import org.apache.wicket.PageParameters;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -54,16 +55,16 @@ public class ValuationDetailsTest extends WebTest {
         ValuationManagerLocal valuationManager = null;
         try {
             valuationManager = lookupEJB(ValuationManagerBean.class);
-        } catch(NamingException ne) {
+        } catch (NamingException ne) {
             ne.printStackTrace();
         }
         assertNotNull(valuationManager);
-        
+
         List<ValuationStatistic> list = valuationManager.findValuationStatisticForSemester();
-        if( !list.isEmpty() ) {
+        if (!list.isEmpty()) {
             // válasszunk ki belőle az elsőt és nézzük meg, hogy lerenderelhető-e
             Valuation val = list.get(0).getValuation();
-            tester.startPage(new ValuationDetails(val));
+            tester.startPage(ValuationDetails.class, new PageParameters("id=" + val.getId()));
             tester.assertRenderedPage(ValuationDetails.class);
         }
     }

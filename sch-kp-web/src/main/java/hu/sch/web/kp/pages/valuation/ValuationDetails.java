@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -58,6 +60,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -79,11 +82,32 @@ public class ValuationDetails extends SecuredPageTemplate {
     private AjaxFallbackLink<Void> ajaxLinkForValuationText;
     private AjaxFallbackLink<Void> ajaxLinkForPrinciple;
 
-    public ValuationDetails(Valuation valuation) {
-        this(valuation, null);
+    public ValuationDetails(PageParameters params) {
+        Valuation valuation = null;
+        Long id = params.getAsLong("id");
+        if (id == null || (valuation = valuationManager.findErtekelesById(id)) == null) {
+            getSession().error("Nincs ilyen értékelés!");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+
+        // jogosultság ellenőrzés; akkor láthatja ezt a lapot, ha
+        // 1. a csoport körvezetője, vagy
+        // 2. JETI és elbírálási időszak van
+        if (isUserGroupLeader(valuation.getGroup())
+                || (isCurrentUserJETI() && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS)) {
+            // lássuk a medvét
+            init(valuation);
+        } else {
+            getSession().error(getLocalizer().getString("err.NincsJog", null));
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
     }
 
     public ValuationDetails(final Valuation valuation, final Page prevPage) {
+        init(valuation);
+    }
+
+    private void init(final Valuation valuation) {
         setHeaderLabelText("Leadott értékelés - részletes nézet");
         setTitleText(String.format("Értékelések - %s (%s)", valuation.getGroup().getName(), valuation.getSemester()));
 
@@ -157,7 +181,7 @@ public class ValuationDetails extends SecuredPageTemplate {
             };
             add(jetifragment);
         } else {
-            add(new Label("jeti", ""));
+            add(new EmptyPanel("jeti"));
         }
     }
 

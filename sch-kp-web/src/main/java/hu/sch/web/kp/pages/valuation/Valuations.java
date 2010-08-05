@@ -52,6 +52,7 @@ import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -261,18 +262,7 @@ public class Valuations extends SecuredPageTemplate {
             @Override
             protected void populateItem(ListItem<Valuation> item) {
                 final Valuation v = item.getModelObject();
-                Link ert = new Link("valuationLink") {
-
-                    @Override
-                    protected boolean getStatelessHint() {
-                        return false;
-                    }
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new ValuationDetails(v));
-                    }
-                };
+                Link<ValuationDetails> ert = new BookmarkablePageLink<ValuationDetails>("valuationLink", ValuationDetails.class, new PageParameters("id="+v.getId()));
                 ert.add(new Label("valuationSemester", new PropertyModel(v, "semester")));
                 item.add(ert);
                 IModel model = new CompoundPropertyModel(v);
