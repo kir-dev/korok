@@ -42,8 +42,9 @@ import hu.sch.web.kp.pages.pointrequests.PointRequestFiling;
 import hu.sch.web.kp.templates.SecuredPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
@@ -51,38 +52,36 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 /**
+ * A körvezetők ezen lap segítségével adhatnak be értékeléseket a köreikhez.
  *
  * @author hege
+ * @author messo
  */
-//TODO: újraírni az egészet
 public class Valuations extends SecuredPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
     private static Logger log = Logger.getLogger(Valuations.class);
     private static final String HEADER_TEXT = "Értékelések";
-    private String selected = "";
-    List<Valuation> valuationList = new ArrayList<Valuation>();
-    private Long id;
-    private Group group;
-    private Link newValuation;
-    private Label groupName;
+    private final Group group;
 
     public Valuations() {
         setHeaderLabelText(HEADER_TEXT);
         setTitleText(HEADER_TEXT);
+        group = null;
         init();
     }
 
@@ -96,49 +95,34 @@ public class Valuations extends SecuredPageTemplate {
                 throw new RestartResponseException(getApplication().getHomePage());
             }
         } catch (Exception ex) {
-            log.error("Hiba a paraméter feldolgozása közben: " + params.toString(), ex);
+            getSession().error("Érvénytelen paraméter!");
+            throw new RestartResponseException(getApplication().getHomePage());
         }
         setHeaderLabelText(HEADER_TEXT);
         init();
     }
 
     private void init() {
-        if (id == null) {
-            id = getSession().getUserId();
-        }
-        if (id == null) {
-            error("Hiba, ismeretlen felhasználó!");
-            throw new RestartResponseException(GroupHierarchy.class);
-        }
         add(new FeedbackPanel("pagemessages"));
-        groupName = new Label("name", "");
-        groupName.setVisible(false);
-        add(groupName);
 
-        User user = userManager.findUserWithMembershipsById(id);
-        if (user == null) {
-            //Ez egy soha sorra nem kerulo feltetel, mivel csak korvezetonek jelenhet meg
-            //az opcio, igy legalabb tuti nem szall el
-            getSession().info("Nem vagy körtag, mégis értékelést szeretnél leadni? Nono...");
-            throw new RestartResponseException(GroupHierarchy.class);
-        }
-        if (!isUserGroupLeaderInSomeGroup()) {
-            getSession().info("Nem vagy sehol sem körvezető, mit csinálsz itt?");
+        User user = userManager.findUserWithMembershipsById(getSession().getUserId());
+        if (user == null || !isUserGroupLeaderInSomeGroup()) {
+            getSession().error(getLocalizer().getString("err.NincsJog", this));
             throw new RestartResponseException(GroupHierarchy.class);
         }
         user.sortMemberships();
 
         final List<Membership> ms = user.getMemberships();
-        final ArrayList<String> groups = new ArrayList<String>();
+        final List<Group> groups = new ArrayList<Group>();
         //TODO simplify this
         for (Membership m : ms) {
             if (isUserGroupLeader(m.getGroup())) {
-                groups.add(m.getGroup().getName());
+                groups.add(m.getGroup());
             }
         }
 
         // megkeresem mire nem adott még le értékelést vagy belépőigényt az aktuális félévben
-        final ArrayList<Group> left = new ArrayList<Group>();
+        final Map<Group, Valuation> valuationsForGroup = new HashMap<Group, Valuation>();
         for (Membership m : ms) {
             Group cs = m.getGroup();
 
@@ -147,83 +131,22 @@ public class Valuations extends SecuredPageTemplate {
                     || ert.getEntrantStatus() == ValuationStatus.NINCS)
                     && isUserGroupLeader(cs)
                     && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESLEADAS) {
-                left.add(cs);
+                // kelleni fog majd az értékelés objektum a táblázatnál, ezért
+                // mentsük el egy Mapben.
+                valuationsForGroup.put(cs, ert);
             }
         }
 
-        // megjelenítem a még nem értékel csoportokra a figyelmeztetést, és hozzá a linkeket
-        WebMarkupContainer warningContainer = new WebMarkupContainer("warningContainer");
-        this.add(warningContainer);
-        warningContainer.setVisible(!left.isEmpty());
+        // ha van olyan csoport, ahol van dolga a körvezetőnek, akkor azt mutassuk
+        // meg egy szép kis táblázatban
+        if (!valuationsForGroup.isEmpty()) {
+            add(new WarningPanel("warningPanel", valuationsForGroup));
+        } else {
+            add(new EmptyPanel("warningPanel"));
+        }
 
-        ListView<Group> leftListView = new ListView<Group>("warningList", left) {
-
-            @Override
-            protected void populateItem(ListItem<Group> item) {
-                @SuppressWarnings("hiding")
-                final Group group = item.getModelObject();
-                final Valuation val = valuationManager.findErtekeles(group, systemManager.getSzemeszter());
-
-                // group név kijelés
-                item.add(new Label("warningGroupName", group.getName()));
-
-                // értékelés kijelzés
-                Link ertekelesLink = new Link("warningLink") {
-
-                    @Override
-                    public void onClick() {
-                        // group kiválasztása (mert nem feltétlen volt legördülővel...)
-                        if (val == null) {
-                            // ha egyáltalán nincs még értékelés az adott csoporthoz
-                            // és szemeszterhez, akkor először szöveges értékelés kell
-                            setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
-                        } else {
-                            // pontigény leadása a szöveges értékelés mellé
-                            setResponsePage(new PointRequestFiling(val));
-                        }
-                    }
-                };
-
-                if (val == null || val.getPointStatus() == ValuationStatus.NINCS) {
-                    ertekelesLink.setVisible(true);
-                } else {
-                    ertekelesLink.setVisible(false);
-                }
-
-                item.add(ertekelesLink);
-
-                // belépőigénylés kijelzés
-                Link belepoLink = new Link("warningEntrantLink") {
-
-                    @Override
-                    public void onClick() {
-                        // group kiválasztása (mert nem feltétlen volt legördülővel...)
-                        if (val == null) {
-                            // ha egyáltalán nincs még értékelés az adott csoporthoz
-                            // és szemeszterhez, akkor először szöveges értékelés kell
-                            setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
-                        } else {
-                            // belépőigény leadása a szöveges értékelés mellé
-                            setResponsePage(new EntrantRequestFiling(val));
-                        }
-                    }
-                };
-
-                if (val == null || val.getEntrantStatus() == ValuationStatus.NINCS) {
-                    belepoLink.setVisible(true);
-                } else {
-                    belepoLink.setVisible(false);
-                }
-
-                item.add(belepoLink);
-            }
-        };
-        warningContainer.add(leftListView);
-
-        // Ha mar korabban volt group kivalasztva.
-        updateErtekelesList();
-
-        DropDownChoice ddc = new DropDownChoice("groups", new PropertyModel(this, "selected"), groups) {
+        add(new DropDownChoice<Group>("groups", new PropertyModel<Group>(this, "group"),
+                groups, new ChoiceRenderer<Group>("name")) {
 
             @Override
             protected boolean wantOnSelectionChangedNotifications() {
@@ -231,120 +154,165 @@ public class Valuations extends SecuredPageTemplate {
             }
 
             @Override
-            protected void onSelectionChanged(final Object newSelection) {
-                Iterator<Membership> iterator = ms.iterator();
-
-                Group g = null;
-                while (iterator.hasNext()) {
-                    //TODO simplify this
-                    g = (iterator.next()).getGroup();
-                    if (g.getName().equals(selected)) {
-                        updateErtekelesList();
-                        if ((valuationList.isEmpty())
-                                || (!valuationManager.isErtekelesLeadhato(group))) {
-                            newValuation.setVisible(false);
-                        } else {
-                            newValuation.setVisible(true);
-                        }
-
-                        break;
-                    }
-                }
-
-                setResponsePage(Valuations.class, new PageParameters("id=" + g.getId()));
+            protected void onSelectionChanged(final Group selected) {
+                setResponsePage(Valuations.class, new PageParameters("id=" + selected.getId()));
             }
-        };
-        add(ddc);
+        });
 
-        WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
-        ListView<Valuation> ertekelesListView = new ListView<Valuation>("valuationList", valuationList) {
-
-            @Override
-            protected void populateItem(ListItem<Valuation> item) {
-                final Valuation v = item.getModelObject();
-                Link<ValuationDetails> ert = new BookmarkablePageLink<ValuationDetails>("valuationLink", ValuationDetails.class, new PageParameters("id="+v.getId()));
-                ert.add(new Label("valuationSemester", new PropertyModel(v, "semester")));
-                item.add(ert);
-                IModel model = new CompoundPropertyModel(v);
-                item.setModel(model);
-
-                Link uzenetekLink = new Link("messagesLink") {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new ValuationMessages(v.getId()));
-                    }
-                };
-                uzenetekLink.add(new Label("uzenetek", "Üzenetek"));
-                item.add(uzenetekLink);
-
-                Link pontkerelemLink = new Link("pointLink", model) {
-
-                    @Override
-                    public void onClick() {
-                        if (v.getPointStatus() == ValuationStatus.ELFOGADVA
-                                || systemManager.getErtekelesIdoszak() != ValuationPeriod.ERTEKELESLEADAS) {
-                            setResponsePage(new PointRequestViewer(v));
-                            return;
-                        } else {
-                            setResponsePage(new PointRequestFiling(v));
-                        }
-                    }
-                };
-                pontkerelemLink.add(new Label("pointStatus"));
-                item.add(pontkerelemLink);
-
-                Link belepokerelemLink = new Link("entrantLink", model) {
-
-                    @Override
-                    public void onClick() {
-                        if (v.getEntrantStatus() == ValuationStatus.ELFOGADVA
-                                || systemManager.getErtekelesIdoszak() != ValuationPeriod.ERTEKELESLEADAS) {
-                            setResponsePage(new EntrantRequestViewer(v));
-                            return;
-                        } else {
-                            setResponsePage(new EntrantRequestFiling((v)));
-                            return;
-                        }
-                    }
-                };
-                item.add(belepokerelemLink);
-                belepokerelemLink.add(new Label("entrantStatus"));
-
-                item.add(DateLabel.forDatePattern("lastModified", "yyyy.MM.dd. kk:mm"));
-                item.add(DateLabel.forDatePattern("lastConsidered", "yyyy.MM.dd. kk:mm"));
-            }
-        };
-        table.add(ertekelesListView);
-        add(table);
-
-        newValuation = new Link("newValuation") {
-
-            @Override
-            public void onClick() {
-                setResponsePage(NewValuation.class);
-            }
-        };
-        add(newValuation);
-
-        if ((valuationList.isEmpty())
-                || (!valuationManager.isErtekelesLeadhato(group))) {
-            newValuation.setVisible(false);
+        // ha van kiválasztva csoport, akkor mehet a panel, különben ne jelenítsünk
+        // meg üres táblázatot
+        if (group != null) {
+            add(new ValuationListPanel("listPanel"));
         } else {
-            if (isUserGroupLeaderInSomeGroup()) {
-                newValuation.setVisible(true);
+            add(new EmptyPanel("listPanel"));
+        }
+    }
+
+    private class ValuationListPanel extends Panel {
+
+        public ValuationListPanel(String id) {
+            super(id);
+
+            setTitleText(HEADER_TEXT + " - " + group.getName());
+
+            Label groupName = new Label("name", group.getName());
+            add(groupName);
+
+            final boolean nincsErtekelesLeadas =
+                    systemManager.getErtekelesIdoszak() != ValuationPeriod.ERTEKELESLEADAS;
+
+            WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
+            add(table);
+
+            List<Valuation> valuationList = valuationManager.findErtekeles(group);
+            table.add(new ListView<Valuation>("valuationList", valuationList) {
+
+                @Override
+                protected void populateItem(ListItem<Valuation> item) {
+                    final Valuation v = item.getModelObject();
+                    item.setModel(new CompoundPropertyModel<Valuation>(v));
+
+                    Link<ValuationDetails> ert = new BookmarkablePageLink<ValuationDetails>("valuationLink", ValuationDetails.class, new PageParameters("id=" + v.getId()));
+                    ert.add(new Label("semester"));
+                    item.add(ert);
+
+                    item.add(new Link("messagesLink") {
+
+                        @Override
+                        public void onClick() {
+                            setResponsePage(new ValuationMessages(v.getId()));
+                        }
+                    });
+
+                    Link pontkerelemLink = new Link("pointLink") {
+
+                        @Override
+                        public void onClick() {
+                            if (v.pointsAreAccepted() || nincsErtekelesLeadas) {
+                                setResponsePage(new PointRequestViewer(v));
+                            } else {
+                                setResponsePage(new PointRequestFiling(v));
+                            }
+                        }
+                    };
+                    pontkerelemLink.add(new Label("pointStatus"));
+                    item.add(pontkerelemLink);
+
+                    Link belepokerelemLink = new Link("entrantLink") {
+
+                        @Override
+                        public void onClick() {
+                            if (v.entrantsAreAccepted() || nincsErtekelesLeadas) {
+                                setResponsePage(new EntrantRequestViewer(v));
+                            } else {
+                                setResponsePage(new EntrantRequestFiling(v));
+                            }
+                        }
+                    };
+                    belepokerelemLink.add(new Label("entrantStatus"));
+                    item.add(belepokerelemLink);
+
+                    item.add(DateLabel.forDatePattern("lastModified", "yyyy.MM.dd. kk:mm"));
+                    item.add(DateLabel.forDatePattern("lastConsidered", "yyyy.MM.dd. kk:mm"));
+                }
+            });
+
+            Link<NewValuation> newValuation = new BookmarkablePageLink<NewValuation>("newValuation", NewValuation.class, new PageParameters("id=" + group.getId()));
+            add(newValuation);
+
+            if (valuationList.isEmpty()
+                    || !valuationManager.isErtekelesLeadhato(group)) {
+                newValuation.setVisible(false);
             }
         }
     }
 
-    private void updateErtekelesList() {
-        if (group != null) {
-            valuationList.clear();
-            valuationList.addAll(valuationManager.findErtekeles(group));
-            selected = group.getName();
-            setTitleText(HEADER_TEXT + " - " + selected);
-            groupName.setDefaultModel(new Model(group.getName()));
-            groupName.setVisible(true);
+    private class WarningPanel extends Panel {
+
+        public WarningPanel(String id, final Map<Group, Valuation> left) {
+            super(id);
+
+            add(new ListView<Group>("warningList", new ArrayList<Group>(left.keySet())) {
+
+                @Override
+                protected void populateItem(ListItem<Group> item) {
+                    final Group group = item.getModelObject();
+                    final Valuation val = left.get(group);
+
+                    item.add(new Label("warningGroupName", group.getName()));
+
+                    item.add(new Link("warningLink") {
+
+                        @Override
+                        protected void onBeforeRender() {
+                            super.onBeforeRender();
+
+                            // a link akkor látható, ha nincs még a körhöz értékelés
+                            // vagy, ha nincs pontozás leadva
+                            setVisible(val == null || val.getPointStatus() == ValuationStatus.NINCS);
+                        }
+
+                        @Override
+                        public void onClick() {
+                            // group kiválasztása (mert nem feltétlen volt legördülővel...)
+                            if (val == null) {
+                                // ha egyáltalán nincs még értékelés az adott csoporthoz
+                                // és szemeszterhez, akkor először szöveges értékelés kell
+                                setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
+                            } else {
+                                // pontigény leadása a szöveges értékelés mellé
+                                setResponsePage(new PointRequestFiling(val));
+                            }
+                        }
+                    });
+
+                    // belépőigénylés kijelzés
+                    item.add(new Link("warningEntrantLink") {
+
+                        @Override
+                        protected void onBeforeRender() {
+                            super.onBeforeRender();
+
+                            // a link akkor látható, ha nincs még a körhöz értékelés
+                            // vagy, ha nincs pontozás leadva
+                            setVisible(val == null || val.getEntrantStatus() == ValuationStatus.NINCS);
+                        }
+
+                        @Override
+                        public void onClick() {
+                            // group kiválasztása (mert nem feltétlen volt legördülővel...)
+                            if (val == null) {
+                                // ha egyáltalán nincs még értékelés az adott csoporthoz
+                                // és szemeszterhez, akkor először szöveges értékelés kell
+                                setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
+                            } else {
+                                // belépőigény leadása a szöveges értékelés mellé
+                                setResponsePage(new EntrantRequestFiling(val));
+                            }
+                        }
+                    });
+                }
+            });
         }
     }
 }

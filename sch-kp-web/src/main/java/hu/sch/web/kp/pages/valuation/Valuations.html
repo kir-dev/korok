@@ -1,63 +1,16 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
     <span wicket:id="pagemessages" id="pagemessages"></span>
 
-    <div wicket:id="warningContainer">
-        <h2>Hiányzó leadásaid</h2>
-        <div class="subdata">
-            <div class="ertekelFigyelmeztet">
-                <table>
-                    <tr wicket:id="warningList">
-                        <td wicket:id="warningGroupName" />
-                        <td><a wicket:id="warningLink">Értékelés leadás</a></td>
-                        <td><a wicket:id="warningEntrantLink">Belepőigény leadás</a></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+    <div wicket:id="warningPanel">
+        Itt figyelmezetjük a körvezetőt, ha van olyan kör, ahol még nem adott le értékelést
     </div>
 
     <h2>Kör kiválasztása</h2>
     <div class="subdata">
         <select wicket:id="groups" style="width: 500px;" />
-        <!--    <option>site 1</option>
-                <option>site 2</option>
-            </select>
-        -->
     </div>
-    <h2><span wicket:id="name"/></h2>
-    <div class="subdata">
-        <a wicket:id="newValuation"><wicket:message key="ujertekeles"></wicket:message></a>
-        <table wicket:id="ertekelesektabla" class="withheader" style="">
-            <tr class="headers">
-                <th style="width: 170px;"><wicket:message key="szemeszter"/></th>
-            <th style="width: 130px;"><wicket:message key="pontStatusz"/></th>
-            <th style="width: 130px;"><wicket:message key="belepoStatusz"/></th>
-            <th><wicket:message key="utolsoModositas"/></th>
-            <th><wicket:message key="utolsoElbiralas"/></th>
-            <th>&nbsp;</th>
-            </tr>
-            <tr wicket:id="valuationList">
-                <td>
-                    <a wicket:id="valuationLink">
-                        <span wicket:id="valuationSemester"></span>
-                    </a>
-                </td>
-                <td>
-                    <a wicket:id="pointLink"><span wicket:id="pointStatus"></span></a>
-                </td>
-                <td>
-                    <a wicket:id="entrantLink"><span wicket:id="entrantStatus"></span></a>
-                </td>
-                <td>
-                    <span wicket:id="lastModified"></span>
-                </td>
-                <td>
-                    <span wicket:id="lastConsidered"></span>
-                </td>
-                <td>
-                    <a wicket:id="messagesLink"><span wicket:id="uzenetek"/></a>
-                </td>
-            </tr>
-        </table>
+
+    <div wicket:id="listPanel">
+        Itt listázzuk ki a kiválasztott körhöz tartozó értékeléseket
     </div>
 </wicket:extend>

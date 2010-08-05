@@ -1,0 +1,38 @@
+<wicket:panel>
+    <h2><span wicket:id="name"/></h2>
+    <div class="subdata">
+        <a wicket:id="newValuation"><wicket:message key="ujertekeles"></wicket:message></a>
+        <table wicket:id="ertekelesektabla" class="withheader" style="">
+            <tr class="headers">
+                <th style="width: 170px;"><wicket:message key="szemeszter"/></th>
+            <th style="width: 130px;"><wicket:message key="pontStatusz"/></th>
+            <th style="width: 130px;"><wicket:message key="belepoStatusz"/></th>
+            <th><wicket:message key="utolsoModositas"/></th>
+            <th><wicket:message key="utolsoElbiralas"/></th>
+            <th>&nbsp;</th>
+            </tr>
+            <tr wicket:id="valuationList">
+                <td>
+                    <a wicket:id="valuationLink">
+                        <span wicket:id="semester"></span>
+                    </a>
+                </td>
+                <td>
+                    <a wicket:id="pointLink"><span wicket:id="pointStatus"></span></a>
+                </td>
+                <td>
+                    <a wicket:id="entrantLink"><span wicket:id="entrantStatus"></span></a>
+                </td>
+                <td>
+                    <span wicket:id="lastModified"></span>
+                </td>
+                <td>
+                    <span wicket:id="lastConsidered"></span>
+                </td>
+                <td>
+                    <a wicket:id="messagesLink">Üzenetek</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</wicket:panel>

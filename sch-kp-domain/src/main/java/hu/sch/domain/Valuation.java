@@ -324,6 +324,16 @@ public class Valuation implements Serializable {
         }
     }
 
+    public boolean entrantsAreAccepted()
+    {
+        return entrantStatus == ValuationStatus.ELFOGADVA;
+    }
+
+    public boolean pointsAreAccepted()
+    {
+        return pointStatus == ValuationStatus.ELFOGADVA;
+    }
+
     @Override
     public String toString() {
         return new StringBuilder("Valuation: ").append(semester).append(" ").append(group.getName()).toString();
