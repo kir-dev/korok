@@ -28,17 +28,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.web.idm.pages;
+package hu.sch.web.profile.pages.template;
 
-import hu.sch.web.kp.templates.KorokPageTemplate;
+import hu.sch.web.profile.pages.birthday.BirthDayPage;
+import hu.sch.web.profile.pages.edit.EditPage;
+import hu.sch.web.profile.pages.passwordchange.ChangePasswordPage;
+import hu.sch.web.profile.pages.search.SearchPage;
+import hu.sch.web.profile.pages.show.ShowPersonPage;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Panel;
 
 /**
  *
- * @author aldaris
+ * @author messo
  */
-public class RegistrationFinishedPage extends KorokPageTemplate {
+class HeaderPanel extends Panel {
 
-    public RegistrationFinishedPage() {
-        setHeaderLabelText("Regisztráció");
+    public HeaderPanel(String id) {
+        super(id);
+
+        add(new BookmarkablePageLink<ShowPersonPage>("profilePageLink", ShowPersonPage.class));
+        add(new BookmarkablePageLink<SearchPage>("searchPageLink", SearchPage.class));
+        add(new BookmarkablePageLink<EditPage>("editPageLink", EditPage.class));
+        add(new BookmarkablePageLink<ChangePasswordPage>("changePasswordPageLink", ChangePasswordPage.class));
+        add(new BookmarkablePageLink<BirthDayPage>("birthDayPageLink", BirthDayPage.class));
     }
 }

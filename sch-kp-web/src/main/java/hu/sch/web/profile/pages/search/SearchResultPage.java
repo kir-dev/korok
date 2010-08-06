@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.search;
 
 import hu.sch.domain.profile.Person;
@@ -40,7 +39,6 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 
 /**
@@ -154,7 +152,6 @@ public final class SearchResultPage extends ProfilePageTemplate {
     public SearchResultPage(String searchString) {
         super();
         setHeaderLabelText("Keresés");
-        add(new FeedbackPanel("feedbackPanel"));
 
         SearchForm searchForm = new SearchForm("searchForm");
         searchForm.searchString = searchString;
@@ -170,4 +167,3 @@ public final class SearchResultPage extends ProfilePageTemplate {
         //TODO:  process page parameters
     }
 }
-

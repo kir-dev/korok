@@ -33,7 +33,6 @@ package hu.sch.web.profile.pages.edit;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.profile.pages.template.ProfilePageTemplate;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
  *
@@ -45,7 +44,6 @@ public class EditPage extends ProfilePageTemplate {
 
     public EditPage() {
         super();
-        add(new FeedbackPanel("feedbackPanel"));
         try {
             person = ldapManager.getPersonByUid(getRemoteUser());
         } catch (PersonNotFoundException e) {

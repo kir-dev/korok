@@ -28,13 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.show;
 
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.profile.pages.admin.AdminPage;
 import hu.sch.web.profile.pages.community.CreateCommunityProfile;
@@ -54,7 +52,6 @@ import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
@@ -213,7 +210,6 @@ public class ShowPersonPage extends ProfilePageTemplate {
     }
 
     public ShowPersonPage() {
-        add(new FeedbackPanel("feedbackPanel"));
         try {
             setPerson(ldapManager.getPersonByUid(getRemoteUser()));
             bindPerson();
@@ -222,7 +218,6 @@ public class ShowPersonPage extends ProfilePageTemplate {
     }
 
     public ShowPersonPage(PageParameters params) {
-        add(new FeedbackPanel("feedbackPanel"));
         String uid = params.getString("uid");
         String virid = params.getString("virid");
 

@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.community;
 
 import hu.sch.domain.User;
@@ -49,7 +48,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebPage;
@@ -94,7 +92,6 @@ public class CreateCommunityProfile extends ProfilePageTemplate {
             getSession().error("Hiba az adatok betöltésekor");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        add(new FeedbackPanel("feedbackPanel"));
 
         dataForm = new Form("dataForm") {
 

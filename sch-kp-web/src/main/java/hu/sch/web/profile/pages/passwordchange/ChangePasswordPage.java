@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.passwordchange;
 
 import hu.sch.services.exceptions.InvalidPasswordException;
@@ -36,7 +35,6 @@ import hu.sch.web.profile.pages.template.ProfilePageTemplate;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.validator.StringValidator;
 
@@ -57,7 +55,6 @@ public class ChangePasswordPage extends ProfilePageTemplate {
 
     public ChangePasswordPage() {
         setHeaderLabelText("Jelszóváltoztatás");
-        add(new FeedbackPanel("feedbackPanel"));
         Form form = new Form("changePasswordForm",
                 new CompoundPropertyModel(this)) {
 

@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 
@@ -53,7 +52,6 @@ public class BirthDayPage extends ProfilePageTemplate {
 
     public BirthDayPage() {
         super();
-        add(new FeedbackPanel("feedbackPanel"));
         setHeaderLabelText("Szülinaposok");
         personDataProvider = new SortablePersonDataProvider(birthDaySearch());
 

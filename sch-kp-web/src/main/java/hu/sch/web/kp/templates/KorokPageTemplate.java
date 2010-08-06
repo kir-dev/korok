@@ -35,30 +35,12 @@ import hu.sch.domain.Semester;
 import hu.sch.domain.User;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import hu.sch.web.kp.pages.admin.EditSettings;
-import hu.sch.web.kp.pages.consider.ConsiderPage;
-import hu.sch.web.kp.pages.valuation.Valuations;
-import hu.sch.web.kp.pages.group.GroupHierarchy;
-import hu.sch.web.kp.pages.user.ShowUser;
-import hu.sch.web.session.VirSession;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.common.PekPageTemplate;
-import hu.sch.web.kp.pages.search.SearchResultsPage;
-import hu.sch.web.kp.pages.svie.SvieAccount;
-import java.util.ArrayList;
-import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.StatelessForm;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.markup.html.panel.Panel;
 
 /**
  *
@@ -73,39 +55,10 @@ public abstract class KorokPageTemplate extends PekPageTemplate {
     @EJB(name = "PostManagerBean")
     protected PostManagerLocal postManager;
     private static final Logger log = Logger.getLogger(KorokPageTemplate.class);
-    private String searchTerm;
-    private String searchType = "felhasználó";
 
     public KorokPageTemplate() {
         super();
-
         loadUser();
-
-        createSearchBar();
-
-        add(new BookmarkablePageLink<ShowUser>("showuserlink", ShowUser.class));
-        add(new BookmarkablePageLink<GroupHierarchy>("grouphierarchylink", GroupHierarchy.class));
-        if (isUserGroupLeaderInSomeGroup()) {
-            add(new BookmarkablePageLink<Valuations>("ertekeleseklink", Valuations.class).setVisible(true));
-        } else {
-            add(new BookmarkablePageLink<Valuations>("ertekeleseklink", Valuations.class).setVisible(false));
-        }
-
-        if (isCurrentUserJETI()) {
-            add(new BookmarkablePageLink<ConsiderPage>("elbiralas", ConsiderPage.class));
-        } else {
-            add(new BookmarkablePageLink<ConsiderPage>("elbiralas", ConsiderPage.class).setVisible(false));
-        }
-
-        if (isCurrentUserJETI() || isCurrentUserSVIE() || isCurrentUserAdmin()) {
-            add(new BookmarkablePageLink<EditSettings>("editsettings", EditSettings.class));
-        } else {
-            add(new BookmarkablePageLink<EditSettings>("editsettings", EditSettings.class).setVisible(false));
-        }
-
-        add(new BookmarkablePageLink<SvieAccount>("svieaccount", SvieAccount.class));
-
-        add(new FeedbackPanel("pagemessages").setEscapeModelStrings(false));
     }
 
     @Override
@@ -123,41 +76,10 @@ public abstract class KorokPageTemplate extends PekPageTemplate {
         return "favicon-korok.ico";
     }
 
-    private void createSearchBar() {
-        StatelessForm<Void> searchForm = new StatelessForm<Void>("searchForm") {
-
-            @Override
-            protected void onSubmit() {
-                if (searchType == null || searchTerm == null) {
-                    super.getSession().error("Hibás keresési feltétel!");
-                    throw new RestartResponseException(getApplication().getHomePage());
-                }
-                if (searchTerm.length() < 3) {
-                    super.getSession().error("Túl rövid keresési feltétel!");
-                    throw new RestartResponseException(getApplication().getHomePage());
-                }
-                PageParameters params = new PageParameters();
-                params.put("type", ((searchType.equals("felhasználó")) ? "user" : "group"));
-                params.put("key", searchTerm);
-                setResponsePage(SearchResultsPage.class, params);
-            }
-        };
-        DropDownChoice<String> searchTypeDdc = new DropDownChoice<String>("searchDdc",
-                new PropertyModel<String>(this, "searchType"),
-                new LoadableDetachableModel<List<? extends String>>() {
-
-                    @Override
-                    protected List<? extends String> load() {
-                        List<String> ret = new ArrayList<String>();
-                        ret.add("felhasználó");
-                        ret.add("kör");
-                        return ret;
-                    }
-                });
-        searchTypeDdc.setNullValid(false);
-        searchForm.add(searchTypeDdc);
-        searchForm.add(new TextField<String>("searchField", new PropertyModel<String>(this, "searchTerm")));
-        add(searchForm);
+    @Override
+    protected Panel getHeaderPanel(String id) {
+        return new HeaderPanel(id, isUserGroupLeaderInSomeGroup(), isCurrentUserJETI(),
+                isCurrentUserJETI() || isCurrentUserSVIE() || isCurrentUserAdmin());
     }
 
     private void loadUser() {
@@ -181,11 +103,6 @@ public abstract class KorokPageTemplate extends PekPageTemplate {
 
     protected final User getUser() {
         return userManager.findUserWithMembershipsById(getSession().getUserId());
-    }
-
-    @Override
-    public VirSession getSession() {
-        return (VirSession) super.getSession();
     }
 
     protected final Semester getSemester() {

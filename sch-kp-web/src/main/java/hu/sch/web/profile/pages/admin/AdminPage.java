@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.admin;
 
 import hu.sch.domain.profile.Person;
@@ -42,12 +41,10 @@ import hu.sch.web.profile.pages.edit.PersonForm;
 import hu.sch.web.profile.pages.edit.PersonForm.KeyValuePairInForm;
 import hu.sch.web.profile.pages.template.ProfilePageTemplate;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
-import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -55,7 +52,6 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -82,14 +78,13 @@ public class AdminPage extends ProfilePageTemplate {
             error();
         }
 
-        add(new FeedbackPanel("feedbackPanel"));
         try {
             person = ldapManager.getPersonByUid(uid);
         } catch (PersonNotFoundException e) {
             error();
         }
 
-        add(new Label("uid", new Model<String>(person.getFullName() + " szerkesztése")));
+        setHeaderLabelText(person.getFullName() + " szerkesztése");
 
         Panel deletePersonLink = new DeletePersonLink("deletePersonLink", person, ShowUser.class);
         add(deletePersonLink);

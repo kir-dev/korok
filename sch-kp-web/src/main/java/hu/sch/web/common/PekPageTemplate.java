@@ -33,11 +33,14 @@ package hu.sch.web.common;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.web.AbstractPekApplication;
 import hu.sch.web.authz.UserAuthorization;
+import hu.sch.web.session.VirSession;
 import javax.ejb.EJB;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 /**
@@ -76,6 +79,9 @@ public abstract class PekPageTemplate extends WebPage {
         add(favicon);
 
         add(headerLabel = new Label("headerLabel", new Model<String>()));
+
+        add(getHeaderPanel("headerPanel"));
+        add(new FeedbackPanel("pagemessages").setEscapeModelStrings(false));
     }
 
     /**
@@ -97,6 +103,8 @@ public abstract class PekPageTemplate extends WebPage {
     protected abstract String getCss();
 
     protected abstract String getFavicon();
+
+    protected abstract Panel getHeaderPanel(String id);
 
     protected final void createNavbarWithSupportId(int supportId) {
         navbarScript.setDefaultModel(new Model<String>("var navbarConf = { "
@@ -128,6 +136,11 @@ public abstract class PekPageTemplate extends WebPage {
 
     protected UserAuthorization getAuthorizationComponent() {
         return ((AbstractPekApplication) getApplication()).getAuthorizationComponent();
+    }
+
+    @Override
+    public VirSession getSession() {
+        return (VirSession) super.getSession();
     }
 
     protected String getRemoteUser() {

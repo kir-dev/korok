@@ -30,26 +30,16 @@
  */
 package hu.sch.web.profile.pages.template;
 
-import hu.sch.web.profile.pages.show.ShowPersonPage;
-import hu.sch.web.profile.pages.search.SearchPage;
 import hu.sch.web.common.PekPageTemplate;
-import hu.sch.web.profile.pages.birthday.BirthDayPage;
-import hu.sch.web.profile.pages.edit.EditPage;
-import hu.sch.web.profile.pages.passwordchange.ChangePasswordPage;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Panel;
 
 /**
  *
- * @author Adam Lantos
+ * @author messo
  */
 public abstract class ProfilePageTemplate extends PekPageTemplate {
 
     public ProfilePageTemplate() {
-        add(new BookmarkablePageLink<ShowPersonPage>("profilePageLink", ShowPersonPage.class));
-        add(new BookmarkablePageLink<SearchPage>("searchPageLink", SearchPage.class));
-        add(new BookmarkablePageLink<EditPage>("editPageLink", EditPage.class));
-        add(new BookmarkablePageLink<ChangePasswordPage>("changePasswordPageLink", ChangePasswordPage.class));
-        add(new BookmarkablePageLink<BirthDayPage>("birthDayPageLink", BirthDayPage.class));
     }
 
     @Override
@@ -65,5 +55,10 @@ public abstract class ProfilePageTemplate extends PekPageTemplate {
     @Override
     protected String getFavicon() {
         return "favicon-profil.ico";
+    }
+
+    @Override
+    protected Panel getHeaderPanel(String id) {
+        return new HeaderPanel(id);
     }
 }

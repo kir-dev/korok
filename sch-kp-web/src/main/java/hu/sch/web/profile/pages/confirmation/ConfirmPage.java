@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.pages.confirmation;
 
 import hu.sch.domain.profile.Person;
@@ -41,7 +40,6 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
  *
@@ -55,7 +53,6 @@ public final class ConfirmPage extends ProfilePageTemplate {
 
     public ConfirmPage(PageParameters params) throws NoSuchAlgorithmException {
         String uid = params.getString("uid");
-        add(new FeedbackPanel("feedbackPanel"));
         try {
             Person person = ldapManager.getPersonByUid(uid);
 

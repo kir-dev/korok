@@ -39,7 +39,6 @@ import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
@@ -59,8 +58,6 @@ public class UserNameReminder extends KorokPageTemplate {
             getSession().error(getLocalizer().getString("err.ReminderAlreadySignedIn", null));
             throw new RestartResponseException(getApplication().getHomePage());
         }
-
-        add(new FeedbackPanel("pagemessages"));
 
         StatelessForm<Void> reminderForm = new StatelessForm<Void>("reminderForm") {
 
