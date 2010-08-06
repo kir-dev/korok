@@ -39,6 +39,7 @@ import hu.sch.domain.PostType;
 import hu.sch.domain.User;
 import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.profile.show.ShowPersonPage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,6 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 
@@ -105,8 +105,8 @@ public class ShowUser extends KorokPage {
                     new PageParameters("id=" + user.getId().toString())));
         }
 
-        add(new ExternalLink("profilelink",
-                "/profile/show/virid/" + id.toString()));
+        add(new BookmarkablePageLink("profilelink", ShowPersonPage.class,
+                new PageParameters("virid=" + id.toString())));
         user.sortMemberships();
 
         add(new UsersMembershipTable("csoptagsag", user.getMemberships(), ownProfile, 20) {

@@ -61,26 +61,18 @@ public abstract class PekPage extends WebPage {
     }
 
     private void init() {
-        System.err.println("PekPageTemplate init");
-
         add(titleLabel = new Label("title", getTitle()));
         add(navbarScript = new Label("navbarScript"));
         createNavbarWithSupportId(32);
         navbarScript.setEscapeModelStrings(false); // do not HTML escape JavaScript code
 
-        // CSS
-        WebComponent css = new WebComponent("css");
-        css.add(new AttributeModifier("href", new Model<String>("/css/" + getCss())));
-        add(css);
-
-        // favicon
-        WebComponent favicon = new WebComponent("favicon");
-        favicon.add(new AttributeModifier("href", new Model<String>("/images/" + getFavicon())));
-        add(favicon);
-
-        add(headerLabel = new Label("headerLabel", new Model<String>()));
+        add(new WebComponent("css").add(
+                new AttributeModifier("href", new Model<String>("/css/" + getCss()))));
+        add(new WebComponent("favicon").add(
+                new AttributeModifier("href", new Model<String>("/images/" + getFavicon()))));
 
         add(getHeaderPanel("headerPanel"));
+        add(headerLabel = new Label("headerLabel", new Model<String>("")));
         add(new FeedbackPanel("pagemessages").setEscapeModelStrings(false));
     }
 

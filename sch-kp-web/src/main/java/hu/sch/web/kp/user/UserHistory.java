@@ -38,6 +38,7 @@ import hu.sch.domain.ValuationData;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.wicket.components.tables.ValuationTableForUser;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -49,7 +50,6 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -111,7 +111,8 @@ public class UserHistory extends KorokPage {
         } else {
             add(new BookmarkablePageLink<ShowUser>("simpleView", ShowUser.class, new PageParameters("id=" + user.getId())));
         }
-        add(new ExternalLink("profilelink", "/profile/show/virid/" + id.toString()));
+        add(new BookmarkablePageLink("profilelink", ShowPersonPage.class,
+                new PageParameters("virid=" + id.toString())));
         setDefaultModel(new CompoundPropertyModel<User>(user));
 
         final List<String> groups = new ArrayList<String>();

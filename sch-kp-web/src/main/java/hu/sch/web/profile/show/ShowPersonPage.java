@@ -33,6 +33,8 @@ package hu.sch.web.profile.show;
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.web.kp.user.ShowUser;
+import hu.sch.web.kp.user.UserHistory;
 import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.profile.admin.AdminPage;
 import hu.sch.web.profile.community.CreateCommunityProfile;
@@ -48,7 +50,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.NonCachingImage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -61,15 +62,39 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class ShowPersonPage extends ProfilePage {
 
-    //private static final Logger log = Logger.getLogger(ShowPersonPage.class);
     private Person person;
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public ShowPersonPage() {
+        try {
+            person = ldapManager.getPersonByUid(getRemoteUser());
+            bindPerson();
+        } catch (PersonNotFoundException e) {
+        }
     }
 
-    public Person getPerson() {
-        return person;
+    public ShowPersonPage(PageParameters params) {
+        String uid = params.getString("uid");
+        String virid = params.getString("virid");
+
+        if ((uid == null && virid == null) || (uid != null && virid != null)) {
+            // ha se uid se virid, vagy mindkettő meg van adva, akkor nem játszunk
+            getSession().error("A felhasználó nem található!");
+            setResponsePage(getApplication().getHomePage());
+            return;
+        }
+
+        // vagy uid alapján vagy virid alapján keresünk usert
+        try {
+            if (uid != null) {
+                person = ldapManager.getPersonByUid(uid);
+            } else {
+                person = ldapManager.getPersonByVirId(virid);
+            }
+            bindPerson();
+        } catch (PersonNotFoundException e) {
+            getSession().error("A felhasználó nem található!");
+            setResponsePage(getApplication().getHomePage());
+        }
     }
 
     private void bindPerson() {
@@ -79,12 +104,13 @@ public class ShowPersonPage extends ProfilePage {
         //add(new Label("fullName"));
 
         if (person.getVirId() != null) {
-            add(new ExternalLink("simpleView", "/korok/showuser/id/" + person.getVirId()));
-            add(new ExternalLink("detailView", "/korok/userhistory/id/" + person.getVirId()));
+            PageParameters params = new PageParameters("id=" + person.getVirId());
+            add(new BookmarkablePageLink("simpleView", ShowUser.class, params));
+            add(new BookmarkablePageLink("detailView", UserHistory.class, params));
             add(new Label("createCommunityProfile").setVisible(false));
         } else {
-            add(new ExternalLink("simpleView", "/korok/showuser").setVisible(false));
-            add(new ExternalLink("detailView", "/korok/userhistory").setVisible(false));
+            add(new Label("simpleView").setVisible(false));
+            add(new Label("detailView").setVisible(false));
             //hogy ne lehessen könyvjelzőzni a linket
             Link pageLink = new Link("createCommunityProfile") {
 
@@ -207,45 +233,5 @@ public class ShowPersonPage extends ProfilePage {
         });
         photo.setVisible(person.getPhoto() != null);
         add(photo);
-    }
-
-    public ShowPersonPage() {
-        try {
-            setPerson(ldapManager.getPersonByUid(getRemoteUser()));
-            bindPerson();
-        } catch (PersonNotFoundException e) {
-        }
-    }
-
-    public ShowPersonPage(PageParameters params) {
-        String uid = params.getString("uid");
-        String virid = params.getString("virid");
-
-        if (uid == null && virid == null) {
-            getSession().error("A felhasználó nem található!");
-            setResponsePage(getApplication().getHomePage());
-            return;
-        } else if (uid != null && virid == null) {
-            try {
-                setPerson(ldapManager.getPersonByUid(uid));
-            } catch (PersonNotFoundException e) {
-                getSession().error("A felhasználó nem található!");
-                setResponsePage(getApplication().getHomePage());
-                return;
-            }
-        } else if (uid == null && virid != null) {
-            try {
-                setPerson(ldapManager.getPersonByVirId(virid));
-            } catch (PersonNotFoundException e) {
-                getSession().error("A felhasználó nem található!");
-                setResponsePage(getApplication().getHomePage());
-                return;
-            }
-        } else {
-            getSession().error("A felhasználó nem található!");
-            setResponsePage(getApplication().getHomePage());
-            return;
-        }
-        bindPerson();
     }
 }
