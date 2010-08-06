@@ -78,7 +78,7 @@
 
     <error-page>
         <error-code>404</error-code>
-        <location>/error/NotFound</location>
+        <location>/korok/error/NotFound</location>
     </error-page>
 
     <session-config>

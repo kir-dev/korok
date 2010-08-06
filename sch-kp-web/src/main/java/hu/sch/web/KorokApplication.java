@@ -33,6 +33,7 @@ package hu.sch.web;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Membership;
 import hu.sch.domain.ValuationStatus;
+import hu.sch.web.error.InternalServerError;
 import hu.sch.web.kp.group.EditGroupInfo;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.kp.group.ShowGroup;
@@ -40,8 +41,6 @@ import hu.sch.web.kp.group.GroupHistory;
 import hu.sch.web.kp.logout.Logout;
 import hu.sch.web.kp.user.UserHistory;
 import hu.sch.web.idm.pages.UserNameReminder;
-import hu.sch.web.error.InternalServerError;
-import hu.sch.web.error.PageExpiredError;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
 import hu.sch.web.idm.pages.RegistrationPage;
 import hu.sch.web.kp.admin.CreateGroup;
@@ -93,7 +92,8 @@ public class KorokApplication extends AbstractPekApplication {
 
     @Override
     public void onInitialization() {
-        //körök linkek
+        mount("/error", PackageName.forClass(InternalServerError.class));
+
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);
         mountBookmarkablePage("/search", SearchResultsPage.class);
@@ -124,17 +124,6 @@ public class KorokApplication extends AbstractPekApplication {
         mount(new HybridUrlCodingStrategy("/register", RegistrationPage.class));
         mountBookmarkablePage("/registerfinished", RegistrationFinishedPage.class);
         mountBookmarkablePage("/logout", Logout.class);
-
-        mount("/error", PackageName.forClass(InternalServerError.class));
-
-//        mountBookmarkablePage("/profile", ShowPersonPage.class);
-//        mountBookmarkablePage("profile/edit", EditPage.class);
-
-        //alkalmazás beállítások
-        getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
-        getPageSettings().setAutomaticMultiWindowSupport(false);
-
-        log.warn("Application has been successfully initiated");
     }
 
     @Override
