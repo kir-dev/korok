@@ -1,15 +1,25 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
-    <span wicket:id="feedbackPanel" id="feedbackPanel" style="display:block; margin-bottom: 20px"></span>
+    <div id="ViewNavigation">
+        <span>Teljes profil</span>
+        <ul>
+            <li><a wicket:id="simpleView">Közösségi profil</a></li>
+            <li><a wicket:id="detailView">Közösségi történet</a></li>
+        </ul>
+    </div>
+
+    <span wicket:id="feedbackPanel" id="pagemessages"></span>
+
+    <h2>Teljes profil</h2>
+    
     <div class="photo">
         <img wicket:id="photo"/>
     </div>
 
     <div style="margin-top: 20px; margin-left: 52px; width: 440px;">
-        <a wicket:id="communityProfile">Közösségi profil</a>
         <a wicket:id="createCommunityProfile">Közösségi profil létrehozása</a>
         <a wicket:id="adminLink">Felhasználó adatainak szerkesztése</a>
     </div>
-    <div style="width: 440px; padding-bottom: 100px; min-height: 350px;">
+    <div style="width: 440px;">
 
         <table id="list">
             <tr wicket:id="nickNameWMC">

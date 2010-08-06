@@ -34,7 +34,7 @@ import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Valuation;
 import hu.sch.web.kp.pages.valuation.Valuations;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.web.wicket.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
@@ -52,7 +52,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
  *
  * @author hege
  */
-public class EntrantRequestExplanation extends SecuredPageTemplate {
+public class EntrantRequestExplanation extends KorokPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;

@@ -31,7 +31,7 @@
 package hu.sch.web.test;
 
 import hu.sch.test.base.ContainerAwareAbstractTest;
-import hu.sch.web.PhoenixApplication;
+import hu.sch.web.KorokApplication;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.BeforeClass;
 
@@ -46,6 +46,6 @@ public abstract class WebTest extends ContainerAwareAbstractTest {
 
     @BeforeClass
     public static void initWicketTester() {
-        tester = new WicketTester(new PhoenixApplication());
+        tester = new WicketTester(new KorokApplication());
     }
 }

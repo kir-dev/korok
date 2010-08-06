@@ -33,17 +33,12 @@ package hu.sch.web;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Membership;
 import hu.sch.domain.ValuationStatus;
-import hu.sch.domain.config.Configuration;
-import hu.sch.domain.config.Configuration.Environment;
-import hu.sch.web.authz.AgentBasedAuthorization;
-import hu.sch.web.authz.DummyAuthorization;
 import hu.sch.web.kp.pages.group.EditGroupInfo;
 import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.kp.pages.group.ShowGroup;
 import hu.sch.web.kp.pages.group.GroupHistory;
 import hu.sch.web.kp.pages.logout.Logout;
 import hu.sch.web.kp.pages.user.UserHistory;
-import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.idm.pages.UserNameReminder;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.PageExpiredError;
@@ -65,29 +60,14 @@ import hu.sch.web.kp.pages.svie.SvieGroupMgmt;
 import hu.sch.web.kp.pages.svie.SvieUserMgmt;
 import hu.sch.web.kp.pages.valuation.ValuationDetails;
 import hu.sch.web.profile.pages.confirmation.ConfirmPage;
-import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.util.EntrantTypeConverter;
 import hu.sch.web.wicket.util.PostTypeConverter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
-import hu.sch.web.wicket.util.ServerTimerFilter;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
-import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.PageExpiredException;
-import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebRequestCycle;
-import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.request.target.coding.HybridUrlCodingStrategy;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.lang.PackageName;
-import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
-import org.wicketstuff.javaee.naming.global.AppJndiNamingStrategy;
-import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
 
 /**
  * PhoenixApplication, amelyben a Phoenix arra utal, hogy ez az alkalmazás a VIR
@@ -98,31 +78,9 @@ import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
  * @author hege
  * @author messo
  */
-public class PhoenixApplication extends WebApplication {
+public class KorokApplication extends AbstractPekApplication {
 
-    private static final String EJB_MODULE_NAME = "korok-ejb";
-    private static Logger log = Logger.getLogger(PhoenixApplication.class);
-    private UserAuthorization authorizationComponent;
-
-    /**
-     * Mivel nem elég a jelenleg támogatott kétféle configurationType
-     * (DEPLOYMENT és DEVELOPMENT), ezért
-     * felüldefiniáljuk ezt a metódust és az {@link Environment}-től függően térünk vissza
-     * az előbbiek valamelyikével.
-     *
-     * @return  DEPLOYMENT vagy DEVELOPMENT
-     */
-    @Override
-    public String getConfigurationType() {
-        Environment env = Configuration.getEnvironment();
-
-        if (env == Environment.PRODUCTION) {
-            // jelenleg csak akkor kell DEPLOYMENT, ha az environment PRODUCTION
-            return DEPLOYMENT;
-        } else {
-            return DEVELOPMENT;
-        }
-    }
+    private static Logger log = Logger.getLogger(KorokApplication.class);
 
     /**
      * Az alapértelmezett kezdőlap
@@ -134,23 +92,7 @@ public class PhoenixApplication extends WebApplication {
     }
 
     @Override
-    protected void init() {
-        //A környezetfüggő beállítások elvégzése
-        Environment env = Configuration.getEnvironment();
-        if (env == Environment.TESTING) {
-            addComponentInstantiationListener(new JavaEEComponentInjector(this,
-                    new GlobalJndiNamingStrategy(EJB_MODULE_NAME)));
-            authorizationComponent = new DummyAuthorization();
-        } else {
-            addComponentInstantiationListener(new JavaEEComponentInjector(this, new AppJndiNamingStrategy(EJB_MODULE_NAME)));
-            if (env == Environment.DEVELOPMENT) {
-                //Ha DEVELOPMENT környezetben vagyunk, akkor Dummyt használunk
-                authorizationComponent = new DummyAuthorization();
-            } else { // ha STAGING vagy PRODUCTION, akkor az AgentBased kell nekünk
-                authorizationComponent = new AgentBasedAuthorization();
-            }
-        }
-
+    public void onInitialization() {
         //körök linkek
         mountBookmarkablePage("/showuser", ShowUser.class);
         mountBookmarkablePage("/userhistory", UserHistory.class);
@@ -190,49 +132,9 @@ public class PhoenixApplication extends WebApplication {
 
         //alkalmazás beállítások
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
-        getMarkupSettings().setStripWicketTags(true);
         getPageSettings().setAutomaticMultiWindowSupport(false);
 
-        //Ha dev módban vagyunk, akkor hozzáteszünk egy új filtert, ami mutatja
-        //a render időket a log fájlban.
-        if (getConfigurationType().equals(DEVELOPMENT)) {
-            getRequestCycleSettings().addResponseFilter(new ServerTimerFilter());
-            log.info("Successfully enabled ServerTimerFilter");
-        }
-
         log.warn("Application has been successfully initiated");
-    }
-
-    public boolean isNewbieTime() {
-        // FIXME -- ezt kéne valahonnan máshonnan szerezni
-        return true;
-    }
-
-    @Override
-    public Session newSession(Request request, Response response) {
-        Session session = new VirSession(request);
-        if (isNewbieTime()) {
-            session.setStyle("newbie");
-        }
-        return session;
-    }
-
-    @Override
-    public RequestCycle newRequestCycle(Request request, Response response) {
-        if (!Configuration.getEnvironment().equals(Environment.PRODUCTION)) {
-            return super.newRequestCycle(request, response);
-        } else {
-            return new WebRequestCycle(this, (WebRequest) request, (WebResponse) response) {
-
-                @Override
-                public Page onRuntimeException(Page page, RuntimeException ex) {
-                    if (ex instanceof PageExpiredException) {
-                        return new PageExpiredError();
-                    }
-                    return new InternalServerError(page, ex);
-                }
-            };
-        }
     }
 
     @Override
@@ -243,9 +145,5 @@ public class PhoenixApplication extends WebApplication {
         locator.set(Membership.class, new PostTypeConverter());
 
         return locator;
-    }
-
-    public UserAuthorization getAuthorizationComponent() {
-        return authorizationComponent;
     }
 }

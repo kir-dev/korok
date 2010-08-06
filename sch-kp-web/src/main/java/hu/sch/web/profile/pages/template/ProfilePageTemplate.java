@@ -30,68 +30,40 @@
  */
 package hu.sch.web.profile.pages.template;
 
-import java.io.Serializable;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
 import hu.sch.web.profile.pages.search.SearchPage;
-import hu.sch.services.LdapManagerLocal;
+import hu.sch.web.common.PekPageTemplate;
 import hu.sch.web.profile.pages.birthday.BirthDayPage;
 import hu.sch.web.profile.pages.edit.EditPage;
 import hu.sch.web.profile.pages.passwordchange.ChangePasswordPage;
-import javax.ejb.EJB;
-import org.apache.wicket.Application;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebRequest;
 
 /**
  *
  * @author Adam Lantos
  */
-public abstract class ProfilePage extends WebPage {
+public abstract class ProfilePageTemplate extends PekPageTemplate {
 
-    private static boolean isDevMode = false;
-    @EJB(name = "LdapManagerBean")
-    protected LdapManagerLocal ldapManager;
-    private Label headerLabel;
-
-    static {
-        if (!Application.get().getConfigurationType().equalsIgnoreCase("deployment")) {
-            isDevMode = true;
-        }
-    }
-
-    public ProfilePage() {
-
+    public ProfilePageTemplate() {
         add(new BookmarkablePageLink<ShowPersonPage>("profilePageLink", ShowPersonPage.class));
         add(new BookmarkablePageLink<SearchPage>("searchPageLink", SearchPage.class));
         add(new BookmarkablePageLink<EditPage>("editPageLink", EditPage.class));
         add(new BookmarkablePageLink<ChangePasswordPage>("changePasswordPageLink", ChangePasswordPage.class));
         add(new BookmarkablePageLink<BirthDayPage>("birthDayPageLink", BirthDayPage.class));
-        add(headerLabel = new Label("headerLabel", new Model<Serializable>()));
     }
 
-    protected String getUid() {
-        if (isDevMode) {
-            return "aldaris";
-        }
-        return ((WebRequest) getRequest()).getHttpServletRequest().getRemoteUser();
+    @Override
+    protected String getTitle() {
+        return "VIR Profil";
     }
 
-    public boolean isCurrentUserAdmin() {
-        if (isDevMode) {
-            return true;
-        }
-        return ((WebRequest) getRequest()).getHttpServletRequest().isUserInRole("ADMIN");
+    @Override
+    protected String getCss() {
+        return "profile-style.css";
     }
 
-    public void setHeaderLabelText(String text) {
-        headerLabel.setDefaultModelObject(text);
-    }
-
-    public void setHeaderLabelModel(IModel<?> imodel) {
-        headerLabel.setDefaultModel(imodel);
+    @Override
+    protected String getFavicon() {
+        return "favicon-profil.ico";
     }
 }

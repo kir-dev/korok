@@ -31,14 +31,14 @@
 
 package hu.sch.web.idm.pages;
 
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
  *
  * @author aldaris
  */
-public class RegistrationFinishedPage extends SecuredPageTemplate {
+public class RegistrationFinishedPage extends KorokPageTemplate {
 
     public RegistrationFinishedPage() {
         setHeaderLabelText("Regisztráció");

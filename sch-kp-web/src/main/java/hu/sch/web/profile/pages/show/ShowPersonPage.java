@@ -34,10 +34,11 @@ package hu.sch.web.profile.pages.show;
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.profile.pages.admin.AdminPage;
 import hu.sch.web.profile.pages.community.CreateCommunityProfile;
-import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.profile.pages.template.ProfilePageTemplate;
 import hu.sch.web.wicket.components.customlinks.SearchLink;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -61,7 +62,7 @@ import org.apache.wicket.model.PropertyModel;
 /**
  * Homepage
  */
-public class ShowPersonPage extends ProfilePage {
+public class ShowPersonPage extends ProfilePageTemplate {
 
     //private static final Logger log = Logger.getLogger(ShowPersonPage.class);
     private Person person;
@@ -76,17 +77,17 @@ public class ShowPersonPage extends ProfilePage {
 
     private void bindPerson() {
         setDefaultModel(new CompoundPropertyModel<Person>(person));
-        setHeaderLabelModel(new PropertyModel<Person>(person, "fullName"));
+        setHeaderLabelText(person.getFullName());
         //add(new Label("uid"));
         //add(new Label("fullName"));
 
         if (person.getVirId() != null) {
-            add(new ExternalLink("communityProfile",
-                    "/korok/showuser/id/"
-                    + person.getVirId(), "Közösségi profil"));
+            add(new ExternalLink("simpleView", "/korok/showuser/id/" + person.getVirId()));
+            add(new ExternalLink("detailView", "/korok/userhistory/id/" + person.getVirId()));
             add(new Label("createCommunityProfile").setVisible(false));
         } else {
-            add(new Label("communityProfile").setVisible(false));
+            add(new ExternalLink("simpleView", "/korok/showuser").setVisible(false));
+            add(new ExternalLink("detailView", "/korok/userhistory").setVisible(false));
             //hogy ne lehessen könyvjelzőzni a linket
             Link pageLink = new Link("createCommunityProfile") {
 
@@ -99,7 +100,7 @@ public class ShowPersonPage extends ProfilePage {
 
             add(pageLink);
             //Ha nem a saját profilunkat nézzük, akkor ne jelenjen meg a készítős link
-            if (!person.getUid().equalsIgnoreCase(getUid())) {
+            if (!person.getUid().equalsIgnoreCase(getRemoteUser())) {
                 pageLink.setVisible(false);
             }
         }
@@ -214,7 +215,7 @@ public class ShowPersonPage extends ProfilePage {
     public ShowPersonPage() {
         add(new FeedbackPanel("feedbackPanel"));
         try {
-            setPerson(ldapManager.getPersonByUid(getUid()));
+            setPerson(ldapManager.getPersonByUid(getRemoteUser()));
             bindPerson();
         } catch (PersonNotFoundException e) {
         }

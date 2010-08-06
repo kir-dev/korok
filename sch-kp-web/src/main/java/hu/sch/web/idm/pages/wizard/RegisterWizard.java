@@ -34,7 +34,7 @@ import hu.sch.domain.profile.Person;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.PhoenixApplication;
+import hu.sch.web.KorokApplication;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
 import hu.sch.web.wicket.components.AjaxWizardButtonBar;
 import java.sql.Connection;
@@ -131,7 +131,7 @@ public class RegisterWizard extends Wizard {
         super.onFinish();
         person.setStatus("Inactive");
         try {
-            if (((PhoenixApplication) getApplication()).isNewbieTime()) {
+            if (((KorokApplication) getApplication()).isNewbieTime()) {
                 ldapManager.registerNewbie(person, newPass);
             } else {
                 ldapManager.registerPerson(person, newPass);

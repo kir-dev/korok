@@ -37,7 +37,7 @@ import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.pages.user.ShowUser;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.web.wicket.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.pages.consider.ConsiderExplainPage;
@@ -57,7 +57,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  *
  * @author hege
  */
-public class PointRequestViewer extends SecuredPageTemplate {
+public class PointRequestViewer extends KorokPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;

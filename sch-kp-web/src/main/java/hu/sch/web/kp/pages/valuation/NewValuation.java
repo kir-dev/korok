@@ -31,7 +31,7 @@
 package hu.sch.web.kp.pages.valuation;
 
 import hu.sch.domain.Group;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.TinyMCEContainer;
@@ -47,7 +47,7 @@ import org.apache.wicket.util.string.StringValueConversionException;
  *
  * @author hege
  */
-public class NewValuation extends SecuredPageTemplate {
+public class NewValuation extends KorokPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;

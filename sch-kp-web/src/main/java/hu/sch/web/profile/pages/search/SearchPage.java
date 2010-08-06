@@ -32,7 +32,7 @@
 package hu.sch.web.profile.pages.search;
 
 import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
-import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.profile.pages.template.ProfilePageTemplate;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -42,7 +42,7 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author konvergal
  */
-public class SearchPage extends ProfilePage {
+public class SearchPage extends ProfilePageTemplate {
 
     public class SearchForm extends Form {
 

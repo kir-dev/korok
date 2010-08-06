@@ -32,8 +32,8 @@ package hu.sch.web.idm.pages;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.MailManagerLocal;
-import hu.sch.web.PhoenixApplication;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.KorokApplication;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;
@@ -47,7 +47,7 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
  *
  * @author aldaris
  */
-public class UserNameReminder extends SecuredPageTemplate {
+public class UserNameReminder extends KorokPageTemplate {
 
     @EJB(name = "MailManagerBean")
     private MailManagerLocal mailManager;
@@ -77,7 +77,7 @@ public class UserNameReminder extends SecuredPageTemplate {
                     Person person = results.get(0);
                     try {
                         StringBuilder msg = new StringBuilder(200);
-                        if (((PhoenixApplication) getApplication()).isNewbieTime()) {
+                        if (((KorokApplication) getApplication()).isNewbieTime()) {
                             msg.append("Tisztelt ");
                         } else {
                             msg.append("Kedves ");

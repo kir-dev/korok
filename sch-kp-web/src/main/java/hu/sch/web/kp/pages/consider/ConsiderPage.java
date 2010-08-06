@@ -41,7 +41,7 @@ import hu.sch.web.kp.pages.valuation.ValuationMessages;
 import hu.sch.web.kp.pages.valuation.EntrantRequestViewer;
 import hu.sch.web.kp.pages.valuation.PointRequestViewer;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ import org.apache.wicket.model.PropertyModel;
  * @author hege
  */
 //TODO
-public class ConsiderPage extends SecuredPageTemplate {
+public class ConsiderPage extends KorokPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     private ValuationManagerLocal valuationManager;

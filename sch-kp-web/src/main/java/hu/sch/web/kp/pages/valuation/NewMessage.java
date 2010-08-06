@@ -32,7 +32,7 @@
 package hu.sch.web.kp.pages.valuation;
 
 import hu.sch.domain.Valuation;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
@@ -44,7 +44,7 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author hege
  */
-class NewMessage extends SecuredPageTemplate {
+class NewMessage extends KorokPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal ertekelesManager;

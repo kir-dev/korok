@@ -32,13 +32,13 @@
 package hu.sch.web.error;
 
 import hu.sch.web.wicket.util.MetaHeaderContributor;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 
 /**
  *
  * @author aldaris
  */
-public final class PageExpiredError extends SecuredPageTemplate {
+public final class PageExpiredError extends KorokPageTemplate {
 
     public PageExpiredError() {
         super();

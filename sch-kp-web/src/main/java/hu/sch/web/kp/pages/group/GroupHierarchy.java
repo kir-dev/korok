@@ -33,7 +33,7 @@ package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
 import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -64,7 +64,7 @@ import wickettree.theme.WindowsTheme;
  *
  * @author Adam Lantos
  */
-public class GroupHierarchy extends SecuredPageTemplate {
+public class GroupHierarchy extends KorokPageTemplate {
 
     private static Logger log = Logger.getLogger(GroupHierarchy.class);
     private List<Group> roots = userManager.getGroupHierarchy();

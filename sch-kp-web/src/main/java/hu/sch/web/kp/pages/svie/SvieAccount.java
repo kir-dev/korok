@@ -38,7 +38,7 @@ import hu.sch.domain.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.wicket.components.customlinks.SvieRegPdfLink;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
@@ -59,7 +59,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
  *
  * @author aldaris
  */
-public final class SvieAccount extends SecuredPageTemplate {
+public final class SvieAccount extends KorokPageTemplate {
 
     @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;

@@ -37,7 +37,7 @@ import hu.sch.domain.User;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.error.NotFound;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.RestartResponseException;
@@ -58,7 +58,7 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author aldaris
  */
-public class CreateGroup extends SecuredPageTemplate {
+public class CreateGroup extends KorokPageTemplate {
 
     private Group group = new Group();
     private User user;

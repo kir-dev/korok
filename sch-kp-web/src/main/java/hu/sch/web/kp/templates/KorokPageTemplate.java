@@ -30,14 +30,12 @@
  */
 package hu.sch.web.kp.templates;
 
-import java.io.Serializable;
 import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.kp.pages.admin.EditSettings;
 import hu.sch.web.kp.pages.consider.ConsiderPage;
 import hu.sch.web.kp.pages.valuation.Valuations;
@@ -46,7 +44,7 @@ import hu.sch.web.kp.pages.user.ShowUser;
 import hu.sch.web.session.VirSession;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.web.PhoenixApplication;
+import hu.sch.web.common.PekPageTemplate;
 import hu.sch.web.kp.pages.search.SearchResultsPage;
 import hu.sch.web.kp.pages.svie.SvieAccount;
 import java.util.ArrayList;
@@ -55,53 +53,33 @@ import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 /**
  *
  * @author hege
  */
-public abstract class SecuredPageTemplate extends WebPage {
+public abstract class KorokPageTemplate extends PekPageTemplate {
 
     @EJB(name = "SystemManagerBean")
     protected SystemManagerLocal systemManager;
     @EJB(name = "UserManagerBean")
     protected UserManagerLocal userManager;
-    @EJB(name = "LdapManagerBean")
-    protected LdapManagerLocal ldapManager;
     @EJB(name = "PostManagerBean")
     protected PostManagerLocal postManager;
-    private static final Logger log = Logger.getLogger(SecuredPageTemplate.class);
-    private static final String adminRoleName = "ADMIN";
-    private static final String jetiRoleName = "JETI";
-    private static final String svieRoleName = "SVIE";
+    private static final Logger log = Logger.getLogger(KorokPageTemplate.class);
     private String searchTerm;
     private String searchType = "felhasználó";
-    private Label navbarScript;
-    private Label titleLabel;
 
-    public SecuredPageTemplate() {
+    public KorokPageTemplate() {
+        super();
+
         loadUser();
-
-        add(titleLabel = new Label("title", "VIR Körök"));
-
-        navbarScript = new Label("navbarScript");
-        createNavbarWithSupportId(32);
-        navbarScript.setEscapeModelStrings(false); // do not HTML escape JavaScript code
-        add(navbarScript);
-
-        WebMarkupContainer headerLabelContainer = new WebMarkupContainer("headerLabelContainer");
-        add(headerLabelContainer);
-        headerLabelContainer.add(new Label("headerLabel", new Model<Serializable>()));
 
         createSearchBar();
 
@@ -126,7 +104,21 @@ public abstract class SecuredPageTemplate extends WebPage {
         }
 
         add(new BookmarkablePageLink<SvieAccount>("svieaccount", SvieAccount.class));
-        //add(new BookmarkablePageLink("logoutPageLink", Logout.class));
+    }
+
+    @Override
+    protected String getTitle() {
+        return "VIR Körök";
+    }
+
+    @Override
+    protected String getCss() {
+        return "korok-style.css";
+    }
+
+    @Override
+    protected String getFavicon() {
+        return "favicon-korok.ico";
     }
 
     private void createSearchBar() {
@@ -189,10 +181,6 @@ public abstract class SecuredPageTemplate extends WebPage {
         return userManager.findUserWithMembershipsById(getSession().getUserId());
     }
 
-    protected final String getRemoteUser() {
-        return getAuthorizationComponent().getRemoteUser(getRequest());
-    }
-
     @Override
     public VirSession getSession() {
         return (VirSession) super.getSession();
@@ -206,18 +194,6 @@ public abstract class SecuredPageTemplate extends WebPage {
             log.warn("Attribute for semester isn't set in the database.", ex);
         }
         return sz;
-    }
-
-    protected final boolean isCurrentUserAdmin() {
-        return getAuthorizationComponent().hasAbstractRole(getRequest(), adminRoleName);
-    }
-
-    protected final boolean isCurrentUserJETI() {
-        return getAuthorizationComponent().hasAbstractRole(getRequest(), jetiRoleName);
-    }
-
-    protected final boolean isCurrentUserSVIE() {
-        return getAuthorizationComponent().hasAbstractRole(getRequest(), svieRoleName);
     }
 
     protected final boolean isUserGroupLeader(Group group) {
@@ -254,39 +230,5 @@ public abstract class SecuredPageTemplate extends WebPage {
             return false;
         }
         return postManager.hasUserDelegatedPostInGroup(group, user);
-    }
-
-    protected void setHeaderLabelText(String text) {
-        ((WebMarkupContainer) get("headerLabelContainer")).get("headerLabel").setDefaultModel(new Model<Serializable>(text));
-    }
-
-    protected final void createNavbarWithSupportId(int supportId) {
-        navbarScript.setDefaultModel(new Model<String>("var navbarConf = { "
-                + "logoutLink: 'https://idp.sch.bme.hu/opensso/UI/Logout', "
-                + "theme: 'blue', "
-                + "width: 900, "
-                + "support: " + supportId + ", "
-                + "helpMenuItems: ["
-                + "{"
-                + "title: 'FAQ',"
-                + "url: 'https://kir-dev.sch.bme.hu/kozossegi-pontozas/'"
-                + "}"
-                + "]"
-                + "}; "
-                + "printNavbar(navbarConf);"));
-    }
-
-    /**
-     * Beállítjuk az adott lapon a &lt;title/&gt;-t, a "VIR Körök - " előtaggal
-     *
-     * @param title a cím, amit a "VIR Körök - " után szerepel
-     * @since 2.4
-     */
-    protected void setTitleText(String title) {
-        titleLabel.setDefaultModelObject("VIR Körök - " + title);
-    }
-
-    private UserAuthorization getAuthorizationComponent() {
-        return ((PhoenixApplication) getApplication()).getAuthorizationComponent();
     }
 }

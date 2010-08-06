@@ -36,7 +36,7 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.Post;
 import hu.sch.domain.User;
 import hu.sch.domain.PostType;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.domain.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,7 +62,7 @@ import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValid
  *
  * @author aldaris
  */
-public final class ChangePost extends SecuredPageTemplate {
+public final class ChangePost extends KorokPageTemplate {
 
     private static Logger log = Logger.getLogger(ChangePost.class);
     private String postName;

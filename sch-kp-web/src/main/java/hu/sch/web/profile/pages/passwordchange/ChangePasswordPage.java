@@ -32,7 +32,7 @@
 package hu.sch.web.profile.pages.passwordchange;
 
 import hu.sch.services.exceptions.InvalidPasswordException;
-import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.profile.pages.template.ProfilePageTemplate;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
@@ -44,7 +44,7 @@ import org.apache.wicket.validation.validator.StringValidator;
  *
  * @author Adam Lantos
  */
-public class ChangePasswordPage extends ProfilePage {
+public class ChangePasswordPage extends ProfilePageTemplate {
 
     private String oldPassword;
     private String newPassword;
@@ -64,7 +64,7 @@ public class ChangePasswordPage extends ProfilePage {
             @Override
             protected void onSubmit() {
                 try {
-                    ldapManager.changePassword(getUid(),
+                    ldapManager.changePassword(getRemoteUser(),
                             oldPassword, newPassword);
                     getSession().info("Sikeres jelszóváltoztatás");
                 } catch (InvalidPasswordException ex) {

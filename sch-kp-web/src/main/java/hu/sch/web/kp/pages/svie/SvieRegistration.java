@@ -40,7 +40,7 @@ import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
 import hu.sch.web.kp.pages.user.ShowUser;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.domain.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
  *
  * @author aldaris
  */
-public final class SvieRegistration extends SecuredPageTemplate {
+public final class SvieRegistration extends KorokPageTemplate {
 
     @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;

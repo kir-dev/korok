@@ -31,7 +31,7 @@
 package hu.sch.web.profile.pages.birthday;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.profile.pages.template.ProfilePageTemplate;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import java.text.SimpleDateFormat;
@@ -42,20 +42,19 @@ import java.util.List;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.Model;
 
 /**
  *
  * @author aldaris
  */
-public class BirthDayPage extends ProfilePage {
+public class BirthDayPage extends ProfilePageTemplate {
 
     SortablePersonDataProvider personDataProvider;
 
     public BirthDayPage() {
         super();
         add(new FeedbackPanel("feedbackPanel"));
-        setHeaderLabelModel(new Model("Szülinaposok"));
+        setHeaderLabelText("Szülinaposok");
         personDataProvider = new SortablePersonDataProvider(birthDaySearch());
 
         final DataView<Person> dataView = new DataView<Person>("simple", personDataProvider) {

@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
@@ -74,6 +73,14 @@ public final class DummyAuthorization implements UserAuthorization {
      * {@inheritDoc}
      */
     @Override
+    public String getRemoteUser(Request wicketRequest) {
+        return "konvergal";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isGroupLeaderInGroup(Request wicketRequest, Group group) {
         // Kir-Dev, Teaház és 17.szint körvezetői tagsága
         if ((group.getId().equals(331L) || group.getId().equals(106L)
@@ -111,16 +118,7 @@ public final class DummyAuthorization implements UserAuthorization {
      * {@inheritDoc}
      */
     @Override
-    public User getUserAttributes(
-            Request wicketRequest) {
+    public User getUserAttributes(Request wicketRequest) {
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getRemoteUser(Request wicketRequest) {
-        return "aldaris";
     }
 }

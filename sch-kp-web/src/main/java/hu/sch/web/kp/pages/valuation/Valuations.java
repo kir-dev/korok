@@ -39,7 +39,7 @@ import hu.sch.domain.User;
 import hu.sch.web.kp.pages.entrantrequests.EntrantRequestFiling;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
 import hu.sch.web.kp.pages.pointrequests.PointRequestFiling;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +70,7 @@ import org.apache.wicket.model.PropertyModel;
  * @author hege
  * @author messo
  */
-public class Valuations extends SecuredPageTemplate {
+public class Valuations extends KorokPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;

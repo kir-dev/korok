@@ -31,14 +31,14 @@
 
 package hu.sch.web.kp.pages.logout;
 
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
  *
  * @author aldaris
  */
-public class Logout extends SecuredPageTemplate {
+public class Logout extends KorokPageTemplate {
 
     public Logout() {
         setHeaderLabelText("Kijelentkezés");

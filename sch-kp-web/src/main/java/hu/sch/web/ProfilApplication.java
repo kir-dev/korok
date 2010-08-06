@@ -28,26 +28,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package hu.sch.web;
 
-package hu.sch.web.idm.pages;
-
-import hu.sch.web.idm.pages.wizard.RegisterWizard;
-import hu.sch.web.kp.templates.KorokPageTemplate;
-import org.apache.wicket.RestartResponseException;
+import hu.sch.web.profile.pages.admin.AdminPage;
+import hu.sch.web.profile.pages.birthday.BirthDayPage;
+import hu.sch.web.profile.pages.edit.EditPage;
+import hu.sch.web.profile.pages.passwordchange.ChangePasswordPage;
+import hu.sch.web.profile.pages.search.SearchPage;
+import hu.sch.web.profile.pages.show.ShowPersonPage;
+import org.apache.wicket.Page;
 
 /**
  *
- * @author aldaris
+ * @author messo
  */
-public class RegistrationPage extends KorokPageTemplate {
+public class ProfilApplication extends AbstractPekApplication {
 
-    public RegistrationPage() {
-        setHeaderLabelText("Regisztráció");
-        createNavbarWithSupportId(33);
-        if (getRemoteUser() != null) {
-            getSession().error("Már be vagy jelentkezve, miért is szeretnél újra regisztrálni?");
-            throw new RestartResponseException(getApplication().getHomePage());
-        }
-        add(new RegisterWizard("wizard"));
+    @Override
+    public Class<? extends Page> getHomePage() {
+        return ShowPersonPage.class;
+    }
+
+    @Override
+    protected void onInitialization() {
+        mountBookmarkablePage("/show", ShowPersonPage.class);
+        mountBookmarkablePage("/edit", EditPage.class);
+        mountBookmarkablePage("/changepassword", ChangePasswordPage.class);
+
+        mountBookmarkablePage("/search", SearchPage.class);
+        mountBookmarkablePage("/birthdays", BirthDayPage.class);
+
+        mountBookmarkablePage("/admin", AdminPage.class);
     }
 }

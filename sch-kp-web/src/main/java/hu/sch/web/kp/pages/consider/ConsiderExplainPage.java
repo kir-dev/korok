@@ -31,7 +31,7 @@
 package hu.sch.web.kp.pages.consider;
 
 import hu.sch.domain.ConsideredValuation;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.List;
@@ -49,7 +49,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  *
  * @author hege
  */
-public class ConsiderExplainPage extends SecuredPageTemplate {
+public class ConsiderExplainPage extends KorokPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;

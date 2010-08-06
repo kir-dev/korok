@@ -33,7 +33,7 @@ package hu.sch.web.kp.pages.admin;
 import hu.sch.domain.profile.Person;
 import hu.sch.web.wicket.components.customlinks.DeletePersonLink;
 import hu.sch.web.error.NotFound;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import hu.sch.web.profile.pages.search.PersonLinkPanel;
 import hu.sch.web.wicket.components.tables.PanelColumn;
@@ -51,7 +51,7 @@ import org.apache.wicket.model.Model;
  *
  * @author aldaris
  */
-public class ShowInactive extends SecuredPageTemplate {
+public class ShowInactive extends KorokPageTemplate {
 
     private SortablePersonDataProvider personProvider;
 

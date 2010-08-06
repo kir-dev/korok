@@ -34,7 +34,7 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.Semester;
 import hu.sch.web.kp.pages.valuation.ValuationDetailPanel;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.List;
 import javax.ejb.EJB;
@@ -51,7 +51,7 @@ import org.apache.wicket.model.PropertyModel;
  * @author aldaris
  * @author messo
  */
-public class GroupHistory extends SecuredPageTemplate {
+public class GroupHistory extends KorokPageTemplate {
 
     @EJB(name = "ValuationManagerBean")
     private ValuationManagerLocal valuationManager;

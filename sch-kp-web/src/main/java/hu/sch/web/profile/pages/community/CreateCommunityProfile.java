@@ -38,7 +38,7 @@ import hu.sch.services.MailManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.profile.pages.show.ShowPersonPage;
-import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.profile.pages.template.ProfilePageTemplate;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import org.apache.commons.lang.RandomStringUtils;
@@ -58,7 +58,7 @@ import org.apache.wicket.markup.html.WebPage;
  *
  * @author hege
  */
-public class CreateCommunityProfile extends ProfilePage {
+public class CreateCommunityProfile extends ProfilePageTemplate {
 
     @EJB(name = "foo", mappedName = "EntitlementManager")
     EntitlementManagerRemote entitlementManager;
@@ -89,7 +89,7 @@ public class CreateCommunityProfile extends ProfilePage {
         }
         setHeaderLabelText("Közösségi profil létrehozása");
         try {
-            person = ldapManager.getPersonByUid(getUid());
+            person = ldapManager.getPersonByUid(getRemoteUser());
         } catch (PersonNotFoundException ex) {
             getSession().error("Hiba az adatok betöltésekor");
             throw new RestartResponseException(getApplication().getHomePage());
@@ -106,7 +106,7 @@ public class CreateCommunityProfile extends ProfilePage {
                 if (getInputKey().equals(CONFIRMATION_CODE)) {
                     try {
                         //megkeressük a usert, újra (TODO: kell ez?)
-                        Person p = ldapManager.getPersonByUid(getUid());
+                        Person p = ldapManager.getPersonByUid(getRemoteUser());
                         if (!p.getConfirmationCode().equals(inputData)) {
                             error("Hibás megerősítő kód");
                             importVIRProfile.setVisible(true);

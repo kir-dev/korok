@@ -37,7 +37,7 @@ import hu.sch.domain.User;
 import hu.sch.domain.ValuationData;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.pages.group.GroupHierarchy;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.web.wicket.components.tables.ValuationTableForUser;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ import org.apache.wicket.model.PropertyModel;
  * @author  Adam Lantos
  * @author  messo
  */
-public class UserHistory extends SecuredPageTemplate {
+public class UserHistory extends KorokPageTemplate {
 
     private static final Logger log = Logger.getLogger(UserHistory.class);
     private Long id;

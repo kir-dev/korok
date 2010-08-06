@@ -33,7 +33,7 @@ package hu.sch.web.profile.pages.search;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.web.kp.pages.search.PersonResultPanel;
-import hu.sch.web.profile.pages.template.ProfilePage;
+import hu.sch.web.profile.pages.template.ProfilePageTemplate;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import org.apache.wicket.PageParameters;
@@ -47,7 +47,7 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author konvergal
  */
-public final class SearchResultPage extends ProfilePage {
+public final class SearchResultPage extends ProfilePageTemplate {
 
     //public List<Person> persons = new ArrayList();
     //PersonDataProvider personDataProvider;

@@ -39,7 +39,7 @@ import hu.sch.web.wicket.components.AdminMembershipsPanel;
 import hu.sch.web.wicket.components.AdminOldBoysPanel;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.kp.pages.user.ShowUser;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.templates.KorokPageTemplate;
 import hu.sch.web.wicket.components.MembershipTablePanel;
 import hu.sch.web.wicket.components.tables.DatePropertyColumn;
 import hu.sch.web.wicket.components.tables.MembershipTable;
@@ -65,7 +65,7 @@ import org.apache.wicket.model.Model;
  * @author  hege
  * @author  messo
  */
-public class ShowGroup extends SecuredPageTemplate {
+public class ShowGroup extends KorokPageTemplate {
 
     /**
      * Paraméter nélküli konstruktor, hogy a nem létező paraméter is le legyen
