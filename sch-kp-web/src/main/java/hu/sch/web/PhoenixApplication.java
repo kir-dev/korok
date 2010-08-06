@@ -30,6 +30,9 @@
  */
 package hu.sch.web;
 
+import hu.sch.domain.EntrantType;
+import hu.sch.domain.Membership;
+import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.config.Configuration.Environment;
 import hu.sch.web.authz.AgentBasedAuthorization;
@@ -37,9 +40,44 @@ import hu.sch.web.authz.DummyAuthorization;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.PageExpiredError;
+import hu.sch.web.idm.pages.RegistrationFinishedPage;
+import hu.sch.web.idm.pages.RegistrationPage;
+import hu.sch.web.idm.pages.UserNameReminder;
+import hu.sch.web.kp.admin.CreateGroup;
+import hu.sch.web.kp.admin.CreateNewPerson;
+import hu.sch.web.kp.admin.EditSettings;
+import hu.sch.web.kp.admin.ShowInactive;
+import hu.sch.web.kp.consider.ConsiderPage;
+import hu.sch.web.kp.group.ChangeDelegates;
+import hu.sch.web.kp.group.ChangePost;
+import hu.sch.web.kp.group.EditGroupInfo;
+import hu.sch.web.kp.group.GroupHierarchy;
+import hu.sch.web.kp.group.GroupHistory;
+import hu.sch.web.kp.group.ShowGroup;
+import hu.sch.web.kp.logout.Logout;
+import hu.sch.web.kp.search.SearchResultsPage;
+import hu.sch.web.kp.svie.SvieAccount;
+import hu.sch.web.kp.svie.SvieGroupMgmt;
+import hu.sch.web.kp.svie.SvieUserMgmt;
+import hu.sch.web.kp.user.ShowUser;
+import hu.sch.web.kp.user.UserHistory;
+import hu.sch.web.kp.valuation.NewValuation;
+import hu.sch.web.kp.valuation.ValuationDetails;
+import hu.sch.web.kp.valuation.Valuations;
+import hu.sch.web.profile.admin.AdminPage;
+import hu.sch.web.profile.birthday.BirthDayPage;
+import hu.sch.web.profile.confirmation.ConfirmPage;
+import hu.sch.web.profile.edit.EditPage;
+import hu.sch.web.profile.passwordchange.ChangePasswordPage;
+import hu.sch.web.profile.search.SearchPage;
+import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.session.VirSession;
+import hu.sch.web.wicket.util.EntrantTypeConverter;
+import hu.sch.web.wicket.util.PostTypeConverter;
 import hu.sch.web.wicket.util.ServerTimerFilter;
+import hu.sch.web.wicket.util.ValuationStatusConverter;
 import org.apache.log4j.Logger;
+import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
@@ -50,20 +88,32 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.target.coding.HybridUrlCodingStrategy;
+import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.lang.PackageName;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
 import org.wicketstuff.javaee.naming.global.AppJndiNamingStrategy;
 import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
 
 /**
+ * PhoenixApplication, amelyben a Phoenix arra utal, hogy ez az alkalmazás a VIR
+ * hamvaiból éledt újjá, és az idő folyamán a cél egy a régi VIR-hez
+ * valamennyire hasonlító közösségi portál megtestesítése.
  *
+ * @author aldaris
+ * @author hege
  * @author messo
  */
-public abstract class AbstractPekApplication extends WebApplication {
+public class PhoenixApplication extends WebApplication {
 
     private static final String EJB_MODULE_NAME = "korok-ejb";
     private UserAuthorization authorizationComponent;
-    private static Logger log = Logger.getLogger(AbstractPekApplication.class);
+    private static Logger log = Logger.getLogger(PhoenixApplication.class);
+
+    @Override
+    public Class<? extends Page> getHomePage() {
+        return ShowUser.class;
+    }
 
     /**
      * Mivel nem elég a jelenleg támogatott kétféle configurationType
@@ -105,7 +155,9 @@ public abstract class AbstractPekApplication extends WebApplication {
 
         getMarkupSettings().setStripWicketTags(true);
 
-        onInitialization();
+        mount("/error", PackageName.forClass(InternalServerError.class));
+        mountKorok();
+        mountProfil();
 
         //alkalmazás beállítások
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
@@ -157,5 +209,57 @@ public abstract class AbstractPekApplication extends WebApplication {
         return authorizationComponent;
     }
 
-    protected abstract void onInitialization();
+    private void mountKorok() {
+        mountBookmarkablePage("/korok/showuser", ShowUser.class);
+        mountBookmarkablePage("/korok/userhistory", UserHistory.class);
+        mountBookmarkablePage("/korok/search", SearchResultsPage.class);
+        mountBookmarkablePage("/korok/confirm", ConfirmPage.class);
+
+        mountBookmarkablePage("/korok/showgroup", ShowGroup.class);
+        mountBookmarkablePage("/korok/grouphierarchy", GroupHierarchy.class);
+        mountBookmarkablePage("/korok/grouphistory", GroupHistory.class);
+        mountBookmarkablePage("/korok/editgroupinfo", EditGroupInfo.class);
+        mountBookmarkablePage("/korok/changepost", ChangePost.class);
+
+        mountBookmarkablePage("/korok/valuation", Valuations.class);
+        mountBookmarkablePage("/korok/valuationdetails", ValuationDetails.class);
+        mountBookmarkablePage("/korok/newvaluation", NewValuation.class);
+
+        mountBookmarkablePage("/korok/svieaccount", SvieAccount.class);
+        mountBookmarkablePage("/korok/delegates", ChangeDelegates.class);
+        mountBookmarkablePage("/korok/consider", ConsiderPage.class);
+        mountBookmarkablePage("/korok/administration", EditSettings.class);
+        mountBookmarkablePage("/korok/administration/svieusermgmt", SvieUserMgmt.class);
+        mountBookmarkablePage("/korok/administration/sviegroupmgmt", SvieGroupMgmt.class);
+        mountBookmarkablePage("/korok/showinactive", ShowInactive.class);
+        mountBookmarkablePage("/korok/creategroup", CreateGroup.class);
+        mountBookmarkablePage("/korok/createperson", CreateNewPerson.class);
+
+        //IDM linkek
+        mountBookmarkablePage("/korok/reminder", UserNameReminder.class);
+        mount(new HybridUrlCodingStrategy("/korok/register", RegistrationPage.class));
+        mountBookmarkablePage("/korok/registerfinished", RegistrationFinishedPage.class);
+        mountBookmarkablePage("/korok/logout", Logout.class);
+    }
+
+    private void mountProfil() {
+        mountBookmarkablePage("/profile/show", ShowPersonPage.class);
+        mountBookmarkablePage("/profile/edit", EditPage.class);
+        mountBookmarkablePage("/profile/changepassword", ChangePasswordPage.class);
+
+        mountBookmarkablePage("/profile/search", SearchPage.class);
+        mountBookmarkablePage("/profile/birthdays", BirthDayPage.class);
+
+        mountBookmarkablePage("/profile/admin", AdminPage.class);
+    }
+
+    @Override
+    protected IConverterLocator newConverterLocator() {
+        ConverterLocator locator = new ConverterLocator();
+        locator.set(EntrantType.class, new EntrantTypeConverter());
+        locator.set(ValuationStatus.class, new ValuationStatusConverter());
+        locator.set(Membership.class, new PostTypeConverter());
+
+        return locator;
+    }
 }

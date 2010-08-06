@@ -31,7 +31,7 @@
 package hu.sch.web.common;
 
 import hu.sch.services.LdapManagerLocal;
-import hu.sch.web.AbstractPekApplication;
+import hu.sch.web.PhoenixApplication;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.session.VirSession;
 import javax.ejb.EJB;
@@ -135,7 +135,7 @@ public abstract class PekPageTemplate extends WebPage {
     }
 
     protected UserAuthorization getAuthorizationComponent() {
-        return ((AbstractPekApplication) getApplication()).getAuthorizationComponent();
+        return ((PhoenixApplication) getApplication()).getAuthorizationComponent();
     }
 
     @Override

@@ -32,7 +32,7 @@ package hu.sch.web.idm.pages;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.MailManagerLocal;
-import hu.sch.web.KorokApplication;
+import hu.sch.web.PhoenixApplication;
 import hu.sch.web.kp.KorokPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
@@ -74,7 +74,7 @@ public class UserNameReminder extends KorokPageTemplate {
                     Person person = results.get(0);
                     try {
                         StringBuilder msg = new StringBuilder(200);
-                        if (((KorokApplication) getApplication()).isNewbieTime()) {
+                        if (((PhoenixApplication) getApplication()).isNewbieTime()) {
                             msg.append("Tisztelt ");
                         } else {
                             msg.append("Kedves ");
