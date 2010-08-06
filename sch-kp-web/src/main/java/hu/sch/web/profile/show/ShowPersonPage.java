@@ -36,7 +36,7 @@ import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.profile.admin.AdminPage;
 import hu.sch.web.profile.community.CreateCommunityProfile;
-import hu.sch.web.profile.ProfilePageTemplate;
+import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.wicket.components.customlinks.SearchLink;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,7 +59,7 @@ import org.apache.wicket.model.PropertyModel;
 /**
  * Homepage
  */
-public class ShowPersonPage extends ProfilePageTemplate {
+public class ShowPersonPage extends ProfilePage {
 
     //private static final Logger log = Logger.getLogger(ShowPersonPage.class);
     private Person person;

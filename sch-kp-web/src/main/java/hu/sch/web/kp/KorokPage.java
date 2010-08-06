@@ -37,7 +37,7 @@ import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.web.common.PekPageTemplate;
+import hu.sch.web.common.PekPage;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -46,7 +46,7 @@ import org.apache.wicket.markup.html.panel.Panel;
  *
  * @author hege
  */
-public abstract class KorokPageTemplate extends PekPageTemplate {
+public abstract class KorokPage extends PekPage {
 
     @EJB(name = "SystemManagerBean")
     protected SystemManagerLocal systemManager;
@@ -54,9 +54,9 @@ public abstract class KorokPageTemplate extends PekPageTemplate {
     protected UserManagerLocal userManager;
     @EJB(name = "PostManagerBean")
     protected PostManagerLocal postManager;
-    private static final Logger log = Logger.getLogger(KorokPageTemplate.class);
+    private static final Logger log = Logger.getLogger(KorokPage.class);
 
-    public KorokPageTemplate() {
+    public KorokPage() {
         super();
         loadUser();
     }

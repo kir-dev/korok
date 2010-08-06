@@ -38,7 +38,7 @@ import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
 import hu.sch.domain.User;
 import hu.sch.web.kp.group.GroupHierarchy;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,7 +56,7 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author hege
  */
-public class ShowUser extends KorokPageTemplate {
+public class ShowUser extends KorokPage {
 
     private static Logger logger = Logger.getLogger(ShowUser.class);
     private Long id;

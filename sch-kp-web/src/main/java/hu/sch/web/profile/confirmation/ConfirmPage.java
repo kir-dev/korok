@@ -32,7 +32,7 @@ package hu.sch.web.profile.confirmation;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.profile.ProfilePageTemplate;
+import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.show.ShowPersonPage;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -45,7 +45,7 @@ import org.apache.wicket.markup.html.link.Link;
  *
  * @author konvergal
  */
-public final class ConfirmPage extends ProfilePageTemplate {
+public final class ConfirmPage extends ProfilePage {
 
     public ConfirmPage() {
         super();

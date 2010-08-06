@@ -30,13 +30,13 @@
  */
 package hu.sch.web.idm.pages;
 
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 
 /**
  *
  * @author aldaris
  */
-public class RegistrationFinishedPage extends KorokPageTemplate {
+public class RegistrationFinishedPage extends KorokPage {
 
     public RegistrationFinishedPage() {
         setHeaderLabelText("Regisztráció");

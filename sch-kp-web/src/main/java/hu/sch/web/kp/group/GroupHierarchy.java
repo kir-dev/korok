@@ -31,7 +31,7 @@
 package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -54,7 +54,7 @@ import wickettree.theme.WindowsTheme;
  *
  * @author Adam Lantos
  */
-public class GroupHierarchy extends KorokPageTemplate {
+public class GroupHierarchy extends KorokPage {
 
     private static Logger log = Logger.getLogger(GroupHierarchy.class);
     private List<Group> roots = userManager.getGroupHierarchy();

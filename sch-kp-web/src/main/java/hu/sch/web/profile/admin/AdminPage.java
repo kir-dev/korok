@@ -39,7 +39,7 @@ import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.profile.edit.PersonForm;
 import hu.sch.web.profile.edit.PersonForm.KeyValuePairInForm;
-import hu.sch.web.profile.ProfilePageTemplate;
+import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.show.ShowPersonPage;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ import org.apache.wicket.model.Model;
  *
  * @author konvergal
  */
-public class AdminPage extends ProfilePageTemplate {
+public class AdminPage extends ProfilePage {
 
     public Person person;
 

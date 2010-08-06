@@ -31,7 +31,7 @@
 package hu.sch.web.profile.birthday;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.web.profile.ProfilePageTemplate;
+import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.search.PersonLinkPanel;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
 import java.text.SimpleDateFormat;
@@ -46,7 +46,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
  *
  * @author aldaris
  */
-public class BirthDayPage extends ProfilePageTemplate {
+public class BirthDayPage extends ProfilePage {
 
     SortablePersonDataProvider personDataProvider;
 

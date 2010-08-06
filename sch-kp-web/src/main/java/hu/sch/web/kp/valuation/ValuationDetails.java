@@ -37,7 +37,7 @@ import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.consider.ConsiderExplainPanel;
 import hu.sch.web.kp.consider.ConsiderPage;
@@ -75,7 +75,7 @@ import wicket.contrib.tinymce.settings.TinyMCESettings;
  * @author  hege
  * @author  messo
  */
-public class ValuationDetails extends KorokPageTemplate {
+public class ValuationDetails extends KorokPage {
 
     @EJB(name = "ValuationManagerBean")
     private ValuationManagerLocal valuationManager;

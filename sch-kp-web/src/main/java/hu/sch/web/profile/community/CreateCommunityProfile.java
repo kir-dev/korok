@@ -37,7 +37,7 @@ import hu.sch.services.MailManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.profile.show.ShowPersonPage;
-import hu.sch.web.profile.ProfilePageTemplate;
+import hu.sch.web.profile.ProfilePage;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import org.apache.commons.lang.RandomStringUtils;
@@ -56,7 +56,7 @@ import org.apache.wicket.markup.html.WebPage;
  *
  * @author hege
  */
-public class CreateCommunityProfile extends ProfilePageTemplate {
+public class CreateCommunityProfile extends ProfilePage {
 
     @EJB(name = "foo", mappedName = "EntitlementManager")
     EntitlementManagerRemote entitlementManager;

@@ -35,7 +35,7 @@ import hu.sch.domain.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.CheckBoxHolder;
 import hu.sch.web.wicket.components.SvieDelegateNumberField;
 import hu.sch.web.wicket.components.tables.PanelColumn;
@@ -62,7 +62,7 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author aldaris
  */
-public final class SvieGroupMgmt extends KorokPageTemplate {
+public final class SvieGroupMgmt extends KorokPage {
 
     @EJB(name = "SvieManagerBean")
     private SvieManagerLocal svieManager;

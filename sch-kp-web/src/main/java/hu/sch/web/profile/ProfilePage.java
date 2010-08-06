@@ -30,16 +30,16 @@
  */
 package hu.sch.web.profile;
 
-import hu.sch.web.common.PekPageTemplate;
+import hu.sch.web.common.PekPage;
 import org.apache.wicket.markup.html.panel.Panel;
 
 /**
  *
  * @author messo
  */
-public abstract class ProfilePageTemplate extends PekPageTemplate {
+public abstract class ProfilePage extends PekPage {
 
-    public ProfilePageTemplate() {
+    public ProfilePage() {
     }
 
     @Override

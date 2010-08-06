@@ -39,7 +39,7 @@ import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
 import hu.sch.web.kp.user.ShowUser;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.domain.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
  *
  * @author aldaris
  */
-public final class SvieRegistration extends KorokPageTemplate {
+public final class SvieRegistration extends KorokPage {
 
     @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;

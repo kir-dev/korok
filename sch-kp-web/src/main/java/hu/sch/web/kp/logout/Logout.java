@@ -30,13 +30,13 @@
  */
 package hu.sch.web.kp.logout;
 
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 
 /**
  *
  * @author aldaris
  */
-public class Logout extends KorokPageTemplate {
+public class Logout extends KorokPage {
 
     public Logout() {
         setHeaderLabelText("Kijelentkezés");

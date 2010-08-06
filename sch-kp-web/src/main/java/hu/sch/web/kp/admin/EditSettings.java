@@ -36,7 +36,7 @@ import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.wicket.components.customlinks.CsvReportLink;
 import hu.sch.web.kp.svie.SvieGroupMgmt;
 import hu.sch.web.kp.svie.SvieUserMgmt;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.customlinks.CsvExportForKfbLink;
 import java.util.Arrays;
 import org.apache.log4j.Logger;
@@ -58,7 +58,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
  *
  * @author aldaris
  */
-public class EditSettings extends KorokPageTemplate {
+public class EditSettings extends KorokPage {
 
     private static Logger logger = Logger.getLogger(EditSettings.class);
 

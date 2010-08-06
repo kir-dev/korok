@@ -31,7 +31,7 @@
 
 package hu.sch.web.devel;
 
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +44,7 @@ import org.apache.wicket.protocol.http.WebRequest;
  *
  * @author aldaris
  */
-public class ShowUserInfo extends KorokPageTemplate {
+public class ShowUserInfo extends KorokPage {
 
     public ShowUserInfo() {
         final HttpServletRequest request = ((WebRequest) getRequest()).getHttpServletRequest();

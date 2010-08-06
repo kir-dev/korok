@@ -34,7 +34,7 @@ package hu.sch.web.kp.admin;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.error.NotFound;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.profile.admin.AdminPage;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
@@ -50,7 +50,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  *
  * @author aldaris
  */
-public class CreateNewPerson extends KorokPageTemplate {
+public class CreateNewPerson extends KorokPage {
 
     private Person person = new Person();
 

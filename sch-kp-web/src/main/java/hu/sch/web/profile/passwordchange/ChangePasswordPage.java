@@ -31,7 +31,7 @@
 package hu.sch.web.profile.passwordchange;
 
 import hu.sch.services.exceptions.InvalidPasswordException;
-import hu.sch.web.profile.ProfilePageTemplate;
+import hu.sch.web.profile.ProfilePage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
@@ -42,7 +42,7 @@ import org.apache.wicket.validation.validator.StringValidator;
  *
  * @author Adam Lantos
  */
-public class ChangePasswordPage extends ProfilePageTemplate {
+public class ChangePasswordPage extends ProfilePage {
 
     private String oldPassword;
     private String newPassword;

@@ -32,13 +32,13 @@ package hu.sch.web.profile.edit;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.profile.ProfilePageTemplate;
+import hu.sch.web.profile.ProfilePage;
 
 /**
  *
  * @author konvergal
  */
-public class EditPage extends ProfilePageTemplate {
+public class EditPage extends ProfilePage {
 
     public Person person;
 

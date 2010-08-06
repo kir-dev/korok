@@ -31,7 +31,7 @@
 
 package hu.sch.web.kp.search;
 
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.PageParameters;
@@ -41,7 +41,7 @@ import org.apache.wicket.RestartResponseException;
  *
  * @author aldaris
  */
-public class SearchResultsPage extends KorokPageTemplate {
+public class SearchResultsPage extends KorokPage {
 
     public SearchResultsPage() {
         getSession().error("Nem adtál meg keresési feltételt");

@@ -32,7 +32,7 @@ package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.domain.util.PatternHolder;
@@ -58,7 +58,7 @@ import org.apache.wicket.validation.validator.UrlValidator;
  *
  * @author aldaris
  */
-public class EditGroupInfo extends KorokPageTemplate {
+public class EditGroupInfo extends KorokPage {
 
     private Long id;
     private Group group;

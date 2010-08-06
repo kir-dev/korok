@@ -33,7 +33,7 @@ package hu.sch.web.idm.pages;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.web.PhoenixApplication;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;
@@ -46,7 +46,7 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
  *
  * @author aldaris
  */
-public class UserNameReminder extends KorokPageTemplate {
+public class UserNameReminder extends KorokPage {
 
     @EJB(name = "MailManagerBean")
     private MailManagerLocal mailManager;

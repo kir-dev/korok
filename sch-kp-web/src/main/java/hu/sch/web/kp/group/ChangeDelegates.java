@@ -33,7 +33,7 @@ package hu.sch.web.kp.group;
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
 import hu.sch.web.wicket.components.EditDelegatesForm;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -47,7 +47,7 @@ import org.apache.wicket.util.string.StringValueConversionException;
  *
  * @author aldaris
  */
-public final class ChangeDelegates extends KorokPageTemplate {
+public final class ChangeDelegates extends KorokPage {
 
     private static Logger log = Logger.getLogger(ChangeDelegates.class);
 

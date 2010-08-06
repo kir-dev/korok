@@ -34,7 +34,7 @@ import hu.sch.domain.Valuation;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.web.kp.valuation.Valuations;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.HashSet;
@@ -56,7 +56,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
  *
  * @author hege
  */
-public class PointRequestFiling extends KorokPageTemplate {
+public class PointRequestFiling extends KorokPage {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;

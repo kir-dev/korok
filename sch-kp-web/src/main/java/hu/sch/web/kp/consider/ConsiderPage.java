@@ -41,7 +41,7 @@ import hu.sch.web.kp.valuation.ValuationMessages;
 import hu.sch.web.kp.valuation.EntrantRequestViewer;
 import hu.sch.web.kp.valuation.PointRequestViewer;
 import hu.sch.web.kp.group.GroupHierarchy;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ import org.apache.wicket.model.PropertyModel;
  * @author hege
  */
 //TODO
-public class ConsiderPage extends KorokPageTemplate {
+public class ConsiderPage extends KorokPage {
 
     @EJB(name = "ValuationManagerBean")
     private ValuationManagerLocal valuationManager;

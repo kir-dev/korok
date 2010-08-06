@@ -34,7 +34,7 @@ package hu.sch.web.kp.valuation;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationMessage;
 import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.List;
 import javax.ejb.EJB;
@@ -49,7 +49,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  *
  * @author hege
  */
-public class ValuationMessages extends KorokPageTemplate {
+public class ValuationMessages extends KorokPage {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;

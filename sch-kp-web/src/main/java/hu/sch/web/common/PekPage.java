@@ -48,7 +48,7 @@ import org.apache.wicket.model.Model;
  * @author  messo
  * @since   2.4
  */
-public abstract class PekPageTemplate extends WebPage {
+public abstract class PekPage extends WebPage {
 
     private Label titleLabel;
     private Label navbarScript;
@@ -56,7 +56,7 @@ public abstract class PekPageTemplate extends WebPage {
     @EJB(name = "LdapManagerBean")
     protected LdapManagerLocal ldapManager;
 
-    public PekPageTemplate() {
+    public PekPage() {
         init();
     }
 

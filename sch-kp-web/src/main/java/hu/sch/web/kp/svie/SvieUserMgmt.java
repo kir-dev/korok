@@ -38,7 +38,7 @@ import hu.sch.web.wicket.components.choosers.SvieStatusChooser;
 import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import hu.sch.web.wicket.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.web.kp.KorokPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.tables.LinkColumn;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import hu.sch.web.wicket.util.SortableUserDataProvider;
@@ -64,7 +64,7 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author aldaris
  */
-public final class SvieUserMgmt extends KorokPageTemplate {
+public final class SvieUserMgmt extends KorokPage {
 
     @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;
