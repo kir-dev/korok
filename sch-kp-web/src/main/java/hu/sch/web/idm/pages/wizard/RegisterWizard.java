@@ -321,7 +321,10 @@ public class RegisterWizard extends Wizard {
 
                 checkExistingPerson(neptun);
                 person.setFullName(results.getString("usr_name"));
-                person.setNickName(results.getString("usr_nickname"));
+                if( !results.getString("usr_nickname").equals("") ) {
+                    // nickname nem lehet ""
+                    person.setNickName(results.getString("usr_nickname"));
+                }
                 person.setFirstName(results.getString("usr_firstname"));
                 person.setLastName(results.getString("usr_lastname"));
                 person.setMail(results.getString("usr_email"));
