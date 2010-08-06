@@ -37,7 +37,6 @@ import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
@@ -58,9 +57,7 @@ public abstract class ConsiderExplainPanel extends Panel {
         initComponents();
     }
 
-    void initComponents() {
-        add(new FeedbackPanel("pagemessages"));
-
+    private void initComponents() {
         Form<ConsideredValuation> considerForm;
 
         // Mentés

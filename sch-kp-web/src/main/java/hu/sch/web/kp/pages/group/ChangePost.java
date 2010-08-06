@@ -51,7 +51,6 @@ import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.string.StringValueConversionException;
@@ -85,7 +84,6 @@ public final class ChangePost extends KorokPageTemplate {
 
         setHeaderLabelText("Jog megadása");
 
-        add(new FeedbackPanel("pagemessages"));
         //kell, hogy a csoporttagságok is betöltődjenek
         Group group = ms.getGroup();
         userManager.loadMemberships(group);

@@ -28,11 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.logout;
 
 import hu.sch.web.kp.templates.KorokPageTemplate;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
  *
@@ -42,7 +40,6 @@ public class Logout extends KorokPageTemplate {
 
     public Logout() {
         setHeaderLabelText("Kijelentkezés");
-        add(new FeedbackPanel("pagemessages"));
 
         info("Sikeres kijelentkezés. :)");
     }

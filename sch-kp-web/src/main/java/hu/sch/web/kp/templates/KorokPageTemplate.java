@@ -33,7 +33,6 @@ package hu.sch.web.kp.templates;
 import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
-import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.kp.pages.admin.EditSettings;
@@ -57,6 +56,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 
@@ -104,6 +104,8 @@ public abstract class KorokPageTemplate extends PekPageTemplate {
         }
 
         add(new BookmarkablePageLink<SvieAccount>("svieaccount", SvieAccount.class));
+
+        add(new FeedbackPanel("pagemessages").setEscapeModelStrings(false));
     }
 
     @Override

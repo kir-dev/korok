@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
@@ -42,7 +41,6 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
@@ -68,7 +66,6 @@ public final class ChangeDelegates extends KorokPageTemplate {
         }
 
         setHeaderLabelText("Küldöttek beállítása");
-        add(new FeedbackPanel("pagemessages"));
         add(new Label("numberOfDelegates",
                 (group.getDelegateNumber() == null ? "Nincs beállítva" : Integer.toString(group.getDelegateNumber()))));
         add(new Label("groupName", group.getName()));

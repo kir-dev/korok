@@ -44,7 +44,6 @@ import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 
@@ -59,7 +58,6 @@ public class EntrantRequestExplanation extends KorokPageTemplate {
 
     public EntrantRequestExplanation(final Valuation ert, final List<EntrantRequest> igenyek) {
         List<EntrantRequest> indoklando = kellIndoklas(igenyek);
-        add(new FeedbackPanel("pagemessages"));
         setHeaderLabelText("Színes belépők indoklása");
         Form indoklasform = new Form("indoklasform") {
 

@@ -28,30 +28,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
-import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
 import hu.sch.web.kp.templates.KorokPageTemplate;
-import java.text.Collator;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -71,7 +61,6 @@ public class GroupHierarchy extends KorokPageTemplate {
 
     public GroupHierarchy() {
         setHeaderLabelText("Csoportok listája");
-        add(new FeedbackPanel("pagemessages"));
 
         final NestedTree<Group> tree = new NestedTree<Group>("hierarchyTree", new TreeProvider()) {
 

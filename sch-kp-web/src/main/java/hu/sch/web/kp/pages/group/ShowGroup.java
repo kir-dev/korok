@@ -53,7 +53,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -108,9 +107,6 @@ public class ShowGroup extends KorokPageTemplate {
             setHeaderLabelText(group.getName());
             setTitleText(group.getName());
         }
-
-        //Egy feedbackpanel a felhasználókkal történő kommunikációhoz
-        add(new FeedbackPanel("pagemessages"));
 
         //A jobb oldali leugró menühöz előállítjuk a csoporttörténetes linket.
         add(new BookmarkablePageLink<GroupHistory>("detailView", GroupHistory.class,

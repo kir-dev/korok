@@ -39,7 +39,6 @@ import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.string.StringValueConversionException;
 
@@ -73,8 +72,6 @@ public class NewValuation extends KorokPageTemplate {
             throw new RestartResponseException(Valuations.class);
         }
         setHeaderLabelText(group.getName());
-        FeedbackPanel feedbackPanel = new FeedbackPanel("pagemessages");
-        add(feedbackPanel);
         if (!valuationManager.isErtekelesLeadhato(group)) {
             getSession().info(getLocalizer().getString("err.UjErtekelesNemAdhatoLe", this));
             setResponsePage(Valuations.class);

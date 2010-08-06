@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.svie;
 
 import hu.sch.domain.SvieMembershipType;
@@ -53,7 +52,6 @@ import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -87,7 +85,6 @@ public final class SvieRegistration extends KorokPageTemplate {
         }
 
         setHeaderLabelText("SVIE Regisztráció");
-        add(new FeedbackPanel("pagemessages"));
 
         Form<Person> form = new Form<Person>("registrationForm", new CompoundPropertyModel<Person>(person)) {
 
@@ -145,4 +142,3 @@ public final class SvieRegistration extends KorokPageTemplate {
         add(form);
     }
 }
-

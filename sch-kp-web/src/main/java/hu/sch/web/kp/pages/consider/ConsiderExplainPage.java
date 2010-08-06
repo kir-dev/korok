@@ -42,7 +42,6 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 /**
@@ -55,7 +54,6 @@ public class ConsiderExplainPage extends KorokPageTemplate {
     ValuationManagerLocal valuationManager;
 
     public ConsiderExplainPage(final List<ConsideredValuation> underConsider) {
-        add(new FeedbackPanel("pagemessages"));
         setHeaderLabelText("Elbírálás indoklása");
 
         Form considerForm = new Form("considerExplainForm") {

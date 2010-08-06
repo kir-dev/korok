@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.svie;
 
 import hu.sch.domain.Membership;
@@ -49,7 +48,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListChoice;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -79,8 +77,6 @@ public final class SvieAccount extends KorokPageTemplate {
         }
 
         setHeaderLabelText("SVIE tagság beállításai");
-
-        add(new FeedbackPanel("pagemessages"));
 
         add(new Label("sviestatusLabel", user.getSvieStatus().toString()));
         OrdinalFragment ordFragment = new OrdinalFragment("ordinalFragment", "ordinalPanel");

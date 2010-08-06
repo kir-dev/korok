@@ -59,7 +59,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
@@ -103,8 +102,6 @@ public class Valuations extends KorokPageTemplate {
     }
 
     private void init() {
-        add(new FeedbackPanel("pagemessages"));
-
         User user = userManager.findUserWithMembershipsById(getSession().getUserId());
         if (user == null || !isUserGroupLeaderInSomeGroup()) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));

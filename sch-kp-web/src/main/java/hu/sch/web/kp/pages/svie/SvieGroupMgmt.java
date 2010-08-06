@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.svie;
 
 import hu.sch.domain.Group;
@@ -55,7 +54,6 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -84,7 +82,6 @@ public final class SvieGroupMgmt extends KorokPageTemplate {
         }
 
         setHeaderLabelText("Csoportok adminisztrálása");
-        add(new FeedbackPanel("pagemessages"));
         groups = userManager.getAllGroupsWithCount();
         filteredGroups = new ArrayList<Group>(groups);
 

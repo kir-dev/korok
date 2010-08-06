@@ -46,7 +46,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
@@ -81,7 +80,6 @@ public class PointRequestFiling extends KorokPageTemplate {
         setDefaultModel(new CompoundPropertyModel(ert));
         add(new Label("group.name"));
         add(new Label("semester"));
-        add(new FeedbackPanel("pagemessages"));
 
         // Űrlap létrehozása
         Form pointRequestsForm = new Form("pointRequestsForm") {

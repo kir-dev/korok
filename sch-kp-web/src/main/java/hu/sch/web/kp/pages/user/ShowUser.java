@@ -49,7 +49,6 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 
@@ -90,10 +89,6 @@ public class ShowUser extends KorokPageTemplate {
             getSession().info("Egy körben sem vagy tag");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-
-        FeedbackPanel fb = new FeedbackPanel("pagemessages");
-        fb.setEscapeModelStrings(false);
-        add(fb);
 
         final User user = userManager.findUserWithMembershipsById(id);
         if (user == null) {

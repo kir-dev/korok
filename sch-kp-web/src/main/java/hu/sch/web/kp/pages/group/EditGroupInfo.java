@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.group;
 
 import hu.sch.domain.Group;
@@ -46,7 +45,6 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -74,7 +72,6 @@ public class EditGroupInfo extends KorokPageTemplate {
             throw new RestartResponseException(GroupHierarchy.class);
         }
         setHeaderLabelText("Kör adatlap szerkesztése");
-        add(new FeedbackPanel("pagemessages"));
 
         group = userManager.findGroupById(id);
         User user = userManager.findUserWithMembershipsById(getSession().getUserId());

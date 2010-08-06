@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.admin;
 
 import hu.sch.domain.Group;
@@ -49,7 +48,6 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListChoice;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -68,7 +66,6 @@ public class CreateGroup extends KorokPageTemplate {
         if (!isCurrentUserAdmin()) {
             throw new RestartResponseException(NotFound.class);
         }
-        add(new FeedbackPanel("pagemessages"));
         setHeaderLabelText("Új kör létrehozása");
         Form<Group> createGroupForm = new Form<Group>("createGroupForm", new CompoundPropertyModel<Group>(group)) {
 

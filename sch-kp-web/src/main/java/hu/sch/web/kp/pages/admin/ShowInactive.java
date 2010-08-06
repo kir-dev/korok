@@ -43,7 +43,6 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
@@ -60,7 +59,6 @@ public class ShowInactive extends KorokPageTemplate {
             throw new RestartResponseException(NotFound.class);
         }
         setHeaderLabelText("Inaktív felhasználók");
-        add(new FeedbackPanel("pagemessages"));
         List<Person> inactivePersons = ldapManager.searchInactives();
 
         List<IColumn<Person>> columns = new ArrayList<IColumn<Person>>();
