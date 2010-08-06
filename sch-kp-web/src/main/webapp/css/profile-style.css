@@ -32,35 +32,35 @@
 body {
     background: #CCDCE6 url('../images/bckgBody-profil.gif') top left repeat-x;
 }
-p {
-    margin: 4px 0;
-}
-#container {
-    position: relative;
-    margin: 0 auto;
-    width: 900px;
-    background: #F6FAFD url('../images/bckgContent.gif') 0px 156px repeat-x;
-    min-height: 100%;
-}
+
 #header {
     height: 134px;
     background: url('../images/bckgHeader-profil.gif') bottom left repeat-x;
-}
-#logo {
-    position: absolute;
-    left: 18px;
-    top: 32px; /* változott */
-}
-#txtVirProfil {
-    position: absolute;
-    left: 101px;
-    top: 40px; /* változott */
 }
 
 #header ul#pagemenu {
     left: 100px;
 }
+
 #header ul li:hover { background: #4A7493; }
+
+#logoImg {
+    position: absolute;
+    left: 18px;
+    top: 32px;
+}
+
+#logoTxt {
+    position: absolute;
+    left: 101px;
+    top: 40px;
+}
+
+#container {
+    background-image: url('../images/bckgContent.gif'), url('../images/befigyeloemberke.gif');
+    background-repeat: repeat-x, no-repeat;
+    background-position: 0px 134px, bottom right;
+}
 
 #hits {
     border-spacing: 0;
@@ -94,9 +94,7 @@ p {
 }
 #hitsnav li { margin-left: 3px; }
 
-/* hogy az als� emberfej ne m�sszon bele zavar�an a k�pbe... */
-#hitcont { padding-bottom: 280px; }
-#searchcont { padding-bottom: 180px; }
+#searchcont { padding-bottom: 100px; }
 #admincont { padding-top: 32px; padding-bottom: 100px; }
 
 #admincont form table tr td img { border: 0px; }
@@ -219,15 +217,6 @@ select.wide { width: 355px; }
 #searchresultbox {
     position: relative;
     padding: 11px 0 0 210px;
-}
-
-#befigyeloemberke {
-    position: absolute;
-    right: 0;
-    bottom: 60px;
-    width: 207px;
-    height: 245px;
-    background: url('../images/befigyeloemberke.gif') top left no-repeat;
 }
 
 .lock {

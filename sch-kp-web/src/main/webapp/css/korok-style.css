@@ -32,32 +32,34 @@
 body {
     background: #CCDCE6 url('../images/bckgBody-korok.gif') top center repeat-x;
 }
-#container {
-    position: relative;
-    margin: 0 auto;
-    width: 900px;
-    background: #F6FAFD url('../images/bckgContent.gif') 0px 134px repeat-x;
-    min-height: 100%;
-}
+
 #header {
     height: 134px;
     background: url('../images/bckgHeader-korok.gif') bottom center repeat-x;
-}
-#logo {
-    position: absolute;
-    left: 0;
-    top: 24px;
-}
-#txtVirKorok {
-    position: absolute;
-    left: 140px;
-    top: 37px;
 }
 
 #header ul#pagemenu {
     left: 115px;
 }
+
 #header ul li:hover { background: #58829e; }
+
+#logoImg {
+    position: absolute;
+    left: 0;
+    top: 24px;
+}
+#logoTxt {
+    position: absolute;
+    left: 140px;
+    top: 37px;
+}
+
+#container {
+    background-image: url('../images/bckgContent.gif'), url('../images/fogaskerek.gif');
+    background-repeat: repeat-x, no-repeat;
+    background-position: 0px 134px, bottom right;
+}
 
 #hits {
     border-spacing: 0;
@@ -233,15 +235,6 @@ select.wide { width: 355px; }
 #searchresultbox {
     position: relative;
     padding: 11px 0 0 210px;
-}
-
-#fogaskerek {
-    position: absolute;
-    right: 0;
-    bottom: 60px;
-    width: 258px;
-    height: 174px;
-    background: url('../images/fogaskerek.gif') top left no-repeat;
 }
 
 .lock {

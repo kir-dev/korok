@@ -1,8 +1,8 @@
 <wicket:extend>
         <div id="container">
             <div id="header">
-                <img id="logo" src="images/logoKorok.gif" alt="VIR Körök logó" />
-                <img id="txtVirKorok" src="images/txtVirKorok.png" alt="VIR Körök" />
+                <img id="logoImg" src="images/logoKorok.gif" alt="VIR Körök logó" />
+                <img id="logoTxt" src="images/txtVirKorok.png" alt="VIR Körök" />
                 <form wicket:id="searchForm" style="position: relative; float: right; margin-top: 55px">
                     <select style="width: 110px;" wicket:id="searchDdc" />
                     <input type="text" class="textinput" style="width: 150px;" wicket:id="searchField"/>
@@ -26,8 +26,6 @@
                     <wicket:child></wicket:child>
                 </div>
             </div>
-            
-            <div id="fogaskerek"></div>
         </div>
     <script type="text/javascript">
         var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
