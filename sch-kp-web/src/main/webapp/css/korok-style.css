@@ -61,39 +61,6 @@ body {
     background-position: 0px 134px, bottom right;
 }
 
-#hits {
-    border-spacing: 0;
-    width: 836px;
-    margin: 32px;
-}
-.headers {
-    height: 26px;
-    background: #6A93AE;
-    font-weight: bold;
-    text-align: left;
-}
-#hits .headers a {
-    color: #ffffff;
-    border-bottom: none;
-    font: bold 16px arial, sans;
-}
-#hits .headers span {
-    padding-right: 18px;
-    margin-left: 15px;
-}
-#hits td { padding-left: 10px; }
-#hits .even td, #hits .odd td {
-    border-bottom: 1px solid #9DC5D6;
-    padding: 5px 0 5px 15px;
-}
-#hitsnav { 
-    text-align: center;
-    font-weight: bold;
-}
-#hitsnav li { margin-left: 3px; }
-
-/* hogy az als??? emberfej ne m???sszon bele zavar???an a k???pbe... */
-#hitcont { padding-bottom: 280px; }
 #searchcont { padding-bottom: 180px; }
 #admincont { padding-top: 32px; }
 
@@ -243,32 +210,11 @@ select.wide { width: 355px; }
     left: 6px;
 }
 
-table {
-    border-spacing: 0;
-}
 td.label {
     font-weight: bold;
     width: 130px;
 }
 
-table.withheader {
-    margin: 5px 0 10px 0;
-    width: 805px;
-}
-table.withheader th, table.withheader td {
-    border-bottom:1px solid #9DC5D6;
-    font-size: 12px;
-    padding: 5px 0 4px 10px;
-    empty-cells: show;
-}
-th {
-    height: 26px;
-    background: #6A93AE;
-    font-weight: bold;
-    text-align: left;
-    color: #ffffff;
-}
-.withheader tr:hover { background: #E1EBF1; }
 a.btn {
     float: right;
     border: none;

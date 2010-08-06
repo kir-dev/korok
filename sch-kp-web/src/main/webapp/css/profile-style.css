@@ -62,38 +62,6 @@ body {
     background-position: 0px 134px, bottom right;
 }
 
-#hits {
-    border-spacing: 0;
-    width: 836px;
-    margin: 32px;
-}
-#hits .headers {
-    height: 26px;
-    background: #6A93AE;
-    font-weight: bold;
-    text-align: left;
-}
-#hits .headers a {
-    color: #ffffff;
-    border-bottom: none;
-    font: bold 16px arial, sans;
-}
-#hits .headers span {
-    padding-right: 18px;
-    margin-left: 15px;
-}
-#hits td { padding-left: 10px; }
-#hits .even td, #hits .odd td {
-    border-bottom: 1px solid #9DC5D6;
-    padding: 5px 0 5px 15px;
-}
-#hits tr.even:hover, #hits tr.odd:hover { background: #E1EBF1; }
-#hitsnav { 
-    text-align: center;
-    font-weight: bold;
-}
-#hitsnav li { margin-left: 3px; }
-
 #searchcont { padding-bottom: 100px; }
 #admincont { padding-top: 32px; padding-bottom: 100px; }
 
@@ -224,24 +192,3 @@ select.wide { width: 355px; }
     top: 3px;
     left: 6px;
 }
-
-/* style.css-ból copyzva, de azért a #hits-el szinkronba */
-table.withheader {
-    margin: 5px 0 10px 0;
-    width: 805px;
-    border-spacing: 0px;
-}
-table.withheader th, table.withheader td {
-    border-bottom:1px solid #9DC5D6;
-    font-size: 12px;
-    padding: 5px 0 4px 10px;
-    empty-cells: show;
-}
-th {
-    height: 26px;
-    background: #6A93AE;
-    font-weight: bold;
-    text-align: left;
-    color: #ffffff;
-}
-.withheader tr:hover { background: #E1EBF1; }

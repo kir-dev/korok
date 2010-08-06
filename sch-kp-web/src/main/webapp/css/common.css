@@ -43,6 +43,10 @@ body {
     color: #1E4565;
 }
 
+table {
+    border-spacing: 0px;
+}
+
 #container {
     position: relative;
     margin: 0 auto;
@@ -169,6 +173,44 @@ ul.horizontal li {
     margin: 12px auto;
 }
 
+/** TÁBLÁZATOK **/
+table.withheader {
+    margin: 5px 0 10px 0;
+    width: 805px;
+}
+table.withheader th {
+    height: 26px;
+    background: #6A93AE;
+    font-weight: normal;
+    text-align: left;
+    border-bottom: 1px solid #9DC5D6;
+    font-size: 14px;
+    empty-cells: show;
+    padding-left: 5px;
+}
+table.withheader th a {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: none;
+}
+table.withheader th a span {
+    padding-right: 18px;
+}
+table.withheader td {
+    border-bottom:1px solid #9DC5D6;
+    font-size: 12px;
+    empty-cells: show;
+    padding: 5px 0px 5px 5px;
+}
+th {
+    height: 26px;
+    background: #6A93AE;
+    font-weight: bold;
+    text-align: left;
+    color: #ffffff;
+}
+.withheader tr:hover { background: #E1EBF1; }
 .subdata {
     margin: 5px 14px;
 }
