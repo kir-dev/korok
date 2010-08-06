@@ -31,7 +31,7 @@
 
 package hu.sch.web.devel;
 
-import hu.sch.web.kp.templates.KorokPageTemplate;
+import hu.sch.web.kp.KorokPageTemplate;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

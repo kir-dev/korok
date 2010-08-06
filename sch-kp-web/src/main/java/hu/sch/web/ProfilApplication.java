@@ -30,12 +30,12 @@
  */
 package hu.sch.web;
 
-import hu.sch.web.profile.pages.admin.AdminPage;
-import hu.sch.web.profile.pages.birthday.BirthDayPage;
-import hu.sch.web.profile.pages.edit.EditPage;
-import hu.sch.web.profile.pages.passwordchange.ChangePasswordPage;
-import hu.sch.web.profile.pages.search.SearchPage;
-import hu.sch.web.profile.pages.show.ShowPersonPage;
+import hu.sch.web.profile.admin.AdminPage;
+import hu.sch.web.profile.birthday.BirthDayPage;
+import hu.sch.web.profile.edit.EditPage;
+import hu.sch.web.profile.passwordchange.ChangePasswordPage;
+import hu.sch.web.profile.search.SearchPage;
+import hu.sch.web.profile.show.ShowPersonPage;
 import org.apache.wicket.Page;
 
 /**

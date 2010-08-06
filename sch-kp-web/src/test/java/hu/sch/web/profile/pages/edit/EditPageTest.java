@@ -30,6 +30,7 @@
  */
 package hu.sch.web.profile.pages.edit;
 
+import hu.sch.web.profile.edit.EditPage;
 import hu.sch.web.test.WebTest;
 import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.tester.FormTester;

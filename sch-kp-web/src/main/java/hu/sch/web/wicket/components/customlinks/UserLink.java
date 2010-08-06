@@ -31,7 +31,7 @@
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.User;
-import hu.sch.web.kp.pages.user.ShowUser;
+import hu.sch.web.kp.user.ShowUser;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;

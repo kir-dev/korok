@@ -32,7 +32,7 @@
 package hu.sch.web.error;
 
 import hu.sch.web.wicket.util.MetaHeaderContributor;
-import hu.sch.web.kp.templates.KorokPageTemplate;
+import hu.sch.web.kp.KorokPageTemplate;
 
 /**
  *

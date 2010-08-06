@@ -32,7 +32,7 @@
 package hu.sch.web.error;
 
 import hu.sch.services.MailManagerLocal;
-import hu.sch.web.kp.templates.KorokPageTemplate;
+import hu.sch.web.kp.KorokPageTemplate;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import javax.ejb.EJB;

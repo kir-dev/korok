@@ -33,7 +33,7 @@ package hu.sch.web.idm.pages;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.web.KorokApplication;
-import hu.sch.web.kp.templates.KorokPageTemplate;
+import hu.sch.web.kp.KorokPageTemplate;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;

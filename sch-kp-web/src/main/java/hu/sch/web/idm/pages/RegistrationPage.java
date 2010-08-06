@@ -32,7 +32,7 @@
 package hu.sch.web.idm.pages;
 
 import hu.sch.web.idm.pages.wizard.RegisterWizard;
-import hu.sch.web.kp.templates.KorokPageTemplate;
+import hu.sch.web.kp.KorokPageTemplate;
 import org.apache.wicket.RestartResponseException;
 
 /**

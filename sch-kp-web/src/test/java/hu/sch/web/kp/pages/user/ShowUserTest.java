@@ -30,6 +30,7 @@
  */
 package hu.sch.web.kp.pages.user;
 
+import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.test.WebTest;
 import org.junit.Test;
 
