@@ -51,7 +51,7 @@ class ContainerHolder {
             Map<String, Object> properties = new HashMap<String, Object>();
             //TODO?: Ez egy kicsit hekknek tűnik, viszont így nem száll el tranziens
             //módon exceptionnel, plusz a GF is sokkal gyorsabban elindul.
-            properties.put(EJBContainer.MODULES, new File("../sch-kp-ejb-impl/target/classes"));
+            properties.put(EJBContainer.MODULES, new File("../sch-pek-ejb-impl/target/classes"));
             properties.put(EMB_GF_INSTALL_ROOT, TestConfig.getProperty(TestConfig.GF_ROOT));
             ejb = EJBContainer.createEJBContainer(properties);
         }
