@@ -62,6 +62,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.ldap.NameNotFoundException;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.DistinguishedName;
@@ -312,8 +313,10 @@ public class LdapManagerBean implements LdapManagerLocal {
         Person p = null;
         try {
             p = (Person) getLdapTemplate().lookup(dn, getContextMapper());
-        } catch (Throwable t) {
-            logger.error("Could not get person by uid!", t);
+        } catch (NameNotFoundException e) {
+            logger.error("Nincs ilyen UID! -- "+e.getMessage());
+        } catch (Exception t) {
+            logger.error("Nem sikerült lekérni UID alapján a személyt! -- ", t);
         }
 
         if (p == null) {
@@ -436,7 +439,7 @@ public class LdapManagerBean implements LdapManagerLocal {
             try {
                 LDAPPersons.add(
                         (Person) getLdapTemplate().lookup(dnSuffix, getContextMapper()));
-            } catch (Throwable e) {
+            } catch (Exception e) {
             }
         }
 
