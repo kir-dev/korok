@@ -62,12 +62,12 @@ public final class AdminMembershipsPanel extends Panel {
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
     private static Logger log = Logger.getLogger(AdminMembershipsPanel.class);
-    List<SelectableMembership> lines;
 
     public AdminMembershipsPanel(String id, final List<Membership> activeMembers) {
         super(id);
 
-        lines = new ArrayList<SelectableMembership>(activeMembers.size());
+        final List<SelectableMembership> lines =
+                new ArrayList<SelectableMembership>(activeMembers.size());
         for (Membership ms : activeMembers) {
             lines.add(new SelectableMembership(ms));
         }

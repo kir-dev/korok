@@ -57,16 +57,14 @@ public final class AdminOldBoysPanel extends Panel {
 
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
-
     private static Logger log = Logger.getLogger(AdminOldBoysPanel.class);
-    List<SelectableMembership> lines;
 
     public AdminOldBoysPanel(String id, final List<Membership> inactiveMembers) {
         super(id);
 
         Form form;
 
-        lines = new ArrayList<SelectableMembership>(inactiveMembers.size());
+        final List<SelectableMembership> lines = new ArrayList<SelectableMembership>(inactiveMembers.size());
         for (Membership ms : inactiveMembers) {
             lines.add(new SelectableMembership(ms));
         }
@@ -89,7 +87,6 @@ public final class AdminOldBoysPanel extends Panel {
                 }
                 setResponsePage(ShowGroup.class, new PageParameters("id=" + inactiveMembers.get(0).getGroup().getId()));
             }
-            
         });
 
         form.add(new MembershipTable<SelectableMembership>("table", lines, SelectableMembership.class) {
