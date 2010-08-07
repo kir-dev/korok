@@ -72,7 +72,7 @@ import javax.persistence.Transient;
     + "WHERE v.id=:id"),
     @NamedQuery(name = Valuation.findByGroup,
     query = "SELECT v FROM Valuation v "
-    + "JOIN FETCH v.sender "
+    + "LEFT JOIN FETCH v.sender "
     + "WHERE v.group=:group "
     + "ORDER BY v.semester DESC"),
     @NamedQuery(name = Valuation.findStatisticBySemester, query = Valuation.statQuery + "WHERE v.semester = :semester"),
