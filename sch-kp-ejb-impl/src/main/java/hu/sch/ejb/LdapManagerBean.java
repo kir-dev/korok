@@ -562,8 +562,8 @@ public class LdapManagerBean implements LdapManagerLocal {
         }
     }
 
-    private void addNotNullAttribute(Attributes attrs, String key, Object value) {
-        if (value != null) {
+    private void addNotNullAttribute(Attributes attrs, String key, String value) {
+        if (value != null && !value.trim().isEmpty()) {
             attrs.put(key, value);
         }
     }
