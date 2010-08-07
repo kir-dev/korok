@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>hu.sch</groupId>
-        <artifactId>sch-kp</artifactId>
+        <artifactId>sch-pek</artifactId>
         <version>2.4-SNAPSHOT</version>
     </parent>
     <groupId>hu.sch</groupId>
-    <artifactId>sch-kp-web</artifactId>
+    <artifactId>sch-pek-web</artifactId>
     <packaging>war</packaging>
-    <name>SCH KP Application web project (Wicket-${wicket.version})</name>
+    <name>SCH PéK Web project (Wicket-${wicket.version})</name>
     <build>
         <resources>
             <resource>
@@ -46,23 +46,23 @@
         <!-- Modul függőségek -->
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-domain</artifactId>
+            <artifactId>sch-pek-domain</artifactId>
             <scope>provided</scope>
         </dependency>
         <!-- Tranzitív függőség miatt rá kell függeni az EJB modulra is teszteknél :( -->
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-ejb-impl</artifactId>
+            <artifactId>sch-pek-ejb-impl</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-ejb-services</artifactId>
+            <artifactId>sch-pek-ejb-services</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-test</artifactId>
+            <artifactId>sch-pek-test</artifactId>
         </dependency>
         <!-- Wicket függőségek -->
         <dependency>

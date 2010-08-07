@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>hu.sch</groupId>
-        <artifactId>sch-kp</artifactId>
+        <artifactId>sch-pek</artifactId>
         <version>2.4-SNAPSHOT</version>
     </parent>
     <groupId>hu.sch</groupId>
-    <artifactId>sch-kp-ear</artifactId>
+    <artifactId>sch-pek-ear</artifactId>
     <packaging>ear</packaging>
-    <name>SCH KP Application enterprise application package</name>
+    <name>SCH Pék Enterprise application package</name>
 
     <build>
         <plugins>
@@ -22,17 +22,17 @@
                     <modules>
                         <webModule>
                             <groupId>hu.sch</groupId>
-                            <artifactId>sch-kp-web</artifactId>
+                            <artifactId>sch-pek-web</artifactId>
                             <contextRoot>/</contextRoot>
                         </webModule>
                         <webModule>
                             <groupId>hu.sch</groupId>
-                            <artifactId>sch-kp-web-services</artifactId>
+                            <artifactId>sch-pek-web-services</artifactId>
                             <contextRoot>/services</contextRoot>
                         </webModule>
                         <ejbModule>
                             <groupId>hu.sch</groupId>
-                            <artifactId>sch-kp-ejb-impl</artifactId>
+                            <artifactId>sch-pek-ejb-impl</artifactId>
                         </ejbModule>
                     </modules>
                 </configuration>
@@ -57,24 +57,24 @@
     <dependencies>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-ejb-impl</artifactId>
-            <version>${project.version}</version>
+            <artifactId>sch-pek-ejb-impl</artifactId>
             <scope>compile</scope>
             <type>ejb</type>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-web</artifactId>
-            <version>${project.version}</version>
+            <artifactId>sch-pek-web</artifactId>
             <scope>compile</scope>
             <type>war</type>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-web-services</artifactId>
-            <version>${project.version}</version>
+            <artifactId>sch-pek-web-services</artifactId>
             <scope>compile</scope>
             <type>war</type>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

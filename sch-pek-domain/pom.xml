@@ -3,12 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>hu.sch</groupId>
-        <artifactId>sch-kp</artifactId>
+        <artifactId>sch-pek</artifactId>
         <version>2.4-SNAPSHOT</version>
     </parent>
     <groupId>hu.sch</groupId>
-    <artifactId>sch-kp-ejb-services</artifactId>
-    <name>SCH KP EJB3 service interfaces</name>
+    <artifactId>sch-pek-domain</artifactId>
+    <name>SCH PéK EJB3 domain classes</name>
+
     <build>
         <plugins>
             <plugin>
@@ -17,22 +18,24 @@
                     <source>1.6</source>
                     <target>1.6</target>
                     <encoding>UTF-8</encoding>
+                    <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
-            <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-domain</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>6.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
+

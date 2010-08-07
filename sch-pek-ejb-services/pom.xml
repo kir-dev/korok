@@ -3,13 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>hu.sch</groupId>
-        <artifactId>sch-kp</artifactId>
+        <artifactId>sch-pek</artifactId>
         <version>2.4-SNAPSHOT</version>
     </parent>
     <groupId>hu.sch</groupId>
-    <artifactId>sch-kp-web-services</artifactId>
-    <packaging>war</packaging>
-    <name>SCH KP Application web services</name>
+    <artifactId>sch-pek-ejb-services</artifactId>
+    <name>SCH PéK EJB3 service interfaces</name>
     <build>
         <plugins>
             <plugin>
@@ -20,33 +19,14 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
-
     <dependencies>
-        <!-- Modul függőségek -->
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-ejb-services</artifactId>
+            <artifactId>sch-pek-domain</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-domain</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

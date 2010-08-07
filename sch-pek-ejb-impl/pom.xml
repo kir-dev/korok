@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>hu.sch</groupId>
-        <artifactId>sch-kp</artifactId>
+        <artifactId>sch-pek</artifactId>
         <version>2.4-SNAPSHOT</version>
     </parent>
     <groupId>hu.sch</groupId>
-    <artifactId>sch-kp-ejb-impl</artifactId>
+    <artifactId>sch-pek-ejb-impl</artifactId>
     <packaging>ejb</packaging>
-    <name>SCH KP EJB3 implementation</name>
+    <name>SCH PéK EJB3 implementation</name>
 
     <build>
         <plugins>
@@ -42,15 +42,15 @@
     <dependencies>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-domain</artifactId>
+            <artifactId>sch-pek-domain</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-ejb-services</artifactId>
+            <artifactId>sch-pek-ejb-services</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
-            <artifactId>sch-kp-test</artifactId>
+            <artifactId>sch-pek-test</artifactId>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

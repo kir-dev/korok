@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.sch</groupId>
-    <artifactId>sch-kp</artifactId>
+    <artifactId>sch-pek</artifactId>
     <packaging>pom</packaging>
     <version>2.4-SNAPSHOT</version>
-    <name>SCH KP Application</name>
+    <name>SCH PéK Application</name>
     <inceptionYear>2008</inceptionYear>
     
     <licenses>
@@ -209,38 +209,38 @@
         <dependencies>
             <dependency>
                 <groupId>hu.sch</groupId>
-                <artifactId>sch-kp-domain</artifactId>
+                <artifactId>sch-pek-domain</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
-                <artifactId>sch-kp-ear</artifactId>
+                <artifactId>sch-pek-ear</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
-                <artifactId>sch-kp-ejb-impl</artifactId>
+                <artifactId>sch-pek-ejb-impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
-                <artifactId>sch-kp-ejb-services</artifactId>
+                <artifactId>sch-pek-ejb-services</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
-                <artifactId>sch-kp-test</artifactId>
+                <artifactId>sch-pek-test</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
-                <artifactId>sch-kp-web</artifactId>
+                <artifactId>sch-pek-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
-                <artifactId>sch-kp-web-services</artifactId>
+                <artifactId>sch-pek-web-services</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -352,13 +352,13 @@
     </repositories>
 
     <modules>
-        <module>sch-kp-domain</module>
-        <module>sch-kp-ejb-services</module>
-        <module>sch-kp-ejb-impl</module>
-        <module>sch-kp-web</module>
-        <module>sch-kp-web-services</module>
-        <module>sch-kp-ear</module>
-        <module>sch-kp-test</module>
+        <module>sch-pek-domain</module>
+        <module>sch-pek-ejb-services</module>
+        <module>sch-pek-ejb-impl</module>
+        <module>sch-pek-web</module>
+        <module>sch-pek-web-services</module>
+        <module>sch-pek-ear</module>
+        <module>sch-pek-test</module>
     </modules>
 
     <properties>
