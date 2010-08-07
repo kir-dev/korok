@@ -1,0 +1,35 @@
+<wicket:extend>
+    <div id="admincont">
+        <form wicket:id="editInfoForm">
+            <table>
+                <tr>
+                    <td><label wicket:id="nameLabel">Név *</label></td>
+                    <td><input class="textinput" wicket:id="name"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="foundedLabel">Alapítás éve</label></td>
+                    <td><input class="textinput" wicket:id="founded"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="webPageLabel">Weboldal</label></td>
+                    <td><input class="textinput" wicket:id="webPage"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="mailingListLabel">Levelezőlista</label></td>
+                    <td><input class="textinput" wicket:id="mailingList"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="introductionLabel">Levelezőlista</label></td>
+                    <td><textarea class="textinput" wicket:id="introduction">
+                            bla bla
+                        </textarea></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="usersCanApplyLabel">Felhasználók jelentkezhetnek a körbe</label></td>
+                    <td><input type="checkbox" wicket:id="usersCanApply"/></td>
+                </tr>
+            </table>
+            <span id="btns"><input class="btn" type="submit" value="Mentés"/></span>
+        </form>
+    </div>
+</wicket:extend>

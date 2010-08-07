@@ -31,13 +31,13 @@
 
 package hu.sch.web.error;
 
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.KorokPage;
 
 /**
  *
  * @author aldaris
  */
-public final class NotFound extends SecuredPageTemplate {
+public final class NotFound extends KorokPage {
 
     public NotFound() {
         super();

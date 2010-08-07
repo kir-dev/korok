@@ -1,0 +1,23 @@
+<wicket:panel>
+    <img id="logoImg" src="/images/logoKorok.gif" alt="VIR Körök logó" />
+    <img id="logoTxt" src="/images/txtVirKorok.png" alt="VIR Körök" />
+    <form wicket:id="searchForm" style="position: relative; float: right; margin-top: 55px">
+        <select style="width: 110px;" wicket:id="searchDdc" />
+        <input type="text" class="textinput" style="width: 150px;" wicket:id="searchField"/>
+        <input type="submit" value="Keresés" />
+    </form>
+    <ul class="horizontal" id="pagemenu">
+        <li><a wicket:id="showuserlink">Profilom</a></li>
+        <li><a wicket:id="grouphierarchylink">Egységek</a></li>
+        <li><a wicket:id="svieaccount">SVIE tagság</a></li>
+        <li><a wicket:id="ertekeleseklink">Értékelések</a></li>
+        <li><a wicket:id="elbiralas">Elbírálás</a></li>
+        <li><a wicket:id="editsettings">Adminisztráció</a></li>
+    </ul>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-9244343-5");
+            pageTracker._trackPageview();
+        } catch(err) {}
+    </script>
+</wicket:panel>

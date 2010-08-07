@@ -28,20 +28,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.idm.pages;
 
-import hu.sch.web.kp.templates.SecuredPageTemplate;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import hu.sch.web.kp.KorokPage;
 
 /**
  *
  * @author aldaris
  */
-public class RegistrationFinishedPage extends SecuredPageTemplate {
+public class RegistrationFinishedPage extends KorokPage {
 
     public RegistrationFinishedPage() {
         setHeaderLabelText("Regisztráció");
-        add(new FeedbackPanel("pagemessages"));
     }
 }

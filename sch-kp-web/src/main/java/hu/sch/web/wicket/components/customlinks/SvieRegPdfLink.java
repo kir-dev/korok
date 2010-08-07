@@ -45,7 +45,7 @@ import hu.sch.domain.config.Configuration;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.kp.pages.user.ShowUser;
+import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

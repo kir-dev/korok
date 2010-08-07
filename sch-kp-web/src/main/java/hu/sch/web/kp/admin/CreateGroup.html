@@ -1,0 +1,28 @@
+<wicket:extend>
+    <div id="admincont">
+        <form wicket:id="createGroupForm">
+            <table>
+                <tr>
+                    <td><label wicket:id="groupNameLabel">Név *</label></td>
+                    <td><input class="textinput" wicket:id="name"/></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="groupTypeLabel">Típus *</label></td>
+                    <td><input class="textinput" wicket:id="type"/></td>
+                </tr>
+            </table>
+            <label>Kör őse</label>
+            <select style="width: 359px;" wicket:id="parent" />
+            <br /><br />
+            <input class="textinput" wicket:id="leaderTF" style="width: 202px;"
+                   onfocus="if (this.value == 'Körvezető neve') {this.value = '';}" />
+            <span wicket:id="wmc">
+                <select style="width: 359px;" wicket:id="leader" />
+            </span>
+            <br /><br />
+            <input id="btns" class="btn" type="submit" value="Mentés" />
+        </form>
+    </div>
+</wicket:extend>
+
+

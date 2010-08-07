@@ -31,14 +31,12 @@
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.User;
-import hu.sch.web.kp.pages.user.ShowUser;
+import hu.sch.web.kp.user.ShowUser;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 
 /**
  * Egyszerű panel, ami egy {@link BookmarkablePageLink}et tartalmaz, ami a
@@ -51,12 +49,11 @@ import org.apache.wicket.model.IModel;
 public class UserLink extends Panel {
 
     public UserLink(String id, User user) {
-        super(id, new CompoundPropertyModel<User>(user));
+        super(id);
 
         Link<ShowUser> l = new BookmarkablePageLink<ShowUser>("link", ShowUser.class,
                 new PageParameters("id=" + user.getId()));
         l.add(new Label("name", user.getName()));
-
         add(l);
     }
 }

@@ -1,0 +1,31 @@
+<wicket:extend>
+    <div id="ViewNavigation">
+        <span>Közösségi történet</span>
+        <ul >
+            <li><a wicket:id="simpleView">Közösségi profil</a></li>
+            <li><a wicket:id="profilelink">Teljes profil</a></li>
+        </ul>
+    </div>
+
+    <h2><u>Felvételihez felhasznált</u> közösségi pontok</h2>
+    <div class="subdata">
+        <table class="withheader">
+            <tr class="headers">
+                <th style="width: 140px;">Szemeszter</th>
+                <th>Pontszám</th>
+            </tr>
+
+            <tr wicket:id="semesterPointList">
+                <td><span wicket:id="semesterPoint.semester" /></td>
+                <td><span wicket:id="semesterPoint.point" /></td>
+            </tr>
+        </table>
+    </div>
+
+    Szűkítés: <select wicket:id="group" style="width: 500px;"/>
+
+    <h2>Részletes közösségi pontozás, belépők</h2>
+    <div class="subdata">
+        <table wicket:id="table" id="pontigenyek" class="withheader"></table>
+    </div>
+</wicket:extend>

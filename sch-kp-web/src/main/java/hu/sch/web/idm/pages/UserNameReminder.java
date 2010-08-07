@@ -33,13 +33,12 @@ package hu.sch.web.idm.pages;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.web.PhoenixApplication;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
@@ -47,7 +46,7 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
  *
  * @author aldaris
  */
-public class UserNameReminder extends SecuredPageTemplate {
+public class UserNameReminder extends KorokPage {
 
     @EJB(name = "MailManagerBean")
     private MailManagerLocal mailManager;
@@ -59,8 +58,6 @@ public class UserNameReminder extends SecuredPageTemplate {
             getSession().error(getLocalizer().getString("err.ReminderAlreadySignedIn", null));
             throw new RestartResponseException(getApplication().getHomePage());
         }
-
-        add(new FeedbackPanel("pagemessages"));
 
         StatelessForm<Void> reminderForm = new StatelessForm<Void>("reminderForm") {
 

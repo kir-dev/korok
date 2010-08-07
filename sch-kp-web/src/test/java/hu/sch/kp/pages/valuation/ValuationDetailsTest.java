@@ -35,7 +35,7 @@ import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.ejb.ValuationManagerBean;
 import hu.sch.services.ValuationManagerLocal;
-import hu.sch.web.kp.pages.valuation.ValuationDetails;
+import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.test.WebTest;
 import javax.naming.NamingException;
 import org.apache.wicket.PageParameters;

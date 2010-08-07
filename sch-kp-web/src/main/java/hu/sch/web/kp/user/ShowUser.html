@@ -1,0 +1,19 @@
+<wicket:extend>
+    <div id="ViewNavigation">
+        <span>Közösségi profil</span>
+        <ul >
+            <li><a wicket:id="detailView">Közösségi történet</a></li>
+            <li><a wicket:id="profilelink">Teljes profil</a></li>
+        </ul>
+    </div>
+
+    <h2>Tagságok</h2>
+    <div class="subdata">
+        <table class="withheader" wicket:id="csoptagsag" />
+    </div>
+    <form wicket:id="csoportbaFelvetel">
+        <h2>Felvétel körbe</h2>
+        <select wicket:id="group" />
+        <input class="btn" type="submit" value="Felvétel" />
+    </form>
+</wicket:extend>

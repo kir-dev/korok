@@ -32,14 +32,14 @@
 package hu.sch.web.idm.pages;
 
 import hu.sch.web.idm.pages.wizard.RegisterWizard;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import org.apache.wicket.RestartResponseException;
 
 /**
  *
  * @author aldaris
  */
-public class RegistrationPage extends SecuredPageTemplate {
+public class RegistrationPage extends KorokPage {
 
     public RegistrationPage() {
         setHeaderLabelText("Regisztráció");

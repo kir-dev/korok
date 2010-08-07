@@ -1,9 +1,11 @@
 package hu.sch.web.kp.pages.search;
 
+import hu.sch.web.kp.search.PersonResultPanel;
+import hu.sch.web.kp.search.SearchResultsPage;
 import hu.sch.domain.profile.Person;
 import hu.sch.ejb.LdapManagerBean;
 import hu.sch.services.LdapManagerLocal;
-import hu.sch.web.kp.pages.user.ShowUser;
+import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.test.WebTest;
 import java.util.Arrays;
 import java.util.List;

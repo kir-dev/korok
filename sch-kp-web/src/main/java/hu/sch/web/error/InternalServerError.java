@@ -32,7 +32,7 @@
 package hu.sch.web.error;
 
 import hu.sch.services.MailManagerLocal;
-import hu.sch.web.kp.templates.SecuredPageTemplate;
+import hu.sch.web.kp.KorokPage;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import javax.ejb.EJB;
@@ -46,7 +46,7 @@ import org.apache.wicket.protocol.http.WebRequest;
  *
  * @author aldaris
  */
-public final class InternalServerError extends SecuredPageTemplate {
+public final class InternalServerError extends KorokPage {
 
     private static Logger logger = Logger.getLogger(InternalServerError.class);
     @EJB(name = "MailManagerBean")

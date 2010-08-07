@@ -54,7 +54,6 @@
             <param-value>hu.sch.web.PhoenixApplication</param-value>
         </init-param>
     </filter>
-
     <filter-mapping>
         <filter-name>Wicket</filter-name>
         <url-pattern>/*</url-pattern>

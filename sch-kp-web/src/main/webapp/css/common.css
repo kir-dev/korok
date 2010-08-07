@@ -1,0 +1,238 @@
+/**
+ * Copyright (c) 2009-2010, Peter Major
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ *  * Neither the name of the Peter Major nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ *  * All advertising materials mentioning features or use of this software
+ * must display the following acknowledgement:
+ * This product includes software developed by the Kir-Dev Team, Hungary
+ * and its contributors.
+ *
+ * THIS SOFTWARE IS PROVIDED BY Peter Major ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Peter Major BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font: 13px verdana, arial, sans;
+    color: #1E4565;
+}
+
+table {
+    border-spacing: 0px;
+}
+
+#container {
+    position: relative;
+    margin: 0 auto;
+    width: 900px;
+    background-color: #F6FAFD;
+    min-height: 100%;
+}
+
+a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+    color: #1E4565;
+    border-bottom: 1px dotted #1E4565;
+}
+
+a:hover {
+    border-bottom: 1px solid #1E4565;
+}
+
+h2 {
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-size: 25px;
+}
+
+.wicket_orderUp span { background: url('../images/iconOrderUp.gif') right center no-repeat; }
+.wicket_orderDown span { background: url('../images/iconOrderDwn.gif') right center no-repeat; }
+
+/* HEADER */
+ul.horizontal li {
+    list-style: none;
+    display: inline;
+}
+#header a {
+    color: #C5E2F7;
+    border: none;
+    font: bold 15px verdana, arial, sans;
+}
+#header ul#pagemenu {
+    position: absolute;
+    float: left;
+    top: 112px;
+}
+#header ul#loginmenu {
+    position: absolute;
+    top: 112px;
+    right: 2px;
+}
+#header ul li { padding: 4px 8px 4px 8px; }
+
+/** VIEWNAVIGATION **/
+#ViewNavigation {
+    background: #467292 url('../images/iconOrderUp.gif') 160px 8px no-repeat;
+    border: 1px solid #7FB4C8;
+    color: #ffffff;
+    font-weight: bold;
+    position: absolute;
+    right: 0px;
+    top: -48px;
+    width: 180px;
+    z-index: 3;
+}
+#ViewNavigation a {
+    color: #ffffff;
+    border: none;
+}
+#ViewNavigation span, #ViewNavigation li a {
+    padding: 4px 25px 4px 4px;
+    display: block;
+}
+#ViewNavigation ul li {
+    display: none;
+    list-style: none;
+    border-top: 1px solid #7FB4C8;
+}
+#ViewNavigation span:hover {
+    cursor: default;
+    background: #58829e url('../images/iconOrderUp.gif') 160px 8px no-repeat;
+}
+#ViewNavigation ul li:hover {
+    background: #58829e;
+}
+#ViewNavigation:hover ul li {
+    display: block;
+}
+
+/* CONTENT */
+#content .header {
+    height: 45px;
+    border-top: 1px solid #76ADC3;
+    background: #6A93AE;
+}
+#content .header span {
+    font: bold 30px arial, sans;
+    color: #EEF8FE;
+    display: block;
+    overflow: hidden;
+    width: 655px;
+    margin-left: 21px;
+    padding-top: 4px;
+}
+
+#data {
+    margin: 0 30px;
+    padding-bottom: 100px;
+    position: relative;
+}
+
+/* Hibaüzenethez tartozó cuccok */
+#pagemessages ul li {
+    list-style: none;
+    background: #D9EBF9 url('../images/bckgNotice.gif') top left repeat-x;
+}
+#pagemessages ul li .feedbackPanelERROR, #pagemessages ul li .feedbackPanelINFO {
+    display: block;
+    padding: 6px 0 6px 36px;
+}
+#pagemessages ul li .feedbackPanelERROR { background: url('../images/iconError.gif') top left no-repeat; }
+#pagemessages ul li .feedbackPanelINFO { background: url('../images/iconInfo.gif') top left no-repeat; }
+#pagemessages ul {
+    border: 1px solid #CBE5F7;
+    width: 480px;
+    margin: 12px auto;
+}
+
+/** TÁBLÁZATOK **/
+table.withheader {
+    margin: 5px 0 10px 0;
+    width: 805px;
+}
+table.withheader th {
+    height: 26px;
+    background: #6A93AE;
+    font-weight: normal;
+    text-align: left;
+    border-bottom: 1px solid #9DC5D6;
+    font-size: 14px;
+    empty-cells: show;
+    padding-left: 5px;
+}
+table.withheader th a {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: none;
+}
+table.withheader th a span {
+    padding-right: 18px;
+}
+table.withheader td {
+    border-bottom:1px solid #9DC5D6;
+    font-size: 12px;
+    empty-cells: show;
+    padding: 5px 0px 5px 5px;
+}
+th {
+    height: 26px;
+    background: #6A93AE;
+    font-weight: bold;
+    text-align: left;
+    color: #ffffff;
+}
+.withheader tr:hover { background: #E1EBF1; }
+.subdata {
+    margin: 5px 14px;
+}
+
+/* FOOTER */
+#footer {
+    margin-top: -60px;
+    height: 60px;
+    width: 100%;
+    background: #628DA9;
+    z-index: 0;
+}
+#footercont {
+    position: relative;
+    background: #517D9D url('../images/logoSch.png') top left no-repeat;
+    height: 60px;
+    width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+#footercont span {
+    color: #C5E2F7;
+    position: relative;
+    top: 25px;
+}

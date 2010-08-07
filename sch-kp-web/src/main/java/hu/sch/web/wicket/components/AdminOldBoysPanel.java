@@ -33,7 +33,7 @@ package hu.sch.web.wicket.components;
 import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.domain.Membership;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.web.kp.pages.group.ShowGroup;
+import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.wicket.components.tables.DateIntervalPropertyColumn;
 import java.util.ArrayList;
 import java.util.List;

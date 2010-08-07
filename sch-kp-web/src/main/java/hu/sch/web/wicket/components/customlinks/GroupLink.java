@@ -32,7 +32,7 @@
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.Group;
-import hu.sch.web.kp.pages.group.ShowGroup;
+import hu.sch.web.kp.group.ShowGroup;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
