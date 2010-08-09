@@ -210,6 +210,7 @@ public class PhoenixApplication extends WebApplication {
     }
 
     private void mountKorok() {
+        mountBookmarkablePage("/korok", ShowUser.class);
         mountBookmarkablePage("/korok/showuser", ShowUser.class);
         mountBookmarkablePage("/korok/userhistory", UserHistory.class);
         mountBookmarkablePage("/korok/search", SearchResultsPage.class);
@@ -243,6 +244,7 @@ public class PhoenixApplication extends WebApplication {
     }
 
     private void mountProfil() {
+        mountBookmarkablePage("/profile", ShowPersonPage.class);
         mountBookmarkablePage("/profile/show", ShowPersonPage.class);
         mountBookmarkablePage("/profile/edit", EditPage.class);
         mountBookmarkablePage("/profile/changepassword", ChangePasswordPage.class);
