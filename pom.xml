@@ -264,7 +264,7 @@
             <dependency>
                 <groupId>org.glassfish.extras</groupId>
                 <artifactId>glassfish-embedded-all</artifactId>
-                <version>3.1-SNAPSHOT</version>
+                <version>3.1-STABLE</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -320,34 +320,11 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>sun</id>
-            <layout>default</layout>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
         <!-- our repository -->
-<!--        <repository>
-            <id>maszat</id>
+        <repository>
+            <id>stewie</id>
             <layout>default</layout>
-            <url>http://maszat.sch.bme.hu/maven2</url>
-        </repository>-->
-        <repository>
-            <id>wicket-stuff</id>
-            <layout>default</layout>
-            <url>http://oss.sonatype.org/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>wicket-tree</id>
-            <name>Wicket-tree Repository</name>
-            <url>http://wicket-tree.googlecode.com/svn/repo</url>
-        </repository>
-        <repository>
-            <id>glassfish</id>
-            <url>http://download.java.net/maven/glassfish</url>
-        </repository>
-        <repository>
-            <id>jboss</id>
-            <url>http://repository.jboss.org/maven2</url>
+            <url>http://stewie.sch.bme.hu/nexus/content/groups/public</url>
         </repository>
     </repositories>
 
