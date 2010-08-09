@@ -34,7 +34,7 @@ public class SearchResultsPageTest extends WebTest {
     @Test
     public void testFormbasedPersonSearch() {
         tester.startPage(ShowUser.class);
-        FormTester formTester = tester.newFormTester("searchForm");
+        FormTester formTester = tester.newFormTester("headerPanel:searchForm");
         formTester.select("searchDdc", 1);
         formTester.setValue("searchField", SEARCH_TERM);
         formTester.submit();
