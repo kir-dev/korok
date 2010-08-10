@@ -59,9 +59,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 
 /**
  *
@@ -141,10 +143,6 @@ public class UserManagerBean implements UserManagerLocal {
     @Override
     public void addUserToGroup(User user, Group group, Date start, Date veg, boolean isAuthorized)
             throws MembershipAlreadyExistsException {
-        if (isMember(group, user)) {
-            throw new MembershipAlreadyExistsException(group, user);
-        }
-
         Membership ms = new Membership();
         User _user = em.find(User.class, user.getId());
         Group _group = em.find(Group.class, group.getId());
@@ -176,7 +174,17 @@ public class UserManagerBean implements UserManagerLocal {
         em.persist(ms);
         em.merge(_user);
         em.merge(_group);
-        em.flush();
+        try {
+            em.flush();
+        } catch (PersistenceException ex) {
+            if(ex.getCause().getClass().equals(ConstraintViolationException.class)) {
+                // már van ilyen tagság
+                throw new MembershipAlreadyExistsException(group, user);
+            } else {
+                // valami egyéb rondaság, dobjuk vissza :)
+                throw ex;
+            }
+        }
         logManager.createLogEntry(group, user, CREATEMEMBERSHIP_EVENT);
     }
 
