@@ -30,6 +30,8 @@
  */
 package hu.sch.web.kp;
 
+import hu.sch.web.common.HeaderLink;
+import hu.sch.web.common.HeaderPanel;
 import hu.sch.web.kp.admin.EditSettings;
 import hu.sch.web.kp.consider.ConsiderPage;
 import hu.sch.web.kp.group.GroupHierarchy;
@@ -44,8 +46,6 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 
@@ -53,37 +53,25 @@ import org.apache.wicket.model.PropertyModel;
  *
  * @author messo
  */
-class HeaderPanel extends Panel {
+class KorokHeaderPanel extends HeaderPanel {
 
     private String searchTerm;
     private String searchType = "felhasználó";
+    private boolean showValuationsLink;
+    private boolean showConsiderPageLink;
+    private boolean showEditSettingsLink;
 
-    public HeaderPanel(String id, boolean showValuationsLink, boolean showConsiderPageLink, boolean showEditSettingsLink) {
+    public KorokHeaderPanel(String id, boolean showValuationsLink,
+            boolean showConsiderPageLink, boolean showEditSettingsLink) {
         super(id);
 
         createSearchBar();
 
-        add(new BookmarkablePageLink<ShowUser>("showuserlink", ShowUser.class));
-        add(new BookmarkablePageLink<GroupHierarchy>("grouphierarchylink", GroupHierarchy.class));
-        if (showValuationsLink) {
-            add(new BookmarkablePageLink<Valuations>("ertekeleseklink", Valuations.class).setVisible(true));
-        } else {
-            add(new BookmarkablePageLink<Valuations>("ertekeleseklink", Valuations.class).setVisible(false));
-        }
+        this.showValuationsLink = showValuationsLink;
+        this.showConsiderPageLink = showConsiderPageLink;
+        this.showEditSettingsLink = showEditSettingsLink;
 
-        if (showConsiderPageLink) {
-            add(new BookmarkablePageLink<ConsiderPage>("elbiralas", ConsiderPage.class));
-        } else {
-            add(new BookmarkablePageLink<ConsiderPage>("elbiralas", ConsiderPage.class).setVisible(false));
-        }
-
-        if (showEditSettingsLink) {
-            add(new BookmarkablePageLink<EditSettings>("editsettings", EditSettings.class));
-        } else {
-            add(new BookmarkablePageLink<EditSettings>("editsettings", EditSettings.class).setVisible(false));
-        }
-
-        add(new BookmarkablePageLink<SvieAccount>("svieaccount", SvieAccount.class));
+        createLinks();
     }
 
     private void createSearchBar() {
@@ -121,5 +109,23 @@ class HeaderPanel extends Panel {
         searchForm.add(searchTypeDdc);
         searchForm.add(new TextField<String>("searchField", new PropertyModel<String>(this, "searchTerm")));
         add(searchForm);
+    }
+
+    @Override
+    protected List<HeaderLink> getHeaderLinks() {
+        List<HeaderLink> links = new ArrayList<HeaderLink>(6);
+        links.add(new HeaderLink(ShowUser.class, "Profilom"));
+        links.add(new HeaderLink(GroupHierarchy.class, "Egységek"));
+        links.add(new HeaderLink(SvieAccount.class, "SVIE tagság"));
+        if (showValuationsLink) {
+            links.add(new HeaderLink(Valuations.class, "Értékelések"));
+        }
+        if (showConsiderPageLink) {
+            links.add(new HeaderLink(ConsiderPage.class, "Elbírálás"));
+        }
+        if (showEditSettingsLink) {
+            links.add(new HeaderLink(EditSettings.class, "Adminisztráció"));
+        }
+        return links;
     }
 }

@@ -28,37 +28,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.web.profile;
-
-import hu.sch.web.common.PekPage;
-import org.apache.wicket.markup.html.panel.Panel;
+package hu.sch.web.common;
 
 /**
  *
  * @author messo
  */
-public abstract class ProfilePage extends PekPage {
+public class HeaderLink {
 
-    public ProfilePage() {
+    private Class<? extends PekPage> clazz;
+    private String text;
+
+    public HeaderLink(Class<? extends PekPage> clazz, String text) {
+        this.clazz = clazz;
+        this.text = text;
     }
 
-    @Override
-    protected String getTitle() {
-        return "VIR Profil";
+    public Class<? extends PekPage> getPageClass() {
+        return clazz;
     }
 
-    @Override
-    protected String getCss() {
-        return "profile-style.css";
-    }
-
-    @Override
-    protected String getFavicon() {
-        return "favicon-profil.ico";
-    }
-
-    @Override
-    protected Panel getHeaderPanel(String id) {
-        return new ProfileHeaderPanel(id);
+    public String getText() {
+        return text;
     }
 }

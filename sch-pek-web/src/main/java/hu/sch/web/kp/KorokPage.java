@@ -33,6 +33,7 @@ package hu.sch.web.kp;
 import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
 import hu.sch.domain.User;
+import hu.sch.domain.ValuationPeriod;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.services.SystemManagerLocal;
@@ -78,7 +79,8 @@ public abstract class KorokPage extends PekPage {
 
     @Override
     protected Panel getHeaderPanel(String id) {
-        return new HeaderPanel(id, isUserGroupLeaderInSomeGroup(), isCurrentUserJETI(),
+        return new KorokHeaderPanel(id, isUserGroupLeaderInSomeGroup(),
+                isCurrentUserJETI() && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS,
                 isCurrentUserJETI() || isCurrentUserSVIE() || isCurrentUserAdmin());
     }
 

@@ -30,27 +30,38 @@
  */
 package hu.sch.web.profile;
 
+import hu.sch.web.common.HeaderLink;
+import hu.sch.web.common.HeaderPanel;
 import hu.sch.web.profile.birthday.BirthDayPage;
 import hu.sch.web.profile.edit.EditPage;
 import hu.sch.web.profile.passwordchange.ChangePasswordPage;
 import hu.sch.web.profile.search.SearchPage;
 import hu.sch.web.profile.show.ShowPersonPage;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.Panel;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  * @author messo
  */
-class HeaderPanel extends Panel {
+class ProfileHeaderPanel extends HeaderPanel {
 
-    public HeaderPanel(String id) {
+    private static final HeaderLink[] links = new HeaderLink[] {
+        new HeaderLink(SearchPage.class, "Keresés"),
+        new HeaderLink(ShowPersonPage.class, "Profilom"),
+        new HeaderLink(EditPage.class, "Szerkesztés"),
+        new HeaderLink(ChangePasswordPage.class, "Jelszóváltoztatás"),
+        new HeaderLink(BirthDayPage.class, "Szülinaposok"),
+    };
+    private static final List<HeaderLink> linksList = Arrays.asList(links);
+
+    public ProfileHeaderPanel(String id) {
         super(id);
+        createLinks();
+    }
 
-        add(new BookmarkablePageLink<ShowPersonPage>("profilePageLink", ShowPersonPage.class));
-        add(new BookmarkablePageLink<SearchPage>("searchPageLink", SearchPage.class));
-        add(new BookmarkablePageLink<EditPage>("editPageLink", EditPage.class));
-        add(new BookmarkablePageLink<ChangePasswordPage>("changePasswordPageLink", ChangePasswordPage.class));
-        add(new BookmarkablePageLink<BirthDayPage>("birthDayPageLink", BirthDayPage.class));
+    @Override
+    protected List<HeaderLink> getHeaderLinks() {
+        return linksList;
     }
 }

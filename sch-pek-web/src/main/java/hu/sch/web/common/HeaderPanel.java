@@ -28,37 +28,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.web.profile;
+package hu.sch.web.common;
 
-import hu.sch.web.common.PekPage;
+import java.util.List;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 
 /**
+ * Minden {@link PekPage} sablonnak implementálnia kell a {@link PekPage#getHeaderPanel(java.lang.String)}
+ * metódust, amennyiben szükség lesz navigációs "linksorra", célszerű ebből a panelből
+ * származtatni a visszaadott {@link Panel}t, és a konstruktor végén meghívni a
+ * {@link HeaderPanel#createLinks()} metódust.
  *
- * @author messo
+ * @author  messo
+ * @since   2.4
  */
-public abstract class ProfilePage extends PekPage {
+public abstract class HeaderPanel extends Panel {
 
-    public ProfilePage() {
+    public HeaderPanel(String id) {
+        super(id);
     }
 
-    @Override
-    protected String getTitle() {
-        return "VIR Profil";
+    /**
+     * Létrehozza a navigációs linksort, meghívva az implementált {@link HeaderPanel#getHeaderLinks()}
+     * metódust.
+     */
+    protected void createLinks() {
+        add(new ListView<HeaderLink>("menu", getHeaderLinks()) {
+
+            @Override
+            protected void populateItem(ListItem<HeaderLink> item) {
+                HeaderLink hl = item.getModelObject();
+                item.add(new BookmarkablePageLink("menuLink", hl.getPageClass()).add(new Label("linkText", hl.getText())));
+            }
+        });
     }
 
-    @Override
-    protected String getCss() {
-        return "profile-style.css";
-    }
-
-    @Override
-    protected String getFavicon() {
-        return "favicon-profil.ico";
-    }
-
-    @Override
-    protected Panel getHeaderPanel(String id) {
-        return new ProfileHeaderPanel(id);
-    }
+    protected abstract List<HeaderLink> getHeaderLinks();
 }
