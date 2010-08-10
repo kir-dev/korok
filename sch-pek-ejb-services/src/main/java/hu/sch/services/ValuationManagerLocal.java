@@ -110,9 +110,10 @@ public interface ValuationManagerLocal {
     /**
      * Új értékelés létrehozása az aktuális szemeszterben
      * 
-     * @param csoport
-     * @param felado
-     * @param szovegesErtekeles
+     * @param group Melyik csoporthoz adtak le értékelést
+     * @param sender Az értékelés feladója
+     * @param valuationText Szöveges értékelés
+     * @param principle Pontozási elvek
      */
     void addNewValuation(Group group, User sender, String valuationText, String principle);
 

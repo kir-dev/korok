@@ -302,6 +302,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
+    //TODO?: a sender származtatott érték, biztos, hogy át kell ezt adni, elvégre
+    //       csak körvezető adhat le értékelést...
     public void addNewValuation(Group group, User sender, String valuationText, String principle) {
         Valuation valuation = new Valuation();
         valuation.setSender(sender);
