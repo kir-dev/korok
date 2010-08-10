@@ -35,6 +35,7 @@ import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
+import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.kp.KorokPage;
@@ -96,7 +97,7 @@ public class EntrantRequestViewer extends KorokPage {
 
         add(dview);
 
-        if (isCurrentUserJETI()) {
+        if (isCurrentUserJETI() && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS) {
             Fragment jetifragment = new JETIFragment("jetifragment", "jetipanel", ert);
             add(jetifragment);
         } else {

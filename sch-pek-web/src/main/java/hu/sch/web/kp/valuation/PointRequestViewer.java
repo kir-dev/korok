@@ -34,6 +34,7 @@ import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
+import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.web.kp.user.ShowUser;
@@ -112,7 +113,7 @@ public class PointRequestViewer extends KorokPage {
 //            }
 //        };
 
-        if (isCurrentUserJETI()) {
+        if (isCurrentUserJETI() && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS) {
             Fragment jetifragment = new JETIFragment("jetifragment", "jetipanel", val);
             add(jetifragment);
         } else {
