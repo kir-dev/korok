@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <version>2.4-SNAPSHOT</version>
     <name>SCH PéK Application</name>
+    <url>http://stewie.sch.bme.hu/projects/korok</url>
     <inceptionYear>2008</inceptionYear>
     
     <licenses>
@@ -20,52 +21,52 @@
         <developer>
             <id>hege</id>
             <name>Adam Lantos</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </developer>
         <developer>
             <id>messo</id>
             <name>Balint Krivan</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </developer>
         <developer>
             <id>aldaris</id>
             <name>Peter Major</name>
             <email>majorpetya at sch dot bme dot hu</email>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </developer>
     </developers>
     <contributors>
         <contributor>
             <name>Andras Ivanyi</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Antal Kiss</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Arpad Boda</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Balazs Nemeth</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Balazs Varga</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Gabor Halasz</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Gabor Nyiri</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Tamas Sallai</name>
-            <timezone>GMT+1</timezone>
+            <timezone>+1</timezone>
         </contributor>
     </contributors>
 
@@ -88,9 +89,22 @@
         <url>https://kir-dev.sch.bme.hu/redmine</url>
     </issueManagement>
 
+    <ciManagement>
+        <system>Hudson</system>
+        <url>https://stewie.sch.bme.hu/hudson</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>site</id>
+            <name>${project.name}</name>
+            <url>file:///var/www/stewie.sch.bme.hu/projects/korok</url>
+        </site>
+    </distributionManagement>
+
     <scm>
-        <connection>scm:http://idp.sch.bme.hu/pub/aldaris/korok</connection>
-        <url>http://idp.sch.bme.hu/gitweb</url>
+        <connection>scm:http://stewie.sch.bme.hu/pub/aldaris/korok</connection>
+        <url>http://stewie.sch.bme.hu/gitweb</url>
     </scm>
 
     <profiles>
@@ -98,6 +112,14 @@
             <id>hudson</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <!-- Kell, hogy tényleg menjen az UTF-8 -->
+                        <version>2.1.1</version>
+                        <configuration>
+                            <outputEncoding>UTF-8</outputEncoding>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
