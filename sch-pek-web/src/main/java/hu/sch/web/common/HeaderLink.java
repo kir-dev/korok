@@ -30,11 +30,13 @@
  */
 package hu.sch.web.common;
 
+import java.io.Serializable;
+
 /**
  *
  * @author messo
  */
-public class HeaderLink {
+public class HeaderLink implements Serializable {
 
     private Class<? extends PekPage> clazz;
     private String text;
