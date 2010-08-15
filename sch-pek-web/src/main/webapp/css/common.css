@@ -39,7 +39,8 @@ html, body {
 }
 
 body {
-    font: 13px verdana, arial, sans;
+    font-size: 13px;
+    font-family: verdana, "DejaVu Sans", arial, sans-serif;
     color: #1E4565;
 }
 
@@ -63,6 +64,10 @@ a {
     border-bottom: 1px dotted #1E4565;
 }
 
+h3 a {
+    font-size: 16px;
+}
+
 a:hover {
     border-bottom: 1px solid #1E4565;
 }
@@ -84,7 +89,8 @@ ul.horizontal li {
 #header a {
     color: #C5E2F7;
     border: none;
-    font: bold 15px verdana, arial, sans;
+    font-size: 15px;
+    font-weight: bold;
 }
 #header ul#pagemenu {
     position: absolute;
@@ -227,9 +233,10 @@ th {
     position: relative;
     background: #517D9D url('../images/logoSch.png') top left no-repeat;
     height: 60px;
-    width: 900px;
+    width: 830px;
     margin: 0 auto;
-    text-align: center;
+    text-align: right;
+    padding-right: 70px
 }
 #footercont span {
     color: #C5E2F7;
