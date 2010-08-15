@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009-2010, Peter Major
+ * Copyright (c) 2008-2010, Peter Major
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ public final class InternalServerError extends KorokPage {
         }
         HttpServletRequest request = ((WebRequest) getRequest()).getHttpServletRequest();
 
-        sb.append("\nA hibát előidézte: " + request.getRemoteUser());
+        sb.append("\nA hibát előidézte: ").append(request.getRemoteUser());
         sb.append("\n\t").append(request.getRemoteAddr());
         sb.append("\n\t").append(request.getAttribute("mail"));
         sb.append("\n\t").append(request.getAttribute("virid"));

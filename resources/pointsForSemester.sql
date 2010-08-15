@@ -1,5 +1,5 @@
 --
--- Copyright (c) 2009-2010, Peter Major
+-- Copyright (c) 2008-2010, Peter Major
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without

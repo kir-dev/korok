@@ -88,7 +88,7 @@
         <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>javaee-inject</artifactId>
-            <version>1.4.9.2</version>
+            <version>${wicketstuff.version}</version>
         </dependency>
         <dependency>
             <groupId>wicket-tree</groupId>
@@ -136,7 +136,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <wicket.version>1.4.8</wicket.version>
-        <wicketstuff.version>1.4.8</wicketstuff.version>
+        <wicket.version>1.4.10</wicket.version>
+        <wicketstuff.version>1.4.9.2</wicketstuff.version>
     </properties>
 </project>
