@@ -113,7 +113,7 @@ public class PointRequest implements Serializable, HasUserRelation {
     }
 
     @Override
-    public final void setUser(User user) {
+    public void setUser(User user) {
         this.user = user;
         if (user != null) {
             userId = user.getId();
