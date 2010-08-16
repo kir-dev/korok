@@ -1,4 +1,11 @@
 <wicket:extend>
+    <div id="ViewNavigation">
+        <span>Értékelés</span>
+        <ul>
+            <li><a wicket:id="history">Értékelés története</a></li>
+        </ul>
+    </div>
+
     <h2 wicket:id="group.name" />
 
     <div>
@@ -17,7 +24,7 @@
             </div>
         </div>
         <div style="float:left; margin-right: 20px;">
-            <h3>Belépők (<span wicket:id="entrantStatus">Elbírálatlan</span>)</h3>
+            <h3><a wicket:id="entrantRequests">Belépők</a> (<span wicket:id="entrantStatus">Elbírálatlan</span>)</h3>
             <div class="subdata">
                 <table class="ertekelesReszletek">
                     <tr><td class="col1"> KDO: </td><td wicket:id="stat.givenKDO" /></tr>
@@ -27,7 +34,7 @@
             </div>
         </div>
         <div style="float:left">
-            <h3>Pontok (<span wicket:id="pointStatus">Elbírálatlan</span>)</h3>
+            <h3><a wicket:id="pointRequests">Pontok</a> (<span wicket:id="pointStatus">Elbírálatlan</span>)</h3>
             <div class="subdata">
                 <table class="ertekelesReszletek">
                     <colgroup>
@@ -41,11 +48,6 @@
         </div>
         <div style="clear: both"></div>
     </div>
-
-    <!--
-    <a wicket:id="entrantLink">Belépőkérelmek megtekintése</a><br />
-    <a wicket:id="pointLink">Pontkérelmek megtekintése</a>
-    -->
 
     <div wicket:id="valuationTextContainer">
         <h3>Szöveges értékelés - <a wicket:id="modifyValuationText"><wicket:message key="modify.valuation.text" /></a></h3>
@@ -69,6 +71,5 @@
     <h3>Kérelmek</h3>
     <table class="withheader" wicket:id="requests"></table>
 
-    <span wicket:id="jeti" />
-
+    <div wicket:id="jeti" />
 </wicket:extend>

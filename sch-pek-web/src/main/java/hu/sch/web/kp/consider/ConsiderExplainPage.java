@@ -34,6 +34,9 @@ package hu.sch.web.kp.consider;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
+import hu.sch.services.exceptions.valuation.NoExplanationException;
+import hu.sch.services.exceptions.valuation.NothingChangedException;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.List;
 import javax.ejb.EJB;
@@ -61,11 +64,16 @@ public class ConsiderExplainPage extends KorokPage {
 
             @Override
             protected void onSubmit() {
-                if (valuationManager.ertekeleseketElbiral(underConsider, getUser())) {
+                try {
+                    valuationManager.considerValuations(underConsider);
                     getSession().info("Az elbírálás sikeres volt.");
                     setResponsePage(ConsiderPage.class);
-                } else {
+                } catch (NoExplanationException ex) {
                     getSession().error("Minden elutasított értékeléshez kell indoklást mellékelni!");
+                } catch (NothingChangedException ex) {
+                    getSession().error("Valamelyik értékelésen nem változtattál semmit, akkor azt miért akarod elbírálni?");
+                } catch (AlreadyModifiedException ex) {
+                    getSession().error("Valaki már módosított az egyik értékelésen!");
                 }
             }
         };

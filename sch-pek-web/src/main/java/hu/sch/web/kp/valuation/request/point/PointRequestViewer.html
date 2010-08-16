@@ -1,0 +1,26 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+    <div class="subdata">
+        <table class="withheader">
+            <tr class="headers">
+                <th style="width: 250px;">Név</th>
+                <th>Becenév</th>
+                <th>Pont</th>
+            </tr>
+            <tr wicket:id="requests">
+                <td wicket:id="userLink"></td>
+                <td wicket:id="user.nickName"></td>
+                <td wicket:id="point"></td>
+            </tr>
+        </table>
+
+        <table class="ertekelesReszletek">
+            <tr><td class="col1">Pontok átlaga:</td><td wicket:id="stat.averagePoint">0.0</td></tr>
+            <tr><td class="col1">Pontok összesen:</td><td wicket:id="stat.sumPoint">0</td></tr>
+        </table>
+
+        <!--<div wicket:id="jetipanel">
+            <h2>Értékelés elbírálása</h2>
+            <a wicket:id="accept">Elfogadás</a> | <a wicket:id="reject">Elutasítás</a> | <a wicket:id="messages">Üzenetek</a><br />
+        </div>-->
+    </div>
+</wicket:panel>

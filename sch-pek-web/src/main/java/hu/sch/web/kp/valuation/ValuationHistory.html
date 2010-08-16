@@ -1,0 +1,39 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+    <div id="ViewNavigation">
+        <span>Értékelés története</span>
+        <ul>
+            <li><a wicket:id="latestVersion">Legújabb verzió</a></li>
+        </ul>
+    </div>
+
+    <h2><span wicket:id="groupName"></span></h2>
+    <h3>Szemeszter: <span wicket:id="semester"></span></h3>
+    <div class="subdata">
+        <table class="withheader">
+            <tr>
+                <th>Verzió</th>
+                <th style="width: 140px">Módosítva</th>
+                <th style="width: 140px">Elbírálva</th>
+                <th style="width: 50px">&Sigma;Pont</th>
+                <th style="width: 70px">Átlag</th>
+                <th style="width: 40px">KDO</th>
+                <th style="width: 40px">KB</th>
+                <th style="width: 40px">ÁB</th>
+                <th style="width: 85px">Pontok</th>
+                <th style="width: 85px">Belépők</th>
+            </tr>
+            <tr wicket:id="versionList">
+                <td wicket:id="version">?</td>
+                <td wicket:id="valuation.lastModified">2010. 08. 13. 00:00:00</td>
+                <td wicket:id="valuation.lastConsidered">2010. 08. 13. 00:00:00</td>
+                <td><a wicket:id="summaPointLink"><span wicket:id="summaPoint">0.0</span></a></td>
+                <td><a wicket:id="pointLink"><span wicket:id="averagePoint">0.00</span></a></td>
+                <td><a wicket:id="givenKDOLink"><span wicket:id="givenKDO">0</span></a></td>
+                <td><a wicket:id="givenKBLink"><span wicket:id="givenKB">0</span></a></td>
+                <td><a wicket:id="givenABLink"><span wicket:id="givenAB">0</span></a></td>
+                <td wicket:id="valuation.pointStatus"></td>
+                <td wicket:id="valuation.entrantStatus"></td>
+            </tr>
+        </table>
+    </div>
+</wicket:extend>

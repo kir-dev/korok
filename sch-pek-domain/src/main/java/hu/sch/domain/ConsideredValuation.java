@@ -43,17 +43,20 @@ public class ConsideredValuation implements Serializable {
     private ValuationStatus pointStatus;
     private ValuationStatus entrantStatus;
     private String explanation;
+    private User user;
 
-    public ConsideredValuation(Valuation valuation, ValuationStatus pointStatus, ValuationStatus entrantStatus) {
-        setValuation(valuation);
-        setPointStatus(pointStatus);
-        setEntrantStatus(entrantStatus);
+    public ConsideredValuation(Valuation valuation, ValuationStatus pointStatus, ValuationStatus entrantStatus, User user) {
+        this.valuation = valuation;
+        this.pointStatus = pointStatus;
+        this.entrantStatus = entrantStatus;
+        this.user = user;
     }
 
-    public ConsideredValuation(Valuation valuation) {
-        setValuation(valuation);
-        setPointStatus(valuation.getPointStatus());
-        setEntrantStatus(valuation.getEntrantStatus());
+    public ConsideredValuation(Valuation valuation, User user) {
+        this.valuation = valuation;
+        this.pointStatus = valuation.getPointStatus();
+        this.entrantStatus = valuation.getEntrantStatus();
+        this.user = user;
     }
 
     public ValuationStatus getEntrantStatus() {
@@ -86,6 +89,10 @@ public class ConsideredValuation implements Serializable {
 
     public void setPointStatus(ValuationStatus pointStatus) {
         this.pointStatus = pointStatus;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override

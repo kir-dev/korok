@@ -35,9 +35,11 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -52,11 +54,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 /**
  *
@@ -67,16 +71,21 @@ import javax.persistence.Transient;
 @NamedQueries({
     @NamedQuery(name = Valuation.findBySemesterAndGroup,
     query = "SELECT v FROM Valuation v WHERE v.semester=:semester "
-    + "AND v.group=:group"),
+    + "AND v.group=:group AND v.nextVersion IS NULL"),
+    @NamedQuery(name = Valuation.findIdBySemesterAndGroup,
+    query = "SELECT v.id FROM Valuation v WHERE v.semester=:semester "
+    + "AND v.group=:group AND v.nextVersion IS NULL"),
     @NamedQuery(name = Valuation.findByIdMessageJoined,
     query = "SELECT v FROM Valuation v LEFT JOIN FETCH v.messages "
     + "WHERE v.id=:id"),
     @NamedQuery(name = Valuation.findByGroup,
     query = "SELECT v FROM Valuation v "
     + "LEFT JOIN FETCH v.sender "
-    + "WHERE v.group=:group "
+    + "WHERE v.group=:group AND v.nextVersion IS NULL "
     + "ORDER BY v.semester DESC"),
-    @NamedQuery(name = Valuation.findStatisticBySemester, query = Valuation.statQuery + "WHERE v.semester = :semester"),
+    @NamedQuery(name = Valuation.delete, query = "DELETE FROM Valuation v WHERE v.group = :group AND v.semester = :semester"),
+    @NamedQuery(name = Valuation.findStatisticBySemester, query = Valuation.statQuery + "WHERE v.semester = :semester AND v.nextVersion IS NULL"),
+    @NamedQuery(name = Valuation.findStatisticBySemesterAndGroup, query = Valuation.statQuery + "WHERE v.semester = :semester AND v.group = :group ORDER BY v.id DESC"),
     @NamedQuery(name = Valuation.findStatisticByValuation, query = Valuation.statQuery + "WHERE v.id = :valuationId"),
     @NamedQuery(name = Valuation.findStatisticByValuations, query = Valuation.statQuery + "WHERE v.id in (:ids)"),
     @NamedQuery(name = Valuation.findStatisticBySemesterAndStatuses, query = Valuation.statQuery
@@ -86,11 +95,14 @@ public class Valuation implements Serializable {
 
     public static final String findByIdMessageJoined = "findValuationByIdMessageJoined";
     public static final String findBySemesterAndGroup = "findValuationBySemesterAndGroup";
+    public static final String findIdBySemesterAndGroup = "findValuationIdBySemesterAndGroup";
     public static final String findByGroup = "findValuationByGroup";
     public static final String findStatisticByValuation = "findStatisticForValuation";
     public static final String findStatisticByValuations = "findStatisticForValuations";
     public static final String findStatisticBySemester = "findStatisticBySemester";
+    public static final String findStatisticBySemesterAndGroup = "findStatisticBySemesterAndGroup";
     public static final String findStatisticBySemesterAndStatuses = "findStatisticBySemesterAndStatuses";
+    public static final String delete = "delete";
     protected static final String statQuery = "SELECT new hu.sch.domain.ValuationStatistic(v, "
             + "(SELECT avg(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as averagePoint, "
             + "(SELECT sum(p.point) FROM PointRequest p WHERE p.valuation = v AND p.point > 0) as summaPoint, "
@@ -99,24 +111,54 @@ public class Valuation implements Serializable {
             + "(SELECT count(*) as numAB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'AB\') as givenAB"
             + ") FROM Valuation v ";
     protected Long id;
+    protected Valuation nextVersion;
     protected Group group;
     protected Long groupId;
     protected User sender;
-    protected User consideredBy;
+    protected Date sended;
     protected String valuationText;
     protected String principle;
     protected ValuationStatus pointStatus;
     protected ValuationStatus entrantStatus;
     protected Semester semester;
-    protected Date sended;
-    protected Date lastConsidered;
     protected Date lastModified;
+    protected User consideredBy;
+    protected Date lastConsidered;
+    protected String explanation;
     protected List<EntrantRequest> entrantRequests;
     protected List<PointRequest> pointRequests;
     protected Set<EntrantRequest> entrantRequestsAsSet;
     protected Set<PointRequest> pointRequestsAsSet;
     protected List<ValuationMessage> messages;
     protected Float averagePoint;
+    protected int optLock;
+    protected boolean considered;
+
+    @PrePersist
+    protected void setDefaultValues() {
+        if (sended == null) {
+            setSended(new Date());
+        }
+        if (lastModified == null) {
+            setLastModified(new Date());
+        }
+        if (pointStatus == null) {
+            setPointStatus(ValuationStatus.NINCS);
+        }
+        if (entrantStatus == null) {
+            setEntrantStatus(ValuationStatus.NINCS);
+        }
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @ManyToOne
     @JoinColumn(name = "grp_id")
@@ -137,14 +179,33 @@ public class Valuation implements Serializable {
         this.groupId = groupId;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
+    @OneToOne
+    @JoinColumn(name = "next_version")
+    public Valuation getNextVersion() {
+        return nextVersion;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setNextVersion(Valuation nextVersion) {
+        this.nextVersion = nextVersion;
+    }
+
+    @Version
+    @Column(name = "optlock")
+    public int getOptLock() {
+        return optLock;
+    }
+
+    public void setOptLock(int optLock) {
+        this.optLock = optLock;
+    }
+
+    @Column(name = "is_considered")
+    public boolean isConsidered() {
+        return considered;
+    }
+
+    public void setConsidered(boolean considered) {
+        this.considered = considered;
     }
 
     // FIXME(messo): lásd http://idp-old.sch.bme.hu:3000/issues/890
@@ -229,7 +290,7 @@ public class Valuation implements Serializable {
         this.entrantRequests = entrantRequests;
     }
 
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     public Set<EntrantRequest> getEntrantRequestsAsSet() {
         return entrantRequestsAsSet;
     }
@@ -248,7 +309,7 @@ public class Valuation implements Serializable {
         this.pointRequests = pointRequests;
     }
 
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     public Set<PointRequest> getPointRequestsAsSet() {
         return pointRequestsAsSet;
     }
@@ -267,6 +328,15 @@ public class Valuation implements Serializable {
         this.valuationText = valuationText;
     }
 
+    @Column(name = "explanation", columnDefinition = "text", nullable = false)
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
     @Column(name = "pontozasi_elvek", columnDefinition = "text", nullable = false)
     public String getPrinciple() {
         return principle;
@@ -274,14 +344,6 @@ public class Valuation implements Serializable {
 
     public void setPrinciple(String principle) {
         this.principle = principle;
-    }
-
-    @PrePersist
-    protected void setDefaultValues() {
-        setSended(new Date());
-        setLastModified(new Date());
-        setPointStatus(ValuationStatus.NINCS);
-        setEntrantStatus(ValuationStatus.NINCS);
     }
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
@@ -325,18 +387,74 @@ public class Valuation implements Serializable {
         }
     }
 
-    public boolean entrantsAreAccepted()
-    {
+    public boolean entrantsAreAccepted() {
         return entrantStatus == ValuationStatus.ELFOGADVA;
     }
 
-    public boolean pointsAreAccepted()
-    {
+    public boolean pointsAreAccepted() {
         return pointStatus == ValuationStatus.ELFOGADVA;
     }
 
     @Override
     public String toString() {
         return new StringBuilder("Valuation: ").append(semester).append(" ").append(group.getName()).toString();
+    }
+
+    /**
+     * Ennek a segítségével csinálunk új verziót, ha módosítottak rajta
+     * @return
+     */
+    public Valuation copy() {
+        Valuation v = new Valuation();
+        v.setGroup(group);
+        v.setSender(sender);
+        v.setValuationText(valuationText);
+        v.setPrinciple(principle);
+        v.setPointStatus(pointStatus);
+        v.setEntrantStatus(entrantStatus);
+        v.setSemester(semester);
+        v.setSended(sended); // vajon ez maradjon a régi, vagy legyen friss?
+        v.setLastModified(lastModified);
+        v.setConsidered(false);
+        return v;
+    }
+
+    /**
+     * Lemásoljuk az értékelés pontkérelmeit a paraméterben megadott értékeléshez,
+     * amiket hozzá is rendelünk.
+     *
+     * @param v az értékelés, amelyiknek beállítjuk a másolatokat
+     */
+    public void copyPointRequests(Valuation v) {
+        Set<PointRequest> pReqs = getPointRequestsAsSet();
+        Set<PointRequest> result = new HashSet<PointRequest>(pReqs.size());
+
+        for(PointRequest pr : pReqs) {
+            result.add(pr.copy(v));
+        }
+
+        v.setPointRequestsAsSet(result);
+    }
+
+    /**
+     * Lemásoljuk az értékelés belépőkérelmeit a paraméterben megadott értékeléshez,
+     * amiket hozzá is rendelünk.
+     *
+     * @param v az értékelés, amelyiknek beállítjuk a másolatokat
+     */
+    public void copyEntrantRequests(Valuation newVersion) {
+        Set<EntrantRequest> eReqs = getEntrantRequestsAsSet();
+        Set<EntrantRequest> result = new HashSet<EntrantRequest>(eReqs.size());
+
+        for(EntrantRequest er : eReqs) {
+            result.add(er.copy(newVersion));
+        }
+
+        newVersion.setEntrantRequestsAsSet(result);
+    }
+
+    @Transient
+    public boolean isObsolete() {
+        return nextVersion != null;
     }
 }

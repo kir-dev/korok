@@ -31,15 +31,16 @@
 
 package hu.sch.web.kp.valuation;
 
+import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
+import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
+import hu.sch.domain.Semester;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.User;
-import hu.sch.web.kp.entrantrequests.EntrantRequestFiling;
 import hu.sch.web.kp.group.GroupHierarchy;
-import hu.sch.web.kp.pointrequests.PointRequestFiling;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;
@@ -121,14 +122,16 @@ public class Valuations extends KorokPage {
 
         // megkeresem mire nem adott még le értékelést vagy belépőigényt az aktuális félévben
         final Map<Group, Valuation> valuationsForGroup = new HashMap<Group, Valuation>();
+        Semester semester = systemManager.getSzemeszter();
+        ValuationPeriod valuationPeriod = systemManager.getErtekelesIdoszak();
         for (Membership m : ms) {
             Group cs = m.getGroup();
 
-            Valuation ert = valuationManager.findErtekeles(cs, systemManager.getSzemeszter());
+            Valuation ert = valuationManager.findErtekeles(cs, semester);
             if ((ert == null || ert.getPointStatus() == ValuationStatus.NINCS
                     || ert.getEntrantStatus() == ValuationStatus.NINCS)
                     && isUserGroupLeader(cs)
-                    && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESLEADAS) {
+                    && valuationPeriod == ValuationPeriod.ERTEKELESLEADAS) {
                 // kelleni fog majd az értékelés objektum a táblázatnál, ezért
                 // mentsük el egy Mapben.
                 valuationsForGroup.put(cs, ert);
@@ -202,33 +205,13 @@ public class Valuations extends KorokPage {
                         }
                     });
 
-                    Link pontkerelemLink = new Link("pointLink") {
+                    item.add(new BookmarkablePageLink("pointLink",
+                            PointRequests.class,
+                            new PageParameters("vid=" + v.getId())).add(new Label("pointStatus")));
 
-                        @Override
-                        public void onClick() {
-                            if (v.pointsAreAccepted() || nincsErtekelesLeadas) {
-                                setResponsePage(new PointRequestViewer(v));
-                            } else {
-                                setResponsePage(new PointRequestFiling(v));
-                            }
-                        }
-                    };
-                    pontkerelemLink.add(new Label("pointStatus"));
-                    item.add(pontkerelemLink);
-
-                    Link belepokerelemLink = new Link("entrantLink") {
-
-                        @Override
-                        public void onClick() {
-                            if (v.entrantsAreAccepted() || nincsErtekelesLeadas) {
-                                setResponsePage(new EntrantRequestViewer(v));
-                            } else {
-                                setResponsePage(new EntrantRequestFiling(v));
-                            }
-                        }
-                    };
-                    belepokerelemLink.add(new Label("entrantStatus"));
-                    item.add(belepokerelemLink);
+                    item.add(new BookmarkablePageLink("entrantLink",
+                            EntrantRequests.class,
+                            new PageParameters("vid=" + v.getId())).add(new Label("entrantStatus")));
 
                     item.add(DateLabel.forDatePattern("lastModified", "yyyy.MM.dd. kk:mm"));
                     item.add(DateLabel.forDatePattern("lastConsidered", "yyyy.MM.dd. kk:mm"));
@@ -279,7 +262,7 @@ public class Valuations extends KorokPage {
                                 setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
                             } else {
                                 // pontigény leadása a szöveges értékelés mellé
-                                setResponsePage(new PointRequestFiling(val));
+                                setResponsePage(PointRequests.class, new PageParameters("vid=" + val.getId()));
                             }
                         }
                     });
@@ -305,7 +288,7 @@ public class Valuations extends KorokPage {
                                 setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
                             } else {
                                 // belépőigény leadása a szöveges értékelés mellé
-                                setResponsePage(new EntrantRequestFiling(val));
+                                setResponsePage(EntrantRequests.class, new PageParameters("vid=" + val.getId()));
                             }
                         }
                     });

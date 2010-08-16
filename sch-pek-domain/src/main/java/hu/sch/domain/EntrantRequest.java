@@ -31,6 +31,7 @@
 
 package hu.sch.domain;
 
+import hu.sch.domain.interfaces.HasUserRelation;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,6 +44,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Egy felhasználóhoz tartozó belépőigény
@@ -51,7 +53,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "belepoigenyles")
-public class EntrantRequest implements Serializable {
+public class EntrantRequest implements Serializable, HasUserRelation {
 
     protected Long id;
     protected Valuation valuation;
@@ -67,7 +69,7 @@ public class EntrantRequest implements Serializable {
 
     public EntrantRequest(User user, EntrantType entrantType) {
         this.entrantType = entrantType;
-        this.user = user;
+        setUser(user);
     }
 
     @Id
@@ -111,12 +113,17 @@ public class EntrantRequest implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usr_id")
+    @Override
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    @Override
+    public final void setUser(User user) {
         this.user = user;
+        if (user != null) {
+            userId = user.getId();
+        }
     }
 
     /**
@@ -127,10 +134,12 @@ public class EntrantRequest implements Serializable {
      * @return  felhasználó azonosítója, akié a belépőkérelem.
      */
     @Column(name = "usr_id", insertable = false, updatable = false)
+    @Override
     public Long getUserId() {
         return userId;
     }
 
+    @Override
     public void setUserId(Long userId) {
         this.userId = userId;
     }
@@ -147,5 +156,31 @@ public class EntrantRequest implements Serializable {
     @Override
     public String toString() {
         return "EntrantRequest: " + entrantType + " (" + valuationText + ")";
+    }
+
+    /**
+     * Lemásoljuk a kérelmet, hogy egy új értékeléshez elmenthessük.
+     *
+     * @param v az új értékelés, amihez lemásoltuk a kérelmet
+     * @return másolat, amit elmenthetünk újként
+     */
+    public EntrantRequest copy(Valuation v) {
+        EntrantRequest er = new EntrantRequest();
+        er.setValuation(v);
+        er.setValuationText(valuationText);
+        er.setEntrantType(entrantType);
+        er.setUser(user);
+        return er;
+    }
+
+    /**
+     * Érvényes-e a belépőkérelem, tehát ha ÁB, vagy KB típusú, akkor legyen
+     * hozzá értékelés
+     * 
+     * @return
+     */
+    @Transient
+    public boolean isValid() {
+        return !((entrantType == EntrantType.AB || entrantType == EntrantType.KB) && valuationText == null);
     }
 }

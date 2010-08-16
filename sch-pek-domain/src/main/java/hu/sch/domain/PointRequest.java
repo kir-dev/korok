@@ -31,6 +31,7 @@
 
 package hu.sch.domain;
 
+import hu.sch.domain.interfaces.HasUserRelation;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,7 +49,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "pontigenyles")
-public class PointRequest implements Serializable {
+public class PointRequest implements Serializable, HasUserRelation {
 
     protected Long id;
     protected Valuation valuation;
@@ -63,7 +64,7 @@ public class PointRequest implements Serializable {
 
     public PointRequest(User user, Integer point) {
         this.point = point;
-        this.user = user;
+        setUser(user);
     }
 
     @ManyToOne
@@ -106,12 +107,17 @@ public class PointRequest implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usr_id")
+    @Override
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    @Override
+    public final void setUser(User user) {
         this.user = user;
+        if (user != null) {
+            userId = user.getId();
+        }
     }
 
     /**
@@ -122,11 +128,27 @@ public class PointRequest implements Serializable {
      * @return  felhasználó azonosítója, akié a pontkérelem.
      */
     @Column(name = "usr_id", insertable = false, updatable = false)
+    @Override
     public Long getUserId() {
         return userId;
     }
 
+    @Override
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    /**
+     * Lemásoljuk a kérelmet, hogy egy új értékeléshez elmenthessük.
+     *
+     * @param v az új értékelés, amihez lemásoltuk a kérelmet
+     * @return másolat, amit elmenthetünk újként
+     */
+    public PointRequest copy(Valuation v) {
+        PointRequest pr = new PointRequest();
+        pr.setValuation(v);
+        pr.setPoint(point);
+        pr.setUser(user);
+        return pr;
     }
 }

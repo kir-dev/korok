@@ -28,25 +28,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package hu.sch.web.kp.entrantrequests;
+package hu.sch.web.kp.valuation.request.entrant;
 
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Valuation;
-import hu.sch.web.kp.valuation.Valuations;
 import hu.sch.web.kp.KorokPage;
-import hu.sch.web.wicket.util.ListDataProviderCompoundPropertyModelImpl;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
+import hu.sch.services.exceptions.valuation.NoExplanationException;
+import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 
 /**
  *
@@ -60,41 +63,38 @@ public class EntrantRequestExplanation extends KorokPage {
     public EntrantRequestExplanation(final Valuation ert, final List<EntrantRequest> igenyek) {
         List<EntrantRequest> indoklando = kellIndoklas(igenyek);
         setHeaderLabelText("Színes belépők indoklása");
-        Form indoklasform = new Form("indoklasform") {
+        Form<Valuation> indoklasform = new Form<Valuation>("indoklasform", new Model<Valuation>(ert)) {
 
             @Override
             protected void onSubmit() {
-
-                if (valuationManager.belepoIgenyekLeadasa(ert.getId(), igenyek)) {
+                final Valuation ert = getModelObject();
+                try {
+                    Valuation v = valuationManager.updateEntrantRequests(ert, igenyek);
                     getSession().info(getLocalizer().getString("info.BelepoIgenylesMentve", this));
-                    //getSession().info("Belépőigények elmentve");
-                    setResponsePage(Valuations.class);
-                    return;
-                } else {
+                    setResponsePage(ValuationDetails.class, new PageParameters("id=" + v.getId()));
+                } catch (NoExplanationException ex) {
                     getSession().error(getLocalizer().getString("info.BelepoIgenylesNincsIndoklas", this));
                     setResponsePage(new EntrantRequestExplanation(ert, igenyek));
-                    return;
+                } catch( AlreadyModifiedException ex ) {
+                    getSession().error("Valaki már módosított az értékelésen, így lehet, hogy a belépőkön is!");
+                    setResponsePage(ValuationDetails.class, new PageParameters("id=" + ert.getId()));
                 }
-
-
             }
         };
         indoklasform.add(new KeepAliveBehavior());
 
-        DataView<EntrantRequest> dview = new DataView<EntrantRequest>("indoklas", new ListDataProviderCompoundPropertyModelImpl<EntrantRequest>(indoklando)) {
+        indoklasform.add(new ListView<EntrantRequest>("indoklas", indoklando) {
 
             @Override
-            protected void populateItem(Item<EntrantRequest> item) {
+            protected void populateItem(ListItem<EntrantRequest> item) {
+                item.setModel(new CompoundPropertyModel<EntrantRequest>(item.getModelObject()));
                 item.add(new Label("user.name"));
                 item.add(new Label("user.nickName"));
                 item.add(new Label("entrantType"));
-                TextArea<String> textArea = new TextArea<String>("valuationText");
-
-                item.add(textArea);
+                item.add(new TextArea<String>("valuationText"));
             }
-        };
+        });
 
-        indoklasform.add(dview);
         add(indoklasform);
     }
 

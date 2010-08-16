@@ -42,6 +42,9 @@ import hu.sch.domain.GivenPoint;
 import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.User;
+import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
+import hu.sch.services.exceptions.valuation.NoExplanationException;
+import hu.sch.services.exceptions.valuation.NothingChangedException;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.Local;
@@ -49,6 +52,7 @@ import javax.ejb.Local;
 /**
  *
  * @author hege
+ * @author messo
  */
 @Local
 public interface ValuationManagerLocal {
@@ -58,7 +62,7 @@ public interface ValuationManagerLocal {
      * 
      * @param ertekeles
      */
-    void createErtekeles(Valuation ertekeles);
+    void createValuation(Valuation ertekeles);
 
     /**
      * Egy teljes értékelést visszakeres, üzenetekkel együtt
@@ -97,7 +101,36 @@ public interface ValuationManagerLocal {
 
     List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter);
 
-    boolean ertekeleseketElbiral(Collection<ConsideredValuation> elbiralas, User felhasznalo);
+    void considerValuations(Collection<ConsideredValuation> elbiralas)
+            throws NoExplanationException, NothingChangedException, AlreadyModifiedException;
+
+    void considerValuation(ConsideredValuation v)
+            throws NoExplanationException, NothingChangedException, AlreadyModifiedException;
+
+    Valuation updateValuation(Valuation valuation)
+            throws NothingChangedException, AlreadyModifiedException;
+
+    /**
+     * Pontigényeket ment egy értékeléshez
+     * Amennyiben a pontigények már léteztek, egyesével felülírja őket.
+     *
+     * @param valuation
+     * @param igenyek
+     * @return az értékelés, aminek a pontjait szerkesztettük, ha új verzió jött létre, akkor az
+     */
+    Valuation updatePointRequests(Valuation valuation, List<PointRequest> igenyek)
+            throws AlreadyModifiedException;
+
+    /**
+     * Új belépőigényeket ment egy értékeléshez
+     * Amennyiben a belépőigények már léteztek, egyesével felülírja őket.
+     *
+     * @param valuation
+     * @param igenyek
+     * @return az értékelés, aminek a belépőit szerkesztettük, ha új verzió jött létre, akkor az
+     */
+    Valuation updateEntrantRequests(Valuation valuation, List<EntrantRequest> igenyek)
+            throws AlreadyModifiedException, NoExplanationException;
 
     /**
      * Új üzenet fűzése egy értékeléshez
@@ -135,24 +168,6 @@ public interface ValuationManagerLocal {
      * @param uzenet
      */
     void ujErtekelesUzenet(Long ertekelesId, User felado, String uzenet);
-
-    /**
-     * Pontigényeket ment egy értékeléshez
-     * Amennyiben a pontigények már léteztek, egyesével felülírja őket.
-     * 
-     * @param ertekelesId
-     * @param igenyek
-     */
-    void pontIgenyekLeadasa(Long ertekelesId, List<PointRequest> igenyek);
-
-    /**
-     * Új belépőigényeket ment egy értékeléshez
-     * Amennyiben a belépőigények már léteztek, egyesével felülírja őket.
-     * 
-     * @param ertekelesId
-     * @param igenyek false ha hibás formátumú az igénylés
-     */
-    boolean belepoIgenyekLeadasa(Long ertekelesId, List<EntrantRequest> igenyek);
 
     /**
      * Értékelést ad vissza ID alapján (de nem adja vissza az igényléseket és az üzeneteket)
@@ -214,6 +229,8 @@ public interface ValuationManagerLocal {
      */
     List<ValuationStatistic> findValuationStatisticForSemester();
 
+    List<ValuationStatistic> findValuationStatisticForVersions(Group group, Semester semester);
+
     /**
      * A megadott id-hez tartozó értékelést adja vissza úgy, hogy az tartalmazza
      * a pontigényléseket és a belépőigényléseket is.
@@ -222,10 +239,16 @@ public interface ValuationManagerLocal {
      */
     Valuation findValuations(Long valuationId);
 
-    void updateValuationText(Valuation valuation);
-
-    void updatePrinciple(Valuation valuation);
-
     List<GivenPoint> getPointsForKfbExport(Semester semester);
 
+    /**
+     * Törli a csoporthoz és az adott félévhez tartozó értékeléseket (egy értékelés több verzióját).
+     * Nem ajánlott csak teszteléshez használni, éles DB-n inkább találjunk ki erre valamit backupot.
+     *
+     * @param group
+     * @param semester
+     */
+    void deleteValuations(Group group, Semester semester);
+
+    Long findLatestVersionsId(Group group, Semester semester);
 }

@@ -28,78 +28,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package hu.sch.web.kp.entrantrequests;
+package hu.sch.web.kp.valuation.request.entrant;
 
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
-import hu.sch.domain.Valuation;
 import hu.sch.domain.User;
-import hu.sch.web.wicket.components.choosers.EntrantTypeChooser;
-import hu.sch.web.kp.valuation.Valuations;
-import hu.sch.web.kp.KorokPage;
-import hu.sch.web.wicket.util.ListDataProviderCompoundPropertyModelImpl;
+import hu.sch.domain.Valuation;
+import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
-import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
+import hu.sch.web.wicket.components.customlinks.UserLink;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 /**
  *
  * @author hege
+ * @author messo
  */
-public class EntrantRequestFiling extends KorokPage {
+public class EntrantRequestViewer extends Panel {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal ertekelesManager;
+    @EJB(name = "UserManagerBean")
+    UserManagerLocal userManager;
 
-    public EntrantRequestFiling(final Valuation ert) {
-        setHeaderLabelText("Belépőigénylések leadása");
-        //TODO jogosultság?!
-        final List<EntrantRequest> igenylista = igenyeketElokeszit(ert);
+    public EntrantRequestViewer(String id, final Valuation ert) {
+        super(id);
 
-        setDefaultModel(new CompoundPropertyModel<Valuation>(ert));
-        add(new Label("group.name"));
-        add(new Label("semester"));
-
-        Form igform = new Form("igenyekform") {
+        add(new ListView<EntrantRequest>("requests", igenyeketElokeszit(ert)) {
 
             @Override
-            protected void onSubmit() {
-                // Van-e olyan, amit indokolni kell
-                for (EntrantRequest belepoIgeny : igenylista) {
-                    if (belepoIgeny.getEntrantType() == EntrantType.AB || belepoIgeny.getEntrantType() == EntrantType.KB) {
-                        setResponsePage(new EntrantRequestExplanation(ert, igenylista));
-                        return;
-                    }
-                }
-                ertekelesManager.belepoIgenyekLeadasa(ert.getId(), igenylista);
-                getSession().info(getLocalizer().getString("info.BelepoIgenylesMentve", getParent()));
-                setResponsePage(Valuations.class);
-            }
-        };
-        igform.add(new KeepAliveBehavior());
-        IDataProvider<EntrantRequest> provider = new ListDataProviderCompoundPropertyModelImpl<EntrantRequest>(igenylista);
-        DataView<EntrantRequest> dview = new DataView<EntrantRequest>("igenyek", provider) {
-
-            @Override
-            protected void populateItem(Item<EntrantRequest> item) {
-                item.add(new Label("user.name"));
+            protected void populateItem(ListItem<EntrantRequest> item) {
+                final EntrantRequest b = item.getModelObject();
+                item.setModel(new CompoundPropertyModel<EntrantRequest>(b));
+                
+                item.add(new UserLink("userLink", b.getUser()));
                 item.add(new Label("user.nickName"));
-                EntrantTypeChooser bt = new EntrantTypeChooser("entrantType");
-                bt.setRequired(true);
-                item.add(bt);
+                item.add(new Label("entrantType"));
+                item.add(new Label("valuationText"));
             }
-        };
-
-        igform.add(dview);
-        add(igform);
+        });
     }
 
     private List<EntrantRequest> igenyeketElokeszit(Valuation ert) {

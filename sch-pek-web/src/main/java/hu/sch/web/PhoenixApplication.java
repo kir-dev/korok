@@ -62,8 +62,11 @@ import hu.sch.web.kp.svie.SvieGroupMgmt;
 import hu.sch.web.kp.svie.SvieUserMgmt;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.kp.user.UserHistory;
+import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.NewValuation;
+import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.web.kp.valuation.ValuationDetails;
+import hu.sch.web.kp.valuation.ValuationHistory;
 import hu.sch.web.kp.valuation.Valuations;
 import hu.sch.web.profile.admin.AdminPage;
 import hu.sch.web.profile.birthday.BirthDayPage;
@@ -225,7 +228,11 @@ public class PhoenixApplication extends WebApplication {
 
         mountBookmarkablePage("/korok/valuation", Valuations.class);
         mountBookmarkablePage("/korok/valuationdetails", ValuationDetails.class);
+        mountBookmarkablePage("/korok/valuationhistory", ValuationHistory.class);
         mountBookmarkablePage("/korok/newvaluation", NewValuation.class);
+
+        mountBookmarkablePage("/korok/pointrequests", PointRequests.class);
+        mountBookmarkablePage("/korok/entrantrequests", EntrantRequests.class);
 
         mountBookmarkablePage("/korok/svieaccount", SvieAccount.class);
         mountBookmarkablePage("/korok/delegates", ChangeDelegates.class);

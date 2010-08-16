@@ -1,0 +1,19 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+    <form wicket:id="igenyekform">
+        <div class="subdata">
+            <table class="withheader">
+                <tr class="headers">
+                    <th>Név</th>
+                    <th>Becenév</th>
+                    <th style="width: 145px;">Belépő típusa</th>
+                </tr>
+                <tr wicket:id="igenyek">
+                    <td><span wicket:id="user.name"/></td>
+                    <td><span wicket:id="user.nickName"/></td>
+                    <td style="padding-top: 3px; padding-bottom: 3px; width: 100px;"><select wicket:id="entrantType"/></td>
+                </tr>
+            </table>
+            <input class="btn" type="submit" value="OK"/>
+        </div>
+    </form>
+</wicket:panel>

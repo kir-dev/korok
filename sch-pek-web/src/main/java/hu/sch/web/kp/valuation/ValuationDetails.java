@@ -31,6 +31,8 @@
 
 package hu.sch.web.kp.valuation;
 
+import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
+import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationData;
@@ -40,12 +42,17 @@ import hu.sch.domain.ValuationStatus;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
+import hu.sch.services.exceptions.valuation.NoExplanationException;
+import hu.sch.services.exceptions.valuation.NothingChangedException;
 import hu.sch.web.kp.consider.ConsiderExplainPanel;
 import hu.sch.web.kp.consider.ConsiderPage;
 import hu.sch.web.wicket.components.TinyMCEContainer;
 import hu.sch.web.wicket.components.tables.ValuationTableForGroup;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
@@ -61,8 +68,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -109,10 +116,25 @@ public class ValuationDetails extends KorokPage {
     }
 
     private void init(final Valuation valuation) {
+        if (valuation.isObsolete()) {
+            Long newestVersionsId = valuationManager.findLatestVersionsId(valuation.getGroup(), valuation.getSemester());
+            error("Már van <a href=\"" + getRequestCycle().urlFor(ValuationDetails.class, new PageParameters("id=" + newestVersionsId))
+                    + "\">újabb verzió</a> ennél az értékelésnél. "
+                    + "Ezt már csak megtekinteni lehet, szerkeszteni nem!");
+        }
+
         setHeaderLabelText("Leadott értékelés - részletes nézet");
         setTitleText(String.format("Értékelések - %s (%s)", valuation.getGroup().getName(), valuation.getSemester()));
 
         setDefaultModel(new CompoundPropertyModel<Valuation>(valuation));
+
+        add(new BookmarkablePageLink("history", ValuationHistory.class, new PageParameters(new HashMap() {
+
+            {
+                put("gid", valuation.getGroupId());
+                put("sid", valuation.getSemester().getId());
+            }
+        })));
 
         // Főbb adatok
         add(new Label("group.name"));
@@ -124,6 +146,9 @@ public class ValuationDetails extends KorokPage {
         }
         add(DateLabel.forDatePattern("lastModified", "yyyy. MM. dd. kk:mm"));
         add(DateLabel.forDatePattern("lastConsidered", "yyyy. MM. dd. kk:mm"));
+        PageParameters params = new PageParameters("vid=" + valuation.getId());
+        add(new BookmarkablePageLink("pointRequests", PointRequests.class, params));
+        add(new BookmarkablePageLink("entrantRequests", EntrantRequests.class, params));
         add(new Label("entrantStatus"));
         add(new Label("pointStatus"));
 
@@ -155,32 +180,38 @@ public class ValuationDetails extends KorokPage {
         // 1. már nincsen értékelés leadás
         // 2. egy régebbi félévről származik
         // 3. ha a pontozást és belépőkérelmeket elfogadták
-        if ((!systemManager.getErtekelesIdoszak().equals(ValuationPeriod.ERTEKELESLEADAS)
+        if (systemManager.getErtekelesIdoszak() != ValuationPeriod.ERTEKELESLEADAS
                 || !systemManager.getSzemeszter().equals(valuation.getSemester())
-                || (valuation.getPointStatus().equals(ValuationStatus.ELFOGADVA)
-                && valuation.getEntrantStatus().equals(ValuationStatus.ELFOGADVA)))) {
+                || (valuation.getPointStatus() == ValuationStatus.ELFOGADVA
+                && valuation.getEntrantStatus() == ValuationStatus.ELFOGADVA)
+                || valuation.isObsolete()) {
             ajaxLinkForValuationText.setVisible(false);
             ajaxLinkForPrinciple.setVisible(false);
         }
 
         // Elbírálás
-        if (isCurrentUserJETI() && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS) {
-            ConsideredValuation cv = new ConsideredValuation(valuation);
-            Panel jetifragment = new ConsiderExplainPanel("jeti", cv) {
+        if (isCurrentUserJETI() && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS
+                && !valuation.isObsolete()) {
+            ConsideredValuation cv = new ConsideredValuation(valuation, getUser());
+            add(new ConsiderExplainPanel("jeti", cv) {
 
                 @Override
-                public void onSubmit(ConsideredValuation underConsider) {
-                    ArrayList<ConsideredValuation> list = new ArrayList<ConsideredValuation>(1);
-                    list.add(underConsider);
-                    if (valuationManager.ertekeleseketElbiral(list, getUser())) {
+                public void onSubmit(ConsideredValuation cv) {
+                    try {
+                        valuationManager.considerValuation(cv);
                         getSession().info("Az elbírálás sikeres volt.");
                         setResponsePage(ConsiderPage.class);
-                    } else {
+                    } catch (NoExplanationException ex) {
                         getSession().error("Minden elutasított értékeléshez kell indoklást mellékelni!");
+                    } catch (NothingChangedException ex) {
+                        getSession().error("Nem változtattál státuszon, ez nem elbírálás!");
+                    } catch (AlreadyModifiedException ex) {
+                        getSession().error("Valaki már módosított az értékelésen!");
+                        setResponsePage(ValuationDetails.class,
+                                new PageParameters("id=" + cv.getValuation().getId()));
                     }
                 }
-            };
-            add(jetifragment);
+            });
         } else {
             add(new EmptyPanel("jeti"));
         }
@@ -211,8 +242,24 @@ public class ValuationDetails extends KorokPage {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                Valuation valuation = (Valuation) form.getModelObject();
-                valuationManager.updateValuationText(valuation);
+                final Valuation valuation = (Valuation) form.getModelObject();
+
+                try {
+                    Valuation updated = valuationManager.updateValuation(valuation);
+                    if (!updated.getId().equals(valuation.getId())) {
+                        // ha új verziót hoztunk létre, akkor töltsük be a teljesen új
+                        // verziót tartalmazó lapot.
+                        setResponsePage(ValuationDetails.class, new PageParameters("id="+updated.getId()));
+                        return;
+                    }
+                } catch (NothingChangedException ex) {
+                    // nem gond.
+                } catch (AlreadyModifiedException ex) {
+                    // frissítsük a lapot.
+                    setResponsePage(ValuationDetails.class, new PageParameters("id="+valuation.getId()));
+                    return;
+                }
+
                 label.setVisible(true);
                 form.setVisible(false);
                 if (target != null) {
@@ -262,8 +309,24 @@ public class ValuationDetails extends KorokPage {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                Valuation valuation = (Valuation) form.getModelObject();
-                valuationManager.updatePrinciple(valuation);
+                final Valuation valuation = (Valuation) form.getModelObject();
+
+                try {
+                    Valuation updated = valuationManager.updateValuation(valuation);
+                    if (!updated.getId().equals(valuation.getId())) {
+                        // ha új verziót hoztunk létre, akkor töltsük be a teljesen új
+                        // verziót tartalmazó lapot.
+                        setResponsePage(ValuationDetails.class, new PageParameters("id="+updated.getId()));
+                        return;
+                    }
+                } catch (NothingChangedException ex) {
+                    // nem gond.
+                } catch (AlreadyModifiedException ex) {
+                    // frissítsük a lapot.
+                    setResponsePage(ValuationDetails.class, new PageParameters("id="+valuation.getId()));
+                    return;
+                }
+
                 label.setVisible(true);
                 form.setVisible(false);
                 if (target != null) {

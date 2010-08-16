@@ -28,26 +28,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package hu.sch.web.kp.pointrequests;
+package hu.sch.web.kp.valuation.request.point;
 
 import hu.sch.domain.Valuation;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
-import hu.sch.web.kp.valuation.Valuations;
-import hu.sch.web.kp.KorokPage;
+import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
+import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
@@ -56,45 +61,38 @@ import org.apache.wicket.validation.validator.RangeValidator;
 /**
  *
  * @author hege
+ * @author messo
  */
-public class PointRequestFiling extends KorokPage {
+public class PointRequestEditor extends Panel {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
-    final List<PointRequest> requestList;
+    @EJB(name = "UserManagerBean")
+    UserManagerLocal userManager;
 
-    public PointRequestFiling(final Valuation val) {
-        setHeaderLabelText("Pontigénylés leadása");
-        //TODO jogosultság?!
-        //szerintem nem kell ide, mivel nem könyvjelzőzhető az oldal
-        requestList = prepareRequests(val);
-        initComponents(val);
-    }
+    public PointRequestEditor(String id, final Valuation val) {
+        super(id);
 
-    public PointRequestFiling(Valuation val, List<PointRequest> pointList) {
-        requestList = pointList;
-        initComponents(val);
-    }
-
-    public void initComponents(final Valuation ert) {
-        final Long valuationId = ert.getId();
-        setDefaultModel(new CompoundPropertyModel(ert));
-        add(new Label("group.name"));
-        add(new Label("semester"));
+        final List<PointRequest> requestList = prepareRequests(val);
+        final Long valuationId = val.getId();
 
         // Űrlap létrehozása
-        Form pointRequestsForm = new Form("pointRequestsForm") {
+        Form<Valuation> pointRequestsForm = new Form<Valuation>("pointRequestsForm", new Model<Valuation>(val)) {
 
             @Override
             protected void onSubmit() {
-                // pontok tárolása
-                valuationManager.pontIgenyekLeadasa(valuationId, requestList);
-                getSession().info(getLocalizer().getString("info.PontIgenylesMentve", this));
-                setResponsePage(Valuations.class);
-                return;
+                final Valuation valuation = getModelObject();
+                try {
+                    // pontok tárolása
+                    Valuation v = valuationManager.updatePointRequests(valuation, requestList);
+                    getSession().info(getLocalizer().getString("info.PontIgenylesMentve", this));
+                    setResponsePage(ValuationDetails.class, new PageParameters("id=" + v.getId()));
+                } catch (AlreadyModifiedException ex) {
+                    getSession().error("Valaki már módosított az értékelésen, így lehet, hogy a pontokon is!");
+                    setResponsePage(ValuationDetails.class, new PageParameters("id=" + valuation.getId()));
+                }
             }
         };
-
         pointRequestsForm.add(new KeepAliveBehavior());
 
         // Bevitelhez táblázat létrehozása
@@ -118,7 +116,7 @@ public class PointRequestFiling extends KorokPage {
                 item.add(new Label("user.nickName"));
                 TextField<Integer> pont = new TextField<Integer>("point");
                 //csoportfüggő validátor hozzácsatolása
-                if (ert.getGroup().getId().equals(SCH_QPA_ID)) {
+                if (val.getGroupId().equals(SCH_QPA_ID)) {
                     pont.add(QpaPontValidator);
                 } else {
                     pont.add(pontValidator);
@@ -145,7 +143,7 @@ public class PointRequestFiling extends KorokPage {
 
     private List<PointRequest> prepareRequests(Valuation ert) {
         List<User> members =
-                userManager.getCsoporttagokWithoutOregtagok(ert.getGroup().getId());
+                userManager.getCsoporttagokWithoutOregtagok(ert.getGroupId());
         List<PointRequest> pointRequests =
                 valuationManager.findPontIgenyekForErtekeles(ert.getId());
 
@@ -154,7 +152,7 @@ public class PointRequestFiling extends KorokPage {
                     new HashSet<Long>(pointRequests.size());
 
             for (PointRequest p : pointRequests) {
-                alreadyAdded.add(p.getUser().getId());
+                alreadyAdded.add(p.getUserId());
             }
 
             for (User f : members) {

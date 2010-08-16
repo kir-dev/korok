@@ -32,6 +32,7 @@
 package hu.sch.web.kp.consider;
 
 import hu.sch.domain.ConsideredValuation;
+import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
@@ -39,11 +40,11 @@ import hu.sch.domain.ValuationStatus;
 import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.kp.valuation.ValuationMessages;
-import hu.sch.web.kp.valuation.EntrantRequestViewer;
-import hu.sch.web.kp.valuation.PointRequestViewer;
 import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
+import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,11 +52,13 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -99,6 +102,8 @@ public class ConsiderPage extends KorokPage {
         IDataProvider<ValuationStatistic> dp = new ValuationStatisticDataProvider(
                 valuationManager.findValuationStatisticForSemester());
 
+        final User user = getUser();
+
         Form form = new Form("considerForm") {
 
             @Override
@@ -134,7 +139,7 @@ public class ConsiderPage extends KorokPage {
 
                 ConsideredValuation cv = null;
                 if (!getUnderConsidering().containsKey(val.getId())) {
-                    cv = new ConsideredValuation(val, val.getPointStatus(), val.getEntrantStatus());
+                    cv = new ConsideredValuation(val, val.getPointStatus(), val.getEntrantStatus(), user);
                     getUnderConsidering().put(val.getId(), cv);
                 } else {
                     cv = getUnderConsidering().get(val.getId());
@@ -149,56 +154,27 @@ public class ConsiderPage extends KorokPage {
                 };
                 item.add(valuationLink);
                 valuationLink.add(new Label("valuation.group.name"));
-                Link givenKDOLink = new Link("givenKDOLink") {
 
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EntrantRequestViewer(val));
-                    }
-                };
+                PageParameters params = new PageParameters("vid=" + val.getId());
+
+                Link givenKDOLink = new BookmarkablePageLink("givenKDOLink", EntrantRequests.class, params);
                 givenKDOLink.add(new Label("givenKDO"));
-
-                Link givenKBLink = new Link("givenKBLink") {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EntrantRequestViewer(val));
-                    }
-                };
-                givenKBLink.add(new Label("givenKB"));
-
-                Link givenABLink = new Link("givenABLink") {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EntrantRequestViewer(val));
-                    }
-                };
-                givenABLink.add(new Label("givenAB"));
-
-                Link pointLink = new Link("pointLink") {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new PointRequestViewer(val));
-                    }
-                };
-                pointLink.add(new Label("averagePoint"));
-
-                Link summaPointLink = new Link("summaPointLink") {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new PointRequestViewer(val));
-                    }
-                };
-                summaPointLink.add(new Label("summaPoint"));
-
                 item.add(givenKDOLink);
+
+                Link givenKBLink = new BookmarkablePageLink("givenKBLink", EntrantRequests.class, params);
+                givenKBLink.add(new Label("givenKB"));
                 item.add(givenKBLink);
+
+                Link givenABLink = new BookmarkablePageLink("givenABLink", EntrantRequests.class, params);
+                givenABLink.add(new Label("givenAB"));
                 item.add(givenABLink);
 
+                Link pointLink = new BookmarkablePageLink("pointLink", PointRequests.class, params);
+                pointLink.add(new Label("averagePoint"));
                 item.add(pointLink);
+
+                Link summaPointLink = new BookmarkablePageLink("summaPointLink", PointRequests.class, params);
+                summaPointLink.add(new Label("summaPoint"));
                 item.add(summaPointLink);
 
                 Link messagesLink = new Link("messagesLink") {
