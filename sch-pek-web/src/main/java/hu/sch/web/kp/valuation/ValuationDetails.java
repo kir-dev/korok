@@ -47,12 +47,11 @@ import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
 import hu.sch.web.kp.consider.ConsiderExplainPanel;
 import hu.sch.web.kp.consider.ConsiderPage;
+import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.wicket.components.TinyMCEContainer;
 import hu.sch.web.wicket.components.tables.ValuationTableForGroup;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
@@ -135,6 +134,7 @@ public class ValuationDetails extends KorokPage {
                 put("sid", valuation.getSemester().getId());
             }
         })));
+        add(ValuationMessages.getLink("messages", valuation));
 
         // Főbb adatok
         add(new Label("group.name"));

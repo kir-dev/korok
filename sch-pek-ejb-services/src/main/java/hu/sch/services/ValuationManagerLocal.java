@@ -40,6 +40,7 @@ import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.ApprovedEntrant;
 import hu.sch.domain.GivenPoint;
 import hu.sch.domain.ValuationData;
+import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.User;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
@@ -63,14 +64,6 @@ public interface ValuationManagerLocal {
      * @param ertekeles
      */
     void createValuation(Valuation ertekeles);
-
-    /**
-     * Egy teljes értékelést visszakeres, üzenetekkel együtt
-     * 
-     * @param ertekelesId
-     * @return Értékelés üzenetekkel együtt
-     */
-    Valuation getErtekelesWithUzenetek(Long ertekelesId);
 
     /**
      * Értékelés keresése csoporthoz, adott szemeszterben
@@ -133,13 +126,20 @@ public interface ValuationManagerLocal {
             throws AlreadyModifiedException, NoExplanationException;
 
     /**
-     * Új üzenet fűzése egy értékeléshez
+     * Üzenetek lekérése az adott csoport adott félévéhez tartozó értékeléséhez.
      * 
-     * @param ertekelesId
-     * @param uzeno
-     * @param uzenetStr
+     * @param group
+     * @param semester
+     * @return üzenetek listája
      */
-    void addMessageToValuation(Long ertekelesId, User uzeno, String uzenetStr);
+    List<ValuationMessage> getMessages(Group group, Semester semester);
+
+    /**
+     * Az előkészített üzenetet elmenti és értesítő emaileket küld ki.
+     *
+     * @param msg az üzenet, amit menteni szeretnénk
+     */
+    void addNewMessage(ValuationMessage msg);
 
     /**
      * Új értékelés létrehozása az aktuális szemeszterben
@@ -159,15 +159,6 @@ public interface ValuationManagerLocal {
      * @return Az adott kör leadhat-e értékelést
      */
     boolean isErtekelesLeadhato(Group group);
-
-    /**
-     * Új üzenetet fűz egy értékeléshez
-     * 
-     * @param ertekelesId
-     * @param felado
-     * @param uzenet
-     */
-    void ujErtekelesUzenet(Long ertekelesId, User felado, String uzenet);
 
     /**
      * Értékelést ad vissza ID alapján (de nem adja vissza az igényléseket és az üzeneteket)

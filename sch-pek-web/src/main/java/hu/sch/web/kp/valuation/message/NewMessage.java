@@ -28,62 +28,63 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package hu.sch.web.kp.valuation.message;
 
-package hu.sch.web.kp.valuation;
-
+import hu.sch.domain.Group;
+import hu.sch.domain.Semester;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationMessage;
-import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
-import java.util.List;
+import java.util.HashMap;
 import javax.ejb.EJB;
-import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  *
  * @author hege
+ * @author messo
  */
-public class ValuationMessages extends KorokPage {
+class NewMessage extends KorokPage {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
+    private String message = "";
 
-    public ValuationMessages(final Long valuationId) {
-        setHeaderLabelText("Üzenetek");
-        Valuation valuation = valuationManager.getErtekelesWithUzenetek(valuationId);
-        valuation.sortMessages();
-        List<ValuationMessage> messages = valuation.getMessages();
-        if (messages.isEmpty()) {
-            info(getLocalizer().getString("info.NincsUzenet", this));
-        }
+    public NewMessage(final Group group, final Semester semester) {
+        setHeaderLabelText("Új üzenet küldése");
+        add(new Label("groupName", group.getName()));
 
-        ListView<ValuationMessage> uzenetekView = new ListView<ValuationMessage>("uzenetek", messages) {
+        ValuationMessage vm = new ValuationMessage();
+        vm.setGroup(group);
+        vm.setSender(getUser());
+        vm.setSemester(semester);
+        setDefaultModel(new CompoundPropertyModel<ValuationMessage>(vm));
 
-            @Override
-            protected void populateItem(ListItem<ValuationMessage> item) {
-                ValuationMessage u = item.getModelObject();
-                item.setModel(new CompoundPropertyModel<ValuationMessage>(u));
-                item.add(new UserLink("sender", u.getSender()));
-                item.add(DateLabel.forDatePattern("date", "yyyy.MM.dd. kk:mm"));
-                item.add(new MultiLineLabel("message"));
-            }
-        };
-        add(uzenetekView);
-
-        Link ujuzenet = new Link("newMessageLink") {
+        Form<ValuationMessage> form = new Form<ValuationMessage>("newMessageForm",
+                new Model<ValuationMessage>(vm)) {
 
             @Override
-            public void onClick() {
-                setResponsePage(new NewMessage(valuationId));
+            protected void onSubmit() {
+                valuationManager.addNewMessage(getModelObject());
+                getSession().info(getLocalizer().getString("info.UzenetMentve", this));
+                setResponsePage(ValuationMessages.class, new PageParameters(new HashMap<String, String>() {
+
+                    {
+                        put("gid", group.getId().toString());
+                        put("sid", semester.getId());
+                    }
+                }));
             }
         };
-        ujuzenet.setVisible(systemManager.getSzemeszter().equals(valuation.getSemester()));
-        add(ujuzenet);
+        add(form);
+
+        form.add(new TextArea("message").setRequired(true));
     }
 }

@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.GivenPoint;
@@ -190,6 +189,10 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         // innentől, ha szerkeszt a körvezető, akkor új verzió jön létre
         v.setConsidered(true);
 
+        // mentsük el, az előző állapotokat.
+        ValuationStatus prevPS = v.getPointStatus();
+        ValuationStatus prevES = v.getEntrantStatus();
+
         if (cv.getPointStatus() == ValuationStatus.ELFOGADVA
                 || cv.getPointStatus() == ValuationStatus.ELUTASITVA) {
             v.setPointStatus(cv.getPointStatus());
@@ -200,13 +203,36 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
 
         try {
-            System.err.println(cv.getExplanation() + ": flush");
+            //System.err.println(cv.getExplanation() + ": flush");
             em.flush();
-            System.err.println(cv.getExplanation() + ": sikeres");
+            //System.err.println(cv.getExplanation() + ": sikeres");
         } catch (OptimisticLockException ex) {
-            System.err.println(cv.getExplanation() + ": sikertelen (optlock)");
+            //System.err.println(cv.getExplanation() + ": sikertelen (optlock)");
             throw new AlreadyModifiedException();
         }
+
+        // sikeres az elbírálás, menjen a rendszer által generált üzenet.
+        StringBuilder sb = new StringBuilder();
+        sb.append("Az értékelés elbírálva:");
+        sb.append("\nPontkérelem státusza: ");
+        if (prevPS == v.getPointStatus()) {
+            sb.append("nem változott");
+        } else {
+            sb.append(prevPS);
+            sb.append(" => ");
+            sb.append(v.getPointStatus());
+        }
+        sb.append("\nBelépőkérelem státusza: ");
+        if (prevES == v.getEntrantStatus()) {
+            sb.append("nem változott");
+        } else {
+            sb.append(prevES);
+            sb.append(" => ");
+            sb.append(v.getEntrantStatus());
+        }
+        sb.append("\nIndoklás:\n");
+        sb.append(v.getExplanation());
+        addNewSystemGeneratedMessage(v, sb.toString(), true);
     }
 
     @Override
@@ -239,10 +265,13 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
         try {
             em.flush();
-            return valuationForUpdate;
         } catch (OptimisticLockException ex) {
             throw new AlreadyModifiedException();
         }
+
+        addNewSystemGeneratedMessage(v, "A szöveges értékelés és/vagy a pontozási elvek megváltoztak.", false);
+
+        return valuationForUpdate;
     }
 
     @Override
@@ -324,6 +353,9 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         } catch (OptimisticLockException ex) {
             throw new AlreadyModifiedException();
         }
+
+        addNewSystemGeneratedMessage(v, "A pontkérelmek megváltoztak.", false);
+
         return valuation;
     }
 
@@ -395,6 +427,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             throw new AlreadyModifiedException();
         }
 
+        addNewSystemGeneratedMessage(v, "A belépőkérelmek megváltoztak.", false);
+
         return valuation;
     }
 
@@ -414,47 +448,56 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public void addMessageToValuation(Long ertekelesId, User uzeno, String uzenetStr) {
-        Valuation ertekeles = em.find(Valuation.class, ertekelesId);
+    public List<ValuationMessage> getMessages(Group group, Semester semester) {
+        Query q = em.createNamedQuery(ValuationMessage.listMessages);
+        q.setParameter("group", group);
+        q.setParameter("semester", semester);
 
-        ValuationMessage uzenet = new ValuationMessage();
-        uzenet.setMessage(uzenetStr);
-        uzenet.setSender(uzeno);
-        uzenet.setDate(new Date());
-        uzenet.setValuation(ertekeles);
-        ertekeles.getMessages().add(uzenet);
-        ertekeles.setLastModified(new Date());
-
-        em.persist(uzenet);
-        em.merge(ertekeles);
-
-        // E-mail értesítés küldése az üzenetről
-        String emailText = uzenet.toString() + "\n\n\n"
-                + "Az értékeléseidet megtekintheted a https://korok.sch.bme.hu/korok/valuation link alatt.\n"
-                + "Ez egy automatikusan generált e-mail.";
-
-        // adott kör körezetőionek kigyűjtése és levelek kiküldése részükre
-        User groupLeader = userManager.getGroupLeaderForGroup(ertekeles.getGroup().getId());
-        if (groupLeader != null) {
-            mailManager.sendEmail(groupLeader.getEmailAddress(), "Módosult értékelés", emailText);
-        }
+        return q.getResultList();
     }
 
     @Override
-    public Valuation getErtekelesWithUzenetek(Long ertekelesId) {
-        Query q = em.createNamedQuery(Valuation.findByIdMessageJoined);
-        q.setParameter("id", ertekelesId);
+    public void addNewMessage(ValuationMessage msg) {
+        em.persist(msg);
 
-        return (Valuation) q.getSingleResult();
-    }
+        // e-mail küldés a jetinek vagy az adott kör vezetőjének
+        String emailTo = null;
+        String emailText = null;
 
-    private void add(Valuation ertekeles, ValuationMessage ertekelesUzenet) {
-        //em.refresh(valuation);
-        ertekeles.getMessages().add(ertekelesUzenet);
-        ertekelesUzenet.setValuation(ertekeles);
-        ertekeles.setLastModified(new Date());
-
-        em.persist(ertekelesUzenet);
+        try {
+            if (isJETi(msg.getSender()) && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS) {
+                // a JETI a feladó
+                System.out.println("JETI a feladó");
+                // az értékelt group körvezetőjének a mail címének kikeresése
+                User groupLeader = userManager.getGroupLeaderForGroup(msg.getGroupId());
+                if (groupLeader != null) {
+                    emailTo = groupLeader.getEmailAddress();
+                }
+                emailText = "Kedves Körvezető!\n\nA SVIE Választmány a következő üzenetet küldte Neked a(z) "
+                        + msg.getGroup().getName() + " köröd értékeléséhez:\n" + msg.getMessage() + "\n\n\n"
+                        + "Az értékeléseidet megtekintheted a https://korok.sch.bme.hu/korok/valuation link alatt.\n"
+                        + "Ez egy automatikusan generált e-mail.";
+            } else {
+                // nem a JETI a feladó
+                // jeti körvezetőjének a mail címének kikeresése
+                User leader = userManager.getGroupLeaderForGroup(156L);
+                if (leader != null) {
+                    emailTo = leader.getEmailAddress();
+                }
+                emailText = "Kedves SVIE Választmány Elnök!\n\nA(z) \"" + msg.getGroup().getName() + "\" körvezetője a következő üzenetet küldte az értékelés kapcsán:\n" + msg.getMessage() + "\n\n\n"
+                        + "A kör értékelését megtekintheted a https://korok.sch.bme.hu/korok/consider link alatt.\n"
+                        + "Ez egy automatikusan generált e-mail.";
+            }
+        } catch (Exception ex) {
+            logger.error("Hiba történt miközben a címzettet kerestük az üzenet-értesítőhöz.", ex);
+        }
+        if (emailTo != null) {
+            try {
+                mailManager.sendEmail(emailTo, "Új üzeneted érkezett", emailText); // emailTo
+            } catch (Exception ex) {
+                logger.error("Nem sikerült elküldeni a levelet a következőnek: " + emailTo, ex);
+            }
+        }
     }
 
     @Override
@@ -517,58 +560,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
 
         return false;
-    }
-
-    @Override
-    public void ujErtekelesUzenet(Long ertekelesId, User felado, String uzenet) {
-        Valuation e = findErtekelesById(ertekelesId);
-        ValuationMessage uz = new ValuationMessage();
-
-        uz.setSender(felado);
-        uz.setMessage(uzenet);
-        uz.setDate(new Date());
-
-        add(e, uz);
-
-        // e-mail küldés a jetinek vagy az adott kör vezetőjének
-        String emailTo = null;
-        String emailText = null;
-
-        try {
-            if (isJETi(felado)) {
-                // a JETI a feladó
-                System.out.println("JETI a feladó");
-                // az értékelt group körvezetőjének a mail címének kikeresése
-                User groupLeader = userManager.getGroupLeaderForGroup(e.getGroup().getId());
-                if (groupLeader != null) {
-                    emailTo = groupLeader.getEmailAddress();
-                }
-                emailText = "Kedves Körvezető!\n\nA SVIE Választmány a következő üzenetet küldte Neked:\n" + uzenet.toString() + "\n\n\n"
-                        + "Az értékeléseidet megtekintheted a https://korok.sch.bme.hu/korok/valuation link alatt.\n"
-                        + "Ez egy automatikusan generált e-mail.";
-            } else {
-                // nem a JETI a feladó
-                // jeti körvezetőjének a mail címének kikeresése
-                User leader = userManager.getGroupLeaderForGroup(156L);
-                if (leader != null) {
-                    emailTo = leader.getEmailAddress();
-                }
-                emailText = "Kedves SVIE Választmány Elnök!\n\nA(z) " + e.getGroup().getName() + " a következő üzenetet küldte az értékelés kapcsán:\n" + uzenet.toString() + "\n\n\n"
-                        + "A kör értékelését megtekintheted a https://korok.sch.bme.hu/korok/consider link alatt.\n"
-                        + "Ez egy automatikusan generált e-mail.";
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        System.out.println(emailTo);
-        if (emailTo != null) {
-            try {
-                mailManager.sendEmail(emailTo, "Új üzeneted érkezett", emailText); // emailTo
-            } catch (Exception ex) {
-                System.out.println("Nem sikerült elküldeni a levelet a következőnek: " + emailTo);
-                ex.printStackTrace();
-            }
-        }
     }
 
     // megmondja, hogy az adott user JETis-e
@@ -755,6 +746,36 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             return (Long) q.getSingleResult();
         } catch (NoResultException ignored) {
             return null;
+        }
+    }
+
+    private void addNewSystemGeneratedMessage(Valuation v, String msg, boolean sendMailToGL) {
+        ValuationMessage vm = new ValuationMessage();
+        vm.setFromSystem(true);
+        vm.setGroup(v.getGroup());
+        vm.setSemester(v.getSemester());
+        vm.setMessage(msg);
+        em.persist(vm);
+
+        String address = null;
+        String emailText = null;
+
+        if (sendMailToGL) {
+            User groupLeader = userManager.getGroupLeaderForGroup(vm.getGroupId());
+            if (groupLeader != null) {
+                address = groupLeader.getEmailAddress();
+            }
+            emailText = "Kedves Körvezető!\n\nAz értékelésedhez az alábbi rendszer által generált üzenet érkezett a(z) "
+                    + vm.getGroup().getName() + " köröd értékeléséhez:\n" + vm.getMessage() + "\n\n\n"
+                    + "Az értékeléseidet megtekintheted a https://korok.sch.bme.hu/korok/valuation link alatt.\n"
+                    + "Ez egy automatikusan generált e-mail.";
+        }
+        if (address != null) {
+            try {
+                mailManager.sendEmail(address, "Új üzeneted érkezett", emailText); // emailTo
+            } catch (Exception ex) {
+                logger.error("Nem sikerült elküldeni a levelet a következőnek: " + address, ex);
+            }
         }
     }
 }

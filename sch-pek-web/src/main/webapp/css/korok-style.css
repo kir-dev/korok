@@ -27,7 +27,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+*/
 
 body {
     background: #CCDCE6 url('../images/bckgBody-korok.gif') top center repeat-x;
@@ -121,20 +121,29 @@ input.inputError{
     border: 2px solid #7D3434;
 }
 input.btn {
+    background-color: #517D9D;
     font: bold 14px verdana, arial, sans;
     color: #ffffff;
-    background: #517D9D;
     border: 1px solid #345F7D;
-    height: 22px;
-    padding: 0 7px 3px 7px;
+    padding: 0px 7px 2px 7px;
+    vertical-align: middle;
+}
+input.save-btn {
+    background: #517D9D url('/images/icons/accept.png') no-repeat 5px center;
+    padding-left: 26px;
 }
 a.btn-like {
     font: bold 14px verdana, arial, sans;
     color: #ffffff;
     background: #517D9D;
     border: 1px solid #345F7D;
-    height: 22px;
-    padding: 1px 7px 2px 7px;
+    padding: 2px 7px;
+    vertical-align: middle;
+}
+a.btn-like img {
+    padding: 0px 7px 2px 0px;
+    vertical-align: middle;
+    border: none;
 }
 form label {
     display: block;
@@ -274,7 +283,7 @@ h5 {
 }
 
 .subdata table {
-width:100%;
+    width:100%;
 }
 
 /* Regisztrációs varázsló */
@@ -284,34 +293,58 @@ width:100%;
     padding-top: 24px;
 }
 .wicketExtensionsWizardInnerTable {
-	width: 600px;
+    width: 600px;
 }
 .wicketExtensionsWizardHeaderRow {
-	height: 20px;
+    height: 20px;
 }
 .wicketExtensionsWizardHeaderSummary {
-	font-style: italic;
-        padding-bottom: 20px;
+    font-style: italic;
+    padding-bottom: 20px;
 }
 .wicketExtensionsWizardView {
-	border: thin solid black;
+    border: thin solid black;
 }
 .wicketExtensionsWizardViewInner {
-	margin-left: 30px;
+    margin-left: 30px;
 }
 .wicketExtensionsWizardViewInner table label {
     display: block;
 }
 .wicketExtensionsWizardViewRow {
-	height: 140px;
+    height: 140px;
 }
 .wicketExtensionsWizardButtonBar {
-	text-align: right;
+    text-align: right;
 }
 .wicketExtensionsWizardButtonBar input {
-	width: 80px;
+    width: 80px;
 }
 .wicketExtensionsWizardHeaderTitle {
-	font-weight: bold;
-        padding-bottom: 5px;
+    font-weight: bold;
+    padding-bottom: 5px;
+}
+
+div.messageBox {
+    margin-top: 15px;
+    border: 1px solid #CBE5F7;
+}
+
+div.messageHeader {
+    background: #D9EBF9;
+    padding: 5px;
+}
+
+div.fromSystem {
+    background: #6A93AE;
+    color: #ffffff;
+}
+
+div.messageHeader a {
+    border-bottom: none;
+}
+
+div.messageContent {
+    padding: 7px;
+    background-color: #ffffff;
 }

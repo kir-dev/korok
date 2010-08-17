@@ -28,9 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.valuation;
 
+import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.domain.Group;
@@ -197,13 +197,7 @@ public class Valuations extends KorokPage {
                     ert.add(new Label("semester"));
                     item.add(ert);
 
-                    item.add(new Link("messagesLink") {
-
-                        @Override
-                        public void onClick() {
-                            setResponsePage(new ValuationMessages(v.getId()));
-                        }
-                    });
+                    item.add(ValuationMessages.getLink("messagesLink", v));
 
                     item.add(new BookmarkablePageLink("pointLink",
                             PointRequests.class,

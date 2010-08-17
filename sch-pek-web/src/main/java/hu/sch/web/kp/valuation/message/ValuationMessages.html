@@ -1,0 +1,29 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+    <div id="ViewNavigation">
+        <span>Üzenetek</span>
+        <ul>
+            <li><a wicket:id="latestVersion">Legújabb verzió</a></li>
+            <li><a wicket:id="history">Értékelés története</a></li>
+        </ul>
+    </div>
+
+    <h2 wicket:id="groupName" />
+    <h3>Szemeszter: <span wicket:id="semester">2000/2001 tavasz</span></h3>
+
+    <div style="margin: 15px 0px">
+        <a class="btn-like" wicket:id="newMessageLink"><img src="/images/icons/email_add.png" /><wicket:message key="link.ujuzenet"/></a><br/>
+    </div>
+
+    <div class="messageBox" wicket:id="uzenetek">
+        <div class="messageHeader" wicket:id="messageHeader">
+            <span wicket:id="sender" style="float: left"/>
+            <span style="float: right" wicket:id="date"></span>
+            <div style="clear: both"></div>
+        </div>
+        <div class="messageContent" wicket:id="message">
+            üzenet
+        </div>
+    </div>
+</wicket:extend>
+
+

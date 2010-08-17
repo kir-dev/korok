@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -36,12 +35,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -55,13 +57,21 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "ertekeles_uzenet")
+@NamedQueries({
+    @NamedQuery(name = ValuationMessage.listMessages,
+    query = "SELECT m FROM ValuationMessage m WHERE m.semester=:semester AND m.group=:group ORDER BY m.id DESC")
+})
 public class ValuationMessage implements Serializable {
 
+    public static final String listMessages = "listMessages";
     protected Long id;
-    protected Valuation valuation;
+    protected Group group;
+    protected Long groupId;
+    protected Semester semester;
     protected User sender;
     protected Date date;
     protected String message;
+    protected boolean fromSystem;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "feladas_ido")
@@ -74,13 +84,34 @@ public class ValuationMessage implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ertekeles_id")
-    public Valuation getValuation() {
-        return valuation;
+    @JoinColumn(name = "group_id")
+    public Group getGroup() {
+        return group;
     }
 
-    public void setValuation(Valuation valuation) {
-        this.valuation = valuation;
+    public void setGroup(Group group) {
+        this.group = group;
+        if (group != null) {
+            groupId = group.getId();
+        }
+    }
+
+    @Column(name = "group_id", insertable = false, updatable = false)
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    @Embedded
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 
     @ManyToOne
@@ -110,6 +141,15 @@ public class ValuationMessage implements Serializable {
 
     public void setMessage(String uzenet) {
         this.message = uzenet;
+    }
+
+    @Column(name = "from_system")
+    public boolean isFromSystem() {
+        return fromSystem;
+    }
+
+    public void setFromSystem(boolean fromSystem) {
+        this.fromSystem = fromSystem;
     }
 
     @PrePersist

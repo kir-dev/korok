@@ -28,15 +28,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.consider;
 
 import hu.sch.domain.ConsideredValuation;
-import hu.sch.web.kp.valuation.ValuationMessages;
+import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
+import java.util.HashMap;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -62,7 +64,8 @@ public abstract class ConsiderExplainPanel extends Panel {
         Form<ConsideredValuation> considerForm;
 
         // Mentés
-        add(considerForm = new Form<ConsideredValuation>("considerExplainForm") {
+        add(considerForm = new Form<ConsideredValuation>("considerExplainForm",
+                new CompoundPropertyModel<ConsideredValuation>(underConsider)) {
 
             @Override
             protected void onSubmit() {
@@ -72,16 +75,9 @@ public abstract class ConsiderExplainPanel extends Panel {
         considerForm.add(new KeepAliveBehavior());
 
         // Üzenetek megtekintése
-        considerForm.add(new Link<ValuationMessages>("messages") {
-
-            @Override
-            public void onClick() {
-                setResponsePage(new ValuationMessages(underConsider.getValuation().getId()));
-            }
-        });
+        considerForm.add(ValuationMessages.getLink("messages", underConsider.getValuation()));
 
         // Elbírálás - indoklás
-        considerForm.setModel(new CompoundPropertyModel<ConsideredValuation>(underConsider));
         considerForm.add(new ValuationStatusChooser("pointStatus"));
         considerForm.add(new ValuationStatusChooser("entrantStatus"));
         considerForm.add(new TextArea<String>("explanation"));

@@ -68,6 +68,7 @@ import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.kp.valuation.ValuationHistory;
 import hu.sch.web.kp.valuation.Valuations;
+import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.profile.admin.AdminPage;
 import hu.sch.web.profile.birthday.BirthDayPage;
 import hu.sch.web.profile.confirmation.ConfirmPage;
@@ -230,6 +231,7 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/korok/valuationdetails", ValuationDetails.class);
         mountBookmarkablePage("/korok/valuationhistory", ValuationHistory.class);
         mountBookmarkablePage("/korok/newvaluation", NewValuation.class);
+        mountBookmarkablePage("/korok/valuationmessages", ValuationMessages.class);
 
         mountBookmarkablePage("/korok/pointrequests", PointRequests.class);
         mountBookmarkablePage("/korok/entrantrequests", EntrantRequests.class);

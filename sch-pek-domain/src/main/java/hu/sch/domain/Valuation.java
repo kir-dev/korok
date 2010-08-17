@@ -28,12 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -75,9 +72,6 @@ import javax.persistence.Version;
     @NamedQuery(name = Valuation.findIdBySemesterAndGroup,
     query = "SELECT v.id FROM Valuation v WHERE v.semester=:semester "
     + "AND v.group=:group AND v.nextVersion IS NULL"),
-    @NamedQuery(name = Valuation.findByIdMessageJoined,
-    query = "SELECT v FROM Valuation v LEFT JOIN FETCH v.messages "
-    + "WHERE v.id=:id"),
     @NamedQuery(name = Valuation.findByGroup,
     query = "SELECT v FROM Valuation v "
     + "LEFT JOIN FETCH v.sender "
@@ -93,7 +87,6 @@ import javax.persistence.Version;
 })
 public class Valuation implements Serializable {
 
-    public static final String findByIdMessageJoined = "findValuationByIdMessageJoined";
     public static final String findBySemesterAndGroup = "findValuationBySemesterAndGroup";
     public static final String findIdBySemesterAndGroup = "findValuationIdBySemesterAndGroup";
     public static final String findByGroup = "findValuationByGroup";
@@ -129,7 +122,6 @@ public class Valuation implements Serializable {
     protected List<PointRequest> pointRequests;
     protected Set<EntrantRequest> entrantRequestsAsSet;
     protected Set<PointRequest> pointRequestsAsSet;
-    protected List<ValuationMessage> messages;
     protected Float averagePoint;
     protected int optLock;
     protected boolean considered;
@@ -356,15 +348,6 @@ public class Valuation implements Serializable {
         this.consideredBy = consideredBy;
     }
 
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
-    public List<ValuationMessage> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<ValuationMessage> messages) {
-        this.messages = messages;
-    }
-
     @Transient
     public Float getAveragePoint() {
         return averagePoint;
@@ -372,19 +355,6 @@ public class Valuation implements Serializable {
 
     public void setAveragePoint(Float averagePoint) {
         this.averagePoint = averagePoint;
-    }
-
-    public void sortMessages() {
-        if (this.getMessages() != null) {
-            Collections.sort(this.getMessages(),
-                    new Comparator<ValuationMessage>() {
-
-                        @Override
-                        public int compare(ValuationMessage o1, ValuationMessage o2) {
-                            return o1.getDate().compareTo(o2.getDate()) * -1;
-                        }
-                    });
-        }
     }
 
     public boolean entrantsAreAccepted() {
@@ -429,7 +399,7 @@ public class Valuation implements Serializable {
         Set<PointRequest> pReqs = getPointRequestsAsSet();
         Set<PointRequest> result = new HashSet<PointRequest>(pReqs.size());
 
-        for(PointRequest pr : pReqs) {
+        for (PointRequest pr : pReqs) {
             result.add(pr.copy(v));
         }
 
@@ -446,7 +416,7 @@ public class Valuation implements Serializable {
         Set<EntrantRequest> eReqs = getEntrantRequestsAsSet();
         Set<EntrantRequest> result = new HashSet<EntrantRequest>(eReqs.size());
 
-        for(EntrantRequest er : eReqs) {
+        for (EntrantRequest er : eReqs) {
             result.add(er.copy(newVersion));
         }
 

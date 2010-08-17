@@ -36,6 +36,7 @@ import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.request.point.PointRequests;
 import java.util.List;
@@ -81,6 +82,7 @@ public class ValuationHistory extends KorokPage {
 
         add(new BookmarkablePageLink("latestVersion", ValuationDetails.class,
                 new PageParameters("id=" + valuationManager.findLatestVersionsId(group, semester))));
+        add(ValuationMessages.getLink("messages", group.getId(), semester));
 
         setHeaderLabelText("Félévi értékelés története");
         add(new Label("groupName", group.getName()));

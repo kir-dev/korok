@@ -39,7 +39,7 @@ import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
 import hu.sch.web.kp.valuation.ValuationDetails;
-import hu.sch.web.kp.valuation.ValuationMessages;
+import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
@@ -177,14 +177,7 @@ public class ConsiderPage extends KorokPage {
                 summaPointLink.add(new Label("summaPoint"));
                 item.add(summaPointLink);
 
-                Link messagesLink = new Link("messagesLink") {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new ValuationMessages(val.getId()));
-                    }
-                };
-                item.add(messagesLink);
+                item.add(ValuationMessages.getLink("messagesLink", val));
 
                 Component pointStatus = new ValuationStatusChooser("pointStatus");
                 Component entrantStatus = new ValuationStatusChooser("entrantStatus");
