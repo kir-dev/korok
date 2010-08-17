@@ -80,7 +80,7 @@ public class ValuationHistory extends KorokPage {
         // keressük az értékeléseket (verziókat) a megadott csoporthoz a megadott félévben.
 
         add(new BookmarkablePageLink("latestVersion", ValuationDetails.class,
-                new PageParameters("id="+valuationManager.findLatestVersionsId(group, semester))));
+                new PageParameters("id=" + valuationManager.findLatestVersionsId(group, semester))));
 
         setHeaderLabelText("Félévi értékelés története");
         add(new Label("groupName", group.getName()));
@@ -99,7 +99,9 @@ public class ValuationHistory extends KorokPage {
 
                 PageParameters params = new PageParameters("vid=" + val.getId());
 
-                item.add(new Label("version", String.valueOf(version--)));
+                item.add(new BookmarkablePageLink("versionLink", ValuationDetails.class,
+                        new PageParameters("id="+val.getId())).add(
+                        new Label("versionLabel", String.valueOf(version--))));
 
                 item.add(DateLabel.forDatePattern("valuation.lastModified", "yyyy. MM. dd. kk:mm"));
                 item.add(DateLabel.forDatePattern("valuation.lastConsidered", "yyyy. MM. dd. kk:mm"));
@@ -126,10 +128,10 @@ public class ValuationHistory extends KorokPage {
 
                 /*item.add(new Link("messagesLink") {
 
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new ValuationMessages(val.getId()));
-                    }
+                @Override
+                public void onClick() {
+                setResponsePage(new ValuationMessages(val.getId()));
+                }
                 });*/
 
                 item.add(new Label("valuation.pointStatus"));
