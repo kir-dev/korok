@@ -145,6 +145,11 @@ public class ValuationDetails extends KorokPage {
             add(new Label("sender", "Nincs megadva"));
         }
         add(DateLabel.forDatePattern("lastModified", "yyyy. MM. dd. kk:mm"));
+        if (valuation.getConsideredBy() != null) {
+            add(new UserLink("consideredBy", valuation.getConsideredBy()));
+        } else {
+            add(new Label("consideredBy", "<i>Még nincs elbírálva</i>").setEscapeModelStrings(false));
+        }
         add(DateLabel.forDatePattern("lastConsidered", "yyyy. MM. dd. kk:mm"));
         PageParameters params = new PageParameters("vid=" + valuation.getId());
         add(new BookmarkablePageLink("pointRequests", PointRequests.class, params));
