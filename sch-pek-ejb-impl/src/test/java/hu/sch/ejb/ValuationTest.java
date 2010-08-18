@@ -60,7 +60,6 @@ public class ValuationTest extends ContainerAwareAbstractTest {
     /* Igazából csak egy szálból módosítjuk őket, de a Boolean az immutable */
     private AtomicBoolean b1 = new AtomicBoolean(false);
     private AtomicBoolean b2 = new AtomicBoolean(false);
-    private static final Long magicGroupId = 106L;
     private Semester semester;
     private Group group;
 
@@ -108,7 +107,7 @@ public class ValuationTest extends ContainerAwareAbstractTest {
     @Test
     public void concurrentEditing() {
         semester = systemManager.getSzemeszter().getNext();
-        group = userManager.findGroupById(magicGroupId);
+        group = userManager.findGroupById(Group.KIRDEV);
         // 1. létrehozunk egy értékelést
         Valuation v = new Valuation();
         v.setGroup(group);
