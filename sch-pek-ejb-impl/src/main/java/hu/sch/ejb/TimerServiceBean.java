@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.Group;
@@ -68,7 +67,6 @@ public class TimerServiceBean {
     private static String welcome = "Kedves %s!\n\nAz elmúlt időszakban a következő módosítások "
             + "történtek a körtagságok terén:\n\n";
     private static final String showUserLink = "https://korok.sch.bme.hu/korok/showuser/id/";
-    private static final Long VALASZTMANY_ID = 370L;
 
     @Schedule(hour = "1")
     protected void dailyEvent() {
@@ -154,7 +152,14 @@ public class TimerServiceBean {
             }
         }
         if (wasRecord) {
-            sendEmail("katalin@sch.bme.hu", sb);
+            List<User> svieAdmins = userManager.getMembersForGroupAndPost(Group.SVIE, "adminisztrátor");
+            for (User u : svieAdmins) {
+                // mindig hozzászúródik a végére, hogy Üdvözlettel, ezért le kell másolni
+                // mert különben az utolsó admin jó sok üdvözletet kapna ;)
+                StringBuilder sb2 = new StringBuilder(sb.toString());
+                sendEmail(u.getEmailAddress(), sb2);
+                logger.info("SVIE adminnak (" + u.getName() + ") kiment a levél.");
+            }
         }
     }
 
@@ -174,7 +179,7 @@ public class TimerServiceBean {
         }
         if (!logs.isEmpty()) {
             sb.append("\n\n");
-            sendEmail(userManager.getGroupLeaderForGroup(VALASZTMANY_ID).getEmailAddress(), sb);
+            sendEmail(userManager.getGroupLeaderForGroup(Group.VALASZTMANY).getEmailAddress(), sb);
         }
     }
 

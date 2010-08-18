@@ -85,7 +85,7 @@ public final class DummyAuthorization implements UserAuthorization {
     public boolean isGroupLeaderInGroup(Request wicketRequest, Group group) {
         // Kir-Dev, Teaház és 17.szint körvezetői tagsága
         if ((group.getId().equals(331L) || group.getId().equals(106L)
-                || group.getId().equals(21L) || group.getId().equals(369L)) || group.getId().equals(26L)) {
+                || group.getId().equals(21L) || group.getId().equals(Group.SVIE)) || group.getId().equals(26L)) {
             return true;
         }
         return false;

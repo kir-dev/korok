@@ -87,6 +87,8 @@ public interface UserManagerLocal {
 
     List<User> getMembersForGroup(Long csoportId);
 
+    List<User> getMembersForGroupAndPost(Long groupId, String post);
+
     List<User> getCsoporttagokWithoutOregtagok(Long csoportId);
 
     List<EntrantRequest> getBelepoIgenyekForUser(User felhasznalo);

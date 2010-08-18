@@ -30,6 +30,7 @@
  */
 package hu.sch.web.kp.valuation.request.point;
 
+import hu.sch.domain.Group;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
@@ -41,8 +42,6 @@ import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
@@ -103,7 +102,6 @@ public class PointRequestEditor extends Panel {
             // A többi group pontozásvalidátora
             final IValidator<Integer> pontValidator = new RangeValidator<Integer>(0, 50);
             // QPA group ID-ja
-            private static final long SCH_QPA_ID = 27L;
 
             @Override
             protected void populateItem(ListItem<PointRequest> item) {
@@ -116,7 +114,7 @@ public class PointRequestEditor extends Panel {
                 item.add(new Label("user.nickName"));
                 TextField<Integer> pont = new TextField<Integer>("point");
                 //csoportfüggő validátor hozzácsatolása
-                if (val.getGroupId().equals(SCH_QPA_ID)) {
+                if (val.getGroupId().longValue() == Group.SCH_QPA) {
                     pont.add(QpaPontValidator);
                 } else {
                     pont.add(pontValidator);

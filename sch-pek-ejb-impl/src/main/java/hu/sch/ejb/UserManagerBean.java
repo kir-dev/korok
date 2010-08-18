@@ -69,6 +69,7 @@ import org.hibernate.exception.ConstraintViolationException;
 /**
  *
  * @author hege
+ * @author messo
  */
 @Stateless
 @SuppressWarnings("unchecked")
@@ -87,7 +88,7 @@ public class UserManagerBean implements UserManagerLocal {
     private static Event CREATEMEMBERSHIP_EVENT;
 
     @PostConstruct
-    private void initialize() {
+    protected void initialize() {
         if (DELETEMEMBERSHIP_EVENT == null) {
             Query q = em.createNamedQuery(Event.getEventForEventType);
             q.setParameter("evt", EventType.TAGSAGTORLES);
@@ -560,5 +561,14 @@ public class UserManagerBean implements UserManagerLocal {
         q.setParameter("userId", user.getId());
 
         return !q.getResultList().isEmpty();
+    }
+
+    @Override
+    public List<User> getMembersForGroupAndPost(Long groupId, String post) {
+        Query q = em.createNamedQuery(User.findUsersForGroupAndPost);
+        q.setParameter("groupId", groupId);
+        q.setParameter("post", post);
+
+        return q.getResultList();
     }
 }

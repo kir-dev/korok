@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
 import hu.sch.domain.logging.Log;
@@ -79,6 +78,14 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Group implements Serializable, Comparable<Group> {
 
+    public static final long SVIE = 369L;
+    public static final long VALASZTMANY = 370L;
+    public static final long SCH_QPA = 27L;
+    /**
+     * Jutalmazást Elbíráló Testület
+     */
+    public static final long JET = 156L;
+    public static final long KIRDEV = 106L;
     private static final long serialVersionUID = 1L;
     public static final String findAll = "findAllGroup";
     public static final String findWithMemberships = "findGroupWithMemberships";

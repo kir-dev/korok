@@ -480,7 +480,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             } else {
                 // nem a JETI a feladó
                 // jeti körvezetőjének a mail címének kikeresése
-                User leader = userManager.getGroupLeaderForGroup(156L);
+                User leader = userManager.getGroupLeaderForGroup(Group.JET);
                 if (leader != null) {
                     emailTo = leader.getEmailAddress();
                 }
@@ -567,7 +567,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         List<Group> csoportok = felhasznalo.getGroups();
 
         for (Group csoport : csoportok) {
-            if (csoport.getId() == 156L) {
+            if (csoport.getId() == Group.JET) {
                 return true;
             }
         }

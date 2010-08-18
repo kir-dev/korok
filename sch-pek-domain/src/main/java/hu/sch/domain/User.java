@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -61,24 +60,29 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "users")
 @NamedQueries({
-    @NamedQuery(name = "findUserWithMemberships",
+    @NamedQuery(name = User.findWithMemberships,
     query = "SELECT u FROM User u LEFT OUTER JOIN FETCH u.memberships WHERE u.id = :id"),
-    @NamedQuery(name = "findUserByNeptunCode",
+    @NamedQuery(name = User.findUserByNeptunCode,
     query = "SELECT u FROM User u WHERE u.neptunCode = :neptun"),
-    @NamedQuery(name = "findUser", query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
+    @NamedQuery(name = User.findUser, query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
     + "upper(u.emailAddress) = upper(:emailcim)"),
+    @NamedQuery(name = User.findUsersForGroupAndPost,
+    query = "SELECT u FROM User u "
+    + "LEFT JOIN u.memberships ms "
+    + "LEFT JOIN ms.posts p "
+    + "LEFT JOIN p.postType pt "
+    + "WHERE ms.groupId = :groupId AND pt.postName = :post"),
     @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
 })
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
 public class User implements Serializable, Comparable<User> {
 
     private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
-
     private static final long serialVersionUID = 1L;
-    public static final String findByLoginName = "findUserByLoginName";
     public static final String findWithMemberships = "findUserWithMemberships";
     public static final String findUserByNeptunCode = "findUserByNeptunCode";
     public static final String findUser = "findUser";
+    public static final String findUsersForGroupAndPost = "getMembersForGroupAndPost";
     public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
     /*
     usr_id                 | integer                | not null default nextval('users_usr_id_seq'::regclass)
