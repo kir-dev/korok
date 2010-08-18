@@ -122,14 +122,27 @@ input.inputError{
 }
 input.btn {
     background-color: #517D9D;
-    font: bold 14px verdana, arial, sans;
-    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
     border: 1px solid #345F7D;
     padding: 0px 7px 2px 7px;
     vertical-align: middle;
+    color: #ffffff;
 }
 input.save-btn {
     background: #517D9D url('/images/icons/accept.png') no-repeat 5px center;
+    padding-left: 26px;
+}
+input.user-delete-btn {
+    background: #517D9D url('/images/icons/user_delete.png') no-repeat 5px center;
+    padding-left: 26px;
+}
+input.oldboy-btn {
+    background: #517D9D url('/images/icons/user_go.png') no-repeat 5px center;
+    padding-left: 26px;
+}
+input.user-add-btn {
+    background: #517D9D url('/images/icons/user_add.png') no-repeat 5px center;
     padding-left: 26px;
 }
 a.btn-like {

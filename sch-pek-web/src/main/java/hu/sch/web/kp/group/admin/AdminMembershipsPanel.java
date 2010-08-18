@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package hu.sch.web.wicket.components;
+package hu.sch.web.kp.group.admin;
 
 import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.domain.Membership;
@@ -37,6 +37,7 @@ import hu.sch.services.UserManagerLocal;
 import hu.sch.web.wicket.components.customlinks.ChangePostLink;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.session.VirSession;
+import hu.sch.web.wicket.components.SelectableMembership;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import java.util.ArrayList;
 import java.util.List;
