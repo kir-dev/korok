@@ -32,14 +32,14 @@
 package hu.sch.services;
 
 import hu.sch.domain.User;
-import javax.ejb.Remote;
+import javax.ejb.Local;
 
 /**
  *
  * @author aldaris
  */
-@Remote
-public interface EntitlementManagerRemote {
+@Local
+public interface EntitlementManagerLocal {
 
     User createUserEntry(User user);
 

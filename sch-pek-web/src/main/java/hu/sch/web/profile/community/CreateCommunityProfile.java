@@ -33,7 +33,7 @@ package hu.sch.web.profile.community;
 
 import hu.sch.domain.User;
 import hu.sch.domain.profile.Person;
-import hu.sch.services.EntitlementManagerRemote;
+import hu.sch.services.EntitlementManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
@@ -60,7 +60,7 @@ import org.apache.wicket.markup.html.WebPage;
 public class CreateCommunityProfile extends ProfilePage {
 
     @EJB(name = "EntitlementManagerBean")
-    EntitlementManagerRemote entitlementManager;
+    EntitlementManagerLocal entitlementManager;
     @EJB(name = "MailManagerBean")
     private MailManagerLocal mailManager;
     private final String CONFIRMATION_CODE = "Megerősítő kód";
@@ -347,7 +347,7 @@ public class CreateCommunityProfile extends ProfilePage {
 
     }
 
-    public EntitlementManagerRemote getEntitlementManager() {
+    public EntitlementManagerLocal getEntitlementManager() {
         return entitlementManager;
     }
 

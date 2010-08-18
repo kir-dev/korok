@@ -34,7 +34,7 @@ package hu.sch.ejb;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
-import hu.sch.services.EntitlementManagerRemote;
+import hu.sch.services.EntitlementManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -47,7 +47,7 @@ import javax.persistence.Query;
  * @author aldaris
  */
 @Stateless(mappedName = "EntitlementManager")
-public class EntitlementManagerBean implements EntitlementManagerRemote {
+public class EntitlementManagerBean implements EntitlementManagerLocal {
 
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
