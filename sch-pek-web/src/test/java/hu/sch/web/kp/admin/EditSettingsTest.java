@@ -28,60 +28,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package hu.sch.domain;
 
-import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+package hu.sch.web.kp.admin;
+
+import hu.sch.ejb.SystemManagerBean;
+import hu.sch.services.SystemManagerLocal;
+import hu.sch.web.test.WebTest;
+import javax.naming.NamingException;
+import static junit.framework.Assert.*;
+import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.util.tester.FormTester;
+import org.junit.Test;
 
 /**
  *
- * @author hege
+ * @author aldaris
  */
-@Entity
-@Table(name = "system_attrs")
-@NamedQuery(name = "findSystemAttributeByAttributeName",
-query = "SELECT a FROM SystemAttribute a WHERE a.attributeName=:attributeName")
-public class SystemAttribute implements Serializable {
+public class EditSettingsTest extends WebTest {
 
-    public static final String findByAttributeName = "findSystemAttributeByAttributeName";
-    public static final String LAST_LOG = "utolso_log_kuldve";
-    public static final String SEMESTER = "szemeszter";
-    public static final String VALUATION_PERIOD = "ertekeles_idoszak";
-    public static final String NEWBIE_TIME = "golyaidoszak";
-    @Id
-    @GeneratedValue
-    Long attributeId;
-    @Column(nullable = false)
-    String attributeName;
-    @Column(nullable = false)
-    String attributeValue;
+    @Test
+    public void newbieTest() throws NamingException {
+        SystemManagerLocal systemManager = lookupEJB(SystemManagerBean.class);
 
-    public Long getAttributeId() {
-        return attributeId;
-    }
+        tester.startPage(EditSettings.class);
+        tester.assertRenderedPage(EditSettings.class);
 
-    public void setAttributeId(Long attributeId) {
-        this.attributeId = attributeId;
-    }
+        tester.assertVisible("kirdevfragment");
 
-    public String getAttributeName() {
-        return attributeName;
-    }
+        WebSession sess1 = tester.getWicketSession();
+        String style1 = sess1.getStyle();
 
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
-    }
+        FormTester formTester = tester.newFormTester("kirdevfragment:kirdevForm");
+        formTester.setValue("newbieTime", !systemManager.getNewbieTime());
+        formTester.submit();
 
-    public String getAttributeValue() {
-        return attributeValue;
-    }
+        sess1.invalidateNow();
+        assertTrue(sess1.isSessionInvalidated());
 
-    public void setAttributeValue(String attributeValue) {
-        this.attributeValue = attributeValue;
+        //Kell, hogy tényleg legyen új sessionünk
+        tester.createRequestCycle();
+        WebSession sess2 = tester.getWicketSession();
+        String style2 = sess2.getStyle();
+
+        assertNotSame(style1, style2);
     }
 }

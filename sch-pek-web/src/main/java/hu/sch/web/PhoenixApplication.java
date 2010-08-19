@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web;
 
 import hu.sch.domain.EntrantType;
@@ -36,6 +35,7 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.config.Configuration.Environment;
+import hu.sch.services.SystemManagerLocal;
 import hu.sch.web.authz.AgentBasedAuthorization;
 import hu.sch.web.authz.DummyAuthorization;
 import hu.sch.web.authz.UserAuthorization;
@@ -81,6 +81,7 @@ import hu.sch.web.wicket.util.EntrantTypeConverter;
 import hu.sch.web.wicket.util.PostTypeConverter;
 import hu.sch.web.wicket.util.ServerTimerFilter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
+import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
@@ -88,6 +89,7 @@ import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -112,8 +114,11 @@ import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
 public class PhoenixApplication extends WebApplication {
 
     private static final String EJB_MODULE_NAME = "korok-ejb";
-    private UserAuthorization authorizationComponent;
     private static Logger log = Logger.getLogger(PhoenixApplication.class);
+    @EJB(name = "SystemManagerBean")
+    private SystemManagerLocal systemManager;
+    private UserAuthorization authorizationComponent;
+    private boolean isNewbieTime;
 
     @Override
     public Class<? extends Page> getHomePage() {
@@ -175,12 +180,18 @@ public class PhoenixApplication extends WebApplication {
             log.info("Successfully enabled ServerTimerFilter");
         }
 
+        InjectorHolder.getInjector().inject(this);
+        isNewbieTime = systemManager.getNewbieTime();
+
         log.warn("Application has been successfully initiated");
     }
 
     public boolean isNewbieTime() {
-        // FIXME -- ezt kéne valahonnan máshonnan szerezni
-        return true;
+        return isNewbieTime;
+    }
+
+    public void setNewbieTime(boolean newbieTime) {
+        isNewbieTime = newbieTime;
     }
 
     @Override

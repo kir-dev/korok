@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.services;
 
 import hu.sch.domain.ValuationPeriod;
@@ -102,4 +101,16 @@ public interface SystemManagerLocal {
      * Beállítja, hogy melyik log volt az utolsó amit kiküldtünk.
      */
     void setLastLogId(long id);
+
+    /**
+     * Megmondja, hogy most gólyaidőszak van-e
+     * @return <code>true</code> ha gólyaidőszak van, <code>false</code>, ha nem.
+     */
+    boolean getNewbieTime();
+
+    /**
+     * Beállítjaa gólyaidőszakot.
+     * @param newbieTime gólyaidőszak van, vagy sem
+     */
+    void setNewbieTime(boolean newbieTime);
 }

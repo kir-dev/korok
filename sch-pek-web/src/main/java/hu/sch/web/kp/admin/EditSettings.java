@@ -33,6 +33,7 @@ package hu.sch.web.kp.admin;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.exceptions.NoSuchAttributeException;
+import hu.sch.web.PhoenixApplication;
 import hu.sch.web.wicket.components.customlinks.CsvReportLink;
 import hu.sch.web.kp.svie.SvieGroupMgmt;
 import hu.sch.web.kp.svie.SvieUserMgmt;
@@ -51,6 +52,7 @@ import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.RangeValidator;
 
@@ -188,12 +190,27 @@ public class EditSettings extends KorokPage {
 
     private class KirDevFragment extends Fragment {
 
+        private boolean newbieTime = systemManager.getNewbieTime();
+
         public KirDevFragment(String id, String markupId) {
             super(id, markupId, null, null);
             add(new BookmarkablePageLink<ShowInactive>("showinactive", ShowInactive.class));
             add(new BookmarkablePageLink<CreateGroup>("createGroup", CreateGroup.class));
             add(new BookmarkablePageLink<CreateNewPerson>("createPerson", CreateNewPerson.class));
             add(new CsvExportForKfbLink("csvExport"));
+
+            Form<Void> form = new Form<Void>("kirdevForm", new CompoundPropertyModel<Void>(this)) {
+
+                @Override
+                protected void onSubmit() {
+                    systemManager.setNewbieTime(newbieTime);
+                    ((PhoenixApplication) getApplication()).setNewbieTime(newbieTime);
+                    getSession().info(getLocalizer().getString("info.BeallitasokMentve", this));
+                }
+            };
+            CheckBox newbieTimeCB = new CheckBox("newbieTime", new PropertyModel<Boolean>(this, "newbieTime"));
+            form.add(newbieTimeCB);
+            add(form);
         }
     }
 }
