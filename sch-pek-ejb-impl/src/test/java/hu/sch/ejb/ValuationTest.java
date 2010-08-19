@@ -74,7 +74,7 @@ public class ValuationTest extends ContainerAwareAbstractTest {
 
         @Override
         public void run() {
-            Valuation v = valuationManager.findErtekeles(group, semester);
+            Valuation v = valuationManager.findLatestValuation(group, semester);
             ConsideredValuation cv = new ConsideredValuation(v, ValuationStatus.ELFOGADVA, ValuationStatus.ELFOGADVA, null);
             cv.setExplanation(getName());
             try {

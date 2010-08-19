@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.valuation;
 
 import hu.sch.domain.Group;
@@ -51,33 +50,28 @@ public class NewValuation extends KorokPage {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
-    private final Group group;
     private String valuationText;
     private String principle;
 
     public NewValuation(PageParameters params) {
-        Long groupId;
-        try {
-            groupId = params.getLong("id");
-        } catch (StringValueConversionException svce) {
+        final Group group;
+        final Long groupId = params.getAsLong("id");
+        if (groupId == null || (group = userManager.findGroupById(groupId)) == null) {
             getSession().error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        if (groupId != null) {
-            group = userManager.findGroupById(groupId);
-        } else {
-            group = null;
-        }
-        if (group == null) {
-            getSession().error("Nincs csoport kiválasztva");
-            throw new RestartResponseException(Valuations.class);
-        }
-        setHeaderLabelText(group.getName());
+        if( !isUserGroupLeader(group) ) {
+            // csak körvezető adhat le új értékelést
+            getSession().error(getLocalizer().getString("err.NincsJog", null));
+            throw new RestartResponseException(getApplication().getHomePage());
+        }       
         if (!valuationManager.isErtekelesLeadhato(group)) {
             getSession().info(getLocalizer().getString("err.UjErtekelesNemAdhatoLe", this));
             setResponsePage(Valuations.class);
             return;
         }
+
+        setHeaderLabelText(group.getName());
         Form<Void> newValuationForm = new Form<Void>("newValuationForm") {
 
             @Override
@@ -89,10 +83,8 @@ public class NewValuation extends KorokPage {
         };
         newValuationForm.add(new KeepAliveBehavior());
 
-        TinyMCEContainer tinyMce = new TinyMCEContainer("valuationText", new PropertyModel<String>(this, "valuationText"), true);
-        newValuationForm.add(tinyMce);
-        TinyMCEContainer principleMce = new TinyMCEContainer("principle", new PropertyModel<String>(this, "principle"), false);
-        newValuationForm.add(principleMce);
+        newValuationForm.add(new TinyMCEContainer("valuationText", new PropertyModel<String>(this, "valuationText"), true));
+        newValuationForm.add(new TinyMCEContainer("principle", new PropertyModel<String>(this, "principle"), true));
         add(newValuationForm);
     }
 }

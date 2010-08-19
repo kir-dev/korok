@@ -80,7 +80,7 @@ public class GroupHistory extends KorokPage {
 
         add(new BookmarkablePageLink<ShowGroup>("simpleView", ShowGroup.class, new PageParameters("id=" + id.toString())));
 
-        List<Valuation> valuationList = valuationManager.findErtekeles(group);
+        List<Valuation> valuationList = valuationManager.findLatestValuationsForGroup(group);
 
         // nézzük meg, hogy van-e kijelölve értékelés
         Semester semester = new Semester(parameters.getString("sid", ""));

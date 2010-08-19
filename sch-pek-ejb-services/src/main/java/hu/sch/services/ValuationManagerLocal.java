@@ -70,7 +70,7 @@ public interface ValuationManagerLocal {
      * @param szemeszter
      * @return Adott csoporthoz, szemeszterhez tartozó értékelés
      */
-    Valuation findErtekeles(Group csoport, Semester szemeszter);
+    Valuation findLatestValuation(Group csoport, Semester szemeszter);
 
     /**
      * Értékelés keresés az ID-hez, úgy, hogy a kellő információkat is lekérjük mellé
@@ -85,7 +85,7 @@ public interface ValuationManagerLocal {
      * @param csoport
      * @return Csoporthoz tartozó értékelések listája
      */
-    List<Valuation> findErtekeles(Group csoport);
+    List<Valuation> findLatestValuationsForGroup(Group csoport);
 
     List<Valuation> findApprovedValuations(Group group);
 
@@ -227,14 +227,6 @@ public interface ValuationManagerLocal {
     List<ValuationStatistic> findValuationStatisticForSemester();
 
     List<ValuationStatistic> findValuationStatisticForVersions(Group group, Semester semester);
-
-    /**
-     * A megadott id-hez tartozó értékelést adja vissza úgy, hogy az tartalmazza
-     * a pontigényléseket és a belépőigényléseket is.
-     * @param valuationId A keresendő értékelés azonosítója.
-     * @return A keresett értékelés pont -és belépőigényléssel együtt.
-     */
-    Valuation findValuations(Long valuationId);
 
     List<GivenPoint> getPointsForKfbExport(Semester semester);
 

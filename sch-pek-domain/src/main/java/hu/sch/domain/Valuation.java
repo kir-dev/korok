@@ -79,7 +79,6 @@ import javax.persistence.Version;
     + "AND v.group=:group AND v.nextVersion IS NULL"),
     @NamedQuery(name = Valuation.findByGroup,
     query = "SELECT v FROM Valuation v "
-    + "LEFT JOIN FETCH v.sender "
     + "WHERE v.group=:group AND v.nextVersion IS NULL "
     + "ORDER BY v.semester DESC"),
     @NamedQuery(name = Valuation.delete, query = "DELETE FROM Valuation v WHERE v.group = :group AND v.semester = :semester"),

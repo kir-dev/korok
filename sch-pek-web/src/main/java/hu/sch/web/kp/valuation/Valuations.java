@@ -127,7 +127,7 @@ public class Valuations extends KorokPage {
         for (Membership m : ms) {
             Group cs = m.getGroup();
 
-            Valuation ert = valuationManager.findErtekeles(cs, semester);
+            Valuation ert = valuationManager.findLatestValuation(cs, semester);
             if ((ert == null || ert.getPointStatus() == ValuationStatus.NINCS
                     || ert.getEntrantStatus() == ValuationStatus.NINCS)
                     && isUserGroupLeader(cs)
@@ -185,7 +185,7 @@ public class Valuations extends KorokPage {
             WebMarkupContainer table = new WebMarkupContainer("ertekelesektabla");
             add(table);
 
-            List<Valuation> valuationList = valuationManager.findErtekeles(group);
+            List<Valuation> valuationList = valuationManager.findLatestValuationsForGroup(group);
             table.add(new ListView<Valuation>("valuationList", valuationList) {
 
                 @Override

@@ -96,7 +96,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public Valuation findErtekeles(Group csoport, Semester szemeszter) {
+    public Valuation findLatestValuation(Group csoport, Semester szemeszter) {
         Query q = em.createNamedQuery(Valuation.findBySemesterAndGroup);
         q.setParameter("semester", szemeszter);
         q.setParameter("group", csoport);
@@ -501,7 +501,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public List<Valuation> findErtekeles(Group csoport) {
+    public List<Valuation> findLatestValuationsForGroup(Group csoport) {
         Query q = em.createNamedQuery(Valuation.findByGroup);
         q.setParameter("group", csoport);
 
@@ -537,8 +537,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         valuation.setValuationText(valuationText);
         valuation.setPrinciple(principle);
 
-        //TODO group flag alapján van-e joga rá?!
-
         em.persist(valuation);
     }
 
@@ -552,7 +550,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             }
 
             // leadási időszakban akkor adhat le, ha még nem adott le
-            Valuation e = findErtekeles(csoport, systemManager.getSzemeszter());
+            Valuation e = findLatestValuation(csoport, systemManager.getSzemeszter());
             if (e == null) {
                 return true;
             }
@@ -701,22 +699,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         q.setParameter("semester", szemeszter);
 
         return q.getResultList();
-    }
-
-    /**
-     * A megadott id-hez tartozó értékelést adja vissza úgy, hogy az tartalmazza
-     * a pontigényléseket és a belépőigényléseket is.
-     * @param valuationId A keresendő értékelés azonosítója.
-     * @return A keresett értékelés point -és belépőigényléssel együtt.
-     */
-    @Override
-    public Valuation findValuations(Long valuationId) {
-        Query q = em.createQuery("SELECT v FROM Valuation v "
-                + "JOIN FETCH v.pointRequests "
-                + "JOIN FETCH v.entrantRequests "
-                + "WHERE e.id = :id");
-        q.setParameter("id", valuationId);
-        return (Valuation) q.getSingleResult();
     }
 
     @Override
