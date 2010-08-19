@@ -92,7 +92,7 @@ public class ValuationDetails extends KorokPage {
     public ValuationDetails(PageParameters params) {
         Valuation valuation = null;
         Long id = params.getAsLong("id");
-        if (id == null || (valuation = valuationManager.findErtekelesById(id)) == null) {
+        if (id == null || (valuation = valuationManager.findValuationForDetails(id)) == null) {
             getSession().error("Nincs ilyen értékelés!");
             throw new RestartResponseException(getApplication().getHomePage());
         }

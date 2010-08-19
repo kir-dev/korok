@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.services;
 
 import hu.sch.domain.EntrantRequest;
@@ -72,6 +71,13 @@ public interface ValuationManagerLocal {
      * @return Adott csoporthoz, szemeszterhez tartozó értékelés
      */
     Valuation findErtekeles(Group csoport, Semester szemeszter);
+
+    /**
+     * Értékelés keresés az ID-hez, úgy, hogy a kellő információkat is lekérjük mellé
+     * @param valuationId
+     * @return keresett értékelés
+     */
+    Valuation findValuationForDetails(long valuationId);
 
     /**
      * Egy csoport összes értékelését keresi ki

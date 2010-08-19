@@ -66,6 +66,11 @@ import javax.persistence.Version;
 @Entity
 @Table(name = "ertekelesek")
 @NamedQueries({
+    @NamedQuery(name = Valuation.findForDetails,
+    query = "SELECT v FROM Valuation v "
+    + "LEFT JOIN FETCH v.sender "
+    + "LEFT JOIN FETCH v.consideredBy "
+    + "WHERE v.id = :id"),
     @NamedQuery(name = Valuation.findBySemesterAndGroup,
     query = "SELECT v FROM Valuation v WHERE v.semester=:semester "
     + "AND v.group=:group AND v.nextVersion IS NULL"),
@@ -87,6 +92,7 @@ import javax.persistence.Version;
 })
 public class Valuation implements Serializable {
 
+    public static final String findForDetails = "findForDetails";
     public static final String findBySemesterAndGroup = "findValuationBySemesterAndGroup";
     public static final String findIdBySemesterAndGroup = "findValuationIdBySemesterAndGroup";
     public static final String findByGroup = "findValuationByGroup";
@@ -200,10 +206,7 @@ public class Valuation implements Serializable {
         this.considered = considered;
     }
 
-    // FIXME(messo): lásd http://idp-old.sch.bme.hu:3000/issues/890
-    // ilyet, hogy eager, csak olyankor írjunk, amikor tényleg mindig kell
-    // erről itt szó sincs
-    @ManyToOne(optional = true, fetch = FetchType.EAGER)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "felado_usr_id")
     public User getSender() {
         return sender;

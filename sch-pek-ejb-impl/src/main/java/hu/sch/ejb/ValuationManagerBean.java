@@ -778,4 +778,15 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             }
         }
     }
+
+    @Override
+    public Valuation findValuationForDetails(long valuationId) {
+        Query q = em.createNamedQuery(Valuation.findForDetails);
+        q.setParameter("id", valuationId);
+        try {
+            return (Valuation) q.getSingleResult();
+        } catch( NoResultException ex ) {
+            return null;
+        }
+    }
 }
