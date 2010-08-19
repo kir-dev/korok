@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.admin;
 
 import hu.sch.domain.ValuationPeriod;
@@ -142,10 +141,12 @@ public class EditSettings extends KorokPage {
             beallitasForm.add(new CheckBox("isAutumn"));
             beallitasForm.add(new AbstractFormValidator() {
 
+                @Override
                 public FormComponent<?>[] getDependentFormComponents() {
                     return new FormComponent[]{firstYear, secondYear};
                 }
 
+                @Override
                 public void validate(Form<?> form) {
                     if (Integer.parseInt(firstYear.getValue()) + 1
                             != Integer.parseInt(secondYear.getValue())) {
@@ -160,10 +161,12 @@ public class EditSettings extends KorokPage {
 
             ddc1.setChoiceRenderer(new IChoiceRenderer<ValuationPeriod>() {
 
+                @Override
                 public Object getDisplayValue(ValuationPeriod object) {
                     return getLocalizer().getString("ertekelesidoszak." + object.toString(), getParent());
                 }
 
+                @Override
                 public String getIdValue(ValuationPeriod object, int index) {
                     return object.toString();
                 }

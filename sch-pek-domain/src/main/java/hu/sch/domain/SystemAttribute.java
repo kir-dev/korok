@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain;
 
 import java.io.Serializable;
@@ -50,6 +49,9 @@ query = "SELECT a FROM SystemAttribute a WHERE a.attributeName=:attributeName")
 public class SystemAttribute implements Serializable {
 
     public static final String findByAttributeName = "findSystemAttributeByAttributeName";
+    public static final String LAST_LOG = "utolso_log_kuldve";
+    public static final String SEMESTER = "szemeszter";
+    public static final String VALUATION_PERIOD = "ertekeles_idoszak";
     @Id
     @GeneratedValue
     Long attributeId;
