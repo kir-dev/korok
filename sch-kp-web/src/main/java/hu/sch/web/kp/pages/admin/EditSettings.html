@@ -36,5 +36,10 @@
         <a wicket:id ="createGroup"><wicket:message key="admin.create.group" /></a><br />
         <a wicket:id ="createPerson"><wicket:message key="admin.create.person" /></a><br />
         <a wicket:id="csvExport">KFB export letöltése</a>
+        <form wicket:id="kirdevForm">
+            <input type="checkbox" id="newbieTime" wicket:id="newbieTime" />
+            <label for="newBieTime">Gólyaidőszak van?</label>
+            <input type="submit" class="btn" value="Mentés" />
+        </form>
     </wicket:fragment>
 </wicket:extend>

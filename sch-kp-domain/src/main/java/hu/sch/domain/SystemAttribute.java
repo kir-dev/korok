@@ -50,6 +50,7 @@ query = "SELECT a FROM SystemAttribute a WHERE a.attributeName=:attributeName")
 public class SystemAttribute implements Serializable {
 
     public static final String findByAttributeName = "findSystemAttributeByAttributeName";
+    public static final String NEWBIE_TIME = "golyaidoszak";
     @Id
     @GeneratedValue
     Long attributeId;

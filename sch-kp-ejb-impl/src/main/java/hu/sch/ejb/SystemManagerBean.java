@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.ValuationPeriod;
@@ -123,5 +122,22 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     public void setLastLogsDate() {
         setAttributeValue(LAST_LOG, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+    }
+
+    @Override
+    public boolean getNewbieTime() {
+        boolean ret;
+        try {
+            ret = Boolean.parseBoolean(getAttributeValue(SystemAttribute.NEWBIE_TIME));
+        } catch (NoSuchAttributeException nsae) {
+            ret = false;
+        }
+
+        return ret;
+    }
+
+    @Override
+    public void setNewbieTime(boolean newbieTime) {
+        setAttributeValue(SystemAttribute.NEWBIE_TIME, Boolean.toString(newbieTime));
     }
 }

@@ -35,6 +35,7 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.config.Configuration.Environment;
+import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.TimerServiceLocal;
 import hu.sch.web.authz.AgentBasedAuthorization;
 import hu.sch.web.authz.DummyAuthorization;
@@ -106,6 +107,10 @@ public class PhoenixApplication extends WebApplication {
     private static Logger log = Logger.getLogger(PhoenixApplication.class);
     @EJB(name = "TimerServiceBean")
     private TimerServiceLocal timerService;
+    @EJB(name = "SystemManagerBean")
+    private SystemManagerLocal systemManager;
+    private boolean isNewbieTime;
+
     private UserAuthorization authorizationComponent;
 
     /**
@@ -207,14 +212,19 @@ public class PhoenixApplication extends WebApplication {
         InjectorHolder.getInjector().inject(this);
         //Timerek inicializálása
         timerService.scheduleTimers();
+        isNewbieTime = systemManager.getNewbieTime();
 
         log.warn("Application has been successfully initiated");
     }
 
     public boolean isNewbieTime() {
-        // FIXME -- ezt kéne valahonnan máshonnan szerezni
-        return true;
+        return isNewbieTime;
     }
+
+    public void setNewbieTime(boolean newbieTime) {
+        isNewbieTime = newbieTime;
+     }
+
 
     @Override
     public Session newSession(Request request, Response response) {

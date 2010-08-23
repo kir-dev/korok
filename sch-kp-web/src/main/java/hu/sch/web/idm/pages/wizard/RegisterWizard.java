@@ -164,8 +164,8 @@ public class RegisterWizard extends Wizard {
     private enum RegistrationMode {
 
         VIR_ACCOUNT("Meglévő VIR regisztráció"),
-        //NEPTUN_CODE("Aktív villanykaros hallgató NEPTUN kód");
-        NEPTUN_CODE("Gólya regisztráció");
+        NEPTUN_CODE("Aktív villanykaros hallgató NEPTUN kód");
+//        NEPTUN_CODE("Gólya regisztráció");
         private String name;
 
         private RegistrationMode(String name) {
