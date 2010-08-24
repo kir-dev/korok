@@ -49,7 +49,6 @@ import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -272,7 +271,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
             return schLogo;
         }
 
-        schLogo = Image.getInstance(getResource("resources/schlogo.png"));
+        schLogo = Image.getInstance(getClass().getResource("resources/schlogo.png"));
         return schLogo;
     }
 
@@ -281,29 +280,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
             return signImage;
         }
 
-        signImage = Image.getInstance(getResource("resources/signingarea.png"));
+        signImage = Image.getInstance(getClass().getResource("resources/signingarea.png"));
         return signImage;
-    }
-
-    private byte[] getResource(String path) throws IOException {
-        InputStream resourceStream = getClass().getResourceAsStream(path);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] bytes = new byte[512];
-        int readBytes = 0;
-
-        try {
-            while ((readBytes = resourceStream.read(bytes)) > 0) {
-                output.write(bytes, 0, readBytes);
-            }
-        } finally {
-            try {
-                resourceStream.close();
-                output.close();
-            } catch (IOException ex) {
-                logger.error("Nem sikerült lezárni egy resource streamet!", ex);
-            }
-        }
-
-        return output.toByteArray();
     }
 }
