@@ -413,8 +413,11 @@ public class RegisterWizard extends Wizard {
                 if (results.next()) {
                     person.setNeptun(neptun);
                     checkExistingPerson(neptun);
-                    //person.setStudentStatus("active");
-                    person.setStudentStatus("newbie");
+                    if (((PhoenixApplication) getApplication()).isNewbieTime()) {
+                        person.setStudentStatus("newbie");
+                    } else {
+                        person.setStudentStatus("active");
+                    }
                     person.setDateOfBirth(new SimpleDateFormat("yyyyMMdd").format(birthDate));
 
                     return true;
