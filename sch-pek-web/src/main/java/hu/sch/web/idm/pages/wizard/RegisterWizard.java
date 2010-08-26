@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.idm.pages.wizard;
 
 import hu.sch.domain.profile.Person;
@@ -414,8 +413,11 @@ public class RegisterWizard extends Wizard {
                 if (results.next()) {
                     person.setNeptun(neptun);
                     checkExistingPerson(neptun);
-                    //person.setStudentStatus("active");
-                    person.setStudentStatus("newbie");
+                    if (((PhoenixApplication) getApplication()).isNewbieTime()) {
+                        person.setStudentStatus("newbie");
+                    } else {
+                        person.setStudentStatus("active");
+                    }
                     person.setDateOfBirth(new SimpleDateFormat("yyyyMMdd").format(birthDate));
 
                     return true;
