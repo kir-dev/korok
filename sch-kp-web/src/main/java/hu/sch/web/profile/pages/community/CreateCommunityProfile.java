@@ -60,7 +60,7 @@ import org.apache.wicket.markup.html.WebPage;
  */
 public class CreateCommunityProfile extends ProfilePage {
 
-    @EJB(name = "foo", mappedName = "EntitlementManager")
+    @EJB(name = "EntitlementManagerBean")
     EntitlementManagerRemote entitlementManager;
     @EJB(name = "MailManagerBean")
     private MailManagerLocal mailManager;
