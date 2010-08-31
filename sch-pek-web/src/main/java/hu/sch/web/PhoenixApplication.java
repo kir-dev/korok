@@ -74,7 +74,6 @@ import hu.sch.web.profile.birthday.BirthDayPage;
 import hu.sch.web.profile.confirmation.ConfirmPage;
 import hu.sch.web.profile.edit.EditPage;
 import hu.sch.web.profile.passwordchange.ChangePasswordPage;
-import hu.sch.web.profile.search.SearchPage;
 import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.util.EntrantTypeConverter;
@@ -270,7 +269,6 @@ public class PhoenixApplication extends WebApplication {
         mountBookmarkablePage("/profile/edit", EditPage.class);
         mountBookmarkablePage("/profile/changepassword", ChangePasswordPage.class);
 
-        mountBookmarkablePage("/profile/search", SearchPage.class);
         mountBookmarkablePage("/profile/birthdays", BirthDayPage.class);
 
         mountBookmarkablePage("/profile/admin", AdminPage.class);
