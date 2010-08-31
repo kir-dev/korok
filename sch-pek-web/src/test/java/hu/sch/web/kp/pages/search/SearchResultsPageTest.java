@@ -38,7 +38,6 @@ import hu.sch.ejb.LdapManagerBean;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.test.WebTest;
-import java.util.Arrays;
 import java.util.List;
 import javax.naming.NamingException;
 import org.apache.wicket.PageParameters;
@@ -81,7 +80,7 @@ public class SearchResultsPageTest extends WebTest {
         tester.assertComponent("hitsPanel", PersonResultPanel.class);
         AjaxFallbackDefaultDataTable<Person> table = (AjaxFallbackDefaultDataTable<Person>) tester.getComponentFromLastRenderedPage(
                 "hitsPanel:personTable");
-        List<Person> result = ldapManager.search(Arrays.asList(new String[]{"László"}));
+        List<Person> result = ldapManager.search("László");
         assertTrue(table.getRowCount() == result.size());
     }
 }

@@ -59,17 +59,11 @@ public interface LdapManagerLocal {
 
     void update(Person p);
 
-    List<Person> search(List<String> searchWords);
-
-    List<Person> searchByAdmin(List<String> searchWords);
+    List<Person> search(String keyWord);
 
     List<Person> searchInactives();
 
     List<Person> searchMyUid(String mail);
-
-    List<Person> getPersonByDn(List<String> dnList);
-
-    void initialization();
 
     void registerPerson(Person p, String password);
 

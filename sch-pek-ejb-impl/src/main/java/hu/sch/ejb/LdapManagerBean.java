@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.config.Configuration;
@@ -39,6 +38,7 @@ import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.domain.util.PatternHolder;
+import hu.sch.ejb.util.I18nFilter;
 import hu.sch.services.MailManagerLocal;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -50,7 +50,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.Singleton;
 import javax.ejb.Stateless;
 import javax.naming.Name;
 import javax.naming.NamingException;
@@ -77,13 +82,13 @@ import org.springframework.ldap.filter.NotFilter;
 import org.springframework.ldap.filter.OrFilter;
 
 /**
+ * Az Ldap-ban levo emberekhez tartozo bejegyzeseket kezelo Session Bean.
  *
  * @author aldaris
  */
 @Stateless
-/**
- * Az Ldap-ban levo emberekhez tartozo bejegyzeseket kezelo Session Bean.
- */
+@Singleton
+@DeclareRoles("ADMIN")
 @SuppressWarnings("unchecked")
 public class LdapManagerBean implements LdapManagerLocal {
 
@@ -101,7 +106,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     /**
      * Bean objektum, letrehozasakor jon letre maga az ldapTemplate.
      */
-    private static volatile LdapManagerBean INSTANCE;
+    private static volatile LdapManagerBean INSTANCE = null;
     /**
      * Segitsegevel allitjuk elo az xml fajlbol az Ldap-ot kezelo objektumot.
      */
@@ -110,8 +115,31 @@ public class LdapManagerBean implements LdapManagerLocal {
      * Ez az objektum kezeli az osszes Ldap-ban levo adat elereset, modositasat, mindent.
      */
     private static LdapTemplate ldapTemplate;
+    /**
+     * Levélküldéshez szükséges EJB referencia
+     */
     @EJB(name = "MailManagerBean")
-    MailManagerLocal mailManager;
+    private MailManagerLocal mailManager;
+
+    /**
+     * Deklaratív jogkezeléshez
+     */
+    @Resource
+    private SessionContext ctx;
+    /**
+     * Bean inicializáló metódus, ez hozza létre igazából a Spring Beant.
+     */
+    @PostConstruct
+    private void init() {
+        if (INSTANCE == null) {
+            FileSystemResource resource =
+                    new FileSystemResource(Configuration.getSpringLdapPath());
+            LdapManagerBean.springBeanFactory =
+                    new XmlBeanFactory(resource);
+            INSTANCE =
+                    (LdapManagerBean) LdapManagerBean.springBeanFactory.getBean("ldapContact");
+        }
+    }
 
     /**
      * Callback fuggveny, az INSTANCE letrehozasa utan hivodik meg, beallitva ezzel az ldapTemplate-et.
@@ -121,102 +149,61 @@ public class LdapManagerBean implements LdapManagerLocal {
         ldapTemplate = newLdapTemplate;
     }
 
-    /**
-     * Az ldapTemplate-et tudjuk vele lekerdezni.
-     * @return Az ldapTemplate referenciajat kapjuk vissza.
-     */
-    LdapTemplate getLdapTemplate() {
-        return ldapTemplate;
-    }
-
-    /**
-     * Singleton-t megvalosito fuggveny, ez garantalja, hogy egyszer es csakis
-     * egyszer jon letre az Ldap-kezelo objektum.
-     */
-    private static void tryCreateInstance() {
-        synchronized (LdapManagerBean.class) {
-            if (INSTANCE == null) {
-                FileSystemResource resource =
-                        new FileSystemResource(Configuration.getSpringLdapPath());
-                LdapManagerBean.springBeanFactory =
-                        new XmlBeanFactory(resource);
-                INSTANCE =
-                        (LdapManagerBean) LdapManagerBean.springBeanFactory.getBean("ldapContact");
-                LdapManagerBean.class.getClassLoader();
-            }
-        }
-    }
-
-    /**
-     * Inicializalo fuggveny, segitsegevel keszitjuk el az egyetlen darab Ldap-kezelo objektumunkat
-     */
-    @PostConstruct
-    @Override
-    public void initialization() {
-        //mivel az EJB thread-safe, megtehetjuk ezt
-        LdapManagerBean lmb = INSTANCE;
-        if (lmb == null) {
-            tryCreateInstance();
-        }
-    }
-
     private static class PersonContextMapper extends AbstractContextMapper {
 
         @Override
-        public Object doMapFromContext(DirContextOperations context) {
+        public Object doMapFromContext(DirContextOperations ctx) {
             Person person = new Person();
-            person.setUid(context.getStringAttribute("uid"));
-            person.setLastName(context.getStringAttribute("sn"));
-            person.setFirstName(context.getStringAttribute("givenName"));
-            person.setFullName(context.getStringAttribute("cn"));
-            person.setNickName(context.getStringAttribute("displayName"));
-            person.setMail(context.getStringAttribute("mail"));
-            person.setMobile(context.getStringAttribute("mobile"));
-            person.setHomePhone(context.getStringAttribute("homePhone"));
-            person.setRoomNumber(context.getStringAttribute("roomNumber"));
-            person.setHomePostalAddress(context.getStringAttribute("homePostalAddress"));
-            person.setWebpage(context.getStringAttribute("labeledURI"));
-            person.setGender(context.getStringAttribute("schacGender"));
-            person.setMothersName(context.getStringAttribute("sch-vir-mothersName"));
-            person.setEstimatedGraduationYear(context.getStringAttribute("sch-vir-estimatedGraduationYear"));
-            person.setDateOfBirth(context.getStringAttribute("schacDateOfBirth"));
-            person.setStatus(context.getStringAttribute("inetUserStatus"));
-            person.setPhoto((byte[]) context.getObjectAttribute("jpegPhoto"));
-            person.setConfirmationCode(context.getStringAttribute("sch-vir-confirmationCodes"));
+            person.setUid(ctx.getStringAttribute("uid"));
+            person.setLastName(ctx.getStringAttribute("sn"));
+            person.setFirstName(ctx.getStringAttribute("givenName"));
+            person.setFullName(ctx.getStringAttribute("cn"));
+            person.setNickName(ctx.getStringAttribute("displayName"));
+            person.setMail(ctx.getStringAttribute("mail"));
+            person.setMobile(ctx.getStringAttribute("mobile"));
+            person.setHomePhone(ctx.getStringAttribute("homePhone"));
+            person.setRoomNumber(ctx.getStringAttribute("roomNumber"));
+            person.setHomePostalAddress(ctx.getStringAttribute("homePostalAddress"));
+            person.setWebpage(ctx.getStringAttribute("labeledURI"));
+            person.setGender(ctx.getStringAttribute("schacGender"));
+            person.setMothersName(ctx.getStringAttribute("sch-vir-mothersName"));
+            person.setEstimatedGraduationYear(ctx.getStringAttribute("sch-vir-estimatedGraduationYear"));
+            person.setDateOfBirth(ctx.getStringAttribute("schacDateOfBirth"));
+            person.setStatus(ctx.getStringAttribute("inetUserStatus"));
+            person.setPhoto((byte[]) ctx.getObjectAttribute("jpegPhoto"));
+            person.setConfirmationCode(ctx.getStringAttribute("sch-vir-confirmationCodes"));
 
             // im lista összeállítása
             List<IMAccount> ims = new ArrayList<IMAccount>();
-            person.setIMAccounts(ims);
-            String[] im = context.getStringAttributes("schacUserPresenceID");
+            String[] im = ctx.getStringAttributes("schacUserPresenceID");
             if (im != null) {
                 for (String presenceid : im) {
                     Matcher m = PatternHolder.IM_PATTERN.matcher(presenceid);
                     if (m.matches()) {
                         try {
-                            // throws invalidargumentexception
+                            // throws illegalargumentexception
                             ims.add(new IMAccount(
                                     IMProtocol.valueOf(m.group(1)),
                                     m.group(2)));
                         } catch (IllegalArgumentException e) {
-                            //TODO WARNING
+                            logger.warn("Error while decoding schacUserPresenceID", e);
                         }
                     } else {
-                        // TODO WARNING
+                        logger.warn("schacUserPresenceID in invalid format!");
                     }
                 }
             }
+            person.setIMAccounts(ims);
 
             // A tobbi sima attributumnal nem kell vizsgalni a null-t, itt viszont igen.
-            if (context.getStringAttributes("schacUserPrivateAttribute") != null) {
-                //person.setPrivateAttributes(context.getStringAttributes("schacUserPrivateAttribute"));
-                person.setSchacPrivateAttribute(context.getStringAttributes("schacUserPrivateAttribute"));
+            if (ctx.getStringAttributes("schacUserPrivateAttribute") != null) {
+                person.setSchacPrivateAttribute(ctx.getStringAttributes("schacUserPrivateAttribute"));
             }
 
             // Admin altal valtoztathato attributumok.
-            person.setPersonalUniqueCode(context.getStringAttribute("schacPersonalUniqueCode"));
-            person.setPersonalUniqueID(context.getStringAttribute("schacPersonalUniqueID"));
-            person.setStudentUserStatus(context.getStringAttribute("schacUserStatus"));
-
+            person.setPersonalUniqueCode(ctx.getStringAttribute("schacPersonalUniqueCode"));
+            person.setPersonalUniqueID(ctx.getStringAttribute("schacPersonalUniqueID"));
+            person.setStudentUserStatus(ctx.getStringAttribute("schacUserStatus"));
 
             person.setToUse();
             return person;
@@ -226,48 +213,48 @@ public class LdapManagerBean implements LdapManagerLocal {
     private static class PersonForSearchContextMapper extends AbstractContextMapper {
 
         @Override
-        public Object doMapFromContext(DirContextOperations context) {
+        public Object doMapFromContext(DirContextOperations ctx) {
             Person person = new Person();
-            person.setUid(context.getStringAttribute("uid"));
-            person.setFullName(context.getStringAttribute("cn"));
-            person.setNickName(context.getStringAttribute("displayName"));
-            person.setRoomNumber(context.getStringAttribute("roomNumber"));
-            person.setDateOfBirth(context.getStringAttribute("schacDateOfBirth"));
+            person.setUid(ctx.getStringAttribute("uid"));
+            person.setFullName(ctx.getStringAttribute("cn"));
+            person.setNickName(ctx.getStringAttribute("displayName"));
+            person.setRoomNumber(ctx.getStringAttribute("roomNumber"));
+            person.setDateOfBirth(ctx.getStringAttribute("schacDateOfBirth"));
 
             person.setToUse();
             return person;
         }
     }
 
-    protected void mapToContext(Person p, DirContextOperations context) {
+    protected void mapToContext(Person p, DirContextOperations ctx) {
         p.setToSave();
 
-        context.setAttributeValue("sn", p.getLastName());
-        context.setAttributeValue("givenName", p.getFirstName());
-        context.setAttributeValue("displayName", p.getNickName());
-        context.setAttributeValue("cn", p.getLastName() + " " + p.getFirstName());
-        context.setAttributeValue("mail", p.getMail());
-        context.setAttributeValue("mobile", p.getMobile());
-        context.setAttributeValue("homePhone", p.getHomePhone());
-        context.setAttributeValue("roomNumber", p.getRoomNumber());
-        context.setAttributeValue("homePostalAddress", p.getHomePostalAddress());
-        context.setAttributeValue("labeledURI", p.getWebpage());
-        context.setAttributeValue("schacDateOfBirth", p.getDateOfBirth());
-        context.setAttributeValue("schacGender", p.getGender());
-        context.setAttributeValue("sch-vir-mothersName", p.getMothersName());
-        context.setAttributeValue("sch-vir-estimatedGraduationYear", p.getEstimatedGraduationYear());
-        context.setAttributeValue("inetUserStatus", p.getStatus());
-        context.setAttributeValue("jpegPhoto", p.getPhoto());
-        context.setAttributeValue("sch-vir-confirmationCodes", p.getConfirmationCode());
+        ctx.setAttributeValue("sn", p.getLastName());
+        ctx.setAttributeValue("givenName", p.getFirstName());
+        ctx.setAttributeValue("displayName", p.getNickName());
+        ctx.setAttributeValue("cn", p.getLastName() + " " + p.getFirstName());
+        ctx.setAttributeValue("mail", p.getMail());
+        ctx.setAttributeValue("mobile", p.getMobile());
+        ctx.setAttributeValue("homePhone", p.getHomePhone());
+        ctx.setAttributeValue("roomNumber", p.getRoomNumber());
+        ctx.setAttributeValue("homePostalAddress", p.getHomePostalAddress());
+        ctx.setAttributeValue("labeledURI", p.getWebpage());
+        ctx.setAttributeValue("schacDateOfBirth", p.getDateOfBirth());
+        ctx.setAttributeValue("schacGender", p.getGender());
+        ctx.setAttributeValue("sch-vir-mothersName", p.getMothersName());
+        ctx.setAttributeValue("sch-vir-estimatedGraduationYear", p.getEstimatedGraduationYear());
+        ctx.setAttributeValue("inetUserStatus", p.getStatus());
+        ctx.setAttributeValue("jpegPhoto", p.getPhoto());
+        ctx.setAttributeValue("sch-vir-confirmationCodes", p.getConfirmationCode());
 
-        context.setAttributeValues("schacUserPrivateAttribute", p.getSchacPrivateAttribute());
+        ctx.setAttributeValues("schacUserPrivateAttribute", p.getSchacPrivateAttribute());
 
-        List<String> attrs = Arrays.asList(context.getStringAttributes("objectClass"));
+        List<String> attrs = Arrays.asList(ctx.getStringAttributes("objectClass"));
         if (!attrs.contains("schacEntryConfidentiality")) {
-            context.addAttributeValue("objectClass", "schacEntryConfidentiality");
+            ctx.addAttributeValue("objectClass", "schacEntryConfidentiality");
         }
         if (!attrs.contains("sch-vir")) {
-            context.addAttributeValue("objectClass", "sch-vir");
+            ctx.addAttributeValue("objectClass", "sch-vir");
         }
 
         Iterator<IMAccount> iterator = p.getIMAccounts().iterator();
@@ -280,12 +267,12 @@ public class LdapManagerBean implements LdapManagerLocal {
         for (int i = 0; i < p.getIMAccounts().size(); i++) {
             ims[i] = p.getIMAccounts().get(i).toString();
         }
-        context.setAttributeValues("schacUserPresenceID", ims);
+        ctx.setAttributeValues("schacUserPresenceID", ims);
 
         // Admin altal valtoztathato attributumok.
-        context.setAttributeValue("schacPersonalUniqueCode", p.getPersonalUniqueCode());
-        context.setAttributeValue("schacPersonalUniqueID", p.getPersonalUniqueID());
-        context.setAttributeValue("schacUserStatus", p.getStudentUserStatus());
+        ctx.setAttributeValue("schacPersonalUniqueCode", p.getPersonalUniqueCode());
+        ctx.setAttributeValue("schacPersonalUniqueID", p.getPersonalUniqueID());
+        ctx.setAttributeValue("schacUserStatus", p.getStudentUserStatus());
     }
 
     protected Name buildDn(String uid) {
@@ -298,6 +285,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         return new PersonContextMapper();
     }
 
+    @RolesAllowed("ADMIN")
     @Override
     public void deletePersonByUid(String uid) throws PersonNotFoundException {
         // Tenyleg letezik-e a user.
@@ -305,19 +293,18 @@ public class LdapManagerBean implements LdapManagerLocal {
 
         // User torlese.
         Name dn = buildDn(uid);
-        getLdapTemplate().unbind(dn);
+        ldapTemplate.unbind(dn);
     }
 
     @Override
     public Person getPersonByUid(String uid) throws PersonNotFoundException {
-        Name dn = buildDn(uid);
         Person p = null;
         try {
-            p = (Person) getLdapTemplate().lookup(dn, getContextMapper());
-        } catch (NameNotFoundException e) {
-            logger.error("Nincs ilyen UID! -- "+e.getMessage());
-        } catch (Exception t) {
-            logger.error("Nem sikerült lekérni UID alapján a személyt! -- ", t);
+            p = (Person) ldapTemplate.lookup(buildDn(uid), getContextMapper());
+        } catch (NameNotFoundException nnfe) {
+            logger.error("Nincs ilyen UID! -- ", nnfe);
+        } catch (Exception e) {
+            logger.error("Nem sikerült lekérni UID alapján a személyt! -- ", e);
         }
 
         if (p == null) {
@@ -331,7 +318,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     public Person getPersonByVirId(String virId) throws PersonNotFoundException {
         EqualsFilter equalsFilter = new EqualsFilter("schacPersonalUniqueID", "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:" + virId);
 
-        List<Person> searchResult = getLdapTemplate().search("", equalsFilter.encode(), getContextMapper());
+        List<Person> searchResult = ldapTemplate.search("", equalsFilter.encode(), getContextMapper());
 
         if (searchResult.isEmpty()) {
             throw new PersonNotFoundException();
@@ -343,7 +330,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     public Person getPersonByNeptun(String neptun) throws PersonNotFoundException {
         EqualsFilter equalsFilter = new EqualsFilter("schacPersonalUniqueCode", "urn:mace:terena.org:schac:personalUniqueCode:hu:BME-NEPTUN:" + neptun);
 
-        List<Person> searchResult = getLdapTemplate().search("", equalsFilter.encode(), getContextMapper());
+        List<Person> searchResult = ldapTemplate.search("", equalsFilter.encode(), getContextMapper());
 
         if (searchResult.isEmpty()) {
             throw new PersonNotFoundException();
@@ -354,36 +341,34 @@ public class LdapManagerBean implements LdapManagerLocal {
     @Override
     public void update(Person p) {
         Name dn = buildDn(p.getUid());
-        DirContextOperations context = getLdapTemplate().lookupContext(dn);
+        DirContextOperations context = ldapTemplate.lookupContext(dn);
         mapToContext(p, context);
-        getLdapTemplate().modifyAttributes(context);
+        ldapTemplate.modifyAttributes(context);
     }
 
-    private AndFilter setUpAndFilter(List<String> searchWords) {
-        Iterator<String> liter = searchWords.iterator();
-
+    /**
+    /*
+    (cn = "*almafa*") or
+    (displayName = "*almafa*") or
+    (mail = "*almafa*" and schacUserPrivateAttribute != "mail") or
+    (roomNumber = "*almafa*" and schacUserPrivateAttribute != "roomNumber")
+     *
+     * @param keyWord
+     * @return
+     */
+    private AndFilter setUpAndFilter(String keyWord) {
         AndFilter andFilter = new AndFilter();
-        while (liter.hasNext()) {
-            String s = liter.next();
-            /*
-            (cn = "*almafa*") or
-            (displayName = "*almafa*") or
-            (mail = "*almafa*" and schacUserPrivateAttribute != "mail") or
-            (roomNumber = "*almafa*" and schacUserPrivateAttribute != "roomNumber")
-             */
 
+        for (String word : keyWord.split(" ")) {
             OrFilter orFilter = new OrFilter();
-            orFilter.or(new LikeFilter("cn", "*" + s + "*"));
-            orFilter.or(new LikeFilter("displayName", "*" + s + "*"));
+            orFilter.or(new I18nFilter("cn", "*" + word + "*"));
+            orFilter.or(new I18nFilter("displayName", "*" + word + "*"));
             orFilter.or(new AndFilter().and(new NotFilter(
                     new EqualsFilter("schacUserPrivateAttribute", "mail"))).
-                    and(new EqualsFilter("mail", s)));
-            //            orFilter.or(new EqualsFilter("mail", s));
-            //            orFilter.or(new LikeFilter("roomNumber", "*" + s));
+                    and(new EqualsFilter("mail", word)));
             orFilter.or(new AndFilter().and(new NotFilter(
                     new EqualsFilter("schacUserPrivateAttribute", "roomNumber"))).
-                    and(new LikeFilter("roomNumber", "*"
-                    + s + "*")));
+                    and(new I18nFilter("roomNumber", "*" + word + "*")));
             andFilter.and(orFilter);
         }
         andFilter.and(new EqualsFilter("objectclass", "person"));
@@ -393,25 +378,18 @@ public class LdapManagerBean implements LdapManagerLocal {
     @Override
     public List<Person> searchMyUid(String mail) {
         AndFilter andFilter = new AndFilter();
-        if (mail != null) {
-            andFilter.and(new EqualsFilter("mail", mail));
-        }
+        andFilter.and(new EqualsFilter("mail", mail));
         andFilter.and(new EqualsFilter("inetUserStatus", "Active"));
-        return getLdapTemplate().search("", andFilter.encode(), getContextMapper());
+        return ldapTemplate.search("", andFilter.encode(), getContextMapper());
     }
 
     @Override
-    public List<Person> search(List<String> searchWords) {
-        AndFilter andFilter = setUpAndFilter(searchWords);
-        andFilter.and(new EqualsFilter("inetUserStatus", "active"));
-        return getLdapTemplate().search("",
-                andFilter.encode(), getSearchContextMapper());
-    }
-
-    @Override
-    public List<Person> searchByAdmin(List<String> searchWords) {
-        AndFilter andFilter = setUpAndFilter(searchWords);
-        return getLdapTemplate().search("",
+    public List<Person> search(String keyWord) {
+        AndFilter andFilter = setUpAndFilter(keyWord);
+        if (!ctx.isCallerInRole("ADMIN")) {
+            andFilter.and(new EqualsFilter("inetUserStatus", "active"));
+        }
+        return ldapTemplate.search("",
                 andFilter.encode(), getSearchContextMapper());
     }
 
@@ -421,30 +399,14 @@ public class LdapManagerBean implements LdapManagerLocal {
         andFilter.and(
                 new NotFilter(new EqualsFilter("schacUserPrivateAttribute", "schacDateOfBirth"))).and(
                 new LikeFilter("schacDateOfBirth", "*" + searchDate));
-        return getLdapTemplate().search("",
+        return ldapTemplate.search("",
                 andFilter.encode(), getSearchContextMapper());
     }
 
     @Override
     public List<Person> searchInactives() {
         EqualsFilter filter = new EqualsFilter("inetUserStatus", "Inactive");
-        return getLdapTemplate().search("", filter.encode(), getContextMapper());
-    }
-
-    @Override
-    public List<Person> getPersonByDn(List<String> dnList) {
-        List<Person> LDAPPersons = new ArrayList<Person>(dnList.size());
-        for (String dnStr : dnList) {
-            DistinguishedName dn = new DistinguishedName(dnStr);
-            Name dnSuffix = dn.getSuffix(dn.size() - 1);
-            try {
-                LDAPPersons.add(
-                        (Person) getLdapTemplate().lookup(dnSuffix, getContextMapper()));
-            } catch (Exception e) {
-            }
-        }
-
-        return LDAPPersons;
+        return ldapTemplate.search("", filter.encode(), getContextMapper());
     }
 
     @Override

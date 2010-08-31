@@ -32,8 +32,6 @@
 package hu.sch.web.kp.search;
 
 import hu.sch.web.kp.KorokPage;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 
@@ -67,12 +65,8 @@ public class SearchResultsPage extends KorokPage {
             GroupResultPanel groups = new GroupResultPanel("hitsPanel", userManager.findGroupByName("%" + keyword + "%"));
             add(groups);
         } else if (type.equals("user")) {
-            //TODO
-            List<String> terms = new ArrayList<String>();
-            terms.add(keyword);
-            PersonResultPanel users = new PersonResultPanel("hitsPanel", ldapManager.search(terms));
+            PersonResultPanel users = new PersonResultPanel("hitsPanel", ldapManager.search(keyword));
             add(users);
         }
-
     }
 }
