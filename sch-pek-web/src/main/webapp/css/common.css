@@ -231,12 +231,21 @@ th {
 }
 #footercont {
     position: relative;
-    background: #517D9D url('../images/logoSch.png') top left no-repeat;
+    background: #517D9D;
     height: 60px;
-    width: 830px;
+    width: 900px;
     margin: 0 auto;
-    text-align: right;
-    padding-right: 70px
+    text-align: center;
+}
+#footercont div.logocont {
+    position: absolute;
+    top: 0px;
+    width: 886px;
+    padding: 0px 7px;
+}
+#footercont div.logocont div {
+    height: 60px;
+    overflow: hidden;
 }
 #footercont span {
     color: #C5E2F7;
