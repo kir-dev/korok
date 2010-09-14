@@ -104,6 +104,7 @@ public class Group implements Serializable, Comparable<Group> {
     grp_founded          | integer               |
     grp_issvie           | boolean               | not null default false
     grp_svie_delegate_nr | integer               |
+    grp_users_can_apply  | boolean               | not null default true
      */
     /**
      * Group azonosító id
