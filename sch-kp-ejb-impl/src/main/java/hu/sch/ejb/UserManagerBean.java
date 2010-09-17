@@ -510,21 +510,10 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public List<Group> getParentGroups(Long id) {
+    public Group getParentGroups(Long id) {
         List<Group> groups = em.createNamedQuery(Group.groupHierarchy).getResultList();
-        Group parent;
-        List<Group> result = new ArrayList<Group>();
-        while ((parent = findParent(groups, id)).getParent() != null) {
-            result.add(parent);
-            id = parent.getParent().getId();
-        }
-        result.add(parent);
-        return result;
-    }
-
-    private Group findParent(List<Group> groups, Long id) {
         for (Group group : groups) {
-            if (group.getId().equals(id)) {
+            if (group.getId().equals(id) ){
                 return group;
             }
         }

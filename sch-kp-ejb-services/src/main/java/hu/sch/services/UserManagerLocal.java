@@ -134,5 +134,5 @@ public interface UserManagerLocal {
      * @return A felhasználó felvételi pontjai az adott félévre*/
     public int getSemesterPointForUser(User user, Semester semester);
 
-    public List<Group> getParentGroups(Long id);
+    public Group getParentGroups(Long id);
 }

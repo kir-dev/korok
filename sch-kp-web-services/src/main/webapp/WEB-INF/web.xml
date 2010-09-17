@@ -57,7 +57,7 @@
         </session-timeout>
     </session-config>
 
-    <login-config>  <auth-method>CLIENT-CERT</auth-method>  </login-config>
+<!--    <login-config>  <auth-method>CLIENT-CERT</auth-method>  </login-config>
 
     <security-role> <description /> <role-name>authorized</role-name> </security-role>
 
@@ -83,5 +83,5 @@
             <description/>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
-    </security-constraint>
+    </security-constraint>-->
 </web-app>
