@@ -513,10 +513,15 @@ public class UserManagerBean implements UserManagerLocal {
     public Group getParentGroups(Long id) {
         List<Group> groups = em.createNamedQuery(Group.groupHierarchy).getResultList();
         for (Group group : groups) {
-            if (group.getId().equals(id) ){
+            if (group.getId().equals(id)) {
                 return group;
             }
         }
         throw new IllegalArgumentException("No such group");
+    }
+
+    @Override
+    public List<Group> getChildGroups(Long id) {
+        return em.createQuery("SELECT g FROM Group g WHERE g.parent.id =:id").setParameter("id", id).getResultList();
     }
 }

@@ -41,6 +41,7 @@ import hu.sch.domain.GivenPoint;
 import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.User;
+import hu.sch.domain.rest.PointInfo;
 import java.util.Collection;
 import java.util.List;
 import javax.ejb.Local;
@@ -223,4 +224,13 @@ public interface ValuationManagerLocal {
     void updateValuation(Long valuationId, String text);
 
     List<GivenPoint> getPointsForKfbExport(Semester semester);
+
+    /**
+     * Visszaadja egy adott uid-hez tartozó pontozásokat körre lebontva az aktuális
+     * szemeszterre.
+     *
+     * @param uid A felhasználó azonosítója
+     * @return A pontok listája
+     */
+    List<PointInfo> getPointInfoForUid(String uid);
 }

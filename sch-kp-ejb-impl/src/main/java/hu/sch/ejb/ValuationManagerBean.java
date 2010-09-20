@@ -45,11 +45,15 @@ import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
+import hu.sch.domain.profile.Person;
+import hu.sch.domain.rest.PointInfo;
+import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
+import hu.sch.services.exceptions.PersonNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -64,7 +68,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -84,6 +87,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     SystemManagerLocal systemManager;
     @EJB
     MailManagerLocal mailManager;
+    @EJB
+    LdapManagerLocal ldapManager;
 
     @Override
     public void createErtekeles(Valuation ertekeles) {
@@ -645,5 +650,25 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         q.setParameter("prevSemester", semester.getPrevious().getId());
 
         return q.getResultList();
+    }
+
+    @Override
+    public List<PointInfo> getPointInfoForUid(String uid) {
+        Person person = null;
+        try {
+            person = ldapManager.getPersonByUid(uid);
+            if (person.getVirId() != null) {
+                Query q = em.createQuery("SELECT new hu.sch.domain.rest.PointInfo (p.valuation.groupId, p.point) "
+                        + "FROM PointRequest p "
+                        + "WHERE p.valuation.semester =:semester AND p.userId =:userid");
+                q.setParameter("semester", systemManager.getSzemeszter());
+                q.setParameter("userid", person.getVirId());
+                return q.getResultList();
+            }
+        } catch (PersonNotFoundException pnfe) {
+            logger.error("Unable to find user with uid: " + uid);
+        }
+
+        throw new IllegalArgumentException("Unable to find user with points");
     }
 }

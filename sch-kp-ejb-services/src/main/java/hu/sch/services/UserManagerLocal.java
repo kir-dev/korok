@@ -135,4 +135,12 @@ public interface UserManagerLocal {
     public int getSemesterPointForUser(User user, Semester semester);
 
     public Group getParentGroups(Long id);
+
+    /**
+     * Visszaadja az adott kör alá tartozó köröket.
+     *
+     * @param id A kör azonosítója
+     * @return A kör alá tartozó alkörök
+     */
+    List<Group> getChildGroups(Long id);
 }

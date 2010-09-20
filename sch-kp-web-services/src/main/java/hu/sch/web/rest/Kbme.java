@@ -32,7 +32,10 @@
 package hu.sch.web.rest;
 
 import hu.sch.domain.Group;
+import hu.sch.domain.rest.PointInfo;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.ValuationManagerLocal;
+import java.util.List;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
@@ -53,8 +56,10 @@ import org.apache.log4j.Logger;
 public class Kbme {
 
     private static Logger logger = Logger.getLogger(Kbme.class);
-    @EJB(name = "UserManagerBean")
+    @EJB
     UserManagerLocal userManager;
+    @EJB
+    ValuationManagerLocal valuationManager;
     @Context
     private UriInfo context;
 //    @Context
@@ -66,6 +71,22 @@ public class Kbme {
     public Group getParentGroups(@QueryParam("id") Long id) {
         doAudit();
         return userManager.getParentGroups(id);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    @Path("/child")
+    public List<Group> getChildGroups(@QueryParam("id") Long id) {
+        doAudit();
+        return userManager.getChildGroups(id);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    @Path("/points")
+    public List<PointInfo> getPointsForUser(@QueryParam("uid") String uid) {
+        doAudit();
+        return valuationManager.getPointInfoForUid(uid);
     }
 
     private final void doAudit() {
@@ -85,6 +106,5 @@ public class Kbme {
             auditMessage.append("UNKNOWN");
         }
         logger.info(auditMessage.toString());
-        System.out.println(auditMessage.toString());
     }
 }
