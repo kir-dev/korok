@@ -502,34 +502,40 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
     @Override
     public List<ValuationData> findRequestsForValuation(Long valuationId) {
-        Query q = em.createQuery("SELECT v FROM Valuation v "
-                + "LEFT JOIN FETCH v.pointRequestsAsSet p "
+        TypedQuery<PointRequest> pQ = em.createQuery("SELECT p FROM PointRequest p "
                 + "LEFT JOIN FETCH p.user pu "
-                + "LEFT JOIN FETCH v.entrantRequestsAsSet e "
-                + "LEFT JOIN FETCH e.user eu "
-                + "WHERE v.id = :valuationId ");
-        q.setParameter("valuationId", valuationId);
+                + "LEFT JOIN FETCH p.valuation v "
+                + "WHERE p.valuationId = :valuationId ", PointRequest.class);
+				pQ.setParameter("valuationId", valuationId);
 
-        Valuation v = (Valuation) q.getSingleResult();
+        List<PointRequest> pReqs = pQ.getResultList();
+
+        TypedQuery<EntrantRequest> eQ = em.createQuery("SELECT e FROM EntrantRequest e "
+                + "LEFT JOIN FETCH e.user pu "
+                + "LEFT JOIN FETCH e.valuation v "
+                + "WHERE e.valuationId = :valuationId ", EntrantRequest.class);
+        eQ.setParameter("valuationId", valuationId);
+
+        List<EntrantRequest> eReqs = eQ.getResultList();
 
         // legjobb esetben ha a size != 0, akkor az összes felhasználónk meglesz
         // és nem kell a map méretén növelni
-        int size = v.getEntrantRequestsAsSet().size();
+        int size = eReqs.size();
         if (size == 0) {
             // ha nincsen belépő kérelem, akkor csak pontok vannak, és annak a mérete elég.
-            size = v.getPointRequestsAsSet().size();
+            size = pReqs.size();
         }
 
         Map<Long, ValuationData> vDataMap = new HashMap<Long, ValuationData>(size);
 
         // belépőkkel kezdjük, mert ha van legalább 1 belépő, akkor van összes és így
         // lefedjük az összes felhasználót.
-        for (EntrantRequest eReq : v.getEntrantRequestsAsSet()) {
+        for (EntrantRequest eReq : eReqs) {
             vDataMap.put(eReq.getUserId(), new ValuationData(eReq.getUser(), null, eReq));
         }
 
         ValuationData vData;
-        for (PointRequest pReq : v.getPointRequestsAsSet()) {
+        for (PointRequest pReq : pReqs) {
             vData = vDataMap.get(pReq.getUserId());
             if (vData == null) {
                 vDataMap.put(pReq.getUserId(), new ValuationData(pReq.getUser(), pReq, null));
