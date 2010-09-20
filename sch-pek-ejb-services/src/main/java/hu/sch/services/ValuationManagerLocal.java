@@ -42,6 +42,7 @@ import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.User;
+import hu.sch.domain.rest.PointInfo;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
@@ -240,4 +241,12 @@ public interface ValuationManagerLocal {
     void deleteValuations(Group group, Semester semester);
 
     Long findLatestVersionsId(Group group, Semester semester);
+    /**
+     * Visszaadja egy adott uid-hez tartozó pontozásokat körre lebontva az aktuális
+     * szemeszterre.
+     *
+     * @param uid A felhasználó azonosítója
+     * @return A pontok listája
+     */
+    List<PointInfo> getPointInfoForUid(String uid);
 }

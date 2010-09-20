@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.services;
 
 import hu.sch.domain.EntrantRequest;
@@ -138,5 +137,13 @@ public interface UserManagerLocal {
      * @return A felhasználó felvételi pontjai az adott félévre*/
     public int getSemesterPointForUser(User user, Semester semester);
 
-    public List<Group> getParentGroups(Long id);
+    public Group getParentGroups(Long id);
+
+    /**
+     * Visszaadja az adott kör alá tartozó köröket.
+     *
+     * @param id A kör azonosítója
+     * @return A kör alá tartozó alkörök
+     */
+    List<Group> getChildGroups(Long id);
 }
