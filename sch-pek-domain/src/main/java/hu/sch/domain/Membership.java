@@ -215,11 +215,11 @@ public class Membership implements MembershipTableEntry {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         final Membership other = (Membership) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.getId()))) {
             return false;
         }
         return true;

@@ -126,11 +126,11 @@ public class PostType implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         final PostType other = (PostType) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.getId()))) {
             return false;
         }
         return true;

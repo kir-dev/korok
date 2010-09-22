@@ -338,11 +338,11 @@ public class User implements Serializable, Comparable<User> {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         final User other = (User) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.getId()))) {
             return false;
         }
         return true;

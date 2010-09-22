@@ -456,14 +456,15 @@ public class Group implements Serializable, Comparable<Group> {
 
     @Override
     public boolean equals(Object obj) {
+        //Részletekért lásd: http://brandon.fuller.name/archives/2009/03/17/16.37.41/
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         final Group other = (Group) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.getId()))) {
             return false;
         }
         return true;
