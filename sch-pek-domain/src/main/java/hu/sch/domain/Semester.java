@@ -192,11 +192,11 @@ public class Semester implements Serializable, Comparable<Semester> {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!getClass().isAssignableFrom(obj.getClass())) {
             return false;
         }
         final Semester other = (Semester) obj;
-        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.getId())) {
             return false;
         }
         return true;
