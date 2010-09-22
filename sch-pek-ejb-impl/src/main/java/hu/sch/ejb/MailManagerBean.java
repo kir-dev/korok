@@ -63,12 +63,14 @@ public class MailManagerBean implements MailManagerLocal {
         sb.append("-nak.");
         log.info(sb.toString());
 
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled() || Configuration.getEnvironment() == Environment.TESTING) {
             StringBuilder sbd = new StringBuilder();
 
             sbd.append("E-mail küldése\n");
             sbd.append("Címzett: ");
             sbd.append(to);
+            sbd.append("\nTárgy: ");
+            sbd.append(subject);
             sbd.append("\nÜzenet: ");
             sbd.append(message);
 
@@ -89,8 +91,11 @@ public class MailManagerBean implements MailManagerLocal {
             msg.setText(message);
             msg.setSentDate(new Date());
 
-            Transport.send(msg);
-            log.info("Levél sikeresen elküldve.");
+            if( Configuration.getEnvironment() != Environment.TESTING ) {
+                // TESTING esetén ne küldjünk levelet!
+                Transport.send(msg);
+                log.info("Levél sikeresen elküldve.");
+            }
         } catch (Exception ex) {
             log.error("Hiba az e-mail elküldése közben.", ex);
             return false;
