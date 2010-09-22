@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.ejb;
 
 import hu.sch.domain.EntrantRequest;
@@ -179,7 +178,7 @@ public class UserManagerBean implements UserManagerLocal {
         try {
             em.flush();
         } catch (PersistenceException ex) {
-            if(ex.getCause().getClass().equals(ConstraintViolationException.class)) {
+            if (ex.getCause().getClass().equals(ConstraintViolationException.class)) {
                 // már van ilyen tagság
                 throw new MembershipAlreadyExistsException(group, user);
             } else {
@@ -527,19 +526,8 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public List<Group> getParentGroups(Long id) {
+    public Group getParentGroups(Long id) {
         List<Group> groups = em.createNamedQuery(Group.groupHierarchy).getResultList();
-        Group parent;
-        List<Group> result = new ArrayList<Group>();
-        while ((parent = findParent(groups, id)).getParent() != null) {
-            result.add(parent);
-            id = parent.getParent().getId();
-        }
-        result.add(parent);
-        return result;
-    }
-
-    private Group findParent(List<Group> groups, Long id) {
         for (Group group : groups) {
             if (group.getId().equals(id)) {
                 return group;
@@ -570,5 +558,11 @@ public class UserManagerBean implements UserManagerLocal {
         q.setParameter("post", post);
 
         return q.getResultList();
+    }
+
+    @Override
+    public List<Group> getChildGroups(Long id) {
+        return em.createQuery("SELECT g FROM Group g WHERE g.parent.id =:id").setParameter("id", id).getResultList();
+
     }
 }

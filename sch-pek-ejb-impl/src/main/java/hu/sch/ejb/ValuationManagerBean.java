@@ -45,12 +45,16 @@ import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
+import hu.sch.domain.profile.Person;
+import hu.sch.domain.rest.PointInfo;
 import hu.sch.domain.util.MapUtils;
+import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
+import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
@@ -90,6 +94,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     SystemManagerLocal systemManager;
     @EJB
     MailManagerLocal mailManager;
+    @EJB
+    LdapManagerLocal ldapManager;
 
     @Override
     public void createValuation(Valuation ertekeles) {
@@ -606,17 +612,17 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 + "LEFT JOIN FETCH p.user pu "
                 + "LEFT JOIN FETCH p.valuation v "
                 + "WHERE p.valuationId = :valuationId ", PointRequest.class);
-		pQ.setParameter("valuationId", valuationId);
+        pQ.setParameter("valuationId", valuationId);
 
-		List<PointRequest> pReqs = pQ.getResultList();
+        List<PointRequest> pReqs = pQ.getResultList();
 
         TypedQuery<EntrantRequest> eQ = em.createQuery("SELECT e FROM EntrantRequest e "
                 + "LEFT JOIN FETCH e.user pu "
                 + "LEFT JOIN FETCH e.valuation v "
                 + "WHERE e.valuationId = :valuationId ", EntrantRequest.class);
-		eQ.setParameter("valuationId", valuationId);
+        eQ.setParameter("valuationId", valuationId);
 
-		List<EntrantRequest> eReqs = eQ.getResultList();
+        List<EntrantRequest> eReqs = eQ.getResultList();
 
         // legjobb esetben ha a size != 0, akkor az összes felhasználónk meglesz
         // és nem kell a map méretén növelni
@@ -774,8 +780,28 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         q.setParameter("id", valuationId);
         try {
             return (Valuation) q.getSingleResult();
-        } catch( NoResultException ex ) {
+        } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    @Override
+    public List<PointInfo> getPointInfoForUid(String uid) {
+        Person person = null;
+        try {
+            person = ldapManager.getPersonByUid(uid);
+            if (person.getVirId() != null) {
+                Query q = em.createQuery("SELECT new hu.sch.domain.rest.PointInfo (p.valuation.groupId, p.point) "
+                        + "FROM PointRequest p "
+                        + "WHERE p.valuation.semester =:semester AND p.userId =:userid");
+                q.setParameter("semester", systemManager.getSzemeszter());
+                q.setParameter("userid", person.getVirId());
+                return q.getResultList();
+            }
+        } catch (PersonNotFoundException pnfe) {
+            logger.error("Unable to find user with uid: " + uid);
+        }
+
+        throw new IllegalArgumentException("Unable to find user with points");
     }
 }
