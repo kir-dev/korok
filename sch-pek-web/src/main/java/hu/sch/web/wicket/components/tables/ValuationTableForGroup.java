@@ -54,7 +54,7 @@ public class ValuationTableForGroup extends ValuationTable {
 
     public ValuationTableForGroup(String id, List<ValuationData> items, int rowsPerPage) {
         super(id, items, rowsPerPage);
-        provider.setSort(MySortableDataProvider.SORT_BY_USER, true);
+        provider.setSort(MySortableDataProvider.SORT_BY_POINT, false);
     }
 
     public ValuationTableForGroup(String id, List<ValuationData> items) {

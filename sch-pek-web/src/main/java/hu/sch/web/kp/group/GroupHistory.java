@@ -28,12 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.Semester;
+import hu.sch.domain.ValuationStatistic;
 import hu.sch.web.kp.valuation.ValuationDetailPanel;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
@@ -96,7 +96,9 @@ public class GroupHistory extends KorokPage {
         ValuationDetailPanel valuationPanel = new ValuationDetailPanel("valuationInfo");
         if (selected != null) {
             setHeaderLabelText("A kör részletes pontozásai");
-            setTitleText(String.format("%s korábbi értékelései (%s)", group.getName(), semester.toString()));
+            ValuationStatistic stat = valuationManager.getStatisticForValuation(selected.getId());
+            setTitleText(String.format("%s korábbi értékelései (%s); Szumma: %d Átlag: %.2f Belépők: %d ÁB %d KB",
+                    group.getName(), semester.toString(), stat.getSummaPoint(), stat.getAveragePoint(), stat.getGivenAB(), stat.getGivenKB()));
             valuationPanel.updateValuation(selected);
         } else {
             setHeaderLabelText("Időszakválasztás");
