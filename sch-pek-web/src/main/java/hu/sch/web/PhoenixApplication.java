@@ -225,6 +225,7 @@ public class PhoenixApplication extends WebApplication {
     }
 
     private void mountKorok() {
+        mountBookmarkablePage("/", ShowUser.class);
         mountBookmarkablePage("/korok", ShowUser.class);
         mountBookmarkablePage("/korok/showuser", ShowUser.class);
         mountBookmarkablePage("/korok/userhistory", UserHistory.class);
