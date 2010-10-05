@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.common;
 
 import hu.sch.services.LdapManagerLocal;
@@ -51,6 +50,20 @@ import org.apache.wicket.model.Model;
  */
 public abstract class PekPage extends WebPage {
 
+    private static final String NAVBAR_SCRIPT =
+            "var navbarConf = { "
+            + "logoutLink: '/logout', "
+            + "theme: 'blue', "
+            + "width: 900, "
+            + "support: %d, "
+            + "helpMenuItems: ["
+            + "{"
+            + "title: 'FAQ',"
+            + "url: 'https://kir-dev.sch.bme.hu/kozossegi-pontozas/'"
+            + "}"
+            + "]"
+            + "}; "
+            + "printNavbar(navbarConf);";
     private Label titleLabel;
     private Label navbarScript;
     private Label headerLabel;
@@ -100,19 +113,8 @@ public abstract class PekPage extends WebPage {
     protected abstract Panel getHeaderPanel(String id);
 
     protected final void createNavbarWithSupportId(int supportId) {
-        navbarScript.setDefaultModel(new Model<String>("var navbarConf = { "
-                + "logoutLink: 'https://idp.sch.bme.hu/opensso/UI/Logout', "
-                + "theme: 'blue', "
-                + "width: 900, "
-                + "support: " + supportId + ", "
-                + "helpMenuItems: ["
-                + "{"
-                + "title: 'FAQ',"
-                + "url: 'https://kir-dev.sch.bme.hu/kozossegi-pontozas/'"
-                + "}"
-                + "]"
-                + "}; "
-                + "printNavbar(navbarConf);"));
+        navbarScript.setDefaultModel(
+                new Model<String>(NAVBAR_SCRIPT.replace("%d", Integer.toString(supportId))));
     }
 
     protected final boolean isCurrentUserAdmin() {
