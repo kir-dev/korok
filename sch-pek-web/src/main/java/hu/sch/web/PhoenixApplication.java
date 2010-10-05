@@ -165,6 +165,7 @@ public class PhoenixApplication extends WebApplication {
         getMarkupSettings().setStripWicketTags(true);
 
         mount("/error", PackageName.forClass(InternalServerError.class));
+        mountBookmarkablePage("/loggedout", Logout.class);
         mountKorok();
         mountProfil();
 
