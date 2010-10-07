@@ -152,9 +152,8 @@ public class AdminPage extends ProfilePage {
                     @Override
                     public void validate(Form<?> form) {
                         if (neptunTF.getValue().isEmpty()
-                                && (studentStatusDropDownChoice.getValue().equals("active")
-                                || studentStatusDropDownChoice.getValue().equals("graduated"))) {
-                            error(neptunTF, "reg.err.neptunNelkuliAktiv");
+                                && studentStatusDropDownChoice.getValue().equals("active")) {
+                            error(neptunTF, "admin.create.person.err.neptunNelkuliAktiv");
                         }
                     }
                 });
