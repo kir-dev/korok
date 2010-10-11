@@ -56,7 +56,7 @@ public class UserNameReminder extends KorokPage {
     public UserNameReminder() {
         setHeaderLabelText("Felhasználói név emlékeztető");
         if (getRemoteUser() != null) {
-            getSession().error(getLocalizer().getString("err.ReminderAlreadySignedIn", null));
+            getSession().error(getLocalizer().getString("err.ReminderAlreadySignedIn", this));
             throw new RestartResponseException(getApplication().getHomePage());
         }
 

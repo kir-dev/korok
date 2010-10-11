@@ -75,7 +75,6 @@ public class SvieRegPdfLink extends LinkPanel<User> {
     private final User user;
     private Person person;
     private String cachedmsType;
-    private static StringBuilder sb;
     private static BaseFont arialUnicode;
     private static Font font;
     private static Paragraph firstStatement;
@@ -91,7 +90,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
                     BaseFont.createFont(Configuration.getFontPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             font = new Font(arialUnicode, 12);
 
-            sb = new StringBuilder(150);
+            StringBuilder sb = new StringBuilder(150);
             sb.append("A Budapesti Műszaki Egyetem Villamosmérnöki és Informatikai ");
             sb.append("Karának nappali tagozatos hallgatója vagyok, egyben tagsággal ");
             sb.append("bírok egy, a Schönherz Zoltán Kollégiumban működő Egyesületi Körben.");
@@ -226,7 +225,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
         }
         document.add(permissionStatement);
 
-        sb = new StringBuilder(200);
+        StringBuilder sb = new StringBuilder(200);
         sb.append("Budapest, ");
         sb.append(new SimpleDateFormat("yyyy. MMMM d.", new Locale("hu")).format(new Date()));
         sb.append("\n\n");
@@ -253,7 +252,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
     }
 
     private String createUserInfo() {
-        sb = new StringBuilder(300);
+        StringBuilder sb = new StringBuilder(300);
         sb.append("Alulírott ").append(user.getName());
         sb.append(" (lakcím: ").append(person.getHomePostalAddress());
         sb.append(", anyja neve: ").append(person.getMothersName());

@@ -81,9 +81,4 @@
     <security-role>
         <role-name>SVIE</role-name>
     </security-role>
-<!--    <ejb-local-ref>
-        <ejb-ref-name>TimerServiceLocal</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
-        <local>hu.sch.services.TimerServiceLocal</local>
-    </ejb-local-ref>-->
 </web-app>
