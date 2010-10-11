@@ -111,19 +111,41 @@
         <profile>
             <id>hudson</id>
             <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-site-plugin</artifactId>
+                            <version>2.1.1</version>
+                        </plugin>
+                        <plugin>
+                            <artifactId>maven-checkstyle-plugin</artifactId>
+                            <version>2.2</version>
+                        </plugin>
+                        <plugin>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>2.7</version>
+                        </plugin>
+                        <plugin>
+                            <artifactId>maven-source-plugin</artifactId>
+                            <version>2.1.2</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>findbugs-maven-plugin</artifactId>
+                            <version>2.3.1</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
                 <plugins>
                     <plugin>
                         <artifactId>maven-site-plugin</artifactId>
                         <!-- Kell, hogy tényleg menjen az UTF-8 -->
-                        <version>2.1.1</version>
                         <configuration>
                             <outputEncoding>UTF-8</outputEncoding>
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.2</version>
                         <configuration>
                             <configLocation>resources/checkstyle.xml</configLocation>
                         </configuration>
@@ -149,7 +171,6 @@
                         </dependencies>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <minmemory>128m</minmemory>
@@ -166,7 +187,6 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <inherited>true</inherited>
                         <executions>
@@ -181,7 +201,6 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>findbugs-maven-plugin</artifactId>
-                        <version>2.3.1</version>
                         <configuration>
                             <findbugsXmlOutput>true</findbugsXmlOutput>
                         </configuration>
@@ -202,16 +221,16 @@
             <reporting>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
+                        <version>2.5</version>
                         <configuration>
                             <targetJdk>1.6</targetJdk>
                             <linkXRef>true</linkXRef>
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jxr-plugin</artifactId>
+                        <version>2.2</version>
                     </plugin>
                 </plugins>
             </reporting>
@@ -301,8 +320,39 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
+
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.4.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.mycila.maven-license-plugin</groupId>
+                    <artifactId>maven-license-plugin</artifactId>
+                    <version>1.8.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.3.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
