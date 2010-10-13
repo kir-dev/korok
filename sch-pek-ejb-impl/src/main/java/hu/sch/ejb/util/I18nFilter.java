@@ -22,7 +22,7 @@ import org.springframework.ldap.filter.CompareFilter;
  */
 public class I18nFilter extends CompareFilter {
 
-    private static final String HUNGARIAN_COLLATOR = ":hu.6";
+    private static final String HUNGARIAN_COLLATOR = ":1.3.6.1.4.1.42.2.27.9.4.88.1.6";
     private static final String I18N_COMPARE = ":=";
 
     public I18nFilter(String attribute, String value) {
