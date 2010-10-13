@@ -196,7 +196,7 @@ public class ValuationDetails extends KorokPage {
 
         // Elbírálás
         if (isCurrentUserJETI() && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS
-                && !valuation.isObsolete()) {
+                && !valuation.isObsolete() && systemManager.getSzemeszter().equals(valuation.getSemester())) {
             ConsideredValuation cv = new ConsideredValuation(valuation, getUser());
             add(new ConsiderExplainPanel("jeti", cv) {
 
