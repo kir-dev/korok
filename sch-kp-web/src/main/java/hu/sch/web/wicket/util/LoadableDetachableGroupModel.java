@@ -46,6 +46,7 @@ public class LoadableDetachableGroupModel extends LoadableDetachableModel<Group>
     @EJB(name = "UserManagerBean")
     private UserManagerLocal userManager;
     private Long groupId;
+    private transient Group group;
 
     public LoadableDetachableGroupModel(Long groupId) {
         this.groupId = groupId;
@@ -53,7 +54,7 @@ public class LoadableDetachableGroupModel extends LoadableDetachableModel<Group>
     }
 
     public LoadableDetachableGroupModel(Group group) {
-        this.groupId = group.getId();
+        this.group = group;
         init();
     }
 
@@ -63,6 +64,9 @@ public class LoadableDetachableGroupModel extends LoadableDetachableModel<Group>
 
     @Override
     protected Group load() {
-        return userManager.findGroupById(groupId);
+        if( group == null ) {
+            group = userManager.findGroupById(groupId);
+        }
+        return group;
     }
 }

@@ -51,8 +51,8 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
     private List<Group> groups;
     private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
 
-    public SortableGroupDataProvider(List<Group> group) {
-        groups = group;
+    public SortableGroupDataProvider(List<Group> groups) {
+        this.groups = groups;
         setSort("name", true);
     }
 
