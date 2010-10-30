@@ -64,12 +64,12 @@ public class PointRequestViewer extends Panel {
         final List<User> activeMembers = userManager.getCsoporttagokWithoutOregtagok(val.getGroup().getId());
         final List<PointRequest> requests = valuationManager.findPontIgenyekForErtekeles(val.getId());
 
-        //tagok és igények összefésülése
+        /*/tagok és igények összefésülése
         if (requests.isEmpty()) {
             for (User f : activeMembers) {
                 requests.add(new PointRequest(f, 0));
             }
-        }
+        }*/
 
         add(new ListView<PointRequest>("requests", requests) {
 
@@ -86,5 +86,8 @@ public class PointRequestViewer extends Panel {
         ValuationStatistic stat = valuationManager.getStatisticForValuation(val.getId());
         add(new Label("stat.averagePoint", stat.getAveragePoint().toString()));
         add(new Label("stat.sumPoint", stat.getSummaPoint().toString()));
+
+        if (requests.isEmpty())
+            getSession().info(getLocalizer().getString("info.NincsErtekeles", this.getParent() ));
     }
 }

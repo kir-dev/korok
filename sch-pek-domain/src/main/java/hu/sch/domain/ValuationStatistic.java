@@ -49,8 +49,9 @@ public class ValuationStatistic implements Serializable {
     public ValuationStatistic(Valuation valuation, Double averagePoint, Long summaPoint,
             Long givenKDO, Long givenKB, Long givenAB) {
         this.valuation = valuation;
-        this.averagePoint = averagePoint;
-        this.summaPoint = summaPoint;
+        //nem minden értékeléshez vannak pontok a DB-ben, ha nincs rekord, null-t dob (#919)
+        this.averagePoint = averagePoint == null ? 0.0 : averagePoint;
+        this.summaPoint = summaPoint == null ? 0 : summaPoint;
         this.givenKDO = givenKDO;
         this.givenKB = givenKB;
         this.givenAB = givenAB;
