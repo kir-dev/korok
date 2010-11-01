@@ -82,10 +82,9 @@ public class ShowGroup extends KorokPage {
      */
     public ShowGroup(PageParameters parameters) {
         //az oldal paraméterének dekódolása
-        Object p = parameters.get("id");
         Long id = null;
         try {
-            id = Long.parseLong(p.toString());
+            id = parameters.getLong("id");
         } catch (NumberFormatException e) {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
