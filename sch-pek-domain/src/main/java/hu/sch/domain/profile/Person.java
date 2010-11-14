@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.domain.profile;
 
 import java.io.Serializable;
@@ -50,7 +49,6 @@ public class Person implements Serializable {
     public static final String SORT_BY_NICKNAME = "nickName";
     public static final String SORT_BY_MAIL = "mail";
     public static final String SORT_BY_ROOMNUMBER = "roomNumber";
-
     private static final String NEPTUN_PREFIX =
             "urn:mace:terena.org:schac:personalUniqueCode:hu:BME-NEPTUN:";
     private static final String STUDENTSTATUS_PREFIX =
@@ -419,16 +417,20 @@ public class Person implements Serializable {
         return status;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public boolean isActive() {
+        return "Active".equalsIgnoreCase(status);
+    }
+
     public Object[] getSchacPrivateAttribute() {
         return schacPrivateAttribute;
     }
 
     public void setSchacPrivateAttribute(String[] schacPrivateAttribute) {
         this.schacPrivateAttribute = schacPrivateAttribute;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getConfirmationCode() {

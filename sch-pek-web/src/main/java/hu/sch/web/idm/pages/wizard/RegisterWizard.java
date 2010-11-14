@@ -49,6 +49,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
+import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -153,6 +154,10 @@ public class RegisterWizard extends Wizard {
     private boolean checkExistingPerson(String neptun) throws IllegalArgumentException {
         try {
             Person dummy = ldapManager.getPersonByNeptun(neptun);
+            if (!dummy.isActive()) {
+                throw new IllegalArgumentException("A jelenlegi felhasználód (\"" + dummy.getUid()
+                        + "\") inaktív, kérlek adj fel egy ticketet a support.sch.bme.hu oldalon!");
+            }
             throw new IllegalArgumentException("Már rendelkezel felhasználóval (\"" + dummy.getUid()
                     + "\"), kérlek igényelj új jelszót a https://idp.sch.bme.hu/opensso/password oldalon!");
         } catch (PersonNotFoundException pnfe) {
@@ -164,8 +169,8 @@ public class RegisterWizard extends Wizard {
     private enum RegistrationMode {
 
         VIR_ACCOUNT("Meglévő VIR regisztráció"),
-        //NEPTUN_CODE("Aktív villanykaros hallgató NEPTUN kód");
-        NEPTUN_CODE("Gólya regisztráció");
+        NEPTUN_CODE(((PhoenixApplication) Application.get()).isNewbieTime()
+        ? "Gólya regisztráció" : "Aktív villanykaros hallgató NEPTUN kód");
         private String name;
 
         private RegistrationMode(String name) {
