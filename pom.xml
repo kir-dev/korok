@@ -243,16 +243,6 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
-
-            <modules>
-                <module>sch-pek-domain</module>
-                <module>sch-pek-ejb-services</module>
-                <module>sch-pek-ejb-impl</module>
-                <module>sch-pek-web</module>
-                <module>sch-pek-web-services</module>
-                <module>sch-pek-ear</module>
-                <module>sch-pek-test</module>
-            </modules>
         </profile>
     </profiles>
     
@@ -418,6 +408,7 @@
         <module>sch-pek-web</module>
         <module>sch-pek-web-services</module>
         <module>sch-pek-ear</module>
+        <module>sch-pek-test</module>
     </modules>
 
     <properties>
