@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.group.admin;
 
 import hu.sch.web.wicket.components.tables.MembershipTable;
@@ -99,5 +98,9 @@ public final class AdminOldBoysPanel extends Panel {
                         new Model<String>("Tagság ideje"), "membershipStartEnd", "membership.start", "membership.end"));
             }
         }.getDataTable());
+        
+        if (inactiveMembers.isEmpty()) {
+            setVisible(false);
+        }
     }
 }

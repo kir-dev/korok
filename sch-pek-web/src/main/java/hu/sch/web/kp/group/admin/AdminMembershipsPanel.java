@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.group.admin;
 
 import hu.sch.web.wicket.components.tables.MembershipTable;
@@ -84,7 +83,7 @@ public final class AdminMembershipsPanel extends Panel {
             public void onPopulateColumns(List<IColumn<SelectableMembership>> columns) {
                 columns.add(new PropertyColumn<SelectableMembership>(new Model<String>("SVIE tag?"),
                         MembershipTable.SORT_BY_SVIE, "membership.user.svieMemberText"));
-                
+
                 columns.add(new PanelColumn<SelectableMembership>("Jogok") {
 
                     @Override
@@ -145,5 +144,8 @@ public final class AdminMembershipsPanel extends Panel {
                 setResponsePage(ShowGroup.class, new PageParameters("id=" + activeMembers.get(0).getGroup().getId()));
             }
         });
+        if (activeMembers.isEmpty()) {
+            setVisible(false);
+        }
     }
 }

@@ -95,6 +95,7 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.request.target.coding.HybridUrlCodingStrategy;
+import org.apache.wicket.resource.ContextRelativeResource;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.lang.PackageName;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
@@ -112,6 +113,7 @@ import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
  */
 public class PhoenixApplication extends WebApplication {
 
+    public static final String KOROK_JS = "korok.js";
     private static final String EJB_MODULE_NAME = "korok-ejb";
     private static Logger log = Logger.getLogger(PhoenixApplication.class);
     @EJB(name = "SystemManagerBean")
@@ -179,6 +181,7 @@ public class PhoenixApplication extends WebApplication {
             getRequestCycleSettings().addResponseFilter(new ServerTimerFilter());
             log.info("Successfully enabled ServerTimerFilter");
         }
+        getSharedResources().add(KOROK_JS, new ContextRelativeResource("js/korok.js"));
 
         InjectorHolder.getInjector().inject(this);
         isNewbieTime = systemManager.getNewbieTime();

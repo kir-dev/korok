@@ -31,6 +31,7 @@
 
 package hu.sch.web.wicket.components.tables;
 
+import hu.sch.web.wicket.components.CheckBoxHelper;
 import hu.sch.domain.Membership;
 import hu.sch.domain.interfaces.MembershipTableEntry;
 import hu.sch.web.wicket.components.CheckBoxHolder;
@@ -44,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import org.apache.wicket.Application;
+import org.apache.wicket.Component;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -104,11 +106,16 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
         onPopulateColumns(columns);
 
         if (SelectableEntry.class.isAssignableFrom(c)) {
-            columns.add(new PanelColumn<T>("", "checkbox") {
+            columns.add(new PanelColumn<T>("") {
 
                 @Override
                 protected Panel getPanel(String componentId, T obj) {
                     return new CheckBoxHolder<T>(componentId, obj, "selected");
+                }
+
+                @Override
+                public Component getHeader(String componentId) {
+                    return new CheckBoxHelper(componentId);
                 }
             });
         }
