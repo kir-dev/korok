@@ -51,6 +51,7 @@
         <class>hu.sch.domain.PointRequest</class>
         <class>hu.sch.domain.SystemAttribute</class>
         <class>hu.sch.domain.Semester</class>
+        <class>hu.sch.domain.SpotImage</class>
         <class>hu.sch.domain.Post</class>
         <class>hu.sch.domain.PostType</class>
         <class>hu.sch.domain.logging.Log</class>
@@ -60,6 +61,7 @@
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.bytecode.use_reflection_optimizer" value="true"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.jdbc.use_streams_for_binary" value="false"/>
             <!--property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
             <property name="hibernate.cache.use_query_cache" value="true"/-->
       <!--property name="hibernate.hbm2ddl.auto" value="validate"/-->
