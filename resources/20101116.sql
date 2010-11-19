@@ -6,6 +6,7 @@ CREATE OR REPLACE FUNCTION update_user_recommended_photo_after_insert()
 DECLARE
 BEGIN
   UPDATE users SET usr_show_recommended_photo = TRUE WHERE usr_neptun = NEW.usr_neptun;
+  RETURN NULL;
 END;
 $BODY$
 LANGUAGE plpgsql;

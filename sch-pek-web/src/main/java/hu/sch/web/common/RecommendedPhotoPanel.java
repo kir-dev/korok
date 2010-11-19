@@ -2,13 +2,11 @@ package hu.sch.web.common;
 
 import hu.sch.domain.SpotImage;
 import hu.sch.domain.User;
-import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.wicket.components.ImageResource;
 import javax.ejb.EJB;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.NonCachingImage;
@@ -28,8 +26,6 @@ class RecommendedPhotoPanel extends Panel {
 
     public RecommendedPhotoPanel(String contentId, final String userUid, final User user) {
         super(contentId);
-
-        InjectorHolder.getInjector().inject(this);
 
         final WebMarkupContainer container = new WebMarkupContainer("container");
         container.setOutputMarkupId(true);
