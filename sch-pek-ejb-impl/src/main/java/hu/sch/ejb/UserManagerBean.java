@@ -607,7 +607,7 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public void declineRecommendedPhoto(User user) {
-        TypedQuery<SpotImage> q = em.createNamedQuery(SpotImage.deleteByNeptun, SpotImage.class);
+        Query q = em.createNamedQuery(SpotImage.deleteByNeptun);
         q.setParameter("neptunCode", user.getNeptunCode());
         q.executeUpdate();
     }
