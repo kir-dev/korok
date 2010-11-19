@@ -1,0 +1,30 @@
+<wicket:panel>
+    <div wicket:id="container">
+        <div wicket:id="fragment"></div>
+    </div>
+
+    <wicket:fragment wicket:id="prompt">
+        <h3>Be akarod állítani profilképnek ezt a képet?</h3>
+        <div style="margin: 10px 0px; text-align: center;">
+            <img wicket:id="photo"/>
+        </div>
+        <form wicket:id="form">
+            <div style="float: right"><input wicket:id="accept" type="button" value="Igen" class="btn" /></div>
+            <div style="float: left"><input wicket:id="decline" type="button" value="Nem" class="btn" /></div>
+            <div style="clear: both"></div>
+        </form>
+    </wicket:fragment>
+
+    <wicket:fragment wicket:id="accepted">
+        <h3>A képet beállítottuk neked!</h3>
+    </wicket:fragment>
+
+    <wicket:fragment wicket:id="failed">
+        <h3 style="color: red">Hiba történt, kérlek adj fel egy ticketet!</h3>
+    </wicket:fragment>
+
+    <wicket:fragment wicket:id="declined">
+        <h3>Akkor, ha még nincs fotód, akkor tölts fel egyet!</h3>
+    </wicket:fragment>
+</wicket:panel>
+

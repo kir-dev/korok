@@ -38,7 +38,6 @@ import hu.sch.domain.ValuationPeriod;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.services.SystemManagerLocal;
-import hu.sch.services.UserManagerLocal;
 import hu.sch.web.common.PekPage;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
@@ -52,16 +51,9 @@ public abstract class KorokPage extends PekPage {
 
     @EJB(name = "SystemManagerBean")
     protected SystemManagerLocal systemManager;
-    @EJB(name = "UserManagerBean")
-    protected UserManagerLocal userManager;
     @EJB(name = "PostManagerBean")
     protected PostManagerLocal postManager;
     private static final Logger log = Logger.getLogger(KorokPage.class);
-
-    public KorokPage() {
-        super();
-        loadUser();
-    }
 
     @Override
     protected String getTitle() {
@@ -83,29 +75,6 @@ public abstract class KorokPage extends PekPage {
         return new KorokHeaderPanel(id, isUserGroupLeaderInSomeGroup(),
                 isCurrentUserJETI() && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS,
                 isCurrentUserJETI() || isCurrentUserSVIE() || isCurrentUserAdmin());
-    }
-
-    private void loadUser() {
-        Long virId = getAuthorizationComponent().getUserid(getRequest());
-        if (virId == null) {
-            // nincs virId, ilyenkor userId := 0?
-            getSession().setUserId(0L);
-            return;
-        }
-        if (!virId.equals(getSession().getUserId())) {
-            // nem egyezik, de van virId, akkor írjuk felül az eddig ismertet
-            User userAttrs =
-                    getAuthorizationComponent().getUserAttributes(getRequest());
-            if (userAttrs != null) {
-                userAttrs.setId(virId);
-                userManager.updateUserAttributes(userAttrs);
-            }
-            getSession().setUserId(virId);
-        }
-    }
-
-    protected final User getUser() {
-        return userManager.findUserWithMembershipsById(getSession().getUserId());
     }
 
     protected final Semester getSemester() {

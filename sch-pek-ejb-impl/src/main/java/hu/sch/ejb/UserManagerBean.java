@@ -37,17 +37,21 @@ import hu.sch.domain.PointRequest;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
 import hu.sch.domain.Semester;
+import hu.sch.domain.SpotImage;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
+import hu.sch.domain.profile.Person;
+import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
+import hu.sch.services.exceptions.PersonNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,6 +86,8 @@ public class UserManagerBean implements UserManagerLocal {
     MailManagerLocal mailManager;
     @EJB(name = "PostManagerBean")
     PostManagerLocal postManager;
+    @EJB(name = "LdapManagerBean")
+    LdapManagerLocal ldapManager;
     private static Logger log = Logger.getLogger(UserManagerBean.class);
     private static Event DELETEMEMBERSHIP_EVENT;
     private static Event CREATEMEMBERSHIP_EVENT;
@@ -564,5 +570,45 @@ public class UserManagerBean implements UserManagerLocal {
     public List<Group> getChildGroups(Long id) {
         return em.createQuery("SELECT g FROM Group g WHERE g.parent.id =:id").setParameter("id", id).getResultList();
 
+    }
+
+    @Override
+    public SpotImage getSpotImage(User user) {
+        TypedQuery<SpotImage> q = em.createNamedQuery(SpotImage.findByNeptun, SpotImage.class);
+        q.setParameter("neptunCode", user.getNeptunCode());
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean acceptRecommendedPhoto(String userUid) {
+        Person p = null;
+        try {
+            p = ldapManager.getPersonByUid(userUid);
+        } catch (PersonNotFoundException ex) {
+            return false;
+        }
+
+        TypedQuery<SpotImage> q = em.createNamedQuery(SpotImage.findByNeptun, SpotImage.class);
+        q.setParameter("neptunCode", p.getNeptun());
+        try {
+            SpotImage si = q.getSingleResult();
+            p.setPhoto(si.getImage());
+            ldapManager.update(p);
+            em.remove(si); // töröljük a fotót a DB-ből
+            return true;
+        } catch (NoResultException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public void declineRecommendedPhoto(User user) {
+        TypedQuery<SpotImage> q = em.createNamedQuery(SpotImage.deleteByNeptun, SpotImage.class);
+        q.setParameter("neptunCode", user.getNeptunCode());
+        q.executeUpdate();
     }
 }

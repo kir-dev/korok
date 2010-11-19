@@ -28,13 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.edit;
 
-import hu.sch.web.wicket.util.ImageResizer;
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.IMProtocol;
 import hu.sch.domain.profile.Person;
+import hu.sch.domain.util.ImageResizer;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
@@ -42,7 +41,6 @@ import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.web.profile.show.ShowPersonPage;
-import hu.sch.web.wicket.util.ImageResizer.InvalidImageTypeException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -185,16 +183,21 @@ public class PersonForm extends Form<Person> {
             @Override
             public void onSubmit() {
                 if (upload != null) {
+                    // formátum ellenőrzés
+                    List<String> validImageContentTypes = Arrays.asList(new String[]{"image/jpeg", "image/png", "image/gif"});
+                    if (!validImageContentTypes.contains(upload.getContentType())) {
+                        logger.warn("Uploaded picture with unknown image format: " + upload.getContentType());
+                        error("A fotó formátuma nem megfelelő! Megfelelő formátumok: jpeg, png, gif.");
+                        return;
+                    }
+
                     try {
-                        ImageResizer imageResizer = new ImageResizer(upload, Person.IMAGE_MAX_SIZE);
+                        ImageResizer imageResizer = new ImageResizer(upload.getBytes(), Person.IMAGE_MAX_SIZE);
 
                         if (imageResizer != null) {
                             imageResizer.resizeImage();
                             person.setPhoto(imageResizer.getByteArray());
                         }
-                    } catch (InvalidImageTypeException nvie) {
-                        logger.warn("Uploaded picture with unknown image format: " + upload.getContentType());
-                        error("A fotó formátuma nem megfelelő! Megfelelő formátumok: jpeg, png, gif.");
                     } catch (IOException ioe) {
                         logger.error("IO error occured during image processing", ioe);
                         error("Hiba történt a fotó feldolgozása közben!");

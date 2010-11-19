@@ -28,40 +28,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package hu.sch.web.wicket.util;
+package hu.sch.domain.util;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 import javax.imageio.ImageIO;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 /**
  *
  * @author konvergal
+ * @author messo
+ * @since 2.4
  */
 public class ImageResizer {
 
     private BufferedImage originalImage = null;
     private BufferedImage resizedImage = null;
-    private List<String> validImageContentTypes = Arrays.asList(new String[]{"image/jpeg", "image/png", "image/gif"});
     private int maxSize;
 
-    public ImageResizer(FileUpload fileUpload, int maxSize) throws InvalidImageTypeException, IOException {
+    public ImageResizer(byte[] image, int maxSize) throws IOException {
         this.maxSize = maxSize;
-
-        if (!validImageContentTypes.contains(fileUpload.getContentType())) {
-            throw new InvalidImageTypeException();
-        }
 
         InputStream is = null;
         try {
-            is = fileUpload.getInputStream();
+            is = new ByteArrayInputStream(image);
             originalImage = ImageIO.read(is);
         } finally {
             if (is != null) {
@@ -103,8 +97,5 @@ public class ImageResizer {
         ImageIO.write(resizedImage, "png", out);
 
         return out.toByteArray();
-    }
-
-    public class InvalidImageTypeException extends Exception {
     }
 }

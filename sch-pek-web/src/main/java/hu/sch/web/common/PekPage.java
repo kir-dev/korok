@@ -30,7 +30,9 @@
  */
 package hu.sch.web.common;
 
+import hu.sch.domain.User;
 import hu.sch.services.LdapManagerLocal;
+import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.session.VirSession;
@@ -39,6 +41,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -69,8 +72,11 @@ public abstract class PekPage extends WebPage {
     private Label headerLabel;
     @EJB(name = "LdapManagerBean")
     protected LdapManagerLocal ldapManager;
+    @EJB(name = "UserManagerBean")
+    protected UserManagerLocal userManager;
 
     public PekPage() {
+        loadUser();
         init();
     }
 
@@ -85,9 +91,35 @@ public abstract class PekPage extends WebPage {
         add(new WebComponent("favicon").add(
                 new AttributeModifier("href", new Model<String>("/images/" + getFavicon()))));
 
+        if (getUser().isShowRecommendedPhoto()) {
+            // javasoljunk neki egy fotót
+            add(new RecommendedPhotoPanel("recommendPhoto", getRemoteUser(), getUser()));
+        } else {
+            add(new EmptyPanel("recommendPhoto").setVisible(false));
+        }
+
         add(getHeaderPanel("headerPanel"));
         add(headerLabel = new Label("headerLabel", new Model<String>("")));
         add(new FeedbackPanel("pagemessages").setEscapeModelStrings(false));
+    }
+
+    private void loadUser() {
+        Long virId = getAuthorizationComponent().getUserid(getRequest());
+        if (virId == null) {
+            // nincs virId, ilyenkor userId := 0?
+            getSession().setUserId(0L);
+            return;
+        }
+        if (!virId.equals(getSession().getUserId())) {
+            // nem egyezik, de van virId, akkor írjuk felül az eddig ismertet
+            User userAttrs =
+                    getAuthorizationComponent().getUserAttributes(getRequest());
+            if (userAttrs != null) {
+                userAttrs.setId(virId);
+                userManager.updateUserAttributes(userAttrs);
+            }
+            getSession().setUserId(virId);
+        }
     }
 
     /**
@@ -140,5 +172,9 @@ public abstract class PekPage extends WebPage {
 
     protected String getRemoteUser() {
         return getAuthorizationComponent().getRemoteUser(getRequest());
+    }
+
+    protected final User getUser() {
+        return userManager.findUserWithMembershipsById(getSession().getUserId());
     }
 }

@@ -252,3 +252,15 @@ th {
     position: relative;
     top: 25px;
 }
+
+div.recommendBox {
+    width: 75%;
+    margin: 12px auto;
+    background: #D9EBF9;
+    border: 1px solid #CBE5F7;
+    padding: 10px;
+}
+
+div.recommendBox h3 {
+    margin: 0px;
+}

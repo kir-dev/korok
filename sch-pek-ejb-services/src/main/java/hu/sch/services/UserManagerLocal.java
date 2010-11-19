@@ -34,6 +34,7 @@ import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.Semester;
+import hu.sch.domain.SpotImage;
 import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
@@ -146,4 +147,29 @@ public interface UserManagerLocal {
      * @return A kör alá tartozó alkörök
      */
     List<Group> getChildGroups(Long id);
+
+    /**
+     * Lekérjük egy adott felhasználóhoz tartozó SPOT képet, ha van ilyen
+     * 
+     * @param user
+     * @return spot kép, vagy null
+     */
+    SpotImage getSpotImage(User user);
+
+    /**
+     * Az adott UID-val rendelkező usernek megpróbáljuk beállítani a javasolt
+     * fotót.
+     *
+     * @param userId
+     * @return sikeres volt-e a beállítás
+     */
+    boolean acceptRecommendedPhoto(String userId);
+
+    /**
+     * Az adott felhasználó elutasította a javasolt fotót, töröljük a
+     * SpotImage-t a DB-ből.
+     *
+     * @param user
+     */
+    void declineRecommendedPhoto(User user);
 }

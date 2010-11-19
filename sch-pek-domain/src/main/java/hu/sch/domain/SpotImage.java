@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
@@ -13,8 +15,14 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "spot_images")
+@NamedQueries({
+    @NamedQuery(name = SpotImage.findByNeptun, query = "SELECT si FROM SpotImage si WHERE si.neptunCode = :neptunCode"),
+    @NamedQuery(name = SpotImage.deleteByNeptun, query = "DELETE FROM SpotImage si WHERE si.neptunCode = :neptunCode")
+})
 public class SpotImage implements Serializable {
 
+    public static final String findByNeptun = "findSpotImageByNeptun";
+    public static final String deleteByNeptun = "deleteSpotImageByNeptun";
     @Id
     @Column(name = "usr_neptun", nullable = false)
     private String neptunCode;

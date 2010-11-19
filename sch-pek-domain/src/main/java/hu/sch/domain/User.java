@@ -145,6 +145,10 @@ public class User implements Serializable, Comparable<User> {
      * Tranziens csoporttagsagok
      */
     private List<Group> groups;
+    /**
+     * Megmutassuk-e neki, hogy van egy fotó, amit javaslunk
+     */
+    private boolean showRecommendedPhoto;
 
     /**
      * A felhasználó egyedi azonosítóját visszaadó függvény
@@ -239,6 +243,15 @@ public class User implements Serializable, Comparable<User> {
 
     public void setDelegated(boolean newValue) {
         this.delegated = newValue;
+    }
+
+    @Column(name = "usr_show_recommended_photo", nullable = false, columnDefinition = "boolean default false")
+    public boolean isShowRecommendedPhoto() {
+        return showRecommendedPhoto;
+    }
+
+    public void setShowRecommendedPhoto(boolean showRecommendedPhoto) {
+        this.showRecommendedPhoto = showRecommendedPhoto;
     }
 
     @ManyToOne
