@@ -32,10 +32,8 @@ public class ImageManagerBean implements ImageManagerLocal {
             fin.read(fileContent);
 
             ImageResizer imageResizer = new ImageResizer(fileContent, Person.IMAGE_MAX_SIZE);
-            if (imageResizer != null) {
-                imageResizer.resizeImage();
-                fileContent = imageResizer.getByteArray();
-            }
+            imageResizer.resizeImage();
+            fileContent = imageResizer.getByteArray();
 
             String fileName = file.getName();
             fileName = fileName.substring(0, 6);
