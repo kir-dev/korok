@@ -366,6 +366,11 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public User findUserWithMembershipsById(Long userId) {
+        if (userId.equals(0L)) {
+            // ha nincs használható userId, akkor ne menjünk el a DB-hez.
+            return null;
+        }
+
         TypedQuery<User> q = em.createNamedQuery(User.findWithMemberships, User.class);
         q.setParameter("id", userId);
 
