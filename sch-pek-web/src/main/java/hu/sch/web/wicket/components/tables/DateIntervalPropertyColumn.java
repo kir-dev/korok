@@ -32,6 +32,7 @@
 package hu.sch.web.wicket.components.tables;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
@@ -49,7 +50,7 @@ import org.apache.wicket.model.PropertyModel;
 public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
 
     private final String endPropertyExpression;
-    private final static DateFormat df = DateFormat.getDateInstance();
+    private final static DateFormat df = new SimpleDateFormat("yyyy.MM.dd.");
 
     /**
      * Creates a date property column that is also sortable
