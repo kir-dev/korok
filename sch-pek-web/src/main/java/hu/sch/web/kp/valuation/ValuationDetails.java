@@ -257,8 +257,6 @@ public class ValuationDetails extends KorokPage {
                         setResponsePage(ValuationDetails.class, new PageParameters("id="+updated.getId()));
                         return;
                     }
-                } catch (NothingChangedException ex) {
-                    // nem gond.
                 } catch (AlreadyModifiedException ex) {
                     // frissítsük a lapot.
                     setResponsePage(ValuationDetails.class, new PageParameters("id="+valuation.getId()));
@@ -324,8 +322,6 @@ public class ValuationDetails extends KorokPage {
                         setResponsePage(ValuationDetails.class, new PageParameters("id="+updated.getId()));
                         return;
                     }
-                } catch (NothingChangedException ex) {
-                    // nem gond.
                 } catch (AlreadyModifiedException ex) {
                     // frissítsük a lapot.
                     setResponsePage(ValuationDetails.class, new PageParameters("id="+valuation.getId()));

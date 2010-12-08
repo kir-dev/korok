@@ -108,7 +108,7 @@ public interface ValuationManagerLocal {
             throws NoExplanationException, NothingChangedException, AlreadyModifiedException;
 
     Valuation updateValuation(Valuation valuation)
-            throws NothingChangedException, AlreadyModifiedException;
+            throws AlreadyModifiedException;
 
     /**
      * Pontigényeket ment egy értékeléshez

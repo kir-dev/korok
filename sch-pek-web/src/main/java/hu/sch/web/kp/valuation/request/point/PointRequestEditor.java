@@ -37,8 +37,10 @@ import hu.sch.domain.PointRequest;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
+import hu.sch.services.exceptions.valuation.NothingChangedException;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
+import hu.sch.web.wicket.components.TinyMCEContainer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +54,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
@@ -82,8 +85,9 @@ public class PointRequestEditor extends Panel {
             protected void onSubmit() {
                 final Valuation valuation = getModelObject();
                 try {
+                    Valuation v = valuationManager.updateValuation(valuation);
                     // pontok tárolása
-                    Valuation v = valuationManager.updatePointRequests(valuation, requestList);
+                    v = valuationManager.updatePointRequests(v, requestList);
                     getSession().info(getLocalizer().getString("info.PontIgenylesMentve", this));
                     setResponsePage(ValuationDetails.class, new PageParameters("id=" + v.getId()));
                 } catch (AlreadyModifiedException ex) {
@@ -136,6 +140,10 @@ public class PointRequestEditor extends Panel {
         };
         listView.setReuseItems(true);
         pointRequestsForm.add(listView);
+
+        final TinyMCEContainer tinyMce = new TinyMCEContainer("principle", new PropertyModel<String>(val, "principle"), true);
+        pointRequestsForm.add(tinyMce);
+
         add(pointRequestsForm);
     }
 
