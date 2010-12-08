@@ -87,8 +87,7 @@ public class ValuationDetails extends KorokPage {
     @EJB(name = "ValuationManagerBean")
     private ValuationManagerLocal valuationManager;
     private AjaxFallbackLink<Void> ajaxLinkForValuationText;
-    private AjaxFallbackLink<Void> ajaxLinkForPrinciple;
-
+    
     public ValuationDetails(PageParameters params) {
         Valuation valuation = null;
         Long id = params.getAsLong("id");
@@ -191,7 +190,6 @@ public class ValuationDetails extends KorokPage {
                 && valuation.getEntrantStatus() == ValuationStatus.ELFOGADVA)
                 || valuation.isObsolete()) {
             ajaxLinkForValuationText.setVisible(false);
-            ajaxLinkForPrinciple.setVisible(false);
         }
 
         // Elbírálás
@@ -223,7 +221,7 @@ public class ValuationDetails extends KorokPage {
     }
 
     private void addValuationText(final Valuation valuation) {
-        // TODO -- ehhez és a principle-hez generálni egy AjaxEditableMultiLineLabelUsingTinyMCE-t.
+        // TODO -- ehhez generálni egy AjaxEditableMultiLineLabelUsingTinyMCE-t.
         final WebMarkupContainer container = new WebMarkupContainer("valuationTextContainer");
         container.setOutputMarkupId(true);
         add(container);
@@ -289,67 +287,9 @@ public class ValuationDetails extends KorokPage {
     }
 
     private void addPrinciple(final Valuation valuation) {
-        final WebMarkupContainer container = new WebMarkupContainer("principleContainer");
-        container.setOutputMarkupId(true);
-        add(container);
-
         // Szöveges értékelés
         final MultiLineLabel label = new MultiLineLabel("principle");
         label.setEscapeModelStrings(false);
-        container.add(label);
-
-        final Form<Valuation> form = new Form<Valuation>("principleForm", new CompoundPropertyModel<Valuation>(valuation));
-        form.setVisible(false);
-        container.add(form);
-
-        form.add(new AjaxButton("savePrinciple", form) {
-
-            @Override
-            protected void onBeforeRender() {
-                super.onBeforeRender();
-                add(new TinyMceAjaxSubmitModifier());
-            }
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                final Valuation valuation = (Valuation) form.getModelObject();
-
-                try {
-                    Valuation updated = valuationManager.updateValuation(valuation);
-                    if (!updated.getId().equals(valuation.getId())) {
-                        // ha új verziót hoztunk létre, akkor töltsük be a teljesen új
-                        // verziót tartalmazó lapot.
-                        setResponsePage(ValuationDetails.class, new PageParameters("id="+updated.getId()));
-                        return;
-                    }
-                } catch (AlreadyModifiedException ex) {
-                    // frissítsük a lapot.
-                    setResponsePage(ValuationDetails.class, new PageParameters("id="+valuation.getId()));
-                    return;
-                }
-
-                label.setVisible(true);
-                form.setVisible(false);
-                if (target != null) {
-                    target.addComponent(container);
-                }
-            }
-        });
-
-        container.add(ajaxLinkForPrinciple = new AjaxFallbackLink<Void>("modifyPrinciple") {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                label.setVisible(false);
-                form.setVisible(true);
-                if (target != null) {
-                    target.addComponent(container);
-                }
-            }
-        });
-
-        // Szöveges értékelése TinyMCE doboza
-        final TinyMCEContainer tinyMce = new TinyMCEContainer("principle2", new PropertyModel<String>(valuation, "principle"), true);
-        form.add(tinyMce);
+        add(label);
     }
 }
