@@ -91,7 +91,8 @@ public abstract class PekPage extends WebPage {
         add(new WebComponent("favicon").add(
                 new AttributeModifier("href", new Model<String>("/images/" + getFavicon()))));
 
-        if (getUser().isShowRecommendedPhoto()) {
+        User user = getUser();
+        if (user != null && user.isShowRecommendedPhoto()) {
             // javasoljunk neki egy fotót
             add(new RecommendedPhotoPanel("recommendPhoto", getRemoteUser(), getUser()));
         } else {
