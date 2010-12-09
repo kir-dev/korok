@@ -31,6 +31,7 @@
 package hu.sch.web.rest;
 
 import hu.sch.domain.Group;
+import hu.sch.domain.Semester;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
@@ -43,6 +44,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import org.apache.log4j.Logger;
 
@@ -61,8 +63,8 @@ public class Kbme {
     ValuationManagerLocal valuationManager;
     @Context
     private UriInfo context;
-//    @Context
-//    SecurityContext security;
+    @Context
+    SecurityContext security;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -83,20 +85,20 @@ public class Kbme {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     @Path("/points")
-    public List<PointInfo> getPointsForUser(@QueryParam("uid") String uid) {
+    public List<PointInfo> getPointsForUser(@QueryParam("uid") String uid, @QueryParam("sid") String sid) {
         doAudit();
-        return valuationManager.getPointInfoForUid(uid);
+        return valuationManager.getPointInfoForUid(uid, new Semester(sid));
     }
 
-    private final void doAudit() {
+    private void doAudit() {
         StringBuilder auditMessage = new StringBuilder("AUDIT LOG for GET method. ");
         auditMessage.append("USER: ");
-//        if (security != null && security.getUserPrincipal() != null) {
-//            auditMessage.append(security.getUserPrincipal().toString());
-//        } else {
+        if (security != null && security.getUserPrincipal() != null) {
+            auditMessage.append(security.getUserPrincipal().toString());
+        } else {
         logger.info("SecurityContext or UserPrincipal was null.");
         auditMessage.append("UNKNOWN.");
-//        }
+        }
         auditMessage.append(" URL: ");
         if (context != null && context.getRequestUri() != null) {
             auditMessage.append(context.getRequestUri().toString());
@@ -105,5 +107,6 @@ public class Kbme {
             auditMessage.append("UNKNOWN");
         }
         logger.info(auditMessage.toString());
+        System.out.println(auditMessage.toString());
     }
 }
