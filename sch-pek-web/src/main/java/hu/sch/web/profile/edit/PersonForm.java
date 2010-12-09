@@ -108,7 +108,7 @@ public class PersonForm extends Form<Person> {
         createNameFields();
         createGenderField();
         createAdditionalFields();
-        createSvieFields();
+//        createSvieFields();
         createDormitoryFields();
 
         //Ezt muszáj a konstruktorban csinálni a final kulcsszó miatt.
@@ -331,7 +331,7 @@ public class PersonForm extends Form<Person> {
         add(new ValidationSimpleFormComponentLabel("webpageLabel", webpageTF));
     }
 
-    private void createSvieFields() {
+    protected void createSvieFields() {
         TextField<String> mothersNameTF = new TextField<String>("mothersName");
         mothersNameTF.add(new PatternValidator(PatternHolder.NAME_PATTERN));
         mothersNameTF.add(new ValidationStyleBehavior());

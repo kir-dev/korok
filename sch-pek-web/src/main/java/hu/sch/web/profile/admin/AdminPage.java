@@ -95,6 +95,7 @@ public class AdminPage extends ProfilePage {
             @Override
             public void onInit() {
                 super.onInit();
+                createSvieFields();
 
                 final TextField neptunTF = (TextField) new TextField("neptun").setRequired(false);
                 neptunTF.add(new ValidationStyleBehavior());
