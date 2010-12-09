@@ -786,7 +786,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public List<PointInfo> getPointInfoForUid(String uid) {
+    public List<PointInfo> getPointInfoForUid(String uid, Semester semester) {
         Person person = null;
         try {
             person = ldapManager.getPersonByUid(uid);
@@ -794,7 +794,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 Query q = em.createQuery("SELECT new hu.sch.domain.rest.PointInfo (p.valuation.groupId, p.point) "
                         + "FROM PointRequest p "
                         + "WHERE p.valuation.semester =:semester AND p.userId =:userid");
-                q.setParameter("semester", systemManager.getSzemeszter());
+                q.setParameter("semester", semester);
                 q.setParameter("userid", person.getVirId());
                 return q.getResultList();
             }

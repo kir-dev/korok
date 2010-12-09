@@ -248,5 +248,5 @@ public interface ValuationManagerLocal {
      * @param uid A felhasználó azonosítója
      * @return A pontok listája
      */
-    List<PointInfo> getPointInfoForUid(String uid);
+    List<PointInfo> getPointInfoForUid(String uid, Semester semester);
 }
