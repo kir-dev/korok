@@ -42,7 +42,9 @@ import org.apache.wicket.markup.html.panel.Panel;
  * Minden {@link PekPage} sablonnak implementálnia kell a {@link PekPage#getHeaderPanel(java.lang.String)}
  * metódust, amennyiben szükség lesz navigációs "linksorra", célszerű ebből a panelből
  * származtatni a visszaadott {@link Panel}t, és a konstruktor végén meghívni a
- * {@link HeaderPanel#createLinks()} metódust.
+ * {@link HeaderPanel#createLinks()} metódust. (Azért kell explicit meghívni, mert
+ * az egyes linkek láthatósága még nem ismert az ősosztály konstruktorának
+ * meghívásakor.)
  *
  * @author  messo
  * @since   2.4
