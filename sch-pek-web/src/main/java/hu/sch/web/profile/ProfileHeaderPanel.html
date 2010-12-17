@@ -1,6 +1,11 @@
 <wicket:extend>
     <img id="logoImg" src="/images/logoProfil.jpg" alt="VIR Profil logó" />
     <img id="logoTxt" src="/images/txtVirProfil.gif" alt="VIR Profil" />
+    <form wicket:id="searchForm" style="position: relative; float: right; margin-top: 55px">
+        <select style="width: 110px;" wicket:id="searchDdc" />
+        <input type="text" class="textinput" style="width: 150px;" wicket:id="searchField"/>
+        <input type="submit" value="Keresés" />
+    </form>
     <script type="text/javascript">
         try {
             var pageTracker = _gat._getTracker("UA-9244343-6");
