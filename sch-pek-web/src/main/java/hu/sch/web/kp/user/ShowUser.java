@@ -141,9 +141,7 @@ public class ShowUser extends KorokPage {
             }
         }
 
-        final DropDownChoice<Group> csoport = new DropDownChoice<Group>("group",
-                new PropertyModel<Group>(this, "addToCsoportSelected"), korvezetoicsoportok);
-        Form<User> csoportbaFelvetel = new Form<User>("csoportbaFelvetel") {
+        Form<User> addToGroupForm = new Form<User>("addToGroupForm") {
 
             @Override
             protected void onSubmit() {
@@ -156,17 +154,12 @@ public class ShowUser extends KorokPage {
                 }
             }
         };
-        csoportbaFelvetel.add(csoport);
-        add(csoportbaFelvetel);
-        csoportbaFelvetel.setVisible(!korvezetoicsoportok.isEmpty()
+        final DropDownChoice<Group> groupDdc = new DropDownChoice<Group>("groupDdc",
+                new PropertyModel<Group>(this, "addToCsoportSelected"), korvezetoicsoportok);
+        addToGroupForm.add(groupDdc);
+        groupDdc.setRequired(true);
+        add(addToGroupForm);
+        addToGroupForm.setVisible(!korvezetoicsoportok.isEmpty()
                 && isUserGroupLeaderInSomeGroup());
-    }
-
-    public Group getAddToCsoportSelected() {
-        return addToCsoportSelected;
-    }
-
-    public void setAddToCsoportSelected(Group addToCsoportSelected) {
-        this.addToCsoportSelected = addToCsoportSelected;
     }
 }
