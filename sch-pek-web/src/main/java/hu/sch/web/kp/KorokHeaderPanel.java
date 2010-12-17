@@ -36,19 +36,11 @@ import hu.sch.web.common.HeaderPanel;
 import hu.sch.web.kp.admin.EditSettings;
 import hu.sch.web.kp.consider.ConsiderPage;
 import hu.sch.web.kp.group.GroupHierarchy;
-import hu.sch.web.kp.search.SearchResultsPage;
 import hu.sch.web.kp.svie.SvieAccount;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.kp.valuation.Valuations;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.StatelessForm;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.PropertyModel;
 
 /**
  *
@@ -56,8 +48,6 @@ import org.apache.wicket.model.PropertyModel;
  */
 class KorokHeaderPanel extends HeaderPanel {
 
-    private String searchTerm;
-    private String searchType = "felhasználó";
     private boolean showValuationsLink;
     private boolean showConsiderPageLink;
     private boolean showEditSettingsLink;
@@ -66,50 +56,11 @@ class KorokHeaderPanel extends HeaderPanel {
             boolean showConsiderPageLink, boolean showEditSettingsLink) {
         super(id);
 
-        createSearchBar();
-
         this.showValuationsLink = showValuationsLink;
         this.showConsiderPageLink = showConsiderPageLink;
         this.showEditSettingsLink = showEditSettingsLink;
 
         createLinks();
-    }
-
-    private void createSearchBar() {
-        StatelessForm<Void> searchForm = new StatelessForm<Void>("searchForm") {
-
-            @Override
-            protected void onSubmit() {
-                if (searchType == null || searchTerm == null) {
-                    super.getSession().error("Hibás keresési feltétel!");
-                    throw new RestartResponseException(getApplication().getHomePage());
-                }
-                if (searchTerm.length() < 3) {
-                    super.getSession().error("Túl rövid keresési feltétel!");
-                    throw new RestartResponseException(getApplication().getHomePage());
-                }
-                PageParameters params = new PageParameters();
-                params.put("type", ((searchType.equals("felhasználó")) ? "user" : "group"));
-                params.put("key", searchTerm);
-                setResponsePage(SearchResultsPage.class, params);
-            }
-        };
-        DropDownChoice<String> searchTypeDdc = new DropDownChoice<String>("searchDdc",
-                new PropertyModel<String>(this, "searchType"),
-                new LoadableDetachableModel<List<? extends String>>() {
-
-                    @Override
-                    protected List<? extends String> load() {
-                        List<String> ret = new ArrayList<String>();
-                        ret.add("felhasználó");
-                        ret.add("kör");
-                        return ret;
-                    }
-                });
-        searchTypeDdc.setNullValid(false);
-        searchForm.add(searchTypeDdc);
-        searchForm.add(new TextField<String>("searchField", new PropertyModel<String>(this, "searchTerm")));
-        add(searchForm);
     }
 
     @Override
