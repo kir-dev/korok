@@ -332,10 +332,12 @@ public class RegisterWizard extends Wizard {
                 person.setMail(results.getString("usr_email"));
 
                 String isGirl = results.getString("usr_is_a_girl");
-                if (isGirl.equals("t")) {
-                    person.setGender("2");
-                } else if (isGirl.equals("f")) {
-                    person.setGender("1");
+                if (isGirl != null) {
+                    if (isGirl.equals("t")) {
+                        person.setGender("2");
+                    } else if (isGirl.equals("f")) {
+                        person.setGender("1");
+                    }
                 }
 
                 person.setStudentStatus(results.getString("usr_status"));
