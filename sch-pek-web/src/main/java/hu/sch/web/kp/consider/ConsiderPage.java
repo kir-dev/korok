@@ -145,16 +145,10 @@ public class ConsiderPage extends KorokPage {
                     cv = getUnderConsidering().get(val.getId());
                 }
 
-                Link valuationLink = new Link("valuationLink") {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new ValuationDetails(val, getPage()));
-                    }
-                };
-                item.add(valuationLink);
+                Link valuationLink = new BookmarkablePageLink("valuationLink", ValuationDetails.class, new PageParameters("id=" + val.getId()));
                 valuationLink.add(new Label("valuation.group.name"));
-
+                item.add(valuationLink);
+                
                 PageParameters params = new PageParameters("vid=" + val.getId());
 
                 Link givenKDOLink = new BookmarkablePageLink("givenKDOLink", EntrantRequests.class, params);
