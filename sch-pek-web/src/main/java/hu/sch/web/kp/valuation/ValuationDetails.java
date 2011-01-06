@@ -109,10 +109,6 @@ public class ValuationDetails extends KorokPage {
         }
     }
 
-    public ValuationDetails(final Valuation valuation, final Page prevPage) {
-        init(valuation);
-    }
-
     private void init(final Valuation valuation) {
         if (valuation.isObsolete()) {
             Long newestVersionsId = valuationManager.findLatestVersionsId(valuation.getGroup(), valuation.getSemester());
