@@ -41,6 +41,7 @@ import hu.sch.domain.SpotImage;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
+import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
@@ -515,14 +516,15 @@ public class UserManagerBean implements UserManagerLocal {
         // Ebbe a Map-be lesz tárolva, hogy melyik körtől hány pontot kapott
         Map<Group, Integer> points = new HashMap<Group, Integer>();
         for (PointRequest pr : pontigenyek) {
-            // Csak ha az adott pont elfogadott
-            if (pr.getValuation().getPointStatus().equals(ValuationStatus.ELFOGADVA)) {
+            Valuation v = pr.getValuation();
+            // Csak ha az adott értékelés a legfrisebb verzió ÉS a pont elfogadott
+            if (!v.isObsolete() && v.getPointStatus().equals(ValuationStatus.ELFOGADVA)) {
                 // Csak akkor, ha a vizsgált vagy az előző félévre vonatkozik
-                if (pr.getValuation().getSemester().equals(semester) || pr.getValuation().getSemester().equals(semester.getPrevious())) {
-                    if (points.containsKey(pr.getValuation().getGroup()) == false) {
-                        points.put(pr.getValuation().getGroup(), 0);
+                if (v.getSemester().equals(semester) || v.getSemester().equals(semester.getPrevious())) {
+                    if (points.containsKey(v.getGroup()) == false) {
+                        points.put(v.getGroup(), 0);
                     }
-                    points.put(pr.getValuation().getGroup(), points.get(pr.getValuation().getGroup()) + pr.getPoint());
+                    points.put(v.getGroup(), points.get(v.getGroup()) + pr.getPoint());
                 }
             }
         }
