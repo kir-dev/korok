@@ -159,8 +159,8 @@ public class ValuationMessages extends KorokPage {
         // illetve: leadási időszak van + körvezető VAGY elbírálási időszak van + JETI
         ValuationPeriod vp = systemManager.getErtekelesIdoszak();
         ujuzenet.setVisible(systemManager.getSzemeszter().equals(semester)
-                && ((vp == ValuationPeriod.ERTEKELESLEADAS && isUserGroupLeader(group))
-                || (vp == ValuationPeriod.ERTEKELESELBIRALAS && isCurrentUserJETI())));
+                && (vp == ValuationPeriod.ERTEKELESLEADAS || vp == ValuationPeriod.ERTEKELESELBIRALAS)
+                && (isUserGroupLeader(group) || isCurrentUserJETI()));
         add(ujuzenet);
     }
 }
