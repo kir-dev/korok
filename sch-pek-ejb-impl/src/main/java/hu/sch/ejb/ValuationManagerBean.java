@@ -451,6 +451,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         prev.copyPointRequests(newVersion);
         prev.copyEntrantRequests(newVersion);
 
+        em.persist(newVersion);
         return newVersion;
     }
 
