@@ -665,7 +665,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 + "LEFT JOIN FETCH pReq.user u "
                 + "LEFT JOIN FETCH pReq.valuation v "
                 + "LEFT JOIN FETCH v.group g "
-                + "WHERE pReq.userId = :userId " + whereAnd);
+                + "WHERE v.nextVersion IS NULL AND pReq.userId = :userId " + whereAnd);
         q.setParameter("userId", u.getId());
         if (groupId != null) {
             q.setParameter("groupId", groupId);
@@ -676,7 +676,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 + "LEFT JOIN FETCH eReq.user u "
                 + "LEFT JOIN FETCH eReq.valuation v "
                 + "LEFT JOIN FETCH v.group g "
-                + "WHERE eReq.userId = :userId " + whereAnd);
+                + "WHERE v.nextVersion IS NULL AND eReq.userId = :userId " + whereAnd);
         q.setParameter("userId", u.getId());
         if (groupId != null) {
             q.setParameter("groupId", groupId);
