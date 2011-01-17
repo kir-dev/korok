@@ -414,17 +414,19 @@ public class PersonForm extends Form<Person> {
 
     private static class GenderRadioChoices implements IChoiceRenderer<Object> {
 
+        @Override
         public Object getDisplayValue(Object object) {
             KeyValuePairInForm gender = (KeyValuePairInForm) object;
             return gender.getValue();
         }
 
+        @Override
         public String getIdValue(Object object, int index) {
             return object.toString();
         }
     }
 
-    public class KeyValuePairInForm {
+    public static class KeyValuePairInForm {
 
         private String id;
         private String value;

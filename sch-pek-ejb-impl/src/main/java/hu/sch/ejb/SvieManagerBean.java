@@ -76,7 +76,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     private static Event INPROGRESS_EVENT;
 
     @PostConstruct
-    public void initialize() {
+    protected void initialize() {
         if (ADVOCATE_EVENT == null) {
             Query q = em.createNamedQuery(Event.getEventForEventType);
             q.setParameter("evt", EventType.PARTOLOVAVALAS);

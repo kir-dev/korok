@@ -43,6 +43,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
  */
 public class LoadableDetachableGroupModel extends LoadableDetachableModel<Group> {
 
+    private static final long serialVersionUID = 1L;
     @EJB(name = "UserManagerBean")
     private UserManagerLocal userManager;
     private Long groupId;

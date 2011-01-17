@@ -179,7 +179,7 @@ public class EditSettings extends KorokPage {
         }
     }
 
-    private class SvieFragment extends Fragment {
+    private static class SvieFragment extends Fragment {
 
         public SvieFragment(String id, String markupId) {
             super(id, markupId, null, null);

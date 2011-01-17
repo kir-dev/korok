@@ -45,6 +45,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
  */
 public class LoadableDetachablePersonModel extends LoadableDetachableModel<Person> {
 
+    private static final long serialVersionUID = 1L;
     private static Logger logger = Logger.getLogger(LoadableDetachablePersonModel.class);
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;

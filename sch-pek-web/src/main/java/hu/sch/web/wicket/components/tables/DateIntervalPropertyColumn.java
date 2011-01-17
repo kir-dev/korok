@@ -50,7 +50,7 @@ import org.apache.wicket.model.PropertyModel;
 public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
 
     private final String endPropertyExpression;
-    private final static DateFormat df = new SimpleDateFormat("yyyy.MM.dd.");
+    private final DateFormat df = new SimpleDateFormat("yyyy.MM.dd.");
 
     /**
      * Creates a date property column that is also sortable

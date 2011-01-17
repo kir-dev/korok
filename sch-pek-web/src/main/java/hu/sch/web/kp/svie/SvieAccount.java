@@ -188,15 +188,15 @@ public final class SvieAccount extends KorokPage {
         }
     }
 
-    private class GroupNameChoices implements IChoiceRenderer<Object> {
+    private static class GroupNameChoices implements IChoiceRenderer<Membership> {
 
-        public Object getDisplayValue(Object object) {
-            Membership ms = (Membership) object;
+        @Override
+        public Object getDisplayValue(Membership ms) {
             return ms.getGroup().getName();
         }
 
-        public String getIdValue(Object object, int index) {
-            Membership ms = (Membership) object;
+        @Override
+        public String getIdValue(Membership ms, int index) {
             return ms.getId().toString();
         }
     }

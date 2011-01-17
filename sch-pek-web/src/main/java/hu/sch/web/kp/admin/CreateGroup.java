@@ -135,7 +135,7 @@ public class CreateGroup extends KorokPage {
         add(createGroupForm);
     }
 
-    public class GroupNameChoices implements IChoiceRenderer<Group> {
+    private static class GroupNameChoices implements IChoiceRenderer<Group> {
 
         @Override
         public Object getDisplayValue(Group group) {
@@ -148,7 +148,7 @@ public class CreateGroup extends KorokPage {
         }
     }
 
-    public class LeaderChoices implements IChoiceRenderer<User> {
+    private static class LeaderChoices implements IChoiceRenderer<User> {
 
         @Override
         public Object getDisplayValue(User user) {

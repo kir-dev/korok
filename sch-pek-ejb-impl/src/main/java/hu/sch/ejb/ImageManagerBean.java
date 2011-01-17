@@ -27,9 +27,17 @@ public class ImageManagerBean implements ImageManagerLocal {
         File directory = new File(folder);
         File[] files = directory.listFiles();
         for (File file : files) {
-            FileInputStream fin = new FileInputStream(file);
-            byte[] fileContent = new byte[(int) file.length()];
-            fin.read(fileContent);
+            FileInputStream fin = null;
+            byte[] fileContent;
+            try {
+                fin = new FileInputStream(file);
+                fileContent = new byte[(int) file.length()];
+                fin.read(fileContent);
+            } finally {
+                if (fin != null) {
+                    fin.close();
+                }
+            }
 
             ImageResizer imageResizer = new ImageResizer(fileContent, Person.IMAGE_MAX_SIZE);
             imageResizer.resizeImage();

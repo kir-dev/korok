@@ -64,6 +64,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  * A körvezetők ezen lap segítségével adhatnak be értékeléseket a köreikhez.
@@ -90,13 +91,14 @@ public class Valuations extends KorokPage {
         try {
             Long groupId = params.getLong("id");
             group = userManager.findGroupById(groupId);
-            if (!isUserGroupLeader(group)) {
-                log.warn("Paraméterátírásos próbálkozás! " + getUser().getId());
-                getSession().error("Nincs jogod a művelethez! A próbálkozásod naplózásra került!");
-                throw new RestartResponseException(getApplication().getHomePage());
-            }
-        } catch (Exception ex) {
+        } catch (StringValueConversionException svce) {
             getSession().error("Érvénytelen paraméter!");
+            throw new RestartResponseException(getApplication().getHomePage());
+        }
+        
+        if (!isUserGroupLeader(group)) {
+            log.warn("Paraméterátírásos próbálkozás! " + getUser().getId());
+            getSession().error("Nincs jogod a művelethez! A próbálkozásod naplózásra került!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
         setHeaderLabelText(HEADER_TEXT);
