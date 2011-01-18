@@ -33,14 +33,13 @@ package hu.sch.web.error;
 
 import hu.sch.services.MailManagerLocal;
 import hu.sch.web.kp.KorokPage;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Page;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.util.string.Strings;
 
 /**
  *
@@ -71,11 +70,8 @@ public final class InternalServerError extends KorokPage {
         sb.append("\n\t").append(request.getAttribute("virid"));
 
         sb.append("\nA hibához tartozó stacktrace:\n\n");
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(bs);
-        ex.printStackTrace(ps);
+        sb.append(Strings.toString(ex));
 
-        sb.append(bs.toString());
         sb.append("\n\nJó debugolást! :)\nKörök");
         try {
             mailManager.sendEmail("jee-dev@sch.bme.hu", "Programhiba", sb.toString());
