@@ -57,9 +57,9 @@ body {
 }
 
 #container {
-    background-image: url('../images/bckgContent.gif'), url('../images/befigyeloemberke.gif');
-    background-repeat: repeat-x, no-repeat;
-    background-position: 0px 134px, bottom right;
+    background-image: url('../images/befigyeloemberke.gif'), url('../images/bckgContent.gif');
+    background-repeat: no-repeat, repeat-x;
+    background-position: bottom right, 0px 134px;
 }
 
 #searchcont { padding-bottom: 100px; }
@@ -151,7 +151,7 @@ select.wide { width: 355px; }
     margin-top: 20px;
     margin-left: 60px;
     margin-bottom: 15px;
-    width: 440px;
+    /*width: 440px;*/
     font-size: 13px;
 }
 
