@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.user;
 
 import hu.sch.domain.Membership;
@@ -65,13 +64,16 @@ public class ShowUser extends KorokPage {
     private Group addToCsoportSelected;
 
     public ShowUser() {
-        ownProfile = true;
         initComponents();
     }
 
     public ShowUser(PageParameters parameters) {
         try {
             id = parameters.getLong("id");
+            // ha az adott ID a mi ID-nk, akkor ez a mi profilunk.
+            if (id.equals(getSession().getUserId())) {
+                ownProfile = true;
+            }
         } catch (Throwable t) {
             logger.warn("Could not interpret pageparameter: " + parameters);
         }
@@ -82,6 +84,7 @@ public class ShowUser extends KorokPage {
         try {
             if (id == null) {
                 id = getSession().getUserId();
+                ownProfile = true;
             }
         } catch (Exception e) {
             id = null;
