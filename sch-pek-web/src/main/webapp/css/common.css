@@ -217,6 +217,8 @@ th {
     color: #ffffff;
 }
 .withheader tr:hover { background: #E1EBF1; }
+tr.navigation:hover { background: transparent; }
+tr.navigation td { border-bottom: none; }
 .subdata {
     margin: 5px 14px;
 }

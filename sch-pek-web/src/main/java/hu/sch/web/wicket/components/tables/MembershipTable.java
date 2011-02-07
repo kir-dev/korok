@@ -47,6 +47,7 @@ import java.util.Locale;
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
+import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxNavigationToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
@@ -121,6 +122,7 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
         }
 
         table = new AjaxFallbackDefaultDataTable<T>(id, columns, new SortableMembershipDataProvider<T>(items), rowsPerPage);
+        table.addBottomToolbar(new AjaxNavigationToolbar(table));
     }
 
     /**
