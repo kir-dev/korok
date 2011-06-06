@@ -37,6 +37,7 @@ import hu.sch.domain.EntrantType;
 import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.ApprovedEntrant;
+import hu.sch.domain.EntrantExportRecord;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
@@ -60,6 +61,7 @@ import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -701,6 +703,82 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
 
         return new ArrayList<ValuationData>(map.values());
+    }
+
+    /**
+     * Az átadott exportálandó rekordokat <pre>DELIMITER</pre> karakterrel elválasztott
+     * CSV-be alakítja.
+     * A fejlécet is hozzáfűzi (Név, Neptun, E-mail, Elsődleges kör, Kapott belépők
+     * száma, indoklások)
+     * 
+     * @param exportRecords
+     * @param mintEntrantNum
+     * @return 
+     */
+    private String generateEntrantExportContent(
+            final Collection<EntrantExportRecord> exportRecords, final int mintEntrantNum) {
+
+        final String DELIMITER = "¤";
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Név").append(DELIMITER);
+        sb.append("Neptun").append(DELIMITER);
+        sb.append("E-mail").append(DELIMITER);
+        sb.append("Elsődleges kör").append(DELIMITER);
+        sb.append("Kapott belépők száma").append(DELIMITER);
+        sb.append("Indoklások\n");
+        for (EntrantExportRecord record : exportRecords) {
+
+            // szűrés a belépők számára, ha nincs meg a min. ugrás a köv. rekordra
+            if (record.getNumOfEntrants() < mintEntrantNum) {
+                continue;
+            }
+
+            sb.append(record);
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final String findApprovedEntrantsForExport(
+            final Semester semester, final EntrantType entrantType, final int mintEntrantNum) {
+
+        //Map userId-val indexelve, a több belépőt kapott userek feldolgozásához
+        Map<Long, EntrantExportRecord> records = new HashMap<Long, EntrantExportRecord>(150);
+
+        TypedQuery<EntrantRequest> query =
+                em.createQuery("SELECT e FROM EntrantRequest e "
+                + "LEFT JOIN FETCH e.user u "
+                + "LEFT JOIN FETCH e.valuation v "
+                + "WHERE e.valuation.semester = :sem AND "
+                + "e.entrantType = :entrantType AND "
+                + "e.valuation.entrantStatus = :status AND "
+                + "e.valuation.nextVersion IS NULL "
+                + "ORDER BY u.lastName, u.firstName", EntrantRequest.class);
+
+        query.setParameter("sem", semester);
+        query.setParameter("entrantType", entrantType);
+        query.setParameter("status", ValuationStatus.ELFOGADVA);
+
+        for (EntrantRequest request : query.getResultList()) {
+
+            // ha nincs még a mapban, akkor létrehozzuk és betesszük
+            if (!records.containsKey(request.getUserId())) {
+                records.put(request.getUserId(),
+                        new EntrantExportRecord(request));
+            }
+
+            // hozzáadjuk az indoklást körnévvel együtt az export rekordhoz
+            records.get(request.getUserId()).addValuation(request);
+        }
+
+        return generateEntrantExportContent(records.values(), mintEntrantNum);
     }
 
     @Override

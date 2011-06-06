@@ -37,6 +37,8 @@ import hu.sch.domain.Semester;
 import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.ApprovedEntrant;
+import hu.sch.domain.EntrantExportRecord;
+import hu.sch.domain.EntrantType;
 import hu.sch.domain.GivenPoint;
 import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationMessage;
@@ -98,6 +100,20 @@ public interface ValuationManagerLocal {
      * @return Elbírálatlan értékelések statisztikája
      */
     List<ValuationStatistic> findElbiralatlanErtekelesStatisztika();
+    
+    /**
+     * Megkeresi azokat a felhasználókat, akik kaptak a megadott belépőből az adott
+     * szemeszterben és egy CSV-nek formázott Stringgel tér vissza, '¤' delimiterekkel
+     *
+     * @param semester
+     * @param entrantType
+     * @param minEntrantNum csak az ennyi vagy ennél több belépőt kapott emberek 
+     * szerepeljenek
+     * @return azon felhasználókról export String, akik legalább <pre>mitEntrantNum</pre> 
+     * db adott belépőt kaptak a félévben
+     */
+    String findApprovedEntrantsForExport(Semester semester,
+            EntrantType entrantType, int mintEntrantNum);
 
     List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter);
 

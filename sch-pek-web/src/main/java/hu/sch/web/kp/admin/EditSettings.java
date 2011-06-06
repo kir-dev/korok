@@ -30,17 +30,25 @@
  */
 package hu.sch.web.kp.admin;
 
+import hu.sch.domain.EntrantExportRecord;
+import hu.sch.domain.EntrantType;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.ImageManagerLocal;
+import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.wicket.components.customlinks.CsvReportLink;
 import hu.sch.web.kp.svie.SvieGroupMgmt;
 import hu.sch.web.kp.svie.SvieUserMgmt;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.wicket.components.customlinks.CsvExportForJetiLink;
 import hu.sch.web.wicket.components.customlinks.CsvExportForKfbLink;
+import hu.sch.web.wicket.util.ByteArrayResourceStream;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
@@ -49,12 +57,16 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.validator.RangeValidator;
 
 /**
@@ -96,6 +108,8 @@ public class EditSettings extends KorokPage {
 
     private class JetiFragment extends Fragment {
 
+        @EJB(name = "ValuationManagerBean")
+        protected ValuationManagerLocal valuationManager;
         private Semester semester;
         ValuationPeriod valuationPeriod;
 
@@ -109,6 +123,37 @@ public class EditSettings extends KorokPage {
 
         public Semester getSemester() {
             return semester;
+        }
+
+        /**
+         * Összeállítja a letölthető export fájlnevét a következő mezőkkel:
+         * <pre>vir_[entrant]-[sem1st]-[sem2nd]-[osz|tavasz]-[ev]-[honap]-[nap].csv</pre>
+         *
+         * @param entrant belépő típusa
+         * @return
+         */
+        private String getExportFileName(final EntrantType entrant) {
+            StringBuilder sb = new StringBuilder("vir_");
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+
+            sb.append(entrant.toString()).append("-");
+            sb.append(semester.getFirstYear().toString()).append("-");
+            sb.append(semester.getSecondYear().toString()).append("-");
+            if (semester.isAutumn()) {
+                sb.append("osz");
+            } else {
+                sb.append("tavasz");
+            }
+            sb.append("-");
+            sb.append(sdf.format(date)).append("-");
+            sdf.applyPattern("MM");
+            sb.append(sdf.format(date)).append("-");
+            sdf.applyPattern("dd");
+            sb.append(sdf.format(date));
+            sb.append(".csv");
+
+            return sb.toString();
         }
 
         public JetiFragment(String id, String markupId) {
@@ -176,6 +221,49 @@ public class EditSettings extends KorokPage {
             });
             beallitasForm.add(ddc1);
             add(beallitasForm);
+
+            // exportok kérése
+            // ismétlődés nélkül, neptun kóddal, elsődleges körrel, indoklással, email címmel
+
+            // x vagy annál több kb-t kapott emberek listája (x állítható)
+            final RequiredTextField<Integer> howMuchKbInput =
+                    new RequiredTextField<Integer>("howMuchKbInput", Model.of(1), Integer.class);
+
+            Form<Void> howMuchKbExportForm = new Form<Void>("howMuchKbExportForm") {
+
+                @Override
+                public void onSubmit() {
+                    try {
+
+                        String content = valuationManager.findApprovedEntrantsForExport(semester,
+                                EntrantType.KB, howMuchKbInput.getConvertedInput());
+
+                        //csv generálás
+                        IResourceStream resourceStream = new ByteArrayResourceStream(
+                                content.getBytes("UTF-8"), "text/csv");
+                        getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
+
+                            @Override
+                            public String getFileName() {
+                                return (getExportFileName(EntrantType.KB));
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        getSession().error(getLocalizer().getString("err.export", this));
+                        logger.error("Error while exporting list of KBs. Given min. value: "
+                                + howMuchKbInput.getValue(), e);
+                    }
+                }
+            };
+            howMuchKbInput.add(new RangeValidator<Integer>(1, 30));
+            howMuchKbExportForm.add(howMuchKbInput);
+            add(howMuchKbExportForm);
+
+            // áb-s lista
+            add(new CsvExportForJetiLink("givenAbListExportLink", 
+                    getExportFileName(EntrantType.AB), EntrantType.AB, 1));
+
         }
     }
 

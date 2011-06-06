@@ -132,7 +132,7 @@ public class User implements Serializable, Comparable<User> {
      * SVIE elsődleges kör
      * Rendes tagsága kell legyen a körben
      */
-    private Membership sviePrimaryMemberhip;
+    private Membership sviePrimaryMembership;
     /**
      * Csoporttagságok - tagsági idővel kiegészítve
      */
@@ -257,11 +257,11 @@ public class User implements Serializable, Comparable<User> {
     @ManyToOne
     @JoinColumn(name = "usr_svie_primary_membership", insertable = true, updatable = true)
     public Membership getSviePrimaryMembership() {
-        return sviePrimaryMemberhip;
+        return sviePrimaryMembership;
     }
 
     public void setSviePrimaryMembership(Membership sviePrimaryMembership) {
-        this.sviePrimaryMemberhip = sviePrimaryMembership;
+        this.sviePrimaryMembership = sviePrimaryMembership;
     }
 
     @Transient
@@ -319,8 +319,8 @@ public class User implements Serializable, Comparable<User> {
     @Transient
     public String getSviePrimaryMembershipText() {
         String name = null;
-        if (sviePrimaryMemberhip != null) {
-            name = sviePrimaryMemberhip.getGroup().getName();
+        if (sviePrimaryMembership != null) {
+            name = sviePrimaryMembership.getGroup().getName();
         } else {
             name = "Nincs megadva";
         }
