@@ -115,8 +115,6 @@ public interface ValuationManagerLocal {
     String findApprovedEntrantsForExport(Semester semester,
             EntrantType entrantType, int mintEntrantNum);
 
-    List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter);
-
     void considerValuations(Collection<ConsideredValuation> elbiralas)
             throws NoExplanationException, NothingChangedException, AlreadyModifiedException;
 

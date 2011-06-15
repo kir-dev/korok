@@ -782,18 +782,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter) {
-        Query q = em.createQuery("SELECT new hu.sch.domain.ApprovedEntrant(e.user.neptunCode,"
-                + "e.entrantType) FROM EntrantRequest e "
-                + "WHERE e.valuation.semester = :semester AND e.valuation.entrantStatus=:status");
-
-        q.setParameter("status", ValuationStatus.ELBIRALATLAN);
-        q.setParameter("semester", szemeszter);
-
-        return q.getResultList();
-    }
-
-    @Override
     public List<GivenPoint> getPointsForKfbExport(Semester semester) {
         Query q = em.createNamedQuery(GivenPoint.getDormitoryPoints);
         q.setParameter("semester", semester.getId());
