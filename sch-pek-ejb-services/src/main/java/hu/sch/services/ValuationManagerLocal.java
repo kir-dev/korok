@@ -101,7 +101,7 @@ public interface ValuationManagerLocal {
     
     /**
      * Megkeresi azokat a felhasználókat, akik kaptak a megadott belépőből az adott
-     * szemeszterben és egy CSV-nek formázott Stringgel tér vissza, '¤' delimiterekkel
+     * szemeszterben és egy CSV-nek formázott Stringgel tér vissza
      *
      * @param semester
      * @param entrantType

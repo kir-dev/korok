@@ -716,7 +716,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     private String generateEntrantExportContent(
             final Collection<EntrantExportRecord> exportRecords, final int mintEntrantNum) {
 
-        final String DELIMITER = "¤";
+        final String DELIMITER = EntrantExportRecord.DELIMITER;
 
         StringBuilder sb = new StringBuilder();
 
@@ -769,11 +769,11 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             // ha nincs még a mapban, akkor létrehozzuk és betesszük
             if (!records.containsKey(request.getUserId())) {
                 records.put(request.getUserId(),
-                        new EntrantExportRecord(request));
+                        new EntrantExportRecord(request.getUser()));
             }
 
             // hozzáadjuk az indoklást körnévvel együtt az export rekordhoz
-            records.get(request.getUserId()).addValuation(request);
+            records.get(request.getUserId()).addRequest(request);
         }
 
         return generateEntrantExportContent(records.values(), mintEntrantNum);

@@ -41,7 +41,6 @@ import hu.sch.web.wicket.components.customlinks.CsvReportLink;
 import hu.sch.web.kp.svie.SvieGroupMgmt;
 import hu.sch.web.kp.svie.SvieUserMgmt;
 import hu.sch.web.kp.KorokPage;
-import hu.sch.web.wicket.components.customlinks.CsvExportForJetiLink;
 import hu.sch.web.wicket.components.customlinks.CsvExportForKfbLink;
 import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.text.SimpleDateFormat;
@@ -59,6 +58,7 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -115,7 +115,7 @@ public class EditSettings extends KorokPage {
             return valuationPeriod;
         }
 
-        public void setValuationPeriod(ValuationPeriod period) {
+        public final void setValuationPeriod(ValuationPeriod period) {
             this.valuationPeriod = period;
         }
 
@@ -133,7 +133,7 @@ public class EditSettings extends KorokPage {
         private String getExportFileName(final EntrantType entrant) {
             StringBuilder sb = new StringBuilder("vir_");
             Date date = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             sb.append(entrant.toString()).append("-");
             sb.append(semester.getFirstYear().toString()).append("-");
@@ -144,10 +144,6 @@ public class EditSettings extends KorokPage {
                 sb.append("tavasz");
             }
             sb.append("-");
-            sb.append(sdf.format(date)).append("-");
-            sdf.applyPattern("MM");
-            sb.append(sdf.format(date)).append("-");
-            sdf.applyPattern("dd");
             sb.append(sdf.format(date));
             sb.append(".csv");
 
@@ -231,27 +227,7 @@ public class EditSettings extends KorokPage {
 
                 @Override
                 public void onSubmit() {
-                    try {
-
-                        String content = valuationManager.findApprovedEntrantsForExport(semester,
-                                EntrantType.KB, howMuchKbInput.getConvertedInput());
-
-                        //csv generálás
-                        IResourceStream resourceStream = new ByteArrayResourceStream(
-                                content.getBytes("UTF-8"), "text/csv");
-                        getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
-
-                            @Override
-                            public String getFileName() {
-                                return (getExportFileName(EntrantType.KB));
-                            }
-                        });
-
-                    } catch (Exception e) {
-                        getSession().error(getLocalizer().getString("err.export", this));
-                        logger.error("Error while exporting list of KBs. Given min. value: "
-                                + howMuchKbInput.getValue(), e);
-                    }
+                    exportEntrantsAsCSV(getExportFileName(EntrantType.KB), EntrantType.KB, howMuchKbInput.getConvertedInput());
                 }
             };
             howMuchKbInput.add(new RangeValidator<Integer>(1, 30));
@@ -259,9 +235,34 @@ public class EditSettings extends KorokPage {
             add(howMuchKbExportForm);
 
             // áb-s lista
-            add(new CsvExportForJetiLink("givenAbListExportLink", 
-                    getExportFileName(EntrantType.AB), EntrantType.AB, 1));
+            add(new Link<Void>("givenAbListExportLink") {
 
+                @Override
+                public void onClick() {
+                    exportEntrantsAsCSV(getExportFileName(EntrantType.AB), EntrantType.AB, 1);
+                }
+            });
+        }
+
+        private void exportEntrantsAsCSV(final String fileName, final EntrantType entrantType, final Integer minEntrantNum) {
+            try {
+                String content = valuationManager.findApprovedEntrantsForExport(
+                        semester, entrantType, minEntrantNum);
+
+                IResourceStream resourceStream = new ByteArrayResourceStream(
+                        content.getBytes("UTF-8"), "text/csv");
+                getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
+
+                    @Override
+                    public String getFileName() {
+                        return fileName;
+                    }
+                });
+            } catch (Exception ex) {
+                getSession().error(getLocalizer().getString("err.export", this));
+                logger.error("Error while generating CSV export about "
+                        + entrantType.toString() + "s with " + minEntrantNum + " min value", ex);
+            }
         }
     }
 

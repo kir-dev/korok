@@ -42,10 +42,10 @@ public final class EntrantExportRecord implements Serializable {
     private final User user;
     private Integer numOfEntrants = 0; // a megadott belépőkből mennyit kapott a user
     private String valuationTexts = ""; //indoklások
-    private static final String DELIMITER = "¤";
+    public static final String DELIMITER = ",";
 
-    public EntrantExportRecord(final EntrantRequest request) {
-        this.user = request.getUser();
+    public EntrantExportRecord(final User user) {
+        this.user = user;
     }
 
     /**
@@ -55,7 +55,7 @@ public final class EntrantExportRecord implements Serializable {
      * @param groupName
      * @param valuationText 
      */
-    public final void addValuation(EntrantRequest request) {
+    public final void addRequest(EntrantRequest request) {
 
         //belépőt adó kör neve
         final String groupName = request.getValuation().getGroup().getName();
@@ -69,7 +69,7 @@ public final class EntrantExportRecord implements Serializable {
         sb.append('*').append(groupName).append("*: ");
 
         // indoklásokban lévő sortörések elrontják a csv-t, cseréljük le space-re
-        sb.append(request.getValuationText().replaceAll("\\r|\\n", " "));
+        sb.append(request.getValuationText().replace("\"", "\"\"").replaceAll("\\r|\\n", " "));
 
         this.valuationTexts = sb.toString();
 
@@ -105,7 +105,7 @@ public final class EntrantExportRecord implements Serializable {
 
         sb.append(DELIMITER);
         sb.append(numOfEntrants).append(DELIMITER); //belepok szama
-        sb.append(valuationTexts); //indoklasok
+        sb.append("\"").append(valuationTexts).append("\""); //indoklasok
         
         return sb.toString();
     }
