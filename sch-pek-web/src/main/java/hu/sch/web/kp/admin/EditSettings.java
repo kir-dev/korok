@@ -222,8 +222,6 @@ public class EditSettings extends KorokPage {
             // x vagy annál több kb-t kapott emberek listája (x állítható)
             final RequiredTextField<Integer> howMuchKbInput =
                     new RequiredTextField<Integer>("howMuchKbInput", Model.of(1), Integer.class);
-            final RequiredTextField<Integer> howMuchKbInput2 =
-                    new RequiredTextField<Integer>("howMuchKbInput2", Model.of(1), Integer.class);
 
             Form<Void> howMuchKbExportForm = new Form<Void>("howMuchKbExportForm") {
 
@@ -235,16 +233,6 @@ public class EditSettings extends KorokPage {
             howMuchKbInput.add(new RangeValidator<Integer>(1, 30));
             howMuchKbExportForm.add(howMuchKbInput);
             add(howMuchKbExportForm);
-            Form<Void> howMuchKbExportForm2 = new Form<Void>("howMuchKbExportForm2") {
-
-                @Override
-                public void onSubmit() {
-                    exportEntrantsAsCSV2(getExportFileName(EntrantType.KB), EntrantType.KB, howMuchKbInput2.getConvertedInput());
-                }
-            };
-            howMuchKbInput2.add(new RangeValidator<Integer>(1, 30));
-            howMuchKbExportForm2.add(howMuchKbInput2);
-            add(howMuchKbExportForm2);
 
             // áb-s lista
             add(new Link<Void>("givenAbListExportLink") {
@@ -254,37 +242,9 @@ public class EditSettings extends KorokPage {
                     exportEntrantsAsCSV(getExportFileName(EntrantType.AB), EntrantType.AB, 1);
                 }
             });
-            add(new Link<Void>("givenAbListExportLink2") {
-
-                @Override
-                public void onClick() {
-                    exportEntrantsAsCSV2(getExportFileName(EntrantType.AB), EntrantType.AB, 1);
-                }
-            });
         }
 
         private void exportEntrantsAsCSV(final String fileName, final EntrantType entrantType, final Integer minEntrantNum) {
-            try {
-                String content = valuationManager.findApprovedEntrantsForExport(
-                        semester, entrantType, minEntrantNum);
-
-                IResourceStream resourceStream = new ByteArrayResourceStream(
-                        content.getBytes("UTF-8"), "text/csv");
-                getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
-
-                    @Override
-                    public String getFileName() {
-                        return fileName;
-                    }
-                });
-            } catch (Exception ex) {
-                getSession().error(getLocalizer().getString("err.export", this));
-                logger.error("Error while generating CSV export about "
-                        + entrantType.toString() + "s with " + minEntrantNum + " min value", ex);
-            }
-        }
-
-        private void exportEntrantsAsCSV2(final String fileName, final EntrantType entrantType, final Integer minEntrantNum) {
             try {
                 String content = valuationManager.findApprovedEntrantsForExport2(
                         semester, entrantType, minEntrantNum);
