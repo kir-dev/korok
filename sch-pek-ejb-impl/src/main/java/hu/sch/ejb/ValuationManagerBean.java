@@ -36,7 +36,8 @@ import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
-import hu.sch.domain.ApprovedEntrant;
+import hu.sch.domain.EntrantExportRecord;
+import hu.sch.domain.EntrantExportRecord2;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
@@ -703,16 +704,108 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         return new ArrayList<ValuationData>(map.values());
     }
 
+    /**
+     * Az átadott exportálandó rekordokat <pre>DELIMITER</pre> karakterrel elválasztott
+     * CSV-be alakítja.
+     * A fejlécet is hozzáfűzi (Név, Neptun, E-mail, Elsődleges kör, Kapott belépők
+     * száma, indoklások)
+     * 
+     * @param exportRecords
+     * @param mintEntrantNum
+     * @return 
+     */
+    private String generateEntrantExportContent(
+            final Collection<EntrantExportRecord> exportRecords, final int mintEntrantNum) {
+
+        final String DELIMITER = EntrantExportRecord.DELIMITER;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Név").append(DELIMITER);
+        sb.append("Neptun").append(DELIMITER);
+        sb.append("E-mail").append(DELIMITER);
+        sb.append("Elsődleges kör").append(DELIMITER);
+        sb.append("Kapott belépők száma").append(DELIMITER);
+        sb.append("Indoklások\n");
+        for (EntrantExportRecord record : exportRecords) {
+
+            // szűrés a belépők számára, ha nincs meg a min. ugrás a köv. rekordra
+            if (record.getNumOfEntrants() < mintEntrantNum) {
+                continue;
+            }
+
+            sb.append(record);
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<ApprovedEntrant> findElfogadottBelepoIgenyekForSzemeszter(Semester szemeszter) {
-        Query q = em.createQuery("SELECT new hu.sch.domain.ApprovedEntrant(e.user.neptunCode,"
-                + "e.entrantType) FROM EntrantRequest e "
-                + "WHERE e.valuation.semester = :semester AND e.valuation.entrantStatus=:status");
+    public final String findApprovedEntrantsForExport(
+            final Semester semester, final EntrantType entrantType, final int mintEntrantNum) {
 
-        q.setParameter("status", ValuationStatus.ELBIRALATLAN);
-        q.setParameter("semester", szemeszter);
+        //Map userId-val indexelve, a több belépőt kapott userek feldolgozásához
+        Map<Long, EntrantExportRecord> records = new HashMap<Long, EntrantExportRecord>(150);
 
-        return q.getResultList();
+        TypedQuery<EntrantRequest> query =
+                em.createQuery("SELECT e FROM EntrantRequest e "
+                + "LEFT JOIN FETCH e.user u "
+                + "LEFT JOIN FETCH e.valuation v "
+                + "WHERE e.valuation.semester = :sem AND "
+                + "e.entrantType = :entrantType AND "
+                + "e.valuation.entrantStatus = :status AND "
+                + "e.valuation.nextVersion IS NULL "
+                + "ORDER BY u.lastName, u.firstName", EntrantRequest.class);
+
+        query.setParameter("sem", semester);
+        query.setParameter("entrantType", entrantType);
+        query.setParameter("status", ValuationStatus.ELFOGADVA);
+
+        for (EntrantRequest request : query.getResultList()) {
+
+            // ha nincs még a mapban, akkor létrehozzuk és betesszük
+            if (!records.containsKey(request.getUserId())) {
+                records.put(request.getUserId(),
+                        new EntrantExportRecord(request.getUser()));
+            }
+
+            // hozzáadjuk az indoklást körnévvel együtt az export rekordhoz
+            records.get(request.getUserId()).addRequest(request);
+        }
+
+        return generateEntrantExportContent(records.values(), mintEntrantNum);
+    }
+
+    @Override
+    public final String findApprovedEntrantsForExport2(
+            final Semester semester, final EntrantType entrantType, final int minEntrantNum) {
+
+        Query query = em.createNamedQuery(EntrantExportRecord2.exportEntrantRequests);
+
+        query.setParameter("semester", semester.getId());
+        query.setParameter("entrantType", entrantType.toString());
+        query.setParameter("num", minEntrantNum);
+        
+        final String DELIMITER = EntrantExportRecord2.DELIMITER;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Név").append(DELIMITER);
+        sb.append("Neptun").append(DELIMITER);
+        sb.append("E-mail").append(DELIMITER);
+        sb.append("Elsődleges kör").append(DELIMITER);
+        sb.append("Kapott belépők száma").append(DELIMITER);
+        sb.append("Indoklások\n");
+        for (EntrantExportRecord2 record : (List<EntrantExportRecord2>) query.getResultList()) {
+            sb.append(record.toCVSformat());
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 
     @Override

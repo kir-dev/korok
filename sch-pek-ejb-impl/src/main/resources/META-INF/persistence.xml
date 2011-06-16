@@ -37,6 +37,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/sch</jta-data-source>
         <!-- ez fontos, mert a kulon .jar csomag miatt nem talalja meg magatol -->
+        <class>hu.sch.domain.EntrantExportRecord2</class>
         <class>hu.sch.domain.EntrantRequest</class>
         <class>hu.sch.domain.EntrantType</class>
         <class>hu.sch.domain.GivenPoint</class>

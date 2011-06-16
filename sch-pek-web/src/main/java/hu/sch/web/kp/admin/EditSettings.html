@@ -28,6 +28,22 @@
                 <input type="submit" class="btn" value="OK"/>
             </span>
         </form>
+
+        <br/>
+        <div style="margin-left: 20px;">
+            <h3>Exportok</h3>
+            <div style="margin-left: 15px;">
+                <form wicket:id="howMuchKbExportForm" style="margin-top: 15px;">
+                    <input class="textinput" value="1" wicket:id="howMuchKbInput" style="width: 25px;"/>
+                    vagy annál több KB-t kapott emberek listája:
+                    <input type="submit" class="btn" value="letöltés"/>
+                </form>
+                <br/>
+                <a wicket:id="givenAbListExportLink">ÁB-t kapott emberek listája</a>
+                <br/>
+            </div>
+        </div>
+
     </wicket:fragment>
     <wicket:fragment wicket:id="kirdevpanel">
         <h2>Admin</h2>
