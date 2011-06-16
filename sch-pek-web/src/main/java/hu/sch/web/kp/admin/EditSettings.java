@@ -30,7 +30,6 @@
  */
 package hu.sch.web.kp.admin;
 
-import hu.sch.domain.EntrantExportRecord;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
@@ -48,7 +47,6 @@ import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;

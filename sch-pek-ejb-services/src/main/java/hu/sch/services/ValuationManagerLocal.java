@@ -36,8 +36,6 @@ import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
 import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
-import hu.sch.domain.ApprovedEntrant;
-import hu.sch.domain.EntrantExportRecord;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.GivenPoint;
 import hu.sch.domain.ValuationData;

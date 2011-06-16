@@ -42,7 +42,7 @@ public final class EntrantExportRecord implements Serializable {
     private final User user;
     private Integer numOfEntrants = 0; // a megadott belépőkből mennyit kapott a user
     private String valuationTexts = ""; //indoklások
-    private final String DELIMITER = "¤";
+    private static final String DELIMITER = "¤";
 
     public EntrantExportRecord(final EntrantRequest request) {
         this.user = request.getUser();
