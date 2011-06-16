@@ -37,6 +37,7 @@ import hu.sch.domain.EntrantType;
 import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.EntrantExportRecord;
+import hu.sch.domain.EntrantExportRecord2;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
@@ -777,6 +778,34 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
 
         return generateEntrantExportContent(records.values(), mintEntrantNum);
+    }
+
+    @Override
+    public final String findApprovedEntrantsForExport2(
+            final Semester semester, final EntrantType entrantType, final int minEntrantNum) {
+
+        Query query = em.createNamedQuery(EntrantExportRecord2.exportEntrantRequests);
+
+        query.setParameter("semester", semester.getId());
+        query.setParameter("entrantType", entrantType.toString());
+        query.setParameter("num", minEntrantNum);
+        
+        final String DELIMITER = EntrantExportRecord2.DELIMITER;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Név").append(DELIMITER);
+        sb.append("Neptun").append(DELIMITER);
+        sb.append("E-mail").append(DELIMITER);
+        sb.append("Elsődleges kör").append(DELIMITER);
+        sb.append("Kapott belépők száma").append(DELIMITER);
+        sb.append("Indoklások\n");
+        for (EntrantExportRecord2 record : (List<EntrantExportRecord2>) query.getResultList()) {
+            sb.append(record.toCVSformat());
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 
     @Override
