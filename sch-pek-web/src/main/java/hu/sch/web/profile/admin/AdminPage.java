@@ -130,6 +130,7 @@ public class AdminPage extends ProfilePage {
                     public List<KeyValuePairInForm> load() {
                         List<KeyValuePairInForm> l = new ArrayList<KeyValuePairInForm>();
                         l.add(new KeyValuePairInForm("active", "Aktív"));
+                        l.add(new KeyValuePairInForm("newbie", "Gólya"));
                         l.add(new KeyValuePairInForm("other", "Egyéb"));
                         l.add(new KeyValuePairInForm("graduated", "Végzett"));
                         return l;
