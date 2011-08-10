@@ -32,6 +32,7 @@ package hu.sch.web.rest;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
+import hu.sch.domain.User;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
@@ -80,6 +81,14 @@ public class Kbme {
     public List<Group> getChildGroups(@QueryParam("id") Long id) {
         doAudit();
         return userManager.getChildGroups(id);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    @Path("/leader")
+    public User getLeader(@QueryParam("id") Long id) {
+        doAudit();
+        return userManager.getGroupLeaderForGroup(id);
     }
 
     @GET

@@ -52,6 +52,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Felhasználót reprezentáló entitás
@@ -75,6 +79,8 @@ import javax.persistence.Transient;
     @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
 })
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class User implements Serializable, Comparable<User> {
 
     private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
@@ -103,6 +109,7 @@ public class User implements Serializable, Comparable<User> {
     /**
      * E-mail cím
      */
+    @XmlElement
     private String emailAddress;
     /**
      * Neptun-kód
@@ -111,14 +118,17 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Keresztnév
      */
+    @XmlElement
     private String firstName;
     /**
      * Vezetéknév
      */
+    @XmlElement
     private String lastName;
     /**
      * Bejelentkezési név
      */
+    @XmlElement
     private String nickName;
     /**
      * SVIE tagság státusza
