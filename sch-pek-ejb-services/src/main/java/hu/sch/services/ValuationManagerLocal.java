@@ -99,7 +99,7 @@ public interface ValuationManagerLocal {
      */
     List<ValuationStatistic> findElbiralatlanErtekelesStatisztika();
     
-    /**
+     /**
      * Megkeresi azokat a felhasználókat, akik kaptak a megadott belépőből az adott
      * szemeszterben és egy CSV-nek formázott Stringgel tér vissza
      *
@@ -111,20 +111,6 @@ public interface ValuationManagerLocal {
      * db adott belépőt kaptak a félévben
      */
     String findApprovedEntrantsForExport(Semester semester,
-            EntrantType entrantType, int mintEntrantNum);
-
-    /**
-     * Megkeresi azokat a felhasználókat, akik kaptak a megadott belépőből az adott
-     * szemeszterben és egy CSV-nek formázott Stringgel tér vissza
-     *
-     * @param semester
-     * @param entrantType
-     * @param minEntrantNum csak az ennyi vagy ennél több belépőt kapott emberek 
-     * szerepeljenek
-     * @return azon felhasználókról export String, akik legalább <pre>mitEntrantNum</pre> 
-     * db adott belépőt kaptak a félévben
-     */
-    String findApprovedEntrantsForExport2(Semester semester,
             EntrantType entrantType, int mintEntrantNum);
     
     void considerValuations(Collection<ConsideredValuation> elbiralas)

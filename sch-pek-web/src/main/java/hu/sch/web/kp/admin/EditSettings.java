@@ -246,7 +246,7 @@ public class EditSettings extends KorokPage {
 
         private void exportEntrantsAsCSV(final String fileName, final EntrantType entrantType, final Integer minEntrantNum) {
             try {
-                String content = valuationManager.findApprovedEntrantsForExport2(
+                String content = valuationManager.findApprovedEntrantsForExport(
                         semester, entrantType, minEntrantNum);
 
                 IResourceStream resourceStream = new ByteArrayResourceStream(

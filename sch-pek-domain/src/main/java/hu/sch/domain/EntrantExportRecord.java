@@ -31,82 +31,105 @@
 package hu.sch.domain;
 
 import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedNativeQuery;
 
 /**
- * Segédosztály a színes belépők exportálásához
+ * Dummy entitás, csak az export_entrant_requests tárolt eljárás eredményeihez használjuk.
+ *
+ * A tárolt eljárás és a hozzá tartozó típus definíciója a
+ * resources/export_entrant_requests.sql-ben található
  * 
- * @author balo
+ * @author  messo
+ * @since   2.4
  */
-public final class EntrantExportRecord implements Serializable {
+@Entity
+@NamedNativeQuery(name = EntrantExportRecord.exportEntrantRequests,
+query = "SELECT * FROM export_entrant_requests(:semester, :entrantType, :num)",
+resultClass = EntrantExportRecord.class)
+public class EntrantExportRecord implements Serializable {
 
-    private final User user;
-    private Integer numOfEntrants = 0; // a megadott belépőkből mennyit kapott a user
-    private String valuationTexts = ""; //indoklások
+    public static final String exportEntrantRequests = "exportEntrantRequests";
     public static final String DELIMITER = ",";
+    @Id
+    private Long uid;
+    private String nev;
+    private String neptun;
+    private String email;
+    @Column(name = "primary_group")
+    private String primaryGroup;
+    @Column(name = "entrant_num")
+    private int entrantNum;
+    private String indokok;
 
-    public EntrantExportRecord(final User user) {
-        this.user = user;
+    public Long getUid() {
+        return uid;
     }
 
-    /**
-     * Az export rekordhoz hozzáaadja az indoklásokat körnevekkel, megfelelő
-     * sortörésekkel
-     * 
-     * @param groupName
-     * @param valuationText 
-     */
-    public final void addRequest(EntrantRequest request) {
-
-        //belépőt adó kör neve
-        final String groupName = request.getValuation().getGroup().getName();
-
-        StringBuilder sb = new StringBuilder(this.valuationTexts);
-
-        if (!this.valuationTexts.isEmpty()) {
-            sb.append(" || ");
-        }
-
-        sb.append('*').append(groupName).append("*: ");
-
-        // indoklásokban lévő sortörések elrontják a csv-t, cseréljük le space-re
-        sb.append(request.getValuationText().replace("\"", "\"\"").replaceAll("\\r|\\n", " "));
-
-        this.valuationTexts = sb.toString();
-
-        ++numOfEntrants;
+    public void setUid(Long uid) {
+        this.uid = uid;
+    }
+    
+    public String getEmail() {
+        return email;
     }
 
-    public final User getUser() {
-        return user;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public final Integer getNumOfEntrants() {
-        return numOfEntrants;
+    public int getEntrantNum() {
+        return entrantNum;
     }
 
-    public final String getValuationTexts() {
-        return valuationTexts;
+    public void setEntrantNum(int entrantNum) {
+        this.entrantNum = entrantNum;
     }
 
-    @Override
-    public String toString() {
-        
+    public String getIndokok() {
+        return indokok;
+    }
+
+    public void setIndokok(String indokok) {
+        this.indokok = indokok;
+    }
+
+    public String getNeptun() {
+        return neptun;
+    }
+
+    public void setNeptun(String neptun) {
+        this.neptun = neptun;
+    }
+
+    public String getNev() {
+        return nev;
+    }
+
+    public void setNev(String nev) {
+        this.nev = nev;
+    }
+
+    public String getPrimaryGroup() {
+        return primaryGroup;
+    }
+
+    public void setPrimaryGroup(String primaryGroup) {
+        this.primaryGroup = primaryGroup;
+    }
+
+    public String toCVSformat() {
         StringBuilder sb = new StringBuilder();
-        
-        sb.append(user.getName()).append(DELIMITER);
-        sb.append(user.getNeptunCode()).append(DELIMITER);
-        sb.append(user.getEmailAddress()).append(DELIMITER);
 
-        if (user.getSviePrimaryMembership() != null) {
-            sb.append(user.getSviePrimaryMembership().getGroup().getName());
-        } else {
-            sb.append("-");
-        }
+        sb.append(nev).append(DELIMITER);
+        sb.append(neptun).append(DELIMITER);
+        sb.append(email).append(DELIMITER);
+        sb.append(primaryGroup == null ? "-" : primaryGroup).append(DELIMITER);
+        sb.append(entrantNum).append(DELIMITER); //belepok szama
+        sb.append("\"").append(indokok.replace("\"", "\"\"").replaceAll("\\r|\\n", " ")).append("\""); //indoklasok
 
-        sb.append(DELIMITER);
-        sb.append(numOfEntrants).append(DELIMITER); //belepok szama
-        sb.append("\"").append(valuationTexts).append("\""); //indoklasok
-        
         return sb.toString();
     }
 }

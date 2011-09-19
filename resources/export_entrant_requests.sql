@@ -1,5 +1,5 @@
 --
--- Copyright (c) 2008-2010, Peter Major
+-- Copyright (c) 2008-2011, Kir-Dev
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -29,29 +29,64 @@
 -- SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
-CREATE TYPE exported_entrant_request AS (nev text, neptun char, email text, primary_group text, entrant_num bigint, indokok text);
 
-CREATE OR REPLACE FUNCTION export_entrant_requests(text, text, int)
-  RETURNS SETOF exported_entrant_request AS
-$BODY$
-SELECT
-    u.usr_lastname || ' ' || u.usr_firstname as nev, u.usr_neptun as neptun, u.usr_email as email,
-    primary_g.grp_name as primary_group, COUNT(*) as entrant_num,
-    array_to_string(array_agg('*' || g.grp_name || '*: ' || bi.szoveges_ertekeles), ' || ') as indokok
-  FROM belepoigenyles bi
-  INNER JOIN ertekelesek e ON bi.ertekeles_id = e.id
-  INNER JOIN users u ON bi.usr_id = u.usr_id
-  INNER JOIN groups g ON e.grp_id = g.grp_id
-  LEFT JOIN grp_membership gm ON u.usr_svie_primary_membership = gm.id
-  LEFT JOIN groups primary_g ON gm.grp_id = primary_g.grp_id
+DROP TYPE IF EXISTS user_points CASCADE;
+DROP TYPE IF EXISTS exported_entrant_request CASCADE;
 
-  WHERE bi.belepo_tipus = $2 AND
-  e.semester = $1 AND
-  e.belepoigeny_statusz = 'ELFOGADVA' AND
-  e.next_version IS NULL
-  GROUP BY u.usr_lastname, u.usr_firstname, u.usr_neptun, u.usr_email, primary_g.grp_name
-  HAVING COUNT(*) >= $3
+--
+-- Name: exported_entrant_request; Type: TYPE; Schema: public; Owner: kir
+--
+
+CREATE TYPE exported_entrant_request AS (
+	uid integer,
+        nev text,
+        neptun character(6),
+        email text,
+        primary_group text,
+        entrant_num bigint,
+        indokok text
+);
+
+
+ALTER TYPE public.exported_entrant_request OWNER TO kir;
+
+--
+-- Name: user_points; Type: TYPE; Schema: public; Owner: kir
+--
+
+CREATE TYPE user_points AS (
+        neptun character(6),
+        points numeric
+);
+
+
+ALTER TYPE public.user_points OWNER TO kir;
+
+CREATE OR REPLACE FUNCTION export_entrant_requests(text, text, integer) RETURNS SETOF exported_entrant_request
+    LANGUAGE sql
+    AS $_$
+SELECT 
+	usr_id, usr_lastname || ' ' || usr_firstname AS nev, usr_neptun as neptun, usr_email as email,
+	primary_group, entrant_num, indokok
+	FROM users JOIN (SELECT u.usr_id AS userid,
+				primary_g.grp_name as primary_group,
+				COUNT(*) as entrant_num,
+				array_to_string(array_agg('*' || g.grp_name || '*: ' || bi.szoveges_ertekeles), ' || ') as indokok
+			FROM belepoigenyles bi
+			INNER JOIN ertekelesek e ON bi.ertekeles_id = e.id
+			INNER JOIN users u ON bi.usr_id = u.usr_id
+  			INNER JOIN groups g ON e.grp_id = g.grp_id
+			LEFT JOIN grp_membership gm ON u.usr_svie_primary_membership = gm.id
+			LEFT JOIN groups primary_g ON gm.grp_id = primary_g.grp_id
+	
+			WHERE bi.belepo_tipus = $2 AND
+			      e.semester = $1 AND
+			      e.belepoigeny_statusz = 'ELFOGADVA' AND
+			      e.next_version IS NULL
+			GROUP BY u.usr_id, primary_group
+			HAVING COUNT(*) >= $3) AS tmp
+  ON (users.usr_id = userid)
   ORDER BY nev;
-$BODY$
-  LANGUAGE sql VOLATILE;
+$_$;
 
+ALTER FUNCTION public.export_entrant_requests(text, text, integer) OWNER TO kir;
