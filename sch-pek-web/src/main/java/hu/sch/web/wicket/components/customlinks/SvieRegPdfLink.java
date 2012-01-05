@@ -30,15 +30,11 @@
  */
 package hu.sch.web.wicket.components.customlinks;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
+import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.User;
 import hu.sch.domain.config.Configuration;
@@ -171,6 +167,15 @@ public class SvieRegPdfLink extends LinkPanel<User> {
                     getSession().error("Hiba a PDF generálása közben.");
                     throw new RestartResponseException(ShowUser.class);
                 }
+
+                //rendes tag és nincs elsődleges kör elmentve
+                if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG) &&
+                        user.getSviePrimaryMembership() == null) {
+
+                    getSession().error("Előbb válaszd ki és mentsd el az elsődleges köröd!");
+                    return;
+                }
+
                 try {
                     IResourceStream resourceStream = new ByteArrayResourceStream(
                             ((ByteArrayOutputStream) generatePdf()).toByteArray(),
@@ -213,6 +218,10 @@ public class SvieRegPdfLink extends LinkPanel<User> {
         document.add(firstParagraph);
 
         if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG)) {
+            Paragraph primaryGroupParagraph = new Paragraph(createPrimaryGroupInfo(), font);
+            primaryGroupParagraph.setAlignment(Paragraph.ALIGN_JUSTIFIED);
+            document.add(primaryGroupParagraph);
+
             document.add(firstStatement);
         }
         document.add(secondStatement);
@@ -262,6 +271,13 @@ public class SvieRegPdfLink extends LinkPanel<User> {
         sb.append("(székhely: 1115 Budapest, Bartók Béla út 152/H. Kelen Irodaház, ");
         sb.append("fszt./a., továbbiakban Egyesület). Kijelentem, hogy az Egyesületbe ");
         sb.append(cachedmsType).append("ként kívánok belépni.");
+        return sb.toString();
+    }
+
+    private String createPrimaryGroupInfo() {
+        StringBuilder sb = new StringBuilder(100);
+        sb.append("Az elsődleges köröm, melyet az idp.sch.bme.hu-n adtam meg: ");
+        sb.append(user.getSviePrimaryMembershipText());
         return sb.toString();
     }
 
