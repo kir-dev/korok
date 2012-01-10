@@ -49,12 +49,7 @@ import hu.sch.web.kp.admin.CreateNewPerson;
 import hu.sch.web.kp.admin.EditSettings;
 import hu.sch.web.kp.admin.ShowInactive;
 import hu.sch.web.kp.consider.ConsiderPage;
-import hu.sch.web.kp.group.ChangeDelegates;
-import hu.sch.web.kp.group.ChangePost;
-import hu.sch.web.kp.group.EditGroupInfo;
-import hu.sch.web.kp.group.GroupHierarchy;
-import hu.sch.web.kp.group.GroupHistory;
-import hu.sch.web.kp.group.ShowGroup;
+import hu.sch.web.kp.group.*;
 import hu.sch.web.kp.logout.Logout;
 import hu.sch.web.kp.search.SearchResultsPage;
 import hu.sch.web.kp.svie.SvieAccount;
@@ -62,13 +57,13 @@ import hu.sch.web.kp.svie.SvieGroupMgmt;
 import hu.sch.web.kp.svie.SvieUserMgmt;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.kp.user.UserHistory;
-import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.NewValuation;
-import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.kp.valuation.ValuationHistory;
 import hu.sch.web.kp.valuation.Valuations;
 import hu.sch.web.kp.valuation.message.ValuationMessages;
+import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
+import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.web.profile.admin.AdminPage;
 import hu.sch.web.profile.birthday.BirthDayPage;
 import hu.sch.web.profile.confirmation.ConfirmPage;
@@ -82,18 +77,9 @@ import hu.sch.web.wicket.util.ServerTimerFilter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.IConverterLocator;
-import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
+import org.apache.wicket.*;
 import org.apache.wicket.injection.web.InjectorHolder;
-import org.apache.wicket.protocol.http.PageExpiredException;
-import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebRequestCycle;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.protocol.http.*;
 import org.apache.wicket.request.target.coding.HybridUrlCodingStrategy;
 import org.apache.wicket.resource.ContextRelativeResource;
 import org.apache.wicket.util.convert.ConverterLocator;
@@ -123,6 +109,13 @@ public class PhoenixApplication extends WebApplication {
 
     @Override
     public Class<? extends Page> getHomePage() {
+        StringBuffer url = ((WebRequest)RequestCycle.get().getRequest()).getHttpServletRequest()
+                .getRequestURL();
+
+        if (url.toString().contains("profile")) {
+            return ShowPersonPage.class;
+        }
+
         return ShowUser.class;
     }
 
