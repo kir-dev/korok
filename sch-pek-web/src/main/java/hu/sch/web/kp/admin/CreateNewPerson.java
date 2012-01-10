@@ -43,7 +43,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 /**
@@ -67,11 +67,10 @@ public class CreateNewPerson extends KorokPage {
                 person.setStatus("Active");
                 ldapManager.registerPerson(person, null);
                 setResponsePage(AdminPage.class, new PageParameters("uid=" + person.getUid()));
-                return;
             }
         };
         final WebMarkupContainer wmc = new WebMarkupContainer("wmc");
-        TextField<String> uidTF = new TextField<String>("uid");
+        RequiredTextField<String> uidTF = new RequiredTextField<String>("uid");
         final Label notifier = new Label("notifier", "");
         AjaxFormComponentUpdatingBehavior afcup = new AjaxFormComponentUpdatingBehavior("onblur") {
 
@@ -96,9 +95,9 @@ public class CreateNewPerson extends KorokPage {
         wmc.setOutputMarkupId(true);
         form.add(wmc);
 
-        form.add(new TextField<String>("lastName"));
-        form.add(new TextField<String>("firstName"));
-        form.add(new TextField<String>("mail"));
+        form.add(new RequiredTextField<String>("lastName"));
+        form.add(new RequiredTextField<String>("firstName"));
+        form.add(new RequiredTextField<String>("mail"));
 
         add(form);
     }
