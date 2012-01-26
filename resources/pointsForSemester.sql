@@ -29,6 +29,7 @@
 -- SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
+DROP TYPE IF EXISTS user_points CASCADE;
 CREATE TYPE user_points AS (neptun CHAR(6), points NUMERIC);
 
 CREATE OR REPLACE FUNCTION getPointsForSemester(text, text) RETURNS SETOF user_points AS
