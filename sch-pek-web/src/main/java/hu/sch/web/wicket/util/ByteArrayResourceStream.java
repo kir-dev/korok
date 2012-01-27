@@ -28,25 +28,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
-import org.apache.wicket.util.resource.IResourceStream;
+import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
-import org.apache.wicket.util.time.Time;
 
 /**
  *
  * @author aldaris
  */
-public class ByteArrayResourceStream implements IResourceStream {
+public class ByteArrayResourceStream extends AbstractResourceStream {
 
     private static final long serialVersionUID = 1L;
-    private Locale locale = null;
     private byte[] content = null;
     private String contentType = null;
 
@@ -65,27 +62,12 @@ public class ByteArrayResourceStream implements IResourceStream {
     }
 
     @Override
+    public Bytes length() {
+        return Bytes.bytes(content.length);
+    }
+
+    @Override
     public InputStream getInputStream() throws ResourceStreamNotFoundException {
         return (new ByteArrayInputStream(content));
-    }
-
-    @Override
-    public Locale getLocale() {
-        return (locale);
-    }
-
-    @Override
-    public long length() {
-        return (content.length);
-    }
-
-    @Override
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
-    @Override
-    public Time lastModifiedTime() {
-        return null;
     }
 }

@@ -102,12 +102,12 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
-                target.addComponent(wizard);
+                target.add(wizard);
             }
 
             @Override
             protected void onError(AjaxRequestTarget target) {
-                target.addComponent(wizard);
+                target.add(wizard);
             }
         });
 

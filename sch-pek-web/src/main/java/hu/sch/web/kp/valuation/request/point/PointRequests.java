@@ -30,9 +30,9 @@
  */
 package hu.sch.web.kp.valuation.request.point;
 
-import hu.sch.web.kp.valuation.request.Requests;
 import hu.sch.domain.ValuationPeriod;
-import org.apache.wicket.PageParameters;
+import hu.sch.web.kp.valuation.request.Requests;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *

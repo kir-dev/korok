@@ -28,11 +28,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components;
 
 import java.awt.image.BufferedImage;
-import org.apache.wicket.markup.html.image.resource.DynamicImageResource;
+import org.apache.wicket.request.resource.DynamicImageResource;
 
 /**
  *
@@ -46,6 +45,7 @@ public class ImageResource extends DynamicImageResource {
     public ImageResource(byte[] image, String format) {
         this.image = image;
         setFormat(format);
+
     }
 
     public ImageResource(BufferedImage image) {
@@ -53,20 +53,11 @@ public class ImageResource extends DynamicImageResource {
     }
 
     @Override
-    protected byte[] getImageData() {
+    protected byte[] getImageData(Attributes attributes) {
         if (image != null) {
             return image;
         } else {
             return new byte[0];
         }
-
-    }
-
-    /**
-     * 1 day!
-     */
-    @Override
-    protected int getCacheDuration() {
-        return 3600 * 24;
     }
 }

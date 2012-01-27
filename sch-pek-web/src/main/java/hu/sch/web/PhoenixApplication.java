@@ -76,14 +76,15 @@ import hu.sch.web.wicket.util.PostTypeConverter;
 import hu.sch.web.wicket.util.ServerTimerFilter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wicket.*;
-import org.apache.wicket.injection.web.InjectorHolder;
-import org.apache.wicket.protocol.http.*;
-import org.apache.wicket.request.target.coding.HybridUrlCodingStrategy;
-import org.apache.wicket.resource.ContextRelativeResource;
-import org.apache.wicket.util.convert.ConverterLocator;
-import org.apache.wicket.util.lang.PackageName;
+import org.apache.wicket.injection.Injector;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.cycle.RequestCycleContext;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
 import org.wicketstuff.javaee.naming.global.AppJndiNamingStrategy;
 import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
@@ -99,7 +100,6 @@ import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
  */
 public class PhoenixApplication extends WebApplication {
 
-    public static final String KOROK_JS = "korok.js";
     private static final String EJB_MODULE_NAME = "korok-ejb";
     private static Logger log = Logger.getLogger(PhoenixApplication.class);
     @EJB(name = "SystemManagerBean")
@@ -109,10 +109,9 @@ public class PhoenixApplication extends WebApplication {
 
     @Override
     public Class<? extends Page> getHomePage() {
-        StringBuffer url = ((WebRequest)RequestCycle.get().getRequest()).getHttpServletRequest()
-                .getRequestURL();
+        String url = ((HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest()).getRequestURL().toString();
 
-        if (url.toString().contains("profile")) {
+        if (url.contains("profile")) {
             return ShowPersonPage.class;
         }
 
@@ -121,21 +120,20 @@ public class PhoenixApplication extends WebApplication {
 
     /**
      * Mivel nem elég a jelenleg támogatott kétféle configurationType
-     * (DEPLOYMENT és DEVELOPMENT), ezért
-     * felüldefiniáljuk ezt a metódust és az {@link Environment}-től függően térünk vissza
-     * az előbbiek valamelyikével.
+     * (DEPLOYMENT és DEVELOPMENT), ezért felüldefiniáljuk ezt a metódust és az {@link Environment}-től
+     * függően térünk vissza az előbbiek valamelyikével.
      *
-     * @return  DEPLOYMENT vagy DEVELOPMENT
+     * @return DEPLOYMENT vagy DEVELOPMENT
      */
     @Override
-    public String getConfigurationType() {
+    public RuntimeConfigurationType getConfigurationType() {
         Environment env = Configuration.getEnvironment();
 
         if (env == Environment.PRODUCTION) {
             // jelenleg csak akkor kell DEPLOYMENT, ha az environment PRODUCTION
-            return DEPLOYMENT;
+            return RuntimeConfigurationType.DEPLOYMENT;
         } else {
-            return DEVELOPMENT;
+            return RuntimeConfigurationType.DEVELOPMENT;
         }
     }
 
@@ -144,11 +142,10 @@ public class PhoenixApplication extends WebApplication {
         //A környezetfüggő beállítások elvégzése
         Environment env = Configuration.getEnvironment();
         if (env == Environment.TESTING) {
-            addComponentInstantiationListener(new JavaEEComponentInjector(this,
-                    new GlobalJndiNamingStrategy(EJB_MODULE_NAME)));
+            getComponentInstantiationListeners().add(new JavaEEComponentInjector(this, new GlobalJndiNamingStrategy(EJB_MODULE_NAME)));
             authorizationComponent = new DummyAuthorization();
         } else {
-            addComponentInstantiationListener(new JavaEEComponentInjector(this, new AppJndiNamingStrategy(EJB_MODULE_NAME)));
+            getComponentInstantiationListeners().add(new JavaEEComponentInjector(this, new AppJndiNamingStrategy(EJB_MODULE_NAME)));
             if (env == Environment.DEVELOPMENT) {
                 //Ha DEVELOPMENT környezetben vagyunk, akkor Dummyt használunk
                 authorizationComponent = new DummyAuthorization();
@@ -157,26 +154,36 @@ public class PhoenixApplication extends WebApplication {
             }
         }
 
+        if (Configuration.getEnvironment().equals(Environment.PRODUCTION)) {
+            setRequestCycleProvider(new IRequestCycleProvider() {
+
+                @Override
+                public RequestCycle get(RequestCycleContext c) {
+                    c.setExceptionMapper(new DefaultExceptionMapper());
+                    return new RequestCycle(c);
+                }
+            });
+        }
+
         getMarkupSettings().setStripWicketTags(true);
 
-        mount("/error", PackageName.forClass(InternalServerError.class));
-        mountBookmarkablePage("/loggedout", Logout.class);
+        mountPackage("/error", InternalServerError.class);
+        mountPage("/loggedout", Logout.class);
         mountKorok();
         mountProfil();
 
         //alkalmazás beállítások
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
-        getPageSettings().setAutomaticMultiWindowSupport(false);
+        // getPageSettings().setAutomaticMultiWindowSupport(false);
 
         //Ha dev módban vagyunk, akkor hozzáteszünk egy új filtert, ami mutatja
         //a render időket a log fájlban.
-        if (getConfigurationType().equals(DEVELOPMENT)) {
+        if (getConfigurationType() == RuntimeConfigurationType.DEVELOPMENT) {
             getRequestCycleSettings().addResponseFilter(new ServerTimerFilter());
             log.info("Successfully enabled ServerTimerFilter");
         }
-        getSharedResources().add(KOROK_JS, new ContextRelativeResource("js/korok.js"));
 
-        InjectorHolder.getInjector().inject(this);
+        Injector.get().inject(this);
         isNewbieTime = systemManager.getNewbieTime();
 
         log.warn("Application has been successfully initiated");
@@ -199,76 +206,57 @@ public class PhoenixApplication extends WebApplication {
         return session;
     }
 
-    @Override
-    public RequestCycle newRequestCycle(Request request, Response response) {
-        if (!Configuration.getEnvironment().equals(Environment.PRODUCTION)) {
-            return super.newRequestCycle(request, response);
-        } else {
-            return new WebRequestCycle(this, (WebRequest) request, (WebResponse) response) {
-
-                @Override
-                public Page onRuntimeException(Page page, RuntimeException ex) {
-                    if (ex instanceof PageExpiredException) {
-                        return new PageExpiredError();
-                    }
-                    return new InternalServerError(page, ex);
-                }
-            };
-        }
-    }
-
     public UserAuthorization getAuthorizationComponent() {
         return authorizationComponent;
     }
 
     private void mountKorok() {
-        mountBookmarkablePage("/korok", ShowUser.class);
-        mountBookmarkablePage("/korok/showuser", ShowUser.class);
-        mountBookmarkablePage("/korok/userhistory", UserHistory.class);
-        mountBookmarkablePage("/korok/search", SearchResultsPage.class);
-        mountBookmarkablePage("/korok/confirm", ConfirmPage.class);
+        mountPage("/korok", ShowUser.class);
+        mountPage("/korok/showuser", ShowUser.class);
+        mountPage("/korok/userhistory", UserHistory.class);
+        mountPage("/korok/search", SearchResultsPage.class);
+        mountPage("/korok/confirm", ConfirmPage.class);
 
-        mountBookmarkablePage("/korok/showgroup", ShowGroup.class);
-        mountBookmarkablePage("/korok/grouphierarchy", GroupHierarchy.class);
-        mountBookmarkablePage("/korok/grouphistory", GroupHistory.class);
-        mountBookmarkablePage("/korok/editgroupinfo", EditGroupInfo.class);
-        mountBookmarkablePage("/korok/changepost", ChangePost.class);
+        mountPage("/korok/showgroup", ShowGroup.class);
+        mountPage("/korok/grouphierarchy", GroupHierarchy.class);
+        mountPage("/korok/grouphistory", GroupHistory.class);
+        mountPage("/korok/editgroupinfo", EditGroupInfo.class);
+        mountPage("/korok/changepost", ChangePost.class);
 
-        mountBookmarkablePage("/korok/valuation", Valuations.class);
-        mountBookmarkablePage("/korok/valuationdetails", ValuationDetails.class);
-        mountBookmarkablePage("/korok/valuationhistory", ValuationHistory.class);
-        mountBookmarkablePage("/korok/newvaluation", NewValuation.class);
-        mountBookmarkablePage("/korok/valuationmessages", ValuationMessages.class);
+        mountPage("/korok/valuation", Valuations.class);
+        mountPage("/korok/valuationdetails", ValuationDetails.class);
+        mountPage("/korok/valuationhistory", ValuationHistory.class);
+        mountPage("/korok/newvaluation", NewValuation.class);
+        mountPage("/korok/valuationmessages", ValuationMessages.class);
 
-        mountBookmarkablePage("/korok/pointrequests", PointRequests.class);
-        mountBookmarkablePage("/korok/entrantrequests", EntrantRequests.class);
+        mountPage("/korok/pointrequests", PointRequests.class);
+        mountPage("/korok/entrantrequests", EntrantRequests.class);
 
-        mountBookmarkablePage("/korok/svieaccount", SvieAccount.class);
-        mountBookmarkablePage("/korok/delegates", ChangeDelegates.class);
-        mountBookmarkablePage("/korok/consider", ConsiderPage.class);
-        mountBookmarkablePage("/korok/administration", EditSettings.class);
-        mountBookmarkablePage("/korok/administration/svieusermgmt", SvieUserMgmt.class);
-        mountBookmarkablePage("/korok/administration/sviegroupmgmt", SvieGroupMgmt.class);
-        mountBookmarkablePage("/korok/showinactive", ShowInactive.class);
-        mountBookmarkablePage("/korok/creategroup", CreateGroup.class);
-        mountBookmarkablePage("/korok/createperson", CreateNewPerson.class);
+        mountPage("/korok/svieaccount", SvieAccount.class);
+        mountPage("/korok/delegates", ChangeDelegates.class);
+        mountPage("/korok/consider", ConsiderPage.class);
+        mountPage("/korok/administration", EditSettings.class);
+        mountPage("/korok/administration/svieusermgmt", SvieUserMgmt.class);
+        mountPage("/korok/administration/sviegroupmgmt", SvieGroupMgmt.class);
+        mountPage("/korok/showinactive", ShowInactive.class);
+        mountPage("/korok/creategroup", CreateGroup.class);
+        mountPage("/korok/createperson", CreateNewPerson.class);
 
         //IDM linkek
-        mountBookmarkablePage("/korok/reminder", UserNameReminder.class);
-        mount(new HybridUrlCodingStrategy("/korok/register", RegistrationPage.class));
-        mountBookmarkablePage("/korok/registerfinished", RegistrationFinishedPage.class);
-        mountBookmarkablePage("/korok/logout", Logout.class);
+        mountPage("/korok/reminder", UserNameReminder.class);
+        //mount(new HybridUrlCodingStrategy("/korok/register", RegistrationPage.class));
+        mountPage("/korok/register", RegistrationPage.class);
+        mountPage("/korok/registerfinished", RegistrationFinishedPage.class);
+        mountPage("/korok/logout", Logout.class);
     }
 
     private void mountProfil() {
-        mountBookmarkablePage("/profile", ShowPersonPage.class);
-        mountBookmarkablePage("/profile/show", ShowPersonPage.class);
-        mountBookmarkablePage("/profile/edit", EditPage.class);
-        mountBookmarkablePage("/profile/changepassword", ChangePasswordPage.class);
-
-        mountBookmarkablePage("/profile/birthdays", BirthDayPage.class);
-
-        mountBookmarkablePage("/profile/admin", AdminPage.class);
+        mountPage("/profile", ShowPersonPage.class);
+        mountPage("/profile/show", ShowPersonPage.class);
+        mountPage("/profile/edit", EditPage.class);
+        mountPage("/profile/changepassword", ChangePasswordPage.class);
+        mountPage("/profile/birthdays", BirthDayPage.class);
+        mountPage("/profile/admin", AdminPage.class);
     }
 
     @Override

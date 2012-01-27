@@ -32,20 +32,17 @@ package hu.sch.web.kp.valuation.request.entrant;
 
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
-import hu.sch.domain.Valuation;
 import hu.sch.domain.User;
+import hu.sch.domain.Valuation;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
-import hu.sch.web.wicket.components.choosers.EntrantTypeChooser;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
+import hu.sch.web.wicket.components.choosers.EntrantTypeChooser;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -53,6 +50,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -86,10 +84,10 @@ public class EntrantRequestEditor extends Panel {
                 try {
                     Valuation v = valuationManager.updateEntrantRequests(ert, igenylista);
                     getSession().info(getLocalizer().getString("info.BelepoIgenylesMentve", getParent()));
-                    setResponsePage(ValuationDetails.class, new PageParameters("id=" + v.getId()));
+                    setResponsePage(ValuationDetails.class, new PageParameters().add("id", v.getId()));
                 } catch (AlreadyModifiedException ex) {
                     getSession().error("Valaki már módosított az értékelésen, így lehet, hogy a belépőkön is!");
-                    setResponsePage(ValuationDetails.class, new PageParameters("id=" + ert.getId()));
+                    setResponsePage(ValuationDetails.class, new PageParameters().add("id", ert.getId()));
                 } catch (NoExplanationException ex) {
                     // ilyen elvileg itt nem köverkezhet be
                 }
@@ -124,7 +122,7 @@ public class EntrantRequestEditor extends Panel {
         } else {
 
             //tényleges összefésülés
-            boolean szerepel = false;
+            boolean szerepel;
             if (igenyek.size() != csoporttagok.size()) {
                 for (User csoporttag : csoporttagok) {
                     szerepel = false;

@@ -28,24 +28,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
 import hu.sch.web.kp.KorokPage;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.log4j.Logger;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.behavior.HeaderContributor;
-import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import wickettree.ITreeProvider;
 import wickettree.NestedTree;
 import wickettree.content.Folder;
@@ -57,13 +53,12 @@ import wickettree.theme.WindowsTheme;
  */
 public class GroupHierarchy extends KorokPage {
 
-    private static Logger log = Logger.getLogger(GroupHierarchy.class);
     private List<Group> roots = userManager.getGroupHierarchy();
 
     public GroupHierarchy() {
         setHeaderLabelText("Csoportok listája");
 
-        final NestedTree<Group> tree = new NestedTree<Group>("hierarchyTree", new TreeProvider()) {
+        add(new NestedTree<Group>("hierarchyTree", new TreeProvider()) {
 
             @Override
             protected Component newContentComponent(String string, IModel<Group> model) {
@@ -75,21 +70,16 @@ public class GroupHierarchy extends KorokPage {
                     protected MarkupContainer newLinkComponent(String id, IModel<Group> model) {
                         Group group = model.getObject();
                         return new BookmarkablePageLink<Void>(id, ShowGroup.class,
-                                new PageParameters("id=" + group.getId()));
+                                new PageParameters().add("id", group.getId()));
                     }
                 };
             }
-        };
-        tree.add(new HeaderContributor(new IHeaderContributor() {
+        });
+    }
 
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void renderHead(IHeaderResponse response) {
-                response.renderCSSReference(new CompressedResourceReference(WindowsTheme.class, "windows/theme.css"));
-            }
-        }));
-        add(tree);
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        response.renderCSSReference(new PackageResourceReference(WindowsTheme.class, "windows/theme.css"));
     }
 
     public class TreeProvider implements ITreeProvider<Group> {

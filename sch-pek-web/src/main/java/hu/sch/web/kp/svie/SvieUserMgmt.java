@@ -28,18 +28,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.svie;
 
 import hu.sch.domain.SvieStatus;
 import hu.sch.domain.User;
 import hu.sch.services.SvieManagerLocal;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.choosers.MembershipTypeChooser;
 import hu.sch.web.wicket.components.choosers.SvieStatusChooser;
 import hu.sch.web.wicket.components.customlinks.LinkPanel;
 import hu.sch.web.wicket.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.tables.LinkColumn;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import hu.sch.web.wicket.util.SortableUserDataProvider;
@@ -161,7 +160,7 @@ public final class SvieUserMgmt extends KorokPage {
                 }
                 userProvider.setUsers(filteredUsers);
                 if (target != null) {
-                    target.addComponent(table);
+                    target.add(table);
                 }
             }
         });

@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.GivenPoint;
@@ -41,16 +40,15 @@ import java.io.OutputStream;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.util.resource.IResourceStream;
 
 /**
- * Egy olyan link, amire ha a user rákapcsol, akkor letöltődik CSV-ben az
- * adott félévhez tartozó pontozás.
+ * Egy olyan link, amire ha a user rákapcsol, akkor letöltődik CSV-ben az adott
+ * félévhez tartozó pontozás.
  *
- * @author  messo
- * @since   2.3.1
+ * @author messo
+ * @since 2.3.1
  */
 public class CsvExportForKfbLink extends Link<Void> {
 
@@ -69,14 +67,7 @@ public class CsvExportForKfbLink extends Link<Void> {
             IResourceStream resourceStream = new ByteArrayResourceStream(
                     ((ByteArrayOutputStream) generateContent()).toByteArray(),
                     "text/csv");
-            getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
-
-                @Override
-                public String getFileName() {
-                    return ("kfbexport.csv");
-                }
-            });
-
+            getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream, "kfbexport.csv"));
         } catch (Exception ex) {
             getSession().error("Az export során hiba történt!");
             setResponsePage(getApplication().getHomePage());

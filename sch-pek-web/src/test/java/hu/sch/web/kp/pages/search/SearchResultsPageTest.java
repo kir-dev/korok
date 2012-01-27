@@ -28,22 +28,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.pages.search;
 
-import hu.sch.web.kp.search.PersonResultPanel;
-import hu.sch.web.kp.search.SearchResultsPage;
 import hu.sch.domain.profile.Person;
 import hu.sch.ejb.LdapManagerBean;
 import hu.sch.services.LdapManagerLocal;
+import hu.sch.web.kp.search.PersonResultPanel;
+import hu.sch.web.kp.search.SearchResultsPage;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.test.WebTest;
 import java.util.List;
 import javax.naming.NamingException;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.tester.FormTester;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -75,7 +74,7 @@ public class SearchResultsPageTest extends WebTest {
 
     @Test
     public void testDirectPersonSearch() {
-        tester.startPage(SearchResultsPage.class, new PageParameters("type=user,key=" + SEARCH_TERM));
+        tester.startPage(SearchResultsPage.class, new PageParameters().add("type", "user").add("key", SEARCH_TERM));
         tester.assertRenderedPage(SearchResultsPage.class);
         tester.assertComponent("hitsPanel", PersonResultPanel.class);
         AjaxFallbackDefaultDataTable<Person> table = (AjaxFallbackDefaultDataTable<Person>) tester.getComponentFromLastRenderedPage(

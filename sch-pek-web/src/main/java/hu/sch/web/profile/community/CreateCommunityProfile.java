@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.community;
 
 import hu.sch.domain.User;
@@ -36,22 +35,22 @@ import hu.sch.domain.profile.Person;
 import hu.sch.services.EntitlementManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
-import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.profile.ProfilePage;
+import hu.sch.web.profile.show.ShowPersonPage;
+import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -343,7 +342,7 @@ public class CreateCommunityProfile extends ProfilePage {
         }
 
         setResponsePage(ShowPersonPage.class,
-                new PageParameters("uid=" + person.getUid().toString()));
+                new PageParameters().add("uid", person.getUid().toString()));
 
     }
 

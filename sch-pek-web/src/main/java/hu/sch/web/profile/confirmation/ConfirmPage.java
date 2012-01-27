@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.confirmation;
 
 import hu.sch.domain.profile.Person;
@@ -38,9 +37,9 @@ import hu.sch.web.profile.show.ShowPersonPage;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -53,7 +52,7 @@ public final class ConfirmPage extends ProfilePage {
     }
 
     public ConfirmPage(PageParameters params) throws NoSuchAlgorithmException {
-        String uid = params.getString("uid");
+        String uid = params.get("uid").toString();
         try {
             Person person = ldapManager.getPersonByUid(uid);
 
@@ -66,7 +65,7 @@ public final class ConfirmPage extends ProfilePage {
             String confirmationStringMD5 =
                     new BigInteger(1, m.digest()).toString(16);
 
-            String confirmationCode = params.getString("confirmationcode");
+            String confirmationCode = params.get("confirmationcode").toString();
 
             if (confirmationCode.equals(confirmationStringMD5)) {
                 person.setStatus("Active");
@@ -87,8 +86,6 @@ public final class ConfirmPage extends ProfilePage {
         } catch (PersonNotFoundException e) {
             getSession().error("A felhasználó nem található!");
             setResponsePage(getApplication().getHomePage());
-            return;
-
         }
     }
 }

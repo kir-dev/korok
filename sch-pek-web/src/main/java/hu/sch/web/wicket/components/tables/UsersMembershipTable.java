@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.tables;
 
 import hu.sch.domain.Membership;
@@ -41,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
@@ -52,8 +52,8 @@ import org.apache.wicket.model.Model;
 /**
  * Itt listázzuk ki a felhasználó tagságait.
  *
- * @author  messo
- * @since   2.3.1
+ * @author messo
+ * @since 2.3.1
  */
 public abstract class UsersMembershipTable implements Serializable {
 
@@ -96,7 +96,7 @@ public abstract class UsersMembershipTable implements Serializable {
         }
 
         table = new AjaxFallbackDefaultDataTable<Membership>(id, columns, provider, rowsPerPage);
-        provider.setSort(Membership.SORT_BY_GROUP, true);
+        provider.setSort(Membership.SORT_BY_GROUP, SortOrder.ASCENDING);
     }
 
     public AjaxFallbackDefaultDataTable<Membership> getDataTable() {

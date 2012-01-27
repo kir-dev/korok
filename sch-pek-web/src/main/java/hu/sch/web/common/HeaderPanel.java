@@ -33,7 +33,6 @@ package hu.sch.web.common;
 import hu.sch.web.kp.search.SearchResultsPage;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -45,17 +44,18 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * Minden {@link PekPage} sablonnak implementálnia kell a {@link PekPage#getHeaderPanel(java.lang.String)}
- * metódust, amennyiben szükség lesz navigációs "linksorra", célszerű ebből a panelből
- * származtatni a visszaadott {@link Panel}t, és a konstruktor végén meghívni a
- * {@link HeaderPanel#createLinks()} metódust. (Azért kell explicit meghívni, mert
- * az egyes linkek láthatósága még nem ismert az ősosztály konstruktorának
- * meghívásakor.)
+ * metódust, amennyiben szükség lesz navigációs "linksorra", célszerű ebből a
+ * panelből származtatni a visszaadott {@link Panel}t, és a konstruktor végén
+ * meghívni a {@link HeaderPanel#createLinks()} metódust. (Azért kell explicit
+ * meghívni, mert az egyes linkek láthatósága még nem ismert az ősosztály
+ * konstruktorának meghívásakor.)
  *
- * @author  messo
- * @since   2.4
+ * @author messo
+ * @since 2.4
  */
 public abstract class HeaderPanel extends Panel {
 
@@ -81,8 +81,8 @@ public abstract class HeaderPanel extends Panel {
                     throw new RestartResponseException(getApplication().getHomePage());
                 }
                 PageParameters params = new PageParameters();
-                params.put("type", ((searchType.equals("felhasználó")) ? "user" : "group"));
-                params.put("key", searchTerm);
+                params.add("type", ((searchType.equals("felhasználó")) ? "user" : "group"));
+                params.add("key", searchTerm);
                 setResponsePage(SearchResultsPage.class, params);
             }
         };

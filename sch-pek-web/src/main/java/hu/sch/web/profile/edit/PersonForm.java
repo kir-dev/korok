@@ -34,22 +34,17 @@ import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.IMProtocol;
 import hu.sch.domain.profile.Person;
 import hu.sch.domain.util.ImageResizer;
+import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
+import hu.sch.web.profile.show.ShowPersonPage;
+import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
-import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
-import hu.sch.domain.util.PatternHolder;
-import hu.sch.web.profile.show.ShowPersonPage;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -59,15 +54,7 @@ import org.apache.wicket.datetime.StyleDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.RadioChoice;
-import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.image.NonCachingImage;
@@ -75,11 +62,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.util.ModelIteratorAdapter;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.*;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -96,7 +79,7 @@ public class PersonForm extends Form<Person> {
     private static Logger logger = Logger.getLogger(PersonForm.class);
     private final Person person;
     private Date dob;
-    private FileUpload upload;
+    private List<FileUpload> upload;
     private final RefreshingView<IMAccount> refreshView;
 
     public PersonForm(String componentName, final Person person) {
@@ -139,10 +122,14 @@ public class PersonForm extends Form<Person> {
                 item.add(new AjaxFallbackButton("imRemove", PersonForm.this) {
 
                     @Override
+                    protected void onError(AjaxRequestTarget target, Form<?> form) {
+                    }
+
+                    @Override
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                         currObj.remove(acc);
                         if (target != null) {
-                            target.addComponent(rowPanel);
+                            target.add(rowPanel);
                         }
                     }
                 }.setDefaultFormProcessing(false));
@@ -153,10 +140,14 @@ public class PersonForm extends Form<Person> {
         rowPanel.add(new AjaxFallbackButton("imAdd", PersonForm.this) {
 
             @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+            }
+
+            @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 ((List<IMAccount>) refreshView.getDefaultModelObject()).add(new IMAccount(IMProtocol.icq, ""));
                 if (target != null) {
-                    target.addComponent(rowPanel);
+                    target.add(rowPanel);
                 }
                 for (IMAccount iMAccount : ((List<IMAccount>) refreshView.getDefaultModelObject())) {
                     System.out.println(iMAccount.toString());
@@ -182,17 +173,18 @@ public class PersonForm extends Form<Person> {
 
             @Override
             public void onSubmit() {
-                if (upload != null) {
+                if (upload != null && !upload.isEmpty()) {
                     // formátum ellenőrzés
                     List<String> validImageContentTypes = Arrays.asList(new String[]{"image/jpeg", "image/png", "image/gif"});
-                    if (!validImageContentTypes.contains(upload.getContentType())) {
-                        logger.warn("Uploaded picture with unknown image format: " + upload.getContentType());
+                    FileUpload fu = upload.get(0);
+                    if (!validImageContentTypes.contains(fu.getContentType())) {
+                        logger.warn("Uploaded picture with unknown image format: " + fu.getContentType());
                         error("A fotó formátuma nem megfelelő! Megfelelő formátumok: jpeg, png, gif.");
                         return;
                     }
 
                     try {
-                        ImageResizer imageResizer = new ImageResizer(upload.getBytes(), Person.IMAGE_MAX_SIZE);
+                        ImageResizer imageResizer = new ImageResizer(fu.getBytes(), Person.IMAGE_MAX_SIZE);
 
                         if (imageResizer != null) {
                             imageResizer.resizeImage();
@@ -382,8 +374,8 @@ public class PersonForm extends Form<Person> {
 
                 setVisible(false);
                 photo.setVisible(false);
-                target.addComponent(this);
-                target.addComponent(photo);
+                target.add(this);
+                target.add(photo);
             }
         };
         photoRemoveLink.setOutputMarkupId(true);
@@ -394,10 +386,10 @@ public class PersonForm extends Form<Person> {
             photoRemoveLink.setVisible(false);
         }
 
-        add(new FileUploadField("fileInput", new PropertyModel<FileUpload>(this, "upload")));
+        add(new FileUploadField("fileInput", new PropertyModel<List<FileUpload>>(this, "upload")));
     }
 
-    public void initAjaxPrivateLinks() {
+    private void initAjaxPrivateLinks() {
         AttributeAjaxFallbackLink.setPerson(person);
         add(new AttributeAjaxFallbackLink("mailAttributeLink", "mailAttributeImg", "mail"));
         add(new AttributeAjaxFallbackLink("mobileAttributeLink", "mobileAttributeImg", "mobile"));

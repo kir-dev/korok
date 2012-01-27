@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.valuation;
 
 import hu.sch.domain.Valuation;
@@ -44,8 +43,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
  * Egy egyszerű panel, ami megmutatja az értékelés szövegét, pontozási elveket
  * és a pontokat/belépőket.
  *
- * @author  aldaris
- * @author  messo
+ * @author aldaris
+ * @author messo
  */
 public class ValuationDetailPanel extends Panel {
 
@@ -56,7 +55,7 @@ public class ValuationDetailPanel extends Panel {
     public ValuationDetailPanel(String id) {
         super(id);
 
-        setDefaultModel(new CompoundPropertyModel<Valuation>(null));
+        setDefaultModel(new CompoundPropertyModel<Valuation>((Valuation) null));
 
         MultiLineLabel valuationText = new MultiLineLabel("valuationText");
         valuationText.setEscapeModelStrings(false);

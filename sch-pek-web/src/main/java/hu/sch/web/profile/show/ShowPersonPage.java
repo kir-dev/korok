@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.show;
 
 import hu.sch.domain.profile.IMAccount;
@@ -36,16 +35,15 @@ import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.kp.user.UserHistory;
-import hu.sch.web.wicket.components.ImageResource;
+import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.admin.AdminPage;
 import hu.sch.web.profile.community.CreateCommunityProfile;
-import hu.sch.web.profile.ProfilePage;
+import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.wicket.components.customlinks.SearchLink;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -57,6 +55,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * Homepage
@@ -74,8 +73,8 @@ public class ShowPersonPage extends ProfilePage {
     }
 
     public ShowPersonPage(PageParameters params) {
-        String uid = params.getString("uid");
-        String virid = params.getString("virid");
+        String uid = params.get("uid").toString();
+        String virid = params.get("virid").toString();
 
         if ((uid == null && virid == null) || (uid != null && virid != null)) {
             // ha se uid se virid, vagy mindkettő meg van adva, akkor nem játszunk
@@ -105,7 +104,7 @@ public class ShowPersonPage extends ProfilePage {
         //add(new Label("fullName"));
 
         if (person.getVirId() != null) {
-            PageParameters params = new PageParameters("id=" + person.getVirId());
+            PageParameters params = new PageParameters().add("id", person.getVirId());
             add(new BookmarkablePageLink("simpleView", ShowUser.class, params));
             add(new BookmarkablePageLink("detailView", UserHistory.class, params));
             add(new Label("createCommunityProfile").setVisible(false));
@@ -118,7 +117,6 @@ public class ShowPersonPage extends ProfilePage {
                 @Override
                 public void onClick() {
                     setResponsePage(new CreateCommunityProfile(new ShowPersonPage()));
-                    return;
                 }
             };
 
@@ -131,7 +129,7 @@ public class ShowPersonPage extends ProfilePage {
 
         Link<AdminPage> adminLink =
                 new BookmarkablePageLink<AdminPage>("adminLink", AdminPage.class,
-                new PageParameters("uid=" + person.getUid()));
+                new PageParameters().add("uid", person.getUid()));
         if (!isCurrentUserAdmin()) {
             adminLink.setVisible(false);
         }

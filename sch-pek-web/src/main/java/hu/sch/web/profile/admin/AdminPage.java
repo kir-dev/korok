@@ -28,35 +28,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.admin;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
-import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
-import hu.sch.web.wicket.components.customlinks.DeletePersonLink;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.user.ShowUser;
+import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.edit.PersonForm;
 import hu.sch.web.profile.edit.PersonForm.KeyValuePairInForm;
-import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.show.ShowPersonPage;
+import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
+import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
+import hu.sch.web.wicket.components.customlinks.DeletePersonLink;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -74,7 +68,7 @@ public class AdminPage extends ProfilePage {
         if (!isCurrentUserAdmin()) {
             error();
         }
-        String uid = params.getString("uid");
+        String uid = params.get("uid").toString();
         if (uid == null) {
             error();
         }
@@ -93,7 +87,7 @@ public class AdminPage extends ProfilePage {
         add(new PersonForm("personForm", person) {
 
             @Override
-            public void onInit() {
+            protected void onInit() {
                 super.onInit();
                 createSvieFields();
 
@@ -165,7 +159,7 @@ public class AdminPage extends ProfilePage {
             protected void onSubmit() {
                 super.onSubmit();
                 info("Isten vagy! :)");
-                setResponsePage(ShowPersonPage.class, new PageParameters("uid=" + person.getUid()));
+                setResponsePage(ShowPersonPage.class, new PageParameters().add("uid", person.getUid()));
             }
         });
     }

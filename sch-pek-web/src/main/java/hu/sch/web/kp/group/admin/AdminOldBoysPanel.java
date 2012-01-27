@@ -30,25 +30,25 @@
  */
 package hu.sch.web.kp.group.admin;
 
-import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.domain.Membership;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.wicket.components.SelectableMembership;
 import hu.sch.web.wicket.components.tables.DateIntervalPropertyColumn;
+import hu.sch.web.wicket.components.tables.MembershipTable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
- * Ezt a panelt látja a user akkor, ha jogosult arra, hogy aktiválhassa az öregtagokat.
- * A körítésen (lásd markup) kívül lehet rendezgetni a táblázatot.
+ * Ezt a panelt látja a user akkor, ha jogosult arra, hogy aktiválhassa az
+ * öregtagokat. A körítésen (lásd markup) kívül lehet rendezgetni a táblázatot.
  *
  * @author aldaris
  * @author messo
@@ -86,7 +86,7 @@ public final class AdminOldBoysPanel extends Panel {
                     getSession().error("Hiba történt a feldolgozás közben");
                     log.warn("Hiba történt az öregtag visszaállításakor", ex);
                 }
-                setResponsePage(ShowGroup.class, new PageParameters("id=" + inactiveMembers.get(0).getGroup().getId()));
+                setResponsePage(ShowGroup.class, new PageParameters().add("id", inactiveMembers.get(0).getGroup().getId()));
             }
         });
 
@@ -98,7 +98,7 @@ public final class AdminOldBoysPanel extends Panel {
                         new Model<String>("Tagság ideje"), "membershipStartEnd", "membership.start", "membership.end"));
             }
         }.getDataTable());
-        
+
         if (inactiveMembers.isEmpty()) {
             setVisible(false);
         }

@@ -31,13 +31,12 @@
 package hu.sch.web.kp.valuation.request.point;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.Valuation;
-import hu.sch.domain.User;
 import hu.sch.domain.PointRequest;
+import hu.sch.domain.User;
+import hu.sch.domain.Valuation;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
-import hu.sch.services.exceptions.valuation.NothingChangedException;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.TinyMCEContainer;
@@ -45,7 +44,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -55,6 +53,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
@@ -89,10 +88,10 @@ public class PointRequestEditor extends Panel {
                     // pontok tárolása
                     v = valuationManager.updatePointRequests(v, requestList);
                     getSession().info(getLocalizer().getString("info.PontIgenylesMentve", this));
-                    setResponsePage(ValuationDetails.class, new PageParameters("id=" + v.getId()));
+                    setResponsePage(ValuationDetails.class, new PageParameters().add("id", v.getId()));
                 } catch (AlreadyModifiedException ex) {
                     getSession().error("Valaki már módosított az értékelésen, így lehet, hogy a pontokon is!");
-                    setResponsePage(ValuationDetails.class, new PageParameters("id=" + valuation.getId()));
+                    setResponsePage(ValuationDetails.class, new PageParameters().add("id", valuation.getId()));
                 }
             }
         };

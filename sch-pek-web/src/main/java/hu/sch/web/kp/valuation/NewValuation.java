@@ -31,15 +31,15 @@
 package hu.sch.web.kp.valuation;
 
 import hu.sch.domain.Group;
-import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.TinyMCEContainer;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
@@ -55,16 +55,22 @@ public class NewValuation extends KorokPage {
 
     public NewValuation(PageParameters params) {
         final Group group;
-        final Long groupId = params.getAsLong("id");
+        Long groupId = null;
+        try {
+            groupId = params.get("id").toLong();
+        } catch (StringValueConversionException ex) {
+        }
+
         if (groupId == null || (group = userManager.findGroupById(groupId)) == null) {
             getSession().error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        if( !isUserGroupLeader(group) ) {
+
+        if (!isUserGroupLeader(group)) {
             // csak körvezető adhat le új értékelést
             getSession().error(getLocalizer().getString("err.NincsJog", null));
             throw new RestartResponseException(getApplication().getHomePage());
-        }       
+        }
         if (!valuationManager.isErtekelesLeadhato(group)) {
             getSession().info(getLocalizer().getString("err.UjErtekelesNemAdhatoLe", this));
             setResponsePage(Valuations.class);

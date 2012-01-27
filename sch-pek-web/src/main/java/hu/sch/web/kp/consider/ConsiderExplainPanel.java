@@ -34,12 +34,8 @@ import hu.sch.domain.ConsideredValuation;
 import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
-import java.util.HashMap;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 

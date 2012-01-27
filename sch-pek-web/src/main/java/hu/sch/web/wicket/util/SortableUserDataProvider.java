@@ -28,16 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.util;
 
 import hu.sch.domain.User;
 import java.text.Collator;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
@@ -54,7 +50,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
 
     public SortableUserDataProvider(List<User> user) {
         users = user;
-        setSort("name", true);
+        setSort("name", SortOrder.ASCENDING);
     }
 
     @Override

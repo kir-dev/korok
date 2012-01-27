@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.admin;
 
 import hu.sch.domain.profile.Person;
@@ -36,7 +35,6 @@ import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.profile.admin.AdminPage;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -45,6 +43,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -66,7 +65,7 @@ public class CreateNewPerson extends KorokPage {
                 person.setStudentUserStatus("urn:mace:terena.org:schac:status:sch.hu:student_status:other");
                 person.setStatus("Active");
                 ldapManager.registerPerson(person, null);
-                setResponsePage(AdminPage.class, new PageParameters("uid=" + person.getUid()));
+                setResponsePage(AdminPage.class, new PageParameters().set("uid", person.getUid()));
             }
         };
         final WebMarkupContainer wmc = new WebMarkupContainer("wmc");
@@ -85,7 +84,7 @@ public class CreateNewPerson extends KorokPage {
                     }
                 }
                 if (target != null) {
-                    target.addComponent(wmc);
+                    target.add(wmc);
                 }
             }
         };

@@ -31,17 +31,17 @@
 package hu.sch.web.kp.admin;
 
 import hu.sch.domain.EntrantType;
-import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.Semester;
+import hu.sch.domain.ValuationPeriod;
 import hu.sch.services.ImageManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.PhoenixApplication;
-import hu.sch.web.wicket.components.customlinks.CsvReportLink;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.svie.SvieGroupMgmt;
 import hu.sch.web.kp.svie.SvieUserMgmt;
-import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.customlinks.CsvExportForKfbLink;
+import hu.sch.web.wicket.components.customlinks.CsvReportLink;
 import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -49,13 +49,7 @@ import java.util.Date;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
@@ -63,7 +57,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.validator.RangeValidator;
 
@@ -251,13 +245,7 @@ public class EditSettings extends KorokPage {
 
                 IResourceStream resourceStream = new ByteArrayResourceStream(
                         content.getBytes("UTF-8"), "text/csv");
-                getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
-
-                    @Override
-                    public String getFileName() {
-                        return fileName;
-                    }
-                });
+                getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream, fileName));
             } catch (Exception ex) {
                 getSession().error(getLocalizer().getString("err.export", this));
                 logger.error("Error while generating CSV export about "
@@ -290,7 +278,7 @@ public class EditSettings extends KorokPage {
             add(new BookmarkablePageLink<CreateNewPerson>("createPerson", CreateNewPerson.class));
             add(new CsvExportForKfbLink("csvExport"));
 
-            Form<Void> form = new Form<Void>("kirdevForm", new CompoundPropertyModel<Void>(this)) {
+            Form<Void> form = new Form<Void>("kirdevForm", new CompoundPropertyModel(this)) {
 
                 @Override
                 protected void onSubmit() {

@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.User;
@@ -41,8 +40,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.util.resource.IResourceStream;
 
 /**
@@ -65,13 +63,7 @@ public final class CsvReportLink extends Link<Void> {
             IResourceStream resourceStream = new ByteArrayResourceStream(
                     ((ByteArrayOutputStream) generateContent()).toByteArray(),
                     "text/csv");
-            getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(resourceStream) {
-
-                @Override
-                public String getFileName() {
-                    return ("export.csv");
-                }
-            });
+            getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream, "export.csv"));
         } catch (Exception ex) {
             getSession().error("Hiba történt a CSV export generálása közben!");
             logger.error("Error while generating CSV export about delegates", ex);

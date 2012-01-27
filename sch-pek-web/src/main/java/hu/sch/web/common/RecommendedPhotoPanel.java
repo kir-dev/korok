@@ -16,8 +16,8 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 
 /**
  *
- * @author  messo
- * @since   2.4
+ * @author messo
+ * @since 2.4
  */
 class RecommendedPhotoPanel extends Panel {
 
@@ -52,6 +52,10 @@ class RecommendedPhotoPanel extends Panel {
         form.add(new AjaxButton("accept") {
 
             @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+            }
+
+            @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 // elfogadtuk
                 if (userManager.acceptRecommendedPhoto(userUid)) {
@@ -59,17 +63,21 @@ class RecommendedPhotoPanel extends Panel {
                 } else {
                     container.replace(new Fragment("fragment", "failed", null, null));
                 }
-                target.addComponent(container);
+                target.add(container);
             }
         });
 
         form.add(new AjaxButton("decline") {
 
             @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+            }
+
+            @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 userManager.declineRecommendedPhoto(user);
                 container.replace(new Fragment("fragment", "declined", null, null));
-                target.addComponent(container);
+                target.add(container);
             }
         });
     }

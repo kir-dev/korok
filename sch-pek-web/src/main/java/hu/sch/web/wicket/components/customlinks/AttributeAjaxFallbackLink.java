@@ -28,15 +28,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.profile.Person;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 
 /**
  *
@@ -58,19 +57,10 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
         this.privateAttr = privateAttr;
         isPrivateAttr = person.isPrivateAttribute(privateAttr);
 
-        img = new Image(imgId);
+        img = new Image(imgId, getImageResourceReference());
         img.setOutputMarkupId(true);
-        setImgModel();
 
         this.add(img);
-    }
-
-    public void setImgModel() {
-        if (isPrivateAttr) {
-            img.setDefaultModel(new Model(new ResourceReference(AttributeAjaxFallbackLink.class, "resources/private.gif")));
-        } else {
-            img.setDefaultModel(new Model(new ResourceReference(AttributeAjaxFallbackLink.class, "resources/public.gif")));
-        }
     }
 
     @Override
@@ -78,8 +68,16 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
         person.inversePrivateAttribute(privateAttr);
         isPrivateAttr = !isPrivateAttr;
 
-        setImgModel();
-        target.addComponent(img);
+        img.setImageResourceReference(getImageResourceReference());
+        target.add(img);
+    }
+
+    private ResourceReference getImageResourceReference() {
+        if (isPrivateAttr) {
+            return new PackageResourceReference(AttributeAjaxFallbackLink.class, "resources/private.gif");
+        } else {
+            return new PackageResourceReference(AttributeAjaxFallbackLink.class, "resources/private.gif");
+        }
     }
 
     public static void setPerson(Person person2) {

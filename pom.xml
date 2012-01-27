@@ -417,6 +417,11 @@
             <layout>default</layout>
             <url>http://stewie.sch.bme.hu/nexus/content/groups/public</url>
         </repository>
+        <repository>
+            <id>wicket-tree</id>
+            <name>Wicket-tree Repository</name>
+            <url>http://wicket-tree.googlecode.com/svn/repo</url>
+        </repository>        
     </repositories>
 
     <modules>

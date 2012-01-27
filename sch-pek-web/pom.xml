@@ -67,7 +67,7 @@
         <!-- Wicket függőségek -->
         <dependency>
             <groupId>org.apache.wicket</groupId>
-            <artifactId>wicket</artifactId>
+            <artifactId>wicket-core</artifactId>
             <version>${wicket.version}</version>
         </dependency>
         <dependency>
@@ -87,18 +87,18 @@
         </dependency>
         <dependency>
             <groupId>org.wicketstuff</groupId>
-            <artifactId>javaee-inject</artifactId>
+            <artifactId>wicketstuff-javaee-inject</artifactId>
             <version>${wicketstuff.version}</version>
         </dependency>
         <dependency>
             <groupId>wicket-tree</groupId>
             <artifactId>wicket-tree</artifactId>
-            <version>0.4.2</version>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
         <!-- TinyMCE függőségek -->
         <dependency>
             <groupId>org.wicketstuff</groupId>
-            <artifactId>tinymce</artifactId>
+            <artifactId>wicketstuff-tinymce</artifactId>
             <version>${wicketstuff.version}</version>
         </dependency>
         <dependency>
@@ -134,7 +134,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <wicket.version>1.4.19</wicket.version>
-        <wicketstuff.version>1.4.19</wicketstuff.version>
+        <wicket.version>1.5.4</wicket.version>
+        <wicketstuff.version>1.5.4</wicketstuff.version>
     </properties>
 </project>

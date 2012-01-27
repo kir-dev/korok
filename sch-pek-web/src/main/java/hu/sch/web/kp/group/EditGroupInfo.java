@@ -28,32 +28,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.web.kp.KorokPage;
-import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
-import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.domain.util.PatternHolder;
+import hu.sch.web.kp.KorokPage;
+import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
+import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import java.util.Calendar;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.PatternValidator;
-import org.apache.wicket.validation.validator.RangeValidator;
-import org.apache.wicket.validation.validator.StringValidator;
-import org.apache.wicket.validation.validator.UrlValidator;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.validation.validator.*;
 
 /**
  *
@@ -65,9 +55,8 @@ public class EditGroupInfo extends KorokPage {
     private Group group;
 
     public EditGroupInfo(PageParameters parameters) {
-        Object p = parameters.get("id");
         try {
-            id = Long.parseLong(p.toString());
+            id = parameters.get("id").toLong();
         } catch (NumberFormatException e) {
             getSession().error("Érvénytelen paraméter");
             throw new RestartResponseException(GroupHierarchy.class);
@@ -78,7 +67,7 @@ public class EditGroupInfo extends KorokPage {
         User user = userManager.findUserWithMembershipsById(getSession().getUserId());
         if (user == null || !isUserGroupLeader(group)) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
-            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + id.toString()));
+            throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", id.toString()));
         }
         IModel<Group> model = new CompoundPropertyModel<Group>(group);
         Form<Group> editInfoForm = new Form<Group>("editInfoForm", model) {
@@ -92,8 +81,7 @@ public class EditGroupInfo extends KorokPage {
                 } catch (Exception ex) {
                     getSession().error(getLocalizer().getString("err.AdatlapFailed", this));
                 }
-                setResponsePage(ShowGroup.class, new PageParameters("id=" + id.toString()));
-                return;
+                setResponsePage(ShowGroup.class, new PageParameters().add("id", id.toString()));
             }
         };
 

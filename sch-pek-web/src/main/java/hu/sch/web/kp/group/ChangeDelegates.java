@@ -28,20 +28,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import hu.sch.web.wicket.components.EditDelegatesForm;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.wicket.components.EditDelegatesForm;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
@@ -50,12 +48,10 @@ import org.apache.wicket.util.string.StringValueConversionException;
  */
 public final class ChangeDelegates extends KorokPage {
 
-    private static Logger log = Logger.getLogger(ChangeDelegates.class);
-
     public ChangeDelegates(final PageParameters params) {
         Long groupId;
         try {
-            groupId = Long.valueOf(params.getLong("id"));
+            groupId = params.get("id").toLong();
         } catch (StringValueConversionException svce) {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
@@ -63,7 +59,7 @@ public final class ChangeDelegates extends KorokPage {
         final Group group = userManager.findGroupById(groupId);
         if (!isUserGroupLeader(group)) {
             getSession().error("Nincsen jogosultságod a művelet végrehajtásához!");
-            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + group.getId()));
+            throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", group.getId()));
         }
 
         setHeaderLabelText("Küldöttek beállítása");
@@ -104,8 +100,7 @@ public final class ChangeDelegates extends KorokPage {
                     userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
                 }
                 getSession().info("A változások sikeresen mentésre kerültek");
-                setResponsePage(ShowGroup.class, new PageParameters("id=" + group.getId()));
-                return;
+                setResponsePage(ShowGroup.class, new PageParameters().add("id", group.getId()));
             }
         });
     }

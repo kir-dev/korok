@@ -28,13 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.tables;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.basic.Label;
@@ -44,8 +43,8 @@ import org.apache.wicket.model.PropertyModel;
 
 /**
  *
- * @author  messo
- * @since   2.3.1
+ * @author messo
+ * @since 2.3.1
  */
 public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
 
@@ -55,14 +54,12 @@ public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
     /**
      * Creates a date property column that is also sortable
      *
-     * @param displayModel
-     *            display model
-     * @param sortProperty
-     *            sort property
-     * @param startPropertyExpression
-     *            wicket property expression used by PropertyModel
-     * @param endPropertyExpression
-     *            wicket property expression used by PropertyModel
+     * @param displayModel            display model
+     * @param sortProperty            sort property
+     * @param startPropertyExpression wicket property expression used by
+     * PropertyModel
+     * @param endPropertyExpression   wicket property expression used by
+     * PropertyModel
      */
     public DateIntervalPropertyColumn(IModel<String> displayModel, String sortProperty,
             String startPropertyExpression, String endPropertyExpression) {
@@ -73,10 +70,8 @@ public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
     /**
      * Creates a non sortable date property column
      *
-     * @param displayModel
-     *            display model
-     * @param propertyExpression
-     *            wicket property expression
+     * @param displayModel       display model
+     * @param propertyExpression wicket property expression
      * @see PropertyModel
      */
     public DateIntervalPropertyColumn(IModel<String> displayModel, String propertyExpression, String endPropertyExpression) {
@@ -85,8 +80,8 @@ public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
     }
 
     /**
-     * Implementation of populateItem which adds a label to the cell whose model is the provided
-     * property expression evaluated against rowModelObject
+     * Implementation of populateItem which adds a label to the cell whose model
+     * is the provided property expression evaluated against rowModelObject
      *
      * @see ICellPopulator#populateItem(Item, String, IModel)
      */
@@ -102,6 +97,6 @@ public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
         }
 
         item.add(new Label(componentId, sb.toString()));
-        item.add(new SimpleAttributeModifier("style", "width: 180px"));
+        item.add(AttributeModifier.replace("style", "width: 180px"));
     }
 }

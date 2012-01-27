@@ -30,27 +30,24 @@
  */
 package hu.sch.web.kp.user;
 
-import hu.sch.domain.Membership;
+import hu.sch.domain.*;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
-import hu.sch.web.wicket.components.tables.UsersMembershipTable;
-import hu.sch.domain.Group;
-import hu.sch.domain.Post;
-import hu.sch.domain.PostType;
-import hu.sch.domain.User;
-import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.profile.show.ShowPersonPage;
+import hu.sch.web.wicket.components.tables.UsersMembershipTable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  *
@@ -69,12 +66,12 @@ public class ShowUser extends KorokPage {
 
     public ShowUser(PageParameters parameters) {
         try {
-            id = parameters.getLong("id");
+            id = parameters.get("id").toLong();
             // ha az adott ID a mi ID-nk, akkor ez a mi profilunk.
             if (id.equals(getSession().getUserId())) {
                 ownProfile = true;
             }
-        } catch (Throwable t) {
+        } catch (StringValueConversionException ex) {
             logger.warn("Could not interpret pageparameter: " + parameters);
         }
         initComponents();
@@ -106,11 +103,11 @@ public class ShowUser extends KorokPage {
             add(new BookmarkablePageLink<UserHistory>("detailView", UserHistory.class));
         } else {
             add(new BookmarkablePageLink<UserHistory>("detailView", UserHistory.class,
-                    new PageParameters("id=" + user.getId().toString())));
+                    new PageParameters().add("id", user.getId().toString())));
         }
 
         add(new BookmarkablePageLink("profilelink", ShowPersonPage.class,
-                new PageParameters("virid=" + id.toString())));
+                new PageParameters().add("virid", id.toString())));
         user.sortMemberships();
 
         add(new UsersMembershipTable("csoptagsag", user.getMemberships(), ownProfile, 20) {
@@ -151,7 +148,7 @@ public class ShowUser extends KorokPage {
                 try {
                     userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null, isUserGroupLeader(addToCsoportSelected));
                     getSession().info("A felhasználó a <b>" + addToCsoportSelected + "</b> körbe felvéve");
-                    setResponsePage(ShowUser.class, new PageParameters("id=" + user.getId()));
+                    setResponsePage(ShowUser.class, new PageParameters().add("id", user.getId()));
                 } catch (MembershipAlreadyExistsException ex) {
                     getSession().error("A felhasználó már tagja a körnek!");
                 }

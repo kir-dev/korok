@@ -30,29 +30,29 @@
  */
 package hu.sch.web.kp.group.admin;
 
-import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.domain.Membership;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.web.wicket.components.customlinks.ChangePostLink;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.SelectableMembership;
+import hu.sch.web.wicket.components.customlinks.ChangePostLink;
+import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
- * Ezt a panelt látja a user akkor, ha jogosult arra, hogy valakit öregtaggá avasson, vagy
- * töröljön valakit a listáról.
+ * Ezt a panelt látja a user akkor, ha jogosult arra, hogy valakit öregtaggá
+ * avasson, vagy töröljön valakit a listáról.
  *
  * @author aldaris
  * @author messo
@@ -113,7 +113,7 @@ public final class AdminMembershipsPanel extends Panel {
                     getSession().error("Hiba történt a feldolgozás közben");
                     log.warn("Hiba történt az öregtaggá avatás közben", ex);
                 }
-                setResponsePage(ShowGroup.class, new PageParameters("id=" + activeMembers.get(0).getGroup().getId()));
+                setResponsePage(ShowGroup.class, new PageParameters().add("id", activeMembers.get(0).getGroup().getId()));
             }
         });
 
@@ -141,7 +141,7 @@ public final class AdminMembershipsPanel extends Panel {
                     getSession().error("Hiba történt a tag törlése közben");
                     log.warn("Hiba történt a tag törlése közben", ex);
                 }
-                setResponsePage(ShowGroup.class, new PageParameters("id=" + activeMembers.get(0).getGroup().getId()));
+                setResponsePage(ShowGroup.class, new PageParameters().add("id", activeMembers.get(0).getGroup().getId()));
             }
         });
         if (activeMembers.isEmpty()) {
