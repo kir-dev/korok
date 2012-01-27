@@ -44,6 +44,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -79,8 +80,7 @@ public class ShowPersonPage extends ProfilePage {
         if ((uid == null && virid == null) || (uid != null && virid != null)) {
             // ha se uid se virid, vagy mindkettő meg van adva, akkor nem játszunk
             getSession().error("A felhasználó nem található!");
-            setResponsePage(getApplication().getHomePage());
-            return;
+            throw new RestartResponseException(getApplication().getHomePage());
         }
 
         // vagy uid alapján vagy virid alapján keresünk usert
@@ -93,7 +93,7 @@ public class ShowPersonPage extends ProfilePage {
             bindPerson();
         } catch (PersonNotFoundException e) {
             getSession().error("A felhasználó nem található!");
-            setResponsePage(getApplication().getHomePage());
+            throw new RestartResponseException(getApplication().getHomePage());
         }
     }
 
