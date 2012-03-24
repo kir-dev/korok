@@ -4,7 +4,7 @@
     <groupId>hu.sch</groupId>
     <artifactId>sch-pek</artifactId>
     <packaging>pom</packaging>
-    <version>2.4.6</version>
+    <version>2.4.7</version>
     <name>SCH PéK Application</name>
     <url>http://stewie.sch.bme.hu/projects/korok</url>
     <inceptionYear>2008</inceptionYear>
@@ -305,7 +305,7 @@
             <dependency>
                 <groupId>org.glassfish.extras</groupId>
                 <artifactId>glassfish-embedded-all</artifactId>
-                <version>3.1-STABLE</version>
+                <version>3.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
