@@ -30,13 +30,14 @@
  */
 package hu.sch.web.kp.group.admin;
 
-import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.domain.Membership;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.web.wicket.components.customlinks.ChangePostLink;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.SelectableMembership;
+import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
+import hu.sch.web.wicket.components.customlinks.ChangePostLink;
+import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +45,9 @@ import javax.ejb.EJB;
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 
 /**
  * Ezt a panelt látja a user akkor, ha jogosult arra, hogy valakit öregtaggá avasson, vagy
@@ -81,8 +80,14 @@ public final class AdminMembershipsPanel extends Panel {
 
             @Override
             public void onPopulateColumns(List<IColumn<SelectableMembership>> columns) {
-                columns.add(new PropertyColumn<SelectableMembership>(new Model<String>("SVIE tag?"),
-                        MembershipTable.SORT_BY_SVIE, "membership.user.svieMemberText"));
+                columns.add(new PanelColumn<SelectableMembership>("SVIE tag?",
+                        MembershipTable.SORT_BY_SVIE) {
+
+                    @Override
+                    protected Panel getPanel(String componentId, SelectableMembership obj) {
+                        return new SvieMembershipDetailsIcon(componentId, obj.getMembership());
+                    }
+                });
 
                 columns.add(new PanelColumn<SelectableMembership>("Jogok") {
 

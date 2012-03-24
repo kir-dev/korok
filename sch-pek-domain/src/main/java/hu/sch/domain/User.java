@@ -32,26 +32,8 @@ package hu.sch.domain;
 
 import java.io.Serializable;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import java.util.*;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -92,11 +74,11 @@ public class User implements Serializable, Comparable<User> {
     public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
     /*
     usr_id                 | integer                | not null default nextval('users_usr_id_seq'::regclass)
-    usr_email              | character varying(64)  | 
-    usr_neptun             | character(6)           | 
+    usr_email              | character varying(64)  |
+    usr_neptun             | character(6)           |
     usr_firstname          | text                   | not null
     usr_lastname           | text                   | not null
-    usr_nickname           | text                   | 
+    usr_nickname           | text                   |
     usr_svie_state         | character varying(255) | not null default 'NEMTAG'::character varying
     usr_svie_member_type   | character varying(255) | not null default 'NEMTAG'::character varying
     usr_svie_primary_group | integer                |
@@ -227,9 +209,38 @@ public class User implements Serializable, Comparable<User> {
         return svieStatus;
     }
 
-    @Transient
-    public String getSvieMemberText() {
-        return svieStatus.equals(SvieStatus.ELFOGADVA) ? "igen" : "nem";
+    /**
+     * Összeállítja egy felhasználóhoz a SVIE tagság állapotát stringként. A
+     * compareToMs paraméter lehet null
+     *
+     * @param compareToMs ha nem null, akkor ehhez a tagsághoz képest adja
+     * vissza a tagság státuszát (kiírja, hogy ha más az elsődleges köre)
+     * @return
+     */
+    public String getSvieMemberText(final Membership compareToMs) {
+        switch (svieStatus) {
+            case ELFOGADASALATT:
+                return SvieStatus.ELFOGADASALATT.toString();
+            case FELDOLGOZASALATT:
+                return SvieStatus.FELDOLGOZASALATT.toString();
+            case ELFOGADVA:
+                switch (svieMembershipType) {
+                    case PARTOLOTAG:
+                        return SvieMembershipType.PARTOLOTAG.toString();
+                    default:
+                        if (compareToMs == null) {
+                            return SvieMembershipType.RENDESTAG.toString();
+                        } else {
+                            if (sviePrimaryMembership.getGroupId().equals(compareToMs.getGroupId())) {
+                                return SvieMembershipType.RENDESTAG.toString();
+                            } else {
+                                return "Más elsődleges kör: " + getSviePrimaryMembershipText();
+                            }
+                        }
+                }
+            default:
+                return SvieStatus.NEMTAG.toString();
+        }
     }
 
     public void setSvieStatus(SvieStatus svieStatus) {
@@ -328,14 +339,11 @@ public class User implements Serializable, Comparable<User> {
      */
     @Transient
     public String getSviePrimaryMembershipText() {
-        String name = null;
         if (sviePrimaryMembership != null) {
-            name = sviePrimaryMembership.getGroup().getName();
-        } else {
-            name = "Nincs megadva";
+            return sviePrimaryMembership.getGroup().getName();
         }
 
-        return name;
+        return "";
     }
 
     @Override
@@ -352,8 +360,8 @@ public class User implements Serializable, Comparable<User> {
         return huCollator.compare(getName(), o.getName());
     }
 
-    public int compareToBySvieMemberText(User o) {
-        return huCollator.compare(getSvieMemberText(), o.getSvieMemberText());
+    public int compareToBySvieMemberText(final User u, final Membership compareToMs) {
+        return huCollator.compare(getSvieMemberText(compareToMs), u.getSvieMemberText(compareToMs));
     }
 
     @Override

@@ -361,3 +361,7 @@ div.messageContent {
     padding: 7px;
     background-color: #ffffff;
 }
+
+img.svieStateIcon {
+    width: 24px;
+}

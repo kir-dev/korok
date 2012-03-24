@@ -28,22 +28,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.tables;
 
-import hu.sch.web.wicket.components.CheckBoxHelper;
 import hu.sch.domain.Membership;
 import hu.sch.domain.interfaces.MembershipTableEntry;
+import hu.sch.web.wicket.components.CheckBoxHelper;
 import hu.sch.web.wicket.components.CheckBoxHolder;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import java.io.Serializable;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
@@ -131,7 +125,7 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
      * @param id
      * @param items
      * @param c
-     * @see MembershipTable#MembershipTable(java.lang.String, java.util.List, int, java.lang.Class) 
+     * @see MembershipTable#MembershipTable(java.lang.String, java.util.List, int, java.lang.Class)
      */
     public MembershipTable(String id, List<T> items, Class<T> c) {
         this(id, items, 50, c);
@@ -225,7 +219,8 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
 
                     @Override
                     public int compare(T t0, T t1) {
-                        return r * t0.getMembership().getUser().compareToBySvieMemberText(t1.getMembership().getUser());
+                        return r * t0.getMembership().getUser().compareToBySvieMemberText(t1.getMembership().getUser(),
+                                t0.getMembership());
                     }
                 });
             } else if (prop.equals(SORT_BY_MEMBERSHIP_DURATION)) {
