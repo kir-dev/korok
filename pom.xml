@@ -90,8 +90,8 @@
     </issueManagement>
 
     <ciManagement>
-        <system>Hudson</system>
-        <url>https://stewie.sch.bme.hu/hudson</url>
+        <system>Jenkins</system>
+        <url>TBD</url>
     </ciManagement>
 
     <distributionManagement>
