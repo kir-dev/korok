@@ -2,6 +2,7 @@ package hu.sch.web.wicket.components;
 
 import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.User;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -23,9 +24,10 @@ public class SvieMembershipDetailsIcon extends Panel {
         super.onInitialize();
 
         final Membership ms = (Membership) getDefaultModelObject();
+        User u = ms.getUser();
 
         String icon;
-        switch (ms.getUser().getSvieStatus()) {
+        switch (u.getSvieStatus()) {
             case ELFOGADVA:
                 SvieMembershipType msType = ms.getUser().getSvieMembershipType();
                 switch (msType) {
@@ -33,7 +35,10 @@ public class SvieMembershipDetailsIcon extends Panel {
                         icon = "heart";
                         break;
                     default:
-                        if (ms.getUser().getSviePrimaryMembership().equals(ms)) {
+                        Membership sviePrimaryMembership = u.getSviePrimaryMembership();
+                        if (sviePrimaryMembership != null
+                                && sviePrimaryMembership.equals(ms)) {
+
                             icon = "checkmark";
                         } else {
                             icon = "info";

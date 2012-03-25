@@ -144,6 +144,7 @@ public class User implements Serializable, Comparable<User> {
 
     /**
      * A felhasználó egyedi azonosítóját visszaadó függvény
+     *
      * @return A user virId-je
      */
     @Id
@@ -231,10 +232,17 @@ public class User implements Serializable, Comparable<User> {
                         if (compareToMs == null) {
                             return SvieMembershipType.RENDESTAG.toString();
                         } else {
-                            if (sviePrimaryMembership.getGroupId().equals(compareToMs.getGroupId())) {
+                            if (sviePrimaryMembership != null
+                                    && sviePrimaryMembership.getGroupId().equals(compareToMs.getGroupId())) {
+
                                 return SvieMembershipType.RENDESTAG.toString();
                             } else {
-                                return "Más elsődleges kör: " + getSviePrimaryMembershipText();
+                                String primGroupText = getSviePrimaryMembershipText();
+                                if (primGroupText.isEmpty()) {
+                                    return "Nincs elsődleges köre";
+                                } else {
+                                    return "Más elsődleges kör: " + primGroupText;
+                                }
                             }
                         }
                 }
@@ -335,7 +343,7 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Az elsődleges kör szöveges reprezentációja
      *
-     * @return  az elsődleges kör neve, ha van, különben egy üres string.
+     * @return az elsődleges kör neve, ha van, különben egy üres string.
      */
     @Transient
     public String getSviePrimaryMembershipText() {
