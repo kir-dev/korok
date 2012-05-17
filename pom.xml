@@ -4,7 +4,7 @@
     <groupId>hu.sch</groupId>
     <artifactId>sch-pek</artifactId>
     <packaging>pom</packaging>
-    <version>2.4.8</version>
+    <version>2.4.9</version>
     <name>SCH PéK Application</name>
     <url>http://stewie.sch.bme.hu/projects/korok</url>
     <inceptionYear>2008</inceptionYear>
@@ -37,35 +37,11 @@
     </developers>
     <contributors>
         <contributor>
-            <name>Andras Ivanyi</name>
-            <timezone>+1</timezone>
-        </contributor>
-        <contributor>
-            <name>Antal Kiss</name>
-            <timezone>+1</timezone>
-        </contributor>
-        <contributor>
-            <name>Arpad Boda</name>
-            <timezone>+1</timezone>
-        </contributor>
-        <contributor>
-            <name>Balazs Nemeth</name>
-            <timezone>+1</timezone>
-        </contributor>
-        <contributor>
             <name>Balazs Varga</name>
             <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Gabor Halasz</name>
-            <timezone>+1</timezone>
-        </contributor>
-        <contributor>
-            <name>Gabor Nyiri</name>
-            <timezone>+1</timezone>
-        </contributor>
-        <contributor>
-            <name>Tamas Sallai</name>
             <timezone>+1</timezone>
         </contributor>
     </contributors>
