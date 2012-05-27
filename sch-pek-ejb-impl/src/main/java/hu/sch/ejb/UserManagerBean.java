@@ -430,7 +430,12 @@ public class UserManagerBean implements UserManagerLocal {
                 + "AND ms.group.id = :groupId");
         q.setParameter("groupId", groupId);
         q.setParameter("userId", userId);
-        return (Membership) q.getSingleResult();
+
+        try {
+            return (Membership) q.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
     @Override
