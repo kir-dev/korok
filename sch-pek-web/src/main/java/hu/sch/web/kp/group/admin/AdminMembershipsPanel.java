@@ -80,7 +80,7 @@ public final class AdminMembershipsPanel extends Panel {
 
             @Override
             public void onPopulateColumns(List<IColumn<SelectableMembership>> columns) {
-                columns.add(new PanelColumn<SelectableMembership>("SVIE tag?",
+                columns.add(new PanelColumn<SelectableMembership>("SVIE",
                         MembershipTable.SORT_BY_SVIE) {
 
                     @Override
