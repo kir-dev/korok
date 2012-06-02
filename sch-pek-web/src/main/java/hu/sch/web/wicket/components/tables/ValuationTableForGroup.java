@@ -76,7 +76,12 @@ public class ValuationTableForGroup extends ValuationTable {
                 final Membership ms = userManager.getMembership(vd.getGroup().getId(),
                         vd.getUser().getId());
 
-                return new SvieMembershipDetailsIcon(componentId, ms);
+                if (ms != null) {
+                    return new SvieMembershipDetailsIcon(componentId, ms);
+                }
+
+                // törölt körtagságból eredő értékelés
+                return new SvieMembershipDetailsIcon(componentId, vd.getUser());
             }
         });
 

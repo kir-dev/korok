@@ -15,21 +15,34 @@ import org.apache.wicket.resource.ContextRelativeResource;
  */
 public class SvieMembershipDetailsIcon extends Panel {
 
-    public SvieMembershipDetailsIcon(String id, Membership ms) {
+    private User innerUser;
+
+    public SvieMembershipDetailsIcon(final String id, final Membership ms) {
         super(id, new CompoundPropertyModel<Membership>(ms));
+    }
+
+    public SvieMembershipDetailsIcon(final String id, final User u) {
+        super(id, new CompoundPropertyModel<Membership>(null));
+
+        innerUser = u;
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
 
-        final Membership ms = (Membership) getDefaultModelObject();
-        User u = ms.getUser();
+        Membership ms = null;
+        User u = innerUser;
+
+        if (getDefaultModelObject() != null) {
+            ms = (Membership) getDefaultModelObject();
+            u = ms.getUser();
+        }
 
         String icon;
         switch (u.getSvieStatus()) {
             case ELFOGADVA:
-                SvieMembershipType msType = ms.getUser().getSvieMembershipType();
+                SvieMembershipType msType = u.getSvieMembershipType();
                 switch (msType) {
                     case PARTOLOTAG:
                         icon = "heart";
@@ -57,7 +70,7 @@ public class SvieMembershipDetailsIcon extends Panel {
         final Image imgIcon = new Image("msAsImg", new ContextRelativeResource(
                 new StringBuilder("/images/icons/").append(icon).append("_32.png").toString()));
 
-        String altText = ms.getUser().getSvieMemberText(ms);
+        String altText = u.getSvieMemberText(ms);
 
         imgIcon.add(new SimpleAttributeModifier("alt", altText));
         imgIcon.add(new SimpleAttributeModifier("title", altText));
