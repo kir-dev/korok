@@ -29,10 +29,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package hu.sch.web.wicket.components.tables;
 
 import hu.sch.domain.ValuationData;
@@ -58,7 +54,7 @@ import org.apache.wicket.model.Model;
 public class ValuationTableForUser extends ValuationTable {
 
     public ValuationTableForUser(String id, List<ValuationData> items, int rowsPerPage) {
-        super(id, items, rowsPerPage);
+        super(id, items, rowsPerPage, false);
         provider.setSort(MySortableDataProvider.SORT_BY_SEMESTER, false);
     }
 

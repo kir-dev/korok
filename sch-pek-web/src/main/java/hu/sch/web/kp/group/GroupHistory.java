@@ -31,12 +31,12 @@
 package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.Valuation;
 import hu.sch.domain.Semester;
+import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationStatistic;
-import hu.sch.web.kp.valuation.ValuationDetailPanel;
-import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.kp.KorokPage;
+import hu.sch.web.kp.valuation.ValuationDetailPanel;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.PageParameters;
@@ -93,7 +93,8 @@ public class GroupHistory extends KorokPage {
             }
         }
 
-        ValuationDetailPanel valuationPanel = new ValuationDetailPanel("valuationInfo");
+        final boolean showSvieColumn = isCurrentUserJETI() || isUserGroupLeader(group);
+        ValuationDetailPanel valuationPanel = new ValuationDetailPanel("valuationInfo", showSvieColumn);
         if (selected != null) {
             setHeaderLabelText("A kör részletes pontozásai");
             ValuationStatistic stat = valuationManager.getStatisticForValuation(selected.getId());

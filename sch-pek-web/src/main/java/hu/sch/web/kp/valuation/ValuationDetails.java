@@ -31,29 +31,23 @@
 
 package hu.sch.web.kp.valuation;
 
-import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
-import hu.sch.web.kp.valuation.request.point.PointRequests;
-import hu.sch.domain.ConsideredValuation;
-import hu.sch.domain.Valuation;
-import hu.sch.domain.ValuationData;
-import hu.sch.domain.ValuationPeriod;
-import hu.sch.domain.ValuationStatistic;
-import hu.sch.domain.ValuationStatus;
-import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.web.kp.KorokPage;
+import hu.sch.domain.*;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.consider.ConsiderExplainPanel;
 import hu.sch.web.kp.consider.ConsiderPage;
 import hu.sch.web.kp.valuation.message.ValuationMessages;
+import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
+import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.web.wicket.components.TinyMCEContainer;
+import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.wicket.components.tables.ValuationTableForGroup;
 import java.util.HashMap;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -161,7 +155,7 @@ public class ValuationDetails extends KorokPage {
         add(new Label("stat.givenAB", new Model<Long>(stat.getGivenAB())));
 
         final List<ValuationData> igenylista = valuationManager.findRequestsForValuation(valuation.getId());
-        add(new ValuationTableForGroup("requests", igenylista).getDataTable());
+        add(new ValuationTableForGroup("requests", igenylista, true).getDataTable());
 
         addValuationText(valuation);
         addPrinciple(valuation);

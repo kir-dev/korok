@@ -53,7 +53,7 @@ public class ValuationDetailPanel extends Panel {
     private ValuationManagerLocal valuationManager;
     private final ValuationTable valuationTable;
 
-    public ValuationDetailPanel(String id) {
+    public ValuationDetailPanel(String id, boolean showSvieColumn) {
         super(id);
 
         setDefaultModel(new CompoundPropertyModel<Valuation>(null));
@@ -66,7 +66,7 @@ public class ValuationDetailPanel extends Panel {
         principle.setEscapeModelStrings(false);
         add(principle);
 
-        valuationTable = new ValuationTableForGroup("valuationTable", null);
+        valuationTable = new ValuationTableForGroup("valuationTable", null, showSvieColumn);
         add(valuationTable.getDataTable());
     }
 

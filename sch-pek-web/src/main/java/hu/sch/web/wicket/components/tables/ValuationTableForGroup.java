@@ -50,13 +50,17 @@ import org.apache.wicket.model.Model;
  */
 public class ValuationTableForGroup extends ValuationTable {
 
-    public ValuationTableForGroup(String id, List<ValuationData> items, int rowsPerPage) {
-        super(id, items, rowsPerPage);
+    public ValuationTableForGroup(String id, List<ValuationData> items, int rowsPerPage,
+            final boolean showSvieColumn) {
+
+        super(id, items, rowsPerPage, showSvieColumn);
         provider.setSort(MySortableDataProvider.SORT_BY_POINT, false);
     }
 
-    public ValuationTableForGroup(String id, List<ValuationData> items) {
-        this(id, items, 20);
+    public ValuationTableForGroup(String id, List<ValuationData> items, 
+            final boolean showSvieColumn) {
+
+        this(id, items, 20, showSvieColumn);
     }
 
     @Override
@@ -69,21 +73,23 @@ public class ValuationTableForGroup extends ValuationTable {
             }
         });
 
-        columns.add(new PanelColumn<ValuationData>("SVIE") {
+        if (isShowSvieColumn) {
+            columns.add(new PanelColumn<ValuationData>("SVIE") {
 
-            @Override
-            protected Panel getPanel(String componentId, ValuationData vd) {
-                final Membership ms = userManager.getMembership(vd.getGroup().getId(),
-                        vd.getUser().getId());
+                @Override
+                protected Panel getPanel(final String componentId, final ValuationData vd) {
+                    final Membership ms = userManager.getMembership(vd.getGroup().getId(),
+                            vd.getUser().getId());
 
-                if (ms != null) {
-                    return new SvieMembershipDetailsIcon(componentId, ms);
+                    if (ms != null) {
+                        return new SvieMembershipDetailsIcon(componentId, ms);
+                    }
+
+                    // törölt körtagságból eredő értékelés
+                    return new SvieMembershipDetailsIcon(componentId, vd.getUser());
                 }
-
-                // törölt körtagságból eredő értékelés
-                return new SvieMembershipDetailsIcon(componentId, vd.getUser());
-            }
-        });
+            });
+        }
 
         columns.add(new PropertyColumn<ValuationData>(new Model<String>("Pont"), MySortableDataProvider.SORT_BY_POINT, "pointRequest.point"));
         columns.add(new PropertyColumn<ValuationData>(new Model<String>("Belépő típusa"), MySortableDataProvider.SORT_BY_ENTRANT, "entrantRequest.entrantType"));

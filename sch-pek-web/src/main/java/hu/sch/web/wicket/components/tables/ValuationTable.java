@@ -55,6 +55,7 @@ public abstract class ValuationTable implements Serializable {
     MySortableDataProvider provider;
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
+    protected boolean isShowSvieColumn = false;
 
     protected ValuationTable() {
     }
@@ -67,13 +68,17 @@ public abstract class ValuationTable implements Serializable {
      * a táblázatot
      * @param items a lista, amit a táblázatban meg akarunk jeleníteni
      * @param rowsPerPage egy oldalon hány elem jelenjne meg?
+     * @param showSvieColumn megjelenjen-e a SVIE státusz oszlop
      */
-    public ValuationTable(String id, List<ValuationData> items, int rowsPerPage) {
+    public ValuationTable(final String id, final List<ValuationData> items,
+            final int rowsPerPage, final boolean showSvieColumn) {
+
         init();
 
         provider = new MySortableDataProvider(items);
+        this.isShowSvieColumn = showSvieColumn;
 
-        List<IColumn<ValuationData>> columns = new ArrayList<IColumn<ValuationData>>(5);
+        final List<IColumn<ValuationData>> columns = new ArrayList<IColumn<ValuationData>>(5);
         populateColumns(columns);
 
         table = new AjaxFallbackDefaultDataTable<ValuationData>(id, columns, provider, rowsPerPage);
