@@ -36,6 +36,7 @@ import hu.sch.services.SystemManagerLocal;
 import hu.sch.web.authz.AgentBasedAuthorization;
 import hu.sch.web.authz.DummyAuthorization;
 import hu.sch.web.authz.UserAuthorization;
+import hu.sch.web.error.Forbidden;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.PageExpiredError;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
@@ -162,6 +163,7 @@ public class PhoenixApplication extends WebApplication {
 
         //alkalmazás beállítások
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
+        getApplicationSettings().setAccessDeniedPage(Forbidden.class);
         getPageSettings().setAutomaticMultiWindowSupport(false);
 
         //Ha dev módban vagyunk, akkor hozzáteszünk egy új filtert, ami mutatja
