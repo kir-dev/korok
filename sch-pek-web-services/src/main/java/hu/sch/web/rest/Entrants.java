@@ -40,6 +40,20 @@ public class Entrants {
             @PathParam("neptun") final String neptun,
             @PathParam("semester") final String semesterId) {
 
+        doAudit();
+
         return Collections.emptyList();
+    }
+
+    private void doAudit() {
+        final StringBuilder auditMessage = new StringBuilder("AUDIT LOG for GET method. ");
+        auditMessage.append(" URL: ");
+        if (context != null && context.getRequestUri() != null) {
+            auditMessage.append(context.getRequestUri().toString());
+        } else {
+            logger.info("URIContext or RequestUri was null.");
+            auditMessage.append("UNKNOWN");
+        }
+        logger.info(auditMessage.toString());
     }
 }
