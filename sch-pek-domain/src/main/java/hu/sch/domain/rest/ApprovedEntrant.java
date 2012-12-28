@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author balo
  */
-@XmlRootElement(name = "entrant")
+@XmlRootElement(name = "entrants")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApprovedEntrant implements Serializable {
 
