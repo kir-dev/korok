@@ -57,6 +57,13 @@ public class Entrants {
                     "Semester must be 9 digit characters, ex.: 200820091; given=" + semesterId);
         }
 
+        if (!neptun.matches("[a-zA-Z0-9]{6}")) {
+            LOGGER.error("Webservice called with invalid neptun=" + neptun);
+
+            triggerErrorResponse(Response.Status.BAD_REQUEST,
+                    "Neptun must be match [a-zA-Z0-9]{6}, ex.: abc123; given=" + neptun);
+        }
+
         try {
             final Person person = ldapManager.getPersonByNeptun(neptun);
         } catch (PersonNotFoundException ex) {
