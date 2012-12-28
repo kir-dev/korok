@@ -30,19 +30,19 @@
  */
 package hu.sch.services;
 
-import hu.sch.domain.ApprovedEntrant;
-import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.Valuation;
-import hu.sch.domain.PointRequest;
-import hu.sch.domain.Semester;
-import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
+import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.GivenPoint;
+import hu.sch.domain.Group;
+import hu.sch.domain.PointRequest;
+import hu.sch.domain.Semester;
+import hu.sch.domain.User;
+import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationStatistic;
-import hu.sch.domain.User;
+import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;

@@ -30,7 +30,6 @@
  */
 package hu.sch.ejb;
 
-import hu.sch.domain.ApprovedEntrant;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.EntrantExportRecord;
 import hu.sch.domain.EntrantRequest;
@@ -47,6 +46,7 @@ import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
 import hu.sch.domain.profile.Person;
+import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.domain.util.MapUtils;
 import hu.sch.services.LdapManagerLocal;

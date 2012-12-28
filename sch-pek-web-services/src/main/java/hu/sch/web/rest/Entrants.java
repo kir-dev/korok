@@ -1,6 +1,6 @@
 package hu.sch.web.rest;
 
-import hu.sch.domain.ApprovedEntrant;
+import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.Semester;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
