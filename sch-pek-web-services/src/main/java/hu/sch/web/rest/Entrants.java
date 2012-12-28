@@ -2,12 +2,9 @@ package hu.sch.web.rest;
 
 import hu.sch.domain.ApprovedEntrant;
 import hu.sch.domain.Semester;
-import hu.sch.services.LdapManagerLocal;
-import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -33,11 +30,7 @@ public class Entrants {
 
     private static final Logger LOGGER = Logger.getLogger(Entrants.class);
     @EJB
-    private UserManagerLocal userManager;
-    @EJB
     private ValuationManagerLocal valuationManager;
-    @EJB
-    private LdapManagerLocal ldapManager;
     @Context
     private UriInfo context;
 
@@ -65,7 +58,10 @@ public class Entrants {
         }
 
         try {
-            final Person person = ldapManager.getPersonByNeptun(neptun);
+            final List<ApprovedEntrant> userEntrants =
+                    valuationManager.getApprovedEntrants(neptun, new Semester(semesterId));
+
+
         } catch (PersonNotFoundException ex) {
             final String logMsg =
                     new StringBuilder("Person not found with neptun code=").append(neptun).toString();

@@ -30,29 +30,30 @@
  */
 package hu.sch.ejb;
 
-import hu.sch.domain.GivenPoint;
-import hu.sch.domain.ValuationData;
-import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.EntrantType;
-import hu.sch.domain.Group;
+import hu.sch.domain.ApprovedEntrant;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.EntrantExportRecord;
+import hu.sch.domain.EntrantRequest;
+import hu.sch.domain.EntrantType;
+import hu.sch.domain.GivenPoint;
+import hu.sch.domain.Group;
+import hu.sch.domain.PointRequest;
+import hu.sch.domain.Semester;
+import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
+import hu.sch.domain.ValuationData;
+import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
-import hu.sch.domain.ValuationMessage;
-import hu.sch.domain.User;
-import hu.sch.domain.PointRequest;
-import hu.sch.domain.Semester;
 import hu.sch.domain.profile.Person;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.domain.util.MapUtils;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.MailManagerLocal;
-import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
@@ -60,6 +61,7 @@ import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -823,5 +825,18 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
 
         throw new IllegalArgumentException("Unable to find user with points");
+    }
+
+    @Override
+    public List<ApprovedEntrant> getApprovedEntrants(final String neptun,
+            final Semester semester) throws PersonNotFoundException {
+
+        final Person person = ldapManager.getPersonByNeptun(neptun);
+
+        if (person.getVirId() != null && person.getVirId() > 0L) {
+            //get accepted entrants for the given semester
+        }
+
+        return Collections.emptyList();
     }
 }

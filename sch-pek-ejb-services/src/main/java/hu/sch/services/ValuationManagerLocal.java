@@ -30,6 +30,7 @@
  */
 package hu.sch.services;
 
+import hu.sch.domain.ApprovedEntrant;
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.PointRequest;
@@ -43,6 +44,7 @@ import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.User;
 import hu.sch.domain.rest.PointInfo;
+import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
@@ -261,4 +263,15 @@ public interface ValuationManagerLocal {
      * @return A pontok listája
      */
     List<PointInfo> getPointInfoForUid(String uid, Semester semester);
+
+    /**
+     * Visszaadja a neptunnal azonosított felhasználó adott félévben kapott belépőit.
+     *
+     * @param neptun
+     * @param semester
+     * @return
+     * @throws PersonNotFoundException
+     */
+    List<ApprovedEntrant> getApprovedEntrants(final String neptun,
+            final Semester semester) throws PersonNotFoundException;
 }
