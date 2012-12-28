@@ -1,8 +1,10 @@
 package hu.sch.web.rest;
 
 import hu.sch.domain.Semester;
+import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.services.exceptions.PersonNotFoundException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +35,8 @@ public class Entrants {
     private UserManagerLocal userManager;
     @EJB
     private ValuationManagerLocal valuationManager;
+    @EJB
+    private LdapManagerLocal ldapManager;
     @Context
     private UriInfo context;
 
@@ -50,6 +54,16 @@ public class Entrants {
 
             triggerErrorResponse(Response.Status.BAD_REQUEST,
                     "Semester must be 9 digit characters, ex.: 200820091; given=" + semesterId);
+        }
+
+        try {
+            final Person person = ldapManager.getPersonByNeptun(neptun);
+        } catch (PersonNotFoundException ex) {
+            final String logMsg =
+                    new StringBuilder("Person not found with neptun code=").append(neptun).toString();
+
+            LOGGER.info(logMsg, ex);
+            triggerErrorResponse(Response.Status.NOT_FOUND, logMsg);
         }
 
         return Collections.emptyList();
