@@ -12,8 +12,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.apache.log4j.Logger;
 
@@ -42,7 +45,22 @@ public class Entrants {
 
         doAudit();
 
+        if (!semesterId.matches("[0-9]{9}")) {
+            LOGGER.error("Webservice called with invalid semesterid=" + semesterId);
+
+            triggerErrorResponse(Response.Status.BAD_REQUEST,
+                    "Semester must be 9 digit characters, ex.: 200820091; given=" + semesterId);
+        }
+
         return Collections.emptyList();
+    }
+
+    private void triggerErrorResponse(final Response.Status status, final String msg) {
+        final StringBuilder errorMsg = new StringBuilder("{'error': '").append(msg).append("'}");
+
+        final ResponseBuilder resp = Response.status(status).entity(errorMsg.toString());
+
+        throw new WebApplicationException(resp.build());
     }
 
     private void doAudit() {
