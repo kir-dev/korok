@@ -25,11 +25,11 @@ import org.apache.log4j.Logger;
 @ManagedBean
 public class Entrants {
 
-    private static Logger logger = Logger.getLogger(Kbme.class);
+    private static final Logger LOGGER = Logger.getLogger(Entrants.class);
     @EJB
-    UserManagerLocal userManager;
+    private UserManagerLocal userManager;
     @EJB
-    ValuationManagerLocal valuationManager;
+    private ValuationManagerLocal valuationManager;
     @Context
     private UriInfo context;
 
@@ -51,9 +51,9 @@ public class Entrants {
         if (context != null && context.getRequestUri() != null) {
             auditMessage.append(context.getRequestUri().toString());
         } else {
-            logger.info("URIContext or RequestUri was null.");
+            LOGGER.info("URIContext or RequestUri was null.");
             auditMessage.append("UNKNOWN");
         }
-        logger.info(auditMessage.toString());
+        LOGGER.info(auditMessage.toString());
     }
 }
