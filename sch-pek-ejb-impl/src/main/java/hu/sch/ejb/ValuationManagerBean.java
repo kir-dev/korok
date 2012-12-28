@@ -61,10 +61,10 @@ import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -83,6 +83,7 @@ import org.apache.log4j.Logger;
  *
  * @author hege
  * @author messo
+ * @author balo
  */
 @Stateless
 public class ValuationManagerBean implements ValuationManagerLocal {
@@ -833,10 +834,24 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
         final Person person = ldapManager.getPersonByNeptun(neptun);
 
-        if (person.getVirId() != null && person.getVirId() > 0L) {
-            //get accepted entrants for the given semester
+        final List<ApprovedEntrant> results = new LinkedList<ApprovedEntrant>();
+
+        if (person.getVirId() != null) {
+            final Query query =
+                    em.createQuery("SELECT new hu.sch.domain.rest.ApprovedEntrant("
+                    + "entrantReq.valuation.groupId, entrantReq.valuation.group.name, "
+                    + "entrantReq.entrantType) "
+                    + "FROM EntrantRequest entrantReq "
+                    + "WHERE entrantReq.userId = :virId AND "
+                    + "entrantReq.valuation.semester = :semester AND "
+                    + "entrantReq.valuation.entrantStatus = hu.sch.domain.ValuationStatus.ELFOGADVA AND "
+                    + "entrantReq.valuation.nextVersion = null");
+            query.setParameter("semester", semester);
+            query.setParameter("virId", person.getVirId());
+
+            results.addAll(query.getResultList());
         }
 
-        return Collections.emptyList();
+        return results;
     }
 }

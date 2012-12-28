@@ -1,10 +1,11 @@
 package hu.sch.web.rest;
 
-import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.Semester;
+import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -57,11 +58,9 @@ public class Entrants {
                     "Neptun must be match [a-zA-Z0-9]{6}, ex.: abc123; given=" + neptun);
         }
 
+        final List<ApprovedEntrant> entrants = new LinkedList<ApprovedEntrant>();
         try {
-            final List<ApprovedEntrant> userEntrants =
-                    valuationManager.getApprovedEntrants(neptun, new Semester(semesterId));
-
-
+            entrants.addAll(valuationManager.getApprovedEntrants(neptun, new Semester(semesterId)));
         } catch (PersonNotFoundException ex) {
             final String logMsg =
                     new StringBuilder("Person not found with neptun code=").append(neptun).toString();
@@ -70,7 +69,7 @@ public class Entrants {
             triggerErrorResponse(Response.Status.NOT_FOUND, logMsg);
         }
 
-        return Collections.emptyList();
+        return entrants;
     }
 
     private void triggerErrorResponse(final Response.Status status, final String msg) {
