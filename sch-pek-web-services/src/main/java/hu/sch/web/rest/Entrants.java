@@ -34,7 +34,7 @@ public class Entrants {
     private UriInfo context;
 
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/get/{semester}/{neptun}")
     public List<UserEntrant> getEntrants(
             @PathParam("neptun") final String neptun,
