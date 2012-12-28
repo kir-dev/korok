@@ -34,24 +34,20 @@
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-ejb-services</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-domain</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>6.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
