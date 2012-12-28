@@ -1,5 +1,6 @@
 package hu.sch.web.rest;
 
+import hu.sch.domain.ApprovedEntrant;
 import hu.sch.domain.Semester;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.UserManagerLocal;
@@ -43,7 +44,7 @@ public class Entrants {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/get/{semester}/{neptun}")
-    public List<UserEntrant> getEntrants(
+    public List<ApprovedEntrant> getEntrants(
             @PathParam("neptun") final String neptun,
             @PathParam("semester") final String semesterId) {
 
