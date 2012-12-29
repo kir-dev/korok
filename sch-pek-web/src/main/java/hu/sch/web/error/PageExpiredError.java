@@ -28,11 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.error;
 
-import hu.sch.web.wicket.util.MetaHeaderContributor;
 import hu.sch.web.kp.KorokPage;
+import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.request.cycle.RequestCycle;
 
 /**
  *
@@ -43,7 +43,11 @@ public final class PageExpiredError extends KorokPage {
     public PageExpiredError() {
         super();
         setHeaderLabelText("Hiba!");
-        add(MetaHeaderContributor.forMeta(getApplication().getHomePage()));
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        response.renderString("<meta http-equiv=\"refresh\" content=\"5;URL="
+                + RequestCycle.get().urlFor(getApplication().getHomePage(), null) + "\">");
     }
 }
-

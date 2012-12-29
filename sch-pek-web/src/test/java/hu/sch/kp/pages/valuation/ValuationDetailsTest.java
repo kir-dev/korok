@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.kp.pages.valuation;
 
 import hu.sch.domain.Valuation;
@@ -42,13 +41,13 @@ import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.test.WebTest;
 import java.util.List;
 import javax.naming.NamingException;
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Test;
 
 /**
  *
- * @author  messo
- * @since   2.3.1
+ * @author messo
+ * @since 2.3.1
  */
 public class ValuationDetailsTest extends WebTest {
 
@@ -67,7 +66,7 @@ public class ValuationDetailsTest extends WebTest {
             if (!list.isEmpty()) {
                 // válasszunk ki belőle az elsőt és nézzük meg, hogy lerenderelhető-e
                 Valuation val = list.get(0).getValuation();
-                tester.startPage(ValuationDetails.class, new PageParameters("id=" + val.getId()));
+                tester.startPage(ValuationDetails.class, new PageParameters().add("id", val.getId()));
                 tester.assertRenderedPage(ValuationDetails.class);
             }
 

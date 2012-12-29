@@ -28,15 +28,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.web.kp.search.SearchResultsPage;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -51,7 +50,7 @@ public class SearchLink extends Panel {
         super(id);
         Link<SearchResultsPage> searchLink =
                 new BookmarkablePageLink<SearchResultsPage>("searchLink",
-                SearchResultsPage.class, new PageParameters("type=" + type + ",key=" + key));
+                SearchResultsPage.class, new PageParameters().add("type", type).add("key", key));
         searchLink.add(new Label("searchLinkLabel", key));
         add(searchLink);
     }

@@ -28,25 +28,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.group;
 
-import hu.sch.services.exceptions.MembershipAlreadyExistsException;
-import hu.sch.web.wicket.components.tables.DateIntervalPropertyColumn;
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.User;
+import hu.sch.services.exceptions.MembershipAlreadyExistsException;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.group.admin.AdminMembershipsPanel;
 import hu.sch.web.kp.group.admin.AdminOldBoysPanel;
-import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.kp.user.ShowUser;
-import hu.sch.web.kp.KorokPage;
+import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.wicket.components.MembershipTablePanel;
+import hu.sch.web.wicket.components.tables.DateIntervalPropertyColumn;
 import hu.sch.web.wicket.components.tables.DatePropertyColumn;
 import hu.sch.web.wicket.components.tables.MembershipTable;
 import java.util.Date;
 import java.util.List;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -57,13 +55,15 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  * Az egyes körökről ezen az oldalon jelenítünk meg részletes adatokat. A
  * körvezetők számára lehetőség van a kör egyes feladatait kezelni.
  *
- * @author  hege
- * @author  messo
+ * @author hege
+ * @author messo
  */
 public class ShowGroup extends KorokPage {
 
@@ -78,14 +78,15 @@ public class ShowGroup extends KorokPage {
 
     /**
      * A kör adatlapját itt állítjuk össze.
+     *
      * @param parameters A megjelenítendő kör azonosítója
      */
     public ShowGroup(PageParameters parameters) {
         //az oldal paraméterének dekódolása
         Long id = null;
         try {
-            id = parameters.getLong("id");
-        } catch (NumberFormatException e) {
+            id = parameters.get("id").toLong();
+        } catch (StringValueConversionException e) {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
@@ -110,10 +111,10 @@ public class ShowGroup extends KorokPage {
 
         //A jobb oldali leugró menühöz előállítjuk a csoporttörténetes linket.
         add(new BookmarkablePageLink<GroupHistory>("detailView", GroupHistory.class,
-                new PageParameters("id=" + group.getId().toString())));
+                new PageParameters().add("id", group.getId().toString())));
         //A kör admin felületéhez szükséges link jogosultságellenőrzéssel
         Link<EditGroupInfo> editPageLink = new BookmarkablePageLink<EditGroupInfo>("editPage", EditGroupInfo.class,
-                new PageParameters("id=" + group.getId().toString()));
+                new PageParameters().add("id", group.getId().toString()));
         if (user != null && isUserGroupLeader(group)) {
             editPageLink.setVisible(true);
         } else {
@@ -124,7 +125,7 @@ public class ShowGroup extends KorokPage {
         //A kör küldöttjeinek beállításához szükséges link jogosultságellenőrzéssel
         Link<ChangeDelegates> editDelegates =
                 new BookmarkablePageLink<ChangeDelegates>("editDelegates", ChangeDelegates.class,
-                new PageParameters("id=" + group.getId().toString()));
+                new PageParameters().add("id", group.getId().toString()));
 
         if (user != null && isUserGroupLeader(group) && group.getIsSvie()) {
             editDelegates.setVisible(true);

@@ -3,11 +3,11 @@ package hu.sch.web.wicket.components;
 import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.User;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.resource.ContextRelativeResource;
+import org.apache.wicket.request.resource.ContextRelativeResource;
 
 /**
  *
@@ -22,7 +22,7 @@ public class SvieMembershipDetailsIcon extends Panel {
     }
 
     public SvieMembershipDetailsIcon(final String id, final User u) {
-        super(id, new CompoundPropertyModel<Membership>(null));
+        super(id);
 
         innerUser = u;
     }
@@ -70,11 +70,11 @@ public class SvieMembershipDetailsIcon extends Panel {
         final Image imgIcon = new Image("msAsImg", new ContextRelativeResource(
                 new StringBuilder("/images/icons/").append(icon).append("_32.png").toString()));
 
-        String altText = u.getSvieMemberText(ms);
+        final String altText = u.getSvieMemberText(ms);
 
-        imgIcon.add(new SimpleAttributeModifier("alt", altText));
-        imgIcon.add(new SimpleAttributeModifier("title", altText));
-        imgIcon.add(new SimpleAttributeModifier("class", "svieStateIcon"));
+        imgIcon.add(AttributeModifier.replace("alt", altText));
+        imgIcon.add(AttributeModifier.replace("title", altText));
+        imgIcon.add(AttributeModifier.replace("class", "svieStateIcon"));
 
         add(imgIcon);
     }

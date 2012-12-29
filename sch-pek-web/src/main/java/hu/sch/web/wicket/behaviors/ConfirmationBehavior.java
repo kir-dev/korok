@@ -28,11 +28,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.behaviors;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.link.Link;
@@ -41,12 +40,13 @@ import org.apache.wicket.markup.html.link.Link;
  *
  * @author aldaris
  */
-public class ConfirmationBehavior extends AbstractBehavior {
+public class ConfirmationBehavior extends Behavior {
 
     private String message;
 
     /**
      * Constructor.
+     *
      * @param message Message to be shown in the confirm box.
      */
     public ConfirmationBehavior(final String message) {
@@ -56,8 +56,10 @@ public class ConfirmationBehavior extends AbstractBehavior {
 
     /**
      * @param component Component to attach.
-     * @param tag Tag to modify.
-     * @see org.apache.wicket.behavior.AbstractBehavior#onComponentTag(org.apache.wicket.Component, org.apache.wicket.markup.ComponentTag)
+     * @param tag       Tag to modify.
+     * @see
+     * org.apache.wicket.behavior.Behavior#onComponentTag(org.apache.wicket.Component,
+     * org.apache.wicket.markup.ComponentTag)
      */
     @Override
     public void onComponentTag(final Component component, final ComponentTag tag) {

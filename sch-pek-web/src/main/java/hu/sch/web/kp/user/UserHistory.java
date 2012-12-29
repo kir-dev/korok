@@ -28,17 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.user;
 
-import hu.sch.domain.Group;
-import hu.sch.domain.Membership;
-import hu.sch.domain.Semester;
-import hu.sch.domain.User;
-import hu.sch.domain.ValuationData;
+import hu.sch.domain.*;
 import hu.sch.services.ValuationManagerLocal;
-import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.wicket.components.tables.ValuationTableForUser;
 import java.io.Serializable;
@@ -46,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -55,11 +49,12 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
- * @author  Adam Lantos
- * @author  messo
+ * @author Adam Lantos
+ * @author messo
  */
 public class UserHistory extends KorokPage {
 
@@ -80,8 +75,8 @@ public class UserHistory extends KorokPage {
 
     public UserHistory(PageParameters parameters) {
         try {
-            id = parameters.getLong("id");
-            selectedGroupId = parameters.getLong("group", 0l);
+            id = parameters.get("id").toLong();
+            selectedGroupId = parameters.get("group").toLong(0l);
             if (selectedGroupId != 0l) {
                 selected_text = userManager.findGroupById(selectedGroupId).getName();
             } else {
@@ -110,10 +105,10 @@ public class UserHistory extends KorokPage {
         if (own_profile) {
             add(new BookmarkablePageLink<ShowUser>("simpleView", ShowUser.class));
         } else {
-            add(new BookmarkablePageLink<ShowUser>("simpleView", ShowUser.class, new PageParameters("id=" + user.getId())));
+            add(new BookmarkablePageLink<ShowUser>("simpleView", ShowUser.class, new PageParameters().add("id", user.getId())));
         }
         add(new BookmarkablePageLink("profilelink", ShowPersonPage.class,
-                new PageParameters("virid=" + id.toString())));
+                new PageParameters().add("virid", id.toString())));
         setDefaultModel(new CompoundPropertyModel<User>(user));
 
         final List<String> groups = new ArrayList<String>();

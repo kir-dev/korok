@@ -28,27 +28,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.admin;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.GroupStatus;
 import hu.sch.domain.User;
-import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
-import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
+import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.ListChoice;
-import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -83,7 +78,6 @@ public class CreateGroup extends KorokPage {
                 }
                 getSession().info("A kör sikeresen létrehozva.");
                 setResponsePage(CreateGroup.class);
-                return;
             }
         };
 
@@ -125,7 +119,7 @@ public class CreateGroup extends KorokPage {
                     leaderChoice.setChoices(users);
                 }
                 if (target != null) {
-                    target.addComponent(wmc);
+                    target.add(wmc);
                 }
             }
         };

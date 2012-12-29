@@ -30,26 +30,19 @@
  */
 package hu.sch.web.kp.valuation;
 
+import hu.sch.domain.*;
+import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.kp.KorokPage;
+import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.request.point.PointRequests;
-import hu.sch.domain.Group;
-import hu.sch.domain.Membership;
-import hu.sch.domain.Semester;
-import hu.sch.domain.Valuation;
-import hu.sch.domain.ValuationPeriod;
-import hu.sch.domain.ValuationStatus;
-import hu.sch.domain.User;
-import hu.sch.web.kp.group.GroupHierarchy;
-import hu.sch.web.kp.KorokPage;
-import hu.sch.services.ValuationManagerLocal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -64,6 +57,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
@@ -89,13 +83,13 @@ public class Valuations extends KorokPage {
 
     public Valuations(PageParameters params) {
         try {
-            Long groupId = params.getLong("id");
+            Long groupId = params.get("id").toLong();
             group = userManager.findGroupById(groupId);
         } catch (StringValueConversionException svce) {
             getSession().error("Érvénytelen paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        
+
         if (!isUserGroupLeader(group)) {
             log.warn("Paraméterátírásos próbálkozás! " + getUser().getId());
             getSession().error("Nincs jogod a művelethez! A próbálkozásod naplózásra került!");
@@ -158,7 +152,7 @@ public class Valuations extends KorokPage {
 
             @Override
             protected void onSelectionChanged(final Group selected) {
-                setResponsePage(Valuations.class, new PageParameters("id=" + selected.getId()));
+                setResponsePage(Valuations.class, new PageParameters().add("id", selected.getId()));
             }
         });
 
@@ -195,7 +189,7 @@ public class Valuations extends KorokPage {
                     final Valuation v = item.getModelObject();
                     item.setModel(new CompoundPropertyModel<Valuation>(v));
 
-                    Link<ValuationDetails> ert = new BookmarkablePageLink<ValuationDetails>("valuationLink", ValuationDetails.class, new PageParameters("id=" + v.getId()));
+                    Link<ValuationDetails> ert = new BookmarkablePageLink<ValuationDetails>("valuationLink", ValuationDetails.class, new PageParameters().add("id", v.getId()));
                     ert.add(new Label("semester"));
                     item.add(ert);
 
@@ -203,18 +197,18 @@ public class Valuations extends KorokPage {
 
                     item.add(new BookmarkablePageLink("pointLink",
                             PointRequests.class,
-                            new PageParameters("vid=" + v.getId())).add(new Label("pointStatus")));
+                            new PageParameters().add("vid", v.getId())).add(new Label("pointStatus")));
 
                     item.add(new BookmarkablePageLink("entrantLink",
                             EntrantRequests.class,
-                            new PageParameters("vid=" + v.getId())).add(new Label("entrantStatus")));
+                            new PageParameters().add("vid", v.getId())).add(new Label("entrantStatus")));
 
                     item.add(DateLabel.forDatePattern("lastModified", "yyyy.MM.dd. kk:mm"));
                     item.add(DateLabel.forDatePattern("lastConsidered", "yyyy.MM.dd. kk:mm"));
                 }
             });
 
-            Link<NewValuation> newValuation = new BookmarkablePageLink<NewValuation>("newValuation", NewValuation.class, new PageParameters("id=" + group.getId()));
+            Link<NewValuation> newValuation = new BookmarkablePageLink<NewValuation>("newValuation", NewValuation.class, new PageParameters().add("id", group.getId()));
             add(newValuation);
 
             if (valuationList.isEmpty()
@@ -255,10 +249,10 @@ public class Valuations extends KorokPage {
                             if (val == null) {
                                 // ha egyáltalán nincs még értékelés az adott csoporthoz
                                 // és szemeszterhez, akkor először szöveges értékelés kell
-                                setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
+                                setResponsePage(NewValuation.class, new PageParameters().add("id", group.getId()));
                             } else {
                                 // pontigény leadása a szöveges értékelés mellé
-                                setResponsePage(PointRequests.class, new PageParameters("vid=" + val.getId()));
+                                setResponsePage(PointRequests.class, new PageParameters().add("vid", val.getId()));
                             }
                         }
                     });
@@ -281,10 +275,10 @@ public class Valuations extends KorokPage {
                             if (val == null) {
                                 // ha egyáltalán nincs még értékelés az adott csoporthoz
                                 // és szemeszterhez, akkor először szöveges értékelés kell
-                                setResponsePage(NewValuation.class, new PageParameters("id=" + group.getId()));
+                                setResponsePage(NewValuation.class, new PageParameters().add("id", group.getId()));
                             } else {
                                 // belépőigény leadása a szöveges értékelés mellé
-                                setResponsePage(EntrantRequests.class, new PageParameters("vid=" + val.getId()));
+                                setResponsePage(EntrantRequests.class, new PageParameters().add("vid", val.getId()));
                             }
                         }
                     });

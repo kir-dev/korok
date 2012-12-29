@@ -28,31 +28,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
 import org.apache.wicket.Application;
-import org.apache.wicket.Request;
+import org.apache.wicket.request.Request;
 
 /**
  * Ez az interfész felelős a usernév és jogosultságok lekérdezéséért
+ *
  * @author hege
  */
 public interface UserAuthorization {
 
     /**
-     * Autorizációs mód inicializálása. DummyAuthorization használatakor ellenőrzi,
-     * hogy az alkalmazás development módban fut-e, ha nem abban van, kivételt dob.
-     * 
+     * Autorizációs mód inicializálása. DummyAuthorization használatakor
+     * ellenőrzi, hogy az alkalmazás development módban fut-e, ha nem abban van,
+     * kivételt dob.
+     *
      * @param wicketApplication Az alkalmazás objektumára mutató referencia.
      */
     void init(Application wicketApplication);
 
     /**
      * Az aktuálisan bejelentkezett felhasználó VIRID-ja.
-     * 
+     *
      * @param wicketRequest A Request objektum, amiből ki tudjuk nyerni a HTTP
      * változókat.
      * @return A távoli felhasználó VIRID-ja.
@@ -61,17 +62,17 @@ public interface UserAuthorization {
 
     /**
      * Az aktuálisan bejelentkezett felhasználó körvezetőségét vizsgálja.
-     * 
-     * @param wicketRequest
-     * @param group
+     *
+     * @param wicketRequest wicketRequest
+     * @param group         group
      * @return Körvezető-e az adott csoportban a felhasználó
      */
     boolean isGroupLeaderInGroup(Request wicketRequest, Group group);
 
     /**
-     * Az aktuálisan bejelentkezett felhasználó rendelkezik-e valamelyik csoportban
-     * az adott jogosultsággal.
-     * 
+     * Az aktuálisan bejelentkezett felhasználó rendelkezik-e valamelyik
+     * csoportban az adott jogosultsággal.
+     *
      * @param wicketRequest
      * @return Körvezető-e valamelyik csoportban a felhasználó
      */
@@ -79,9 +80,9 @@ public interface UserAuthorization {
 
     /**
      * A felhasználó rendelkezik-e az adott szerepkörrel (ADMIN|JETI|SVIE)
-     * 
-     * @param wicketRequest
-     * @param role
+     *
+     * @param wicketRequest wicketRequest
+     * @param role          role
      * @return Rendelkezik-e a felhasználó az adott szereppel
      */
     boolean hasAbstractRole(Request wicketRequest, String role);

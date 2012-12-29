@@ -35,7 +35,7 @@ import javax.ejb.EJB;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.injection.web.InjectorHolder;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
@@ -91,7 +91,7 @@ public abstract class ValuationTable implements Serializable {
     }
 
     private void init() {
-        InjectorHolder.getInjector().inject(this);
+        Injector.get().inject(this);
     }
 
     /**

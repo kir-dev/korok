@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.search;
 
 import hu.sch.domain.Group;
@@ -43,7 +42,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.injection.web.InjectorHolder;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.panel.Panel;
 
 /**
@@ -58,7 +57,7 @@ public class GroupResultPanel extends Panel {
     public GroupResultPanel(String id, List<Group> groups) {
         super(id);
 
-        InjectorHolder.getInjector().inject(this);
+        Injector.get().inject(this);
 
         List<IColumn<Group>> columns = new ArrayList<IColumn<Group>>();
         columns.add(new PanelColumn<Group>("Név", "name") {

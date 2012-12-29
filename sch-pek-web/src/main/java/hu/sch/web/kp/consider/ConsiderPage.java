@@ -28,31 +28,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.consider;
 
-import hu.sch.domain.ConsideredValuation;
-import hu.sch.domain.User;
-import hu.sch.domain.Valuation;
-import hu.sch.domain.ValuationPeriod;
-import hu.sch.domain.ValuationStatistic;
-import hu.sch.domain.ValuationStatus;
-import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
+import hu.sch.domain.*;
+import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.kp.KorokPage;
+import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.kp.valuation.message.ValuationMessages;
-import hu.sch.web.kp.group.GroupHierarchy;
-import hu.sch.web.kp.KorokPage;
-import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
+import hu.sch.web.wicket.components.choosers.ValuationStatusChooser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
@@ -64,6 +57,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -145,11 +139,11 @@ public class ConsiderPage extends KorokPage {
                     cv = getUnderConsidering().get(val.getId());
                 }
 
-                Link valuationLink = new BookmarkablePageLink("valuationLink", ValuationDetails.class, new PageParameters("id=" + val.getId()));
+                Link valuationLink = new BookmarkablePageLink("valuationLink", ValuationDetails.class, new PageParameters().add("id", val.getId()));
                 valuationLink.add(new Label("valuation.group.name"));
                 item.add(valuationLink);
-                
-                PageParameters params = new PageParameters("vid=" + val.getId());
+
+                PageParameters params = new PageParameters().add("vid", val.getId());
 
                 Link givenKDOLink = new BookmarkablePageLink("givenKDOLink", EntrantRequests.class, params);
                 givenKDOLink.add(new Label("givenKDO"));
@@ -185,37 +179,7 @@ public class ConsiderPage extends KorokPage {
                 item.add(pointStatus);
                 item.add(entrantStatus);
             }
-            /*
-            class ErtekelesStatuszValasztoImpl extends ErtekelesStatuszValaszto {
-            
-            public ErtekelesStatuszValasztoImpl(String id) {
-            super(id);
-            }
-            
-            @Override
-            protected boolean wantOnSelectionChangedNotifications() {
-            return true;
-            }
-            
-            @Override
-            protected void onSelectionChanged(Object newSelection) {
-            updateModel();
-            Object o = getInnermostModel().getObject();
-            ConsideredValuation e = (ConsideredValuation) o;
-            
-            ConsideredValuation ee = getUnderConsidering().get(e.getValuation().getId());
-            getUnderConsidering().put(e.getValuation().getId(), ee);
-            }
-            }*/
         });
-
-//        form.add(new OrderByBorderImpl("orderByCsoport", "csoportNev", dp));
-//        form.add(new OrderByBorderImpl("orderByAtlagPont", "atlagPont", dp));
-//        form.add(new OrderByBorderImpl("orderByKiosztottKDO", "kiosztottKDO", dp));
-//        form.add(new OrderByBorderImpl("orderByKiosztottKB", "kiosztottKB", dp));
-//        form.add(new OrderByBorderImpl("orderByKiosztottAB", "kiosztottAB", dp));
-//        form.add(new OrderByBorderImpl("orderByPontStatusz", "pontStatusz", dp));
-//        form.add(new OrderByBorderImpl("orderByBelepoStatusz", "belepoStatusz", dp));
     }
 
     @SuppressWarnings("unused")

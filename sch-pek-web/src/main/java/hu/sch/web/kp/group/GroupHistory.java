@@ -39,13 +39,14 @@ import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.valuation.ValuationDetailPanel;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  *
@@ -66,8 +67,9 @@ public class GroupHistory extends KorokPage {
     }
 
     public GroupHistory(PageParameters parameters) {
-        id = parameters.getAsLong("id");
-        if (id == null) {
+        try {
+            id = parameters.get("id").toLong();
+        } catch (StringValueConversionException ex) {
             getSession().error("Érvénytelen paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
@@ -78,12 +80,12 @@ public class GroupHistory extends KorokPage {
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        add(new BookmarkablePageLink<ShowGroup>("simpleView", ShowGroup.class, new PageParameters("id=" + id.toString())));
+        add(new BookmarkablePageLink<ShowGroup>("simpleView", ShowGroup.class, new PageParameters().add("id", id.toString())));
 
         List<Valuation> valuationList = valuationManager.findLatestValuationsForGroup(group);
 
         // nézzük meg, hogy van-e kijelölve értékelés
-        Semester semester = new Semester(parameters.getString("sid", ""));
+        Semester semester = new Semester(parameters.get("sid").toString(""));
         if (semester.isValid()) {
             for (Valuation valuation : valuationList) {
                 if (valuation.getSemester().equals(semester)) {

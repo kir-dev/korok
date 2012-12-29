@@ -387,11 +387,10 @@
     </build>
 
     <repositories>
-        <!-- our repository -->
         <repository>
-            <id>stewie</id>
-            <layout>default</layout>
-            <url>http://stewie.sch.bme.hu/nexus/content/groups/public</url>
+            <id>wicket-tree</id>
+            <name>Wicket-tree Repository</name>
+            <url>http://wicket-tree.googlecode.com/svn/repo</url>
         </repository>
     </repositories>
 

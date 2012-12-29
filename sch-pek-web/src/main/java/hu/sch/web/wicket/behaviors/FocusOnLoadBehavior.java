@@ -28,19 +28,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.behaviors;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.Response;
-import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.request.Response;
 
 /**
  *
  * @author aldaris
  */
-public class FocusOnLoadBehavior implements IBehavior {
+public class FocusOnLoadBehavior extends Behavior {
 
     @Override
     public void beforeRender(Component component) {
@@ -54,7 +53,6 @@ public class FocusOnLoadBehavior implements IBehavior {
                 "<script type=\"text/javascript\" language=\"javascript\">document.getElementById(\""
                 + component.getMarkupId()
                 + "\").focus()</script>");
-
     }
 
     @Override
@@ -66,10 +64,6 @@ public class FocusOnLoadBehavior implements IBehavior {
     }
 
     @Override
-    public void exception(Component arg0, RuntimeException arg1) {
-    }
-
-    @Override
     public boolean getStatelessHint(Component arg0) {
         return true;
     }
@@ -77,11 +71,6 @@ public class FocusOnLoadBehavior implements IBehavior {
     @Override
     public boolean isEnabled(Component arg0) {
         return true;
-    }
-
-    @Override
-    public boolean isTemporary() {
-        return false;
     }
 
     @Override

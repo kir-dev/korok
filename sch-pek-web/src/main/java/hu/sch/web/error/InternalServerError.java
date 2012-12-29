@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.error;
 
 import hu.sch.services.MailManagerLocal;
@@ -38,7 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Page;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
-import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.util.string.Strings;
 
 /**
@@ -62,7 +60,7 @@ public final class InternalServerError extends KorokPage {
             sb.append("\nA hibáért a következő osztály volt a felelős: ").append(page.getClass().getName());
             sb.append(", ami a következő URL-en volt elérhető: ").append(page.getPageRelativePath());
         }
-        HttpServletRequest request = ((WebRequest) getRequest()).getHttpServletRequest();
+        HttpServletRequest request = (HttpServletRequest) getRequest().getContainerRequest();
 
         sb.append("\nA hibát előidézte: ").append(request.getRemoteUser());
         sb.append("\n\t").append(request.getRemoteAddr());
@@ -81,4 +79,3 @@ public final class InternalServerError extends KorokPage {
         }
     }
 }
-

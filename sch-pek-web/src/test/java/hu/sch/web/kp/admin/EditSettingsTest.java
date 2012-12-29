@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.admin;
 
 import hu.sch.ejb.SystemManagerBean;
@@ -36,7 +35,7 @@ import hu.sch.services.SystemManagerLocal;
 import hu.sch.web.test.WebTest;
 import javax.naming.NamingException;
 import static junit.framework.Assert.*;
-import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.Session;
 import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
 
@@ -55,7 +54,7 @@ public class EditSettingsTest extends WebTest {
 
         tester.assertVisible("kirdevfragment");
 
-        WebSession sess1 = tester.getWicketSession();
+        Session sess1 = tester.getSession();
         String style1 = sess1.getStyle();
 
         FormTester formTester = tester.newFormTester("kirdevfragment:kirdevForm");
@@ -66,8 +65,9 @@ public class EditSettingsTest extends WebTest {
         assertTrue(sess1.isSessionInvalidated());
 
         //Kell, hogy tényleg legyen új sessionünk
-        tester.createRequestCycle();
-        WebSession sess2 = tester.getWicketSession();
+        //tester.createRequestCycle();
+        assertEquals("TODO: createRequestCycle()-t lecserélni", true, false);
+        Session sess2 = tester.getSession();
         String style2 = sess2.getStyle();
 
         assertNotSame(style1, style2);

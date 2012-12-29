@@ -28,15 +28,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.profile.search;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.web.profile.show.ShowPersonPage;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -48,7 +47,7 @@ public class PersonLinkPanel extends Panel {
         super(id);
 
         BookmarkablePageLink link = new BookmarkablePageLink("fullNameLink",
-                ShowPersonPage.class, new PageParameters("uid=" + person.getUid()));
+                ShowPersonPage.class, new PageParameters().add("uid", person.getUid()));
         link.add(new Label("fullName", person.getFullName()));
         add(link);
     }

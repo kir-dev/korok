@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.devel;
 
 import hu.sch.web.kp.KorokPage;
@@ -38,7 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.protocol.http.WebRequest;
 
 /**
  *
@@ -47,7 +45,7 @@ import org.apache.wicket.protocol.http.WebRequest;
 public class ShowUserInfo extends KorokPage {
 
     public ShowUserInfo() {
-        final HttpServletRequest request = ((WebRequest) getRequest()).getHttpServletRequest();
+        final HttpServletRequest request = (HttpServletRequest) getRequest().getContainerRequest();
         List<String> attrNames = Collections.list(request.getAttributeNames());
         ListView<String> lv = new ListView<String>("attributes", attrNames) {
 

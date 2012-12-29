@@ -42,6 +42,7 @@ import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxNavigationToolbar;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
@@ -52,14 +53,15 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.util.convert.IConverter;
 
 /**
- * Egy felhasználókat listázó táblázat, amely olyan objektumokat tud listázni, melyek
- * implementálják a {@link MembershipTableEntry} interfészt. Azért van erre szükség,
- * mert lehet, hogy sima {@link hu.sch.domain.Membership} objektumokat akarunk listázni,
- * de lehet, hogy egy wrapper segítségével kívánjuk mindezt megtenni.
+ * Egy felhasználókat listázó táblázat, amely olyan objektumokat tud listázni,
+ * melyek implementálják a {@link MembershipTableEntry} interfészt. Azért van
+ * erre szükség, mert lehet, hogy sima {@link hu.sch.domain.Membership}
+ * objektumokat akarunk listázni, de lehet, hogy egy wrapper segítségével
+ * kívánjuk mindezt megtenni.
  *
- * @author      messo
- * @since       2.3.1
- * @see         AjaxFallbackDefaultDataTable
+ * @author messo
+ * @since 2.3.1
+ * @see AjaxFallbackDefaultDataTable
  */
 public abstract class MembershipTable<T extends MembershipTableEntry> implements Serializable {
 
@@ -74,17 +76,18 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
     public static final String SORT_BY_MEMBERSHIP_DURATION = "membershipStartEnd";
 
     /**
-     * Konstruktor, amely létrehoz egy {@link AjaxFallbackDefaultDataTable} táblázatot
-     * néhány oszloppal, illetve lehetőséget ad arra, hogy egy konkrét osztályban még
-     * több oszlopot adhassunk hozzá. Amennyiben az elemek implementálják a {@link SelectableEntry}
-     * interfészt, akkor a táblázat jobb szélén megjelenik 1-1 checkbox, hogy ki lehessen
-     * jelölni az adott bejegyzést.
+     * Konstruktor, amely létrehoz egy {@link AjaxFallbackDefaultDataTable}
+     * táblázatot néhány oszloppal, illetve lehetőséget ad arra, hogy egy
+     * konkrét osztályban még több oszlopot adhassunk hozzá. Amennyiben az
+     * elemek implementálják a {@link SelectableEntry} interfészt, akkor a
+     * táblázat jobb szélén megjelenik 1-1 checkbox, hogy ki lehessen jelölni az
+     * adott bejegyzést.
      *
-     * @param id            táblázat wicket id-ja
-     * @param items         az itemek amiket listázni szeretnénk
-     * @param rowsPerPage   hány oldal jelenjen meg egy oldal?
-     * @param c             az elemek Class objektuma, azért, hogy lekérdezhessük,
-     *                      hogy implementálja-e a {@link SelectableEntry} interfészt
+     * @param id          táblázat wicket id-ja
+     * @param items       az itemek amiket listázni szeretnénk
+     * @param rowsPerPage hány oldal jelenjen meg egy oldal?
+     * @param c           az elemek Class objektuma, azért, hogy lekérdezhessük,
+     * hogy implementálja-e a {@link SelectableEntry} interfészt
      */
     public MembershipTable(String id, List<T> items, int rowsPerPage, Class<T> c) {
         List<IColumn<T>> columns = new ArrayList<IColumn<T>>();
@@ -122,10 +125,12 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
     /**
      * Alapértelmezetten 50 emberkét jelenítsünk meg.
      *
-     * @param id
-     * @param items
-     * @param c
-     * @see MembershipTable#MembershipTable(java.lang.String, java.util.List, int, java.lang.Class)
+     * @param id    táblázat wicket id-ja
+     * @param items az itemek amiket listázni szeretnénk
+     * @param c     az elemek Class objektuma, azért, hogy lekérdezhessük, hogy
+     * implementálja-e a {@link SelectableEntry} interfészt
+     * @see MembershipTable#MembershipTable(java.lang.String, java.util.List,
+     * int, java.lang.Class)
      */
     public MembershipTable(String id, List<T> items, Class<T> c) {
         this(id, items, 50, c);
@@ -135,16 +140,16 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
      * Ezt kell a konkrét osztályokban megvalósítani, hogy egyedi oszlopokat is
      * hozzáadhassunk a meglévőkhöz
      *
-     * @param columns   az oszloplista, amihez új oszlopokat adhatunk
+     * @param columns az oszloplista, amihez új oszlopokat adhatunk
      */
     public abstract void onPopulateColumns(List<IColumn<T>> columns);
 
     /**
-     * Lekérjük a tényleges táblázatot, ami egy {@link AjaxFallbackDefaultDataTable} típusú
-     * táblázat. Ezt akkor hívjuk meg praktikusan, amikor hozzáakarjuk adni a DOM-hoz
-     * a kész táblázatot.
+     * Lekérjük a tényleges táblázatot, ami egy {@link AjaxFallbackDefaultDataTable}
+     * típusú táblázat. Ezt akkor hívjuk meg praktikusan, amikor hozzáakarjuk
+     * adni a DOM-hoz a kész táblázatot.
      *
-     * @return  táblázat
+     * @return táblázat
      */
     public AjaxFallbackDefaultDataTable<T> getDataTable() {
         return table;
@@ -156,7 +161,7 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
 
         public SortableMembershipDataProvider(List<T> items) {
             this.items = items;
-            setSort(SORT_BY_NAME, true);
+            setSort(SORT_BY_NAME, SortOrder.ASCENDING);
         }
 
         @Override

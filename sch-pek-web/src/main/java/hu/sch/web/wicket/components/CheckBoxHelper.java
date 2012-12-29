@@ -28,14 +28,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components;
 
 import hu.sch.web.PhoenixApplication;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.resources.CompressedResourceReference;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
 
 /**
  *
@@ -49,6 +48,6 @@ public class CheckBoxHelper extends Panel implements IHeaderContributor {
 
     @Override
     public void renderHead(IHeaderResponse response) {
-        response.renderJavascriptReference(new CompressedResourceReference(PhoenixApplication.KOROK_JS));
+        response.renderJavaScriptReference(new JavaScriptResourceReference(CheckBoxHelper.class, "CheckBoxHelper.js"));
     }
 }

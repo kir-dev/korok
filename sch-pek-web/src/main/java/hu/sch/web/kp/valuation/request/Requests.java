@@ -36,9 +36,10 @@ import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.valuation.Valuations;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  *
@@ -52,7 +53,11 @@ public class Requests extends KorokPage {
     protected ValuationPeriod valPeriod = null;
 
     public Requests(PageParameters params) {
-        Long vid = params.getAsLong("vid");
+        Long vid = null;
+        try {
+            vid = params.get("vid").toLong();
+        } catch (StringValueConversionException ex) {
+        }
         // TODO(messo): kapcsoljuk a Valuation mellé a Group-ot is, így kicsit gyorsabb
         if (vid == null || (valuation = valuationManager.findErtekelesById(vid)) == null) {
             error("Nincs ilyen értékelés!");

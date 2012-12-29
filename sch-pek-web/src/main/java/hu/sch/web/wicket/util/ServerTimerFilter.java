@@ -28,12 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.util;
 
 import org.apache.log4j.Logger;
-import org.apache.wicket.IResponseFilter;
-import org.apache.wicket.RequestCycle;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.response.filter.IResponseFilter;
 import org.apache.wicket.util.string.AppendingStringBuffer;
 
 /**
@@ -44,10 +43,11 @@ public class ServerTimerFilter implements IResponseFilter {
 
     private static final Logger log = Logger.getLogger(ServerTimerFilter.class);
 
+    @Override
     public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer) {
         long timeTaken = System.currentTimeMillis() - RequestCycle.get().getStartTime();
         StringBuilder sb = new StringBuilder(100);
-        sb.append(RequestCycle.get().getRequest().getPath());
+        sb.append(RequestCycle.get().getRequest().getFilterPath());
         sb.append(" oldalhoz szükséges kiszolgálási idő: ");
         sb.append(timeTaken);
         sb.append("ms");

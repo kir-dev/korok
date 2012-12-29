@@ -28,24 +28,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.User;
 import hu.sch.web.kp.user.ShowUser;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * Egyszerű panel, ami egy {@link BookmarkablePageLink}et tartalmaz, ami a
  * felhasználót leíró oldalra mutat.
  *
- * @author  hege
- * @author  messo
- * @see     ShowUser
+ * @author hege
+ * @author messo
+ * @see ShowUser
  */
 public class UserLink extends Panel {
 
@@ -53,7 +52,7 @@ public class UserLink extends Panel {
         super(id);
 
         Link<ShowUser> l = new BookmarkablePageLink<ShowUser>("link", ShowUser.class,
-                new PageParameters("id=" + user.getId()));
+                new PageParameters().add("id", user.getId()));
         l.add(new Label("name", user.getName()));
         add(l);
     }

@@ -32,19 +32,16 @@ package hu.sch.web.kp.valuation.message;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
-import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationMessage;
-import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
-import java.util.HashMap;
+import hu.sch.web.kp.KorokPage;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -74,13 +71,8 @@ class NewMessage extends KorokPage {
             protected void onSubmit() {
                 valuationManager.addNewMessage(getModelObject());
                 getSession().info(getLocalizer().getString("info.UzenetMentve", this));
-                setResponsePage(ValuationMessages.class, new PageParameters(new HashMap<String, String>() {
-
-                    {
-                        put("gid", group.getId().toString());
-                        put("sid", semester.getId());
-                    }
-                }));
+                setResponsePage(ValuationMessages.class, new PageParameters().add("gid", group.getId().toString()).
+                        add("sid", semester.getId()));
             }
         };
         add(form);

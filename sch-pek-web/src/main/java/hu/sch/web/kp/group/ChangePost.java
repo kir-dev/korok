@@ -28,31 +28,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.group;
 
-import hu.sch.domain.Group;
-import hu.sch.domain.Membership;
-import hu.sch.domain.Post;
-import hu.sch.domain.User;
-import hu.sch.domain.PostType;
-import hu.sch.web.kp.KorokPage;
+import hu.sch.domain.*;
 import hu.sch.domain.util.PatternHolder;
+import hu.sch.web.kp.KorokPage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.wicket.IClusterable;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValueConversionException;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValidator;
@@ -70,7 +61,7 @@ public final class ChangePost extends KorokPage {
     public ChangePost(final PageParameters params) {
         Long memberId;
         try {
-            memberId = Long.valueOf(params.getLong("memberid"));
+            memberId = params.get("memberid").toLong();
         } catch (StringValueConversionException svce) {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
@@ -95,7 +86,7 @@ public final class ChangePost extends KorokPage {
         }
         if (user == null) {
             getSession().error("Hibás adatok");
-            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + group.getId()));
+            throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", group.getId()));
         }
         add(new Label("groupname", group.getName()));
         add(new Label("username", user.getName()));
@@ -120,7 +111,7 @@ public final class ChangePost extends KorokPage {
                     } else {
                         if (temp.getPostType().getPostName().equals(PostType.KORVEZETO)) {
                             getSession().error("A körvezetői posztot nem szüntetheted meg, azt csak átruházni lehet egy másik körtagra.");
-                            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + ms.getGroup().getId()));
+                            throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", ms.getGroup().getId()));
                         }
                         removedPosts.add(temp);
                     }
@@ -135,13 +126,13 @@ public final class ChangePost extends KorokPage {
                                 postManager.changeGroupLeader(ms, temp);
                             } catch (Exception ex) {
                                 getSession().error(ex.getCause().getMessage());
-                                throw new RestartResponseException(ChangePost.class, new PageParameters("memberid=" + ms.getId()));
+                                throw new RestartResponseException(ChangePost.class, new PageParameters().add("memberid", ms.getId()));
                             }
                         } else {
                             log.warn("A következő felhasználó: " + getUser().getId() + " megpróbált a delegált posztjával körvezetővé válni, "
                                     + "vagy a körvezető személyét valaki másra megváltoztatni! A kezdeményezett fél: " + ms.getUser().getId());
                             getSession().error("Ez most nem volt szép Tőled, nemsokára jön is érted a fekete kocsi");
-                            throw new RestartResponseException(ShowGroup.class, new PageParameters("id=" + ms.getGroup().getId()));
+                            throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", ms.getGroup().getId()));
                         }
                         break;
                     }
@@ -149,7 +140,7 @@ public final class ChangePost extends KorokPage {
 
                 postManager.setPostsForMembership(ms, removedPosts, newRights);
                 getSession().info("A beállítások sikeresen mentésre kerültek");
-                setResponsePage(ShowGroup.class, new PageParameters("id=" + ms.getGroup().getId()));
+                setResponsePage(ShowGroup.class, new PageParameters().add("id", ms.getGroup().getId()));
             }
         };
 
@@ -188,7 +179,6 @@ public final class ChangePost extends KorokPage {
                 if (postManager.createPostType(postName, ms.getGroup(), isDelegatedPost)) {
                     getSession().info("Az új poszt sikeresen elkészült.");
                     setResponsePage(ChangePost.class, params);
-                    return;
                 } else {
                     getSession().error("Az új poszt létrehozása közben hiba lépett fel, "
                             + "valószínűleg egy már létező posztot szerettél volna újra felvenni.");

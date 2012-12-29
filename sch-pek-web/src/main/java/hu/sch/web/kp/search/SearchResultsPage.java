@@ -28,12 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.kp.search;
 
 import hu.sch.web.kp.KorokPage;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -47,15 +46,15 @@ public class SearchResultsPage extends KorokPage {
     }
 
     public SearchResultsPage(final PageParameters params) {
-        String type = params.getString("type");
-        String keyword = params.getString("key");
+        String type = params.get("type").toString();
+        String keyword = params.get("key").toString();
 
 
         if (type == null || keyword == null || (!type.equals("user") && !type.equals("group")) || keyword.isEmpty()) {
             getSession().error("Hibás keresési feltétel!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        if (keyword.length() < 3 ) {
+        if (keyword.length() < 3) {
             getSession().error("A keresési feltételnek legalább 3 karateresnek kell lennie!");
             throw new RestartResponseException(getApplication().getHomePage());
         }

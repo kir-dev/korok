@@ -41,7 +41,6 @@ import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.request.point.PointRequests;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -49,6 +48,8 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  *
@@ -61,8 +62,12 @@ public class ValuationHistory extends KorokPage {
     private int version = 0;
 
     public ValuationHistory(PageParameters params) {
-        Long groupId = params.getAsLong("gid");
-        String semesterStr = params.getString("sid", null);
+        Long groupId = null;
+        try {
+            groupId = params.get("gid").toLong();
+        } catch (StringValueConversionException ex) {
+        }
+        String semesterStr = params.get("sid").toString(null);
         Group group = null;
         Semester semester = null;
 
@@ -81,7 +86,7 @@ public class ValuationHistory extends KorokPage {
         // keressük az értékeléseket (verziókat) a megadott csoporthoz a megadott félévben.
 
         add(new BookmarkablePageLink("latestVersion", ValuationDetails.class,
-                new PageParameters("id=" + valuationManager.findLatestVersionsId(group, semester))));
+                new PageParameters().add("id", valuationManager.findLatestVersionsId(group, semester))));
         add(ValuationMessages.getLink("messages", group.getId(), semester));
 
         setHeaderLabelText("Félévi értékelés története");
@@ -99,10 +104,10 @@ public class ValuationHistory extends KorokPage {
                 final Valuation val = item.getModelObject().getValuation();
                 item.setDefaultModel(new CompoundPropertyModel<ValuationStatistic>(item.getModelObject()));
 
-                PageParameters params = new PageParameters("vid=" + val.getId());
+                PageParameters params = new PageParameters().add("vid", val.getId());
 
                 item.add(new BookmarkablePageLink("versionLink", ValuationDetails.class,
-                        new PageParameters("id="+val.getId())).add(
+                        new PageParameters().add("id", val.getId())).add(
                         new Label("versionLabel", String.valueOf(version--))));
 
                 item.add(DateLabel.forDatePattern("valuation.lastModified", "yyyy. MM. dd. kk:mm"));
@@ -128,13 +133,13 @@ public class ValuationHistory extends KorokPage {
                 summaPointLink.add(new Label("summaPoint"));
                 item.add(summaPointLink);
 
-                /*item.add(new Link("messagesLink") {
-
-                @Override
-                public void onClick() {
-                setResponsePage(new ValuationMessages(val.getId()));
-                }
-                });*/
+//                item.add(new Link("messagesLink") {
+//
+//                    @Override
+//                    public void onClick() {
+//                        setResponsePage(new ValuationMessages(val.getId()));
+//                    }
+//                });
 
                 item.add(new Label("valuation.pointStatus"));
                 item.add(new Label("valuation.entrantStatus"));

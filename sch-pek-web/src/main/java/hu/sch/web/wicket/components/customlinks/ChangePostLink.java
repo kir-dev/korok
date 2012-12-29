@@ -28,16 +28,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.Membership;
 import hu.sch.web.kp.group.ChangePost;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  *
@@ -52,9 +51,8 @@ public class ChangePostLink extends Panel {
 
     private void init() {
         final Membership ms = (Membership) getDefaultModelObject();
-        PageParameters params = new PageParameters();
-        params.put("memberid", ms.getId());
-        Link fl = new BookmarkablePageLink("postLink", ChangePost.class, params);
+        Link fl = new BookmarkablePageLink("postLink", ChangePost.class,
+                new PageParameters().add("memberid", ms.getId()));
         add(fl);
     }
 }

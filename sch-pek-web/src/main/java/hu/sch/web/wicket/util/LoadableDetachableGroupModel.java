@@ -28,13 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.util;
 
 import hu.sch.domain.Group;
 import hu.sch.services.UserManagerLocal;
 import javax.ejb.EJB;
-import org.apache.wicket.injection.web.InjectorHolder;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 /**
@@ -60,12 +59,12 @@ public class LoadableDetachableGroupModel extends LoadableDetachableModel<Group>
     }
 
     private void init() {
-        InjectorHolder.getInjector().inject(this);
+        Injector.get().inject(this);
     }
 
     @Override
     protected Group load() {
-        if( group == null ) {
+        if (group == null) {
             group = userManager.findGroupById(groupId);
         }
         return group;

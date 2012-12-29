@@ -28,14 +28,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.components.tables;
 
 import hu.sch.domain.ValuationData;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
 import java.util.List;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -44,18 +44,18 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 /**
- * Értékelési táblázat, amely a félévet, a kör nevét és az értékelést tartalmazza
- * (pont- és belépőkérelem). Ezt használjuk egy felhasználó korábbi értékeléseinek
- * megjelenítéséhez.
+ * Értékelési táblázat, amely a félévet, a kör nevét és az értékelést
+ * tartalmazza (pont- és belépőkérelem). Ezt használjuk egy felhasználó korábbi
+ * értékeléseinek megjelenítéséhez.
  *
- * @author  messo
- * @since   2.3.1
+ * @author messo
+ * @since 2.3.1
  */
 public class ValuationTableForUser extends ValuationTable {
 
     public ValuationTableForUser(String id, List<ValuationData> items, int rowsPerPage) {
         super(id, items, rowsPerPage, false);
-        provider.setSort(MySortableDataProvider.SORT_BY_SEMESTER, false);
+        provider.setSort(MySortableDataProvider.SORT_BY_SEMESTER, SortOrder.DESCENDING);
     }
 
     public ValuationTableForUser(String id, List<ValuationData> items) {
@@ -69,7 +69,7 @@ public class ValuationTableForUser extends ValuationTable {
             @Override
             public void populateItem(Item<ICellPopulator<ValuationData>> item, String componentId, IModel<ValuationData> rowModel) {
                 super.populateItem(item, componentId, rowModel);
-                item.add(new SimpleAttributeModifier("style", "width: 130px"));
+                item.add(AttributeModifier.replace("style", "width: 130px"));
             }
         });
 
@@ -88,7 +88,7 @@ public class ValuationTableForUser extends ValuationTable {
             @Override
             public void populateItem(Item<ICellPopulator<ValuationData>> item, String componentId, IModel<ValuationData> rowModel) {
                 super.populateItem(item, componentId, rowModel);
-                item.add(new SimpleAttributeModifier("style", "width: 350px"));
+                item.add(AttributeModifier.replace("style", "width: 350px"));
             }
         });
     }

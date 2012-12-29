@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.wicket.util;
 
 import hu.sch.domain.profile.Person;
@@ -36,7 +35,7 @@ import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.injection.web.InjectorHolder;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 /**
@@ -59,7 +58,7 @@ public class LoadableDetachablePersonModel extends LoadableDetachableModel<Perso
     }
 
     private void init() {
-        InjectorHolder.getInjector().inject(this);
+        Injector.get().inject(this);
     }
 
     @Override

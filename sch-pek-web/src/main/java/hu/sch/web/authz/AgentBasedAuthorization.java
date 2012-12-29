@@ -28,12 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
 import hu.sch.domain.PostType;
+import hu.sch.domain.User;
 import hu.sch.domain.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +41,7 @@ import java.util.regex.Matcher;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
-import org.apache.wicket.Request;
-import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.request.Request;
 
 /**
  * Autorizációs feladatok ellátásáért felelős osztály, mely feldolgozza az
@@ -113,7 +111,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
     @Override
     public Long getUserid(Request wicketRequest) {
         HttpServletRequest servletRequest =
-                ((WebRequest) wicketRequest).getHttpServletRequest();
+                (HttpServletRequest) wicketRequest.getContainerRequest();
         Set<String> viridSet = (Set<String>) servletRequest.getAttribute(VIRID_ATTRNAME);
 
         if (viridSet != null) {
@@ -135,8 +133,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
      */
     @Override
     public boolean hasAbstractRole(Request wicketRequest, String role) {
-        HttpServletRequest servletRequest =
-                ((WebRequest) wicketRequest).getHttpServletRequest();
+        HttpServletRequest servletRequest = (HttpServletRequest) wicketRequest.getContainerRequest();
         boolean inRole = servletRequest.isUserInRole(role);
         if (log.isDebugEnabled()) {
             log.debug("Check container role: " + role + ": " + inRole);
@@ -172,12 +169,12 @@ public final class AgentBasedAuthorization implements UserAuthorization {
 
     /**
      * A kérésben található entitlementek feldolgozását elvégző függvény.
+     *
      * @param wicketRequest Wicket kérés
      * @return CsoportId-Tagságtípus párok
      */
     private List<Long> parseEntitlements(Request wicketRequest) {
-        HttpServletRequest servletRequest =
-                ((WebRequest) wicketRequest).getHttpServletRequest();
+        HttpServletRequest servletRequest = (HttpServletRequest) wicketRequest.getContainerRequest();
 
         List<Long> memberships =
                 (List<Long>) servletRequest.getAttribute(ENTITLEMENT_CACHE);
@@ -228,8 +225,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
      */
     @Override
     public User getUserAttributes(Request wicketRequest) {
-        HttpServletRequest servletRequest =
-                ((WebRequest) wicketRequest).getHttpServletRequest();
+        HttpServletRequest servletRequest = (HttpServletRequest) wicketRequest.getContainerRequest();
         User user = new User();
 
         user.setEmailAddress(getSingleValuedStringAttribute(servletRequest, EMAIL_ATTRNAME));
@@ -270,6 +266,6 @@ public final class AgentBasedAuthorization implements UserAuthorization {
      */
     @Override
     public String getRemoteUser(Request wicketRequest) {
-        return ((WebRequest) wicketRequest).getHttpServletRequest().getRemoteUser();
+        return ((HttpServletRequest) wicketRequest.getContainerRequest()).getRemoteUser();
     }
 }

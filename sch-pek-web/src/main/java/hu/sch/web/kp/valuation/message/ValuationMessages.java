@@ -30,21 +30,15 @@
  */
 package hu.sch.web.kp.valuation.message;
 
-import hu.sch.domain.Group;
-import hu.sch.domain.Semester;
-import hu.sch.domain.Valuation;
-import hu.sch.domain.ValuationMessage;
-import hu.sch.domain.ValuationPeriod;
-import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.web.kp.KorokPage;
+import hu.sch.domain.*;
 import hu.sch.services.ValuationManagerLocal;
+import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.kp.valuation.ValuationHistory;
 import hu.sch.web.kp.valuation.Valuations;
-import java.util.HashMap;
+import hu.sch.web.wicket.components.customlinks.UserLink;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -55,6 +49,8 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValueConversionException;
 
 /**
  *
@@ -74,18 +70,16 @@ public class ValuationMessages extends KorokPage {
 
     public static BookmarkablePageLink<ValuationMessages> getLink(String id, final Long gId, final Semester s) {
         return new BookmarkablePageLink<ValuationMessages>(id, ValuationMessages.class,
-                new PageParameters(new HashMap<String, String>() {
-
-            {
-                put("gid", gId.toString());
-                put("sid", s.getId());
-            }
-        }));
+                new PageParameters().add("gid", gId.toString()).add("sid", s.getId()));
     }
 
     public ValuationMessages(PageParameters params) {
-        Long groupId = params.getAsLong("gid");
-        String semesterStr = params.getString("sid", null);
+        Long groupId = null;
+        try {
+            groupId = params.get("gid").toLong();
+        } catch (StringValueConversionException ex) {
+        }
+        String semesterStr = params.get("sid").toString(null);
 
         if (groupId == null || (group = userManager.findGroupById(groupId)) == null) {
             error("Nincs ilyen csoport!");
@@ -105,14 +99,8 @@ public class ValuationMessages extends KorokPage {
         add(new Label("semester", semester.toString()));
 
         add(new BookmarkablePageLink("latestVersion", ValuationDetails.class,
-                new PageParameters("id=" + valuationManager.findLatestVersionsId(group, semester))));
-        add(new BookmarkablePageLink("history", ValuationHistory.class, new PageParameters(new HashMap() {
-
-            {
-                put("gid", group.getId());
-                put("sid", semester.getId());
-            }
-        })));
+                new PageParameters().add("id", valuationManager.findLatestVersionsId(group, semester))));
+        add(new BookmarkablePageLink("history", ValuationHistory.class, new PageParameters().add("gid", group.getId()).add("sid", semester.getId())));
 
         // ok megvan, hogy melyik a csoport és melyik a félév
         List<ValuationMessage> messages = valuationManager.getMessages(group, semester);

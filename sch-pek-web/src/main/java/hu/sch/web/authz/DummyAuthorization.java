@@ -28,20 +28,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
-import org.apache.wicket.Request;
-import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.RuntimeConfigurationType;
+import org.apache.wicket.request.Request;
 
 /**
  * Fejlesztői teszt autorizációs modul. Lényegében meghazudja nekünk, hogy mely
  * körökben vagyunk körvezetők.
- * 
+ *
  * @author hege
  */
 public final class DummyAuthorization implements UserAuthorization {
@@ -56,7 +55,7 @@ public final class DummyAuthorization implements UserAuthorization {
      */
     @Override
     public void init(Application wicketApplication) {
-        if (wicketApplication.getConfigurationType().equals(WebApplication.DEPLOYMENT)) {
+        if (wicketApplication.getConfigurationType() == RuntimeConfigurationType.DEPLOYMENT) {
             throw new IllegalStateException("Do not use dummy authz module in production environment!");
         }
         log.warn("Dummy authorization mode initiated successfully");
