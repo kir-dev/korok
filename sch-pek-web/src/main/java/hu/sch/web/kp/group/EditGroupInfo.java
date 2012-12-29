@@ -94,7 +94,7 @@ public class EditGroupInfo extends KorokPage {
         editInfoForm.add(new ValidationSimpleFormComponentLabel("nameLabel", nameTF));
 
         TextField<Integer> foundedTF = new TextField<Integer>("founded");
-        foundedTF.add(new RangeValidator<Integer>(1960, Calendar.getInstance().get(Calendar.YEAR)));
+        foundedTF.add(new RangeValidator<Integer>(1950, Calendar.getInstance().get(Calendar.YEAR)));
         foundedTF.add(new ValidationStyleBehavior());
         editInfoForm.add(foundedTF);
         foundedTF.setLabel(new Model<String>("Alapítás éve"));

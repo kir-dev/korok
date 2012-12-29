@@ -37,9 +37,4 @@
     <parameter-encoding default-charset="UTF-8"/>
     <context-root>/services</context-root>
     <class-loader delegate="true"/>
-
-    <security-role-mapping>
-        <role-name>authorized</role-name>
-        <group-name>authorized</group-name>
-    </security-role-mapping>
 </sun-web-app>

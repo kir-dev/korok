@@ -54,7 +54,7 @@ import org.apache.wicket.model.Model;
 public class ValuationTableForUser extends ValuationTable {
 
     public ValuationTableForUser(String id, List<ValuationData> items, int rowsPerPage) {
-        super(id, items, rowsPerPage);
+        super(id, items, rowsPerPage, false);
         provider.setSort(MySortableDataProvider.SORT_BY_SEMESTER, SortOrder.DESCENDING);
     }
 

@@ -30,15 +30,13 @@
  */
 package hu.sch.web.kp.valuation.request.point;
 
-import hu.sch.domain.Group;
-import hu.sch.domain.PointRequest;
-import hu.sch.domain.User;
-import hu.sch.domain.Valuation;
+import hu.sch.domain.*;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
+import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.TinyMCEContainer;
 import java.util.HashSet;
 import java.util.List;
@@ -115,6 +113,11 @@ public class PointRequestEditor extends Panel {
 
                 item.add(new Label("user.name"));
                 item.add(new Label("user.nickName"));
+
+                Membership ms = userManager.getMembership(val.getGroupId(),
+                        item.getModelObject().getUserId());
+                item.add(new SvieMembershipDetailsIcon("user.svie", ms));
+
                 TextField<Integer> pont = new TextField<Integer>("point");
                 //csoportfüggő validátor hozzácsatolása
                 if (val.getGroupId().longValue() == Group.SCH_QPA) {

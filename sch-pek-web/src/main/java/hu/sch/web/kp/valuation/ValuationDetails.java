@@ -158,7 +158,7 @@ public class ValuationDetails extends KorokPage {
         add(new Label("stat.givenAB", new Model<Long>(stat.getGivenAB())));
 
         final List<ValuationData> igenylista = valuationManager.findRequestsForValuation(valuation.getId());
-        add(new ValuationTableForGroup("requests", igenylista).getDataTable());
+        add(new ValuationTableForGroup("requests", igenylista, true).getDataTable());
 
         addValuationText(valuation);
         addPrinciple(valuation);

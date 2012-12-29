@@ -35,6 +35,7 @@ import hu.sch.services.UserManagerLocal;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.SelectableMembership;
+import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.customlinks.ChangePostLink;
 import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.web.wicket.components.tables.PanelColumn;
@@ -81,8 +82,14 @@ public final class AdminMembershipsPanel extends Panel {
 
             @Override
             public void onPopulateColumns(List<IColumn<SelectableMembership>> columns) {
-                columns.add(new PropertyColumn<SelectableMembership>(new Model<String>("SVIE tag?"),
-                        MembershipTable.SORT_BY_SVIE, "membership.user.svieMemberText"));
+                columns.add(new PanelColumn<SelectableMembership>("SVIE",
+                        MembershipTable.SORT_BY_SVIE) {
+
+                    @Override
+                    protected Panel getPanel(String componentId, SelectableMembership obj) {
+                        return new SvieMembershipDetailsIcon(componentId, obj.getMembership());
+                    }
+                });
 
                 columns.add(new PanelColumn<SelectableMembership>("Jogok") {
 

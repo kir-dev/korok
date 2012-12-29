@@ -1,72 +1,44 @@
 /**
- * Copyright (c) 2008-2010, Peter Major
- * All rights reserved.
+ * Copyright (c) 2008-2010, Peter Major All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *  * Neither the name of the Peter Major nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
- *  * All advertising materials mentioning features or use of this software
- * must display the following acknowledgement:
- * This product includes software developed by the Kir-Dev Team, Hungary
- * and its contributors.
+ * modification, are permitted provided that the following conditions are met: *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. * Redistributions in binary
+ * form must reproduce the above copyright notice, this list of conditions and
+ * the following disclaimer in the documentation and/or other materials provided
+ * with the distribution. * Neither the name of the Peter Major nor the names of
+ * its contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission. * All advertising
+ * materials mentioning features or use of this software must display the
+ * following acknowledgement: This product includes software developed by the
+ * Kir-Dev Team, Hungary and its contributors.
  *
- * THIS SOFTWARE IS PROVIDED BY Peter Major ''AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL Peter Major BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY Peter Major ''AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL Peter Major BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package hu.sch.ejb;
 
-import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.Group;
-import hu.sch.domain.Membership;
-import hu.sch.domain.PointRequest;
-import hu.sch.domain.Post;
-import hu.sch.domain.PostType;
-import hu.sch.domain.Semester;
-import hu.sch.domain.SpotImage;
-import hu.sch.domain.SvieMembershipType;
-import hu.sch.domain.SvieStatus;
-import hu.sch.domain.User;
-import hu.sch.domain.Valuation;
-import hu.sch.domain.ValuationStatus;
+import hu.sch.domain.*;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.profile.Person;
-import hu.sch.services.LdapManagerLocal;
-import hu.sch.services.LogManagerLocal;
-import hu.sch.services.MailManagerLocal;
-import hu.sch.services.PostManagerLocal;
-import hu.sch.services.UserManagerLocal;
+import hu.sch.services.*;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -430,7 +402,12 @@ public class UserManagerBean implements UserManagerLocal {
                 + "AND ms.group.id = :groupId");
         q.setParameter("groupId", groupId);
         q.setParameter("userId", userId);
-        return (Membership) q.getSingleResult();
+
+        try {
+            return (Membership) q.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
     @Override
@@ -551,9 +528,9 @@ public class UserManagerBean implements UserManagerLocal {
 
     /**
      * Tagja-e a körnek a felhasználó?
-     * 
+     *
      * @param group kör
-     * @param user  felhasználó
+     * @param user felhasználó
      * @return
      */
     private boolean isMember(Group group, User user) {
@@ -592,7 +569,7 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public boolean acceptRecommendedPhoto(String userUid) {
-        Person p = null;
+        Person p;
         try {
             p = ldapManager.getPersonByUid(userUid);
         } catch (PersonNotFoundException ex) {

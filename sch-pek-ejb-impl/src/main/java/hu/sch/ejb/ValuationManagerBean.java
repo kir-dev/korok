@@ -30,29 +30,30 @@
  */
 package hu.sch.ejb;
 
-import hu.sch.domain.GivenPoint;
-import hu.sch.domain.ValuationData;
-import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.EntrantType;
-import hu.sch.domain.Group;
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.EntrantExportRecord;
+import hu.sch.domain.EntrantRequest;
+import hu.sch.domain.EntrantType;
+import hu.sch.domain.GivenPoint;
+import hu.sch.domain.Group;
+import hu.sch.domain.PointRequest;
+import hu.sch.domain.Semester;
+import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
+import hu.sch.domain.ValuationData;
+import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
-import hu.sch.domain.ValuationMessage;
-import hu.sch.domain.User;
-import hu.sch.domain.PointRequest;
-import hu.sch.domain.Semester;
 import hu.sch.domain.profile.Person;
+import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.domain.util.MapUtils;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.MailManagerLocal;
-import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
@@ -63,6 +64,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -81,6 +83,7 @@ import org.apache.log4j.Logger;
  *
  * @author hege
  * @author messo
+ * @author balo
  */
 @Stateless
 public class ValuationManagerBean implements ValuationManagerLocal {
@@ -823,5 +826,32 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
 
         throw new IllegalArgumentException("Unable to find user with points");
+    }
+
+    @Override
+    public List<ApprovedEntrant> getApprovedEntrants(final String neptun,
+            final Semester semester) throws PersonNotFoundException {
+
+        final Person person = ldapManager.getPersonByNeptun(neptun);
+
+        final List<ApprovedEntrant> results = new LinkedList<ApprovedEntrant>();
+
+        if (person.getVirId() != null) {
+            final Query query =
+                    em.createQuery("SELECT new hu.sch.domain.rest.ApprovedEntrant("
+                    + "entrantReq.valuation.groupId, entrantReq.valuation.group.name, "
+                    + "entrantReq.entrantType) "
+                    + "FROM EntrantRequest entrantReq "
+                    + "WHERE entrantReq.userId = :virId AND "
+                    + "entrantReq.valuation.semester = :semester AND "
+                    + "entrantReq.valuation.entrantStatus = hu.sch.domain.ValuationStatus.ELFOGADVA AND "
+                    + "entrantReq.valuation.nextVersion = null");
+            query.setParameter("semester", semester);
+            query.setParameter("virId", person.getVirId());
+
+            results.addAll(query.getResultList());
+        }
+
+        return results;
     }
 }

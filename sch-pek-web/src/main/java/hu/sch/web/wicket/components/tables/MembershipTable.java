@@ -224,7 +224,8 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
 
                     @Override
                     public int compare(T t0, T t1) {
-                        return r * t0.getMembership().getUser().compareToBySvieMemberText(t1.getMembership().getUser());
+                        return r * t0.getMembership().getUser().compareToBySvieMemberText(t1.getMembership().getUser(),
+                                t0.getMembership());
                     }
                 });
             } else if (prop.equals(SORT_BY_MEMBERSHIP_DURATION)) {

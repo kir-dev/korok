@@ -30,16 +30,15 @@
  */
 package hu.sch.web.kp.valuation.request.entrant;
 
-import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.EntrantType;
-import hu.sch.domain.User;
-import hu.sch.domain.Valuation;
+
+import hu.sch.domain.*;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
+import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.choosers.EntrantTypeChooser;
 import java.util.List;
 import javax.ejb.EJB;
@@ -103,6 +102,11 @@ public class EntrantRequestEditor extends Panel {
                 item.setDefaultModel(new CompoundPropertyModel<EntrantRequest>(item.getModelObject()));
                 item.add(new Label("user.name"));
                 item.add(new Label("user.nickName"));
+
+                Membership ms = userManager.getMembership(ert.getGroupId(),
+                        item.getModelObject().getUserId());
+                item.add(new SvieMembershipDetailsIcon("user.svie", ms));
+
                 EntrantTypeChooser bt = new EntrantTypeChooser("entrantType");
                 bt.setRequired(true);
                 item.add(bt);

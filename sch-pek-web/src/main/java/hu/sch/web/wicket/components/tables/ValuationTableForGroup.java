@@ -30,7 +30,9 @@
  */
 package hu.sch.web.wicket.components.tables;
 
+import hu.sch.domain.Membership;
 import hu.sch.domain.ValuationData;
+import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import java.util.List;
 import org.apache.wicket.AttributeModifier;
@@ -52,13 +54,17 @@ import org.apache.wicket.model.Model;
  */
 public class ValuationTableForGroup extends ValuationTable {
 
-    public ValuationTableForGroup(String id, List<ValuationData> items, int rowsPerPage) {
-        super(id, items, rowsPerPage);
+    public ValuationTableForGroup(String id, List<ValuationData> items, int rowsPerPage,
+            final boolean showSvieColumn) {
+
+        super(id, items, rowsPerPage, showSvieColumn);
         provider.setSort(MySortableDataProvider.SORT_BY_POINT, SortOrder.DESCENDING);
     }
 
-    public ValuationTableForGroup(String id, List<ValuationData> items) {
-        this(id, items, 20);
+    public ValuationTableForGroup(String id, List<ValuationData> items, 
+            final boolean showSvieColumn) {
+
+        this(id, items, 20, showSvieColumn);
     }
 
     @Override
@@ -70,6 +76,24 @@ public class ValuationTableForGroup extends ValuationTable {
                 return new UserLink(componentId, vd.getUser());
             }
         });
+
+        if (isShowSvieColumn) {
+            columns.add(new PanelColumn<ValuationData>("SVIE") {
+
+                @Override
+                protected Panel getPanel(final String componentId, final ValuationData vd) {
+                    final Membership ms = userManager.getMembership(vd.getGroup().getId(),
+                            vd.getUser().getId());
+
+                    if (ms != null) {
+                        return new SvieMembershipDetailsIcon(componentId, ms);
+                    }
+
+                    // törölt körtagságból eredő értékelés
+                    return new SvieMembershipDetailsIcon(componentId, vd.getUser());
+                }
+            });
+        }
 
         columns.add(new PropertyColumn<ValuationData>(new Model<String>("Pont"), MySortableDataProvider.SORT_BY_POINT, "pointRequest.point"));
         columns.add(new PropertyColumn<ValuationData>(new Model<String>("Belépő típusa"), MySortableDataProvider.SORT_BY_ENTRANT, "entrantRequest.entrantType"));
