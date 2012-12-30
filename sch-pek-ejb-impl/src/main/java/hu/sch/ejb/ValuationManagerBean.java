@@ -412,6 +412,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 // nincs is ilyen személy az űrlapban, akkor ő már nincs a körben.
                 if (em.contains(dbEr)) {
                     em.remove(dbEr);
+                    it.remove();
                 }
             }
         }
@@ -425,12 +426,9 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             //System.out.println("Beszúrjuk: " + er.getUser() + " " + er.getEntrantType());
         }
 
-        if (!em.contains(valuation)) {
-            em.persist(valuation);
-        }
-
         try {
             //System.out.println("[FLUSH]");
+            em.merge(valuation);
             em.flush();
             //System.out.println("[SUCCESS]]");
         } catch (OptimisticLockException ex) {

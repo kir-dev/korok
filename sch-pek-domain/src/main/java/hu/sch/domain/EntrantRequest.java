@@ -33,6 +33,8 @@ package hu.sch.domain;
 
 import hu.sch.domain.interfaces.HasUserRelation;
 import java.io.Serializable;
+import java.text.Collator;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -53,7 +55,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "belepoigenyles")
-public class EntrantRequest implements Serializable, HasUserRelation {
+public class EntrantRequest implements Serializable, HasUserRelation, Comparable<EntrantRequest> {
 
     protected Long id;
     protected Valuation valuation;
@@ -182,5 +184,11 @@ public class EntrantRequest implements Serializable, HasUserRelation {
     @Transient
     public boolean isValid() {
         return !((entrantType == EntrantType.AB || entrantType == EntrantType.KB) && valuationText == null);
+    }
+
+    @Override
+    public int compareTo(final EntrantRequest o) {
+        final Collator huCollator = Collator.getInstance(new Locale("hu"));
+        return huCollator.compare(user.getName(), o.getUser().getName());
     }
 }

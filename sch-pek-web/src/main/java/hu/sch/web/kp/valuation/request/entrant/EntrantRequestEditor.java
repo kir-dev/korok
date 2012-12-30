@@ -30,7 +30,6 @@
  */
 package hu.sch.web.kp.valuation.request.entrant;
 
-
 import hu.sch.domain.*;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
@@ -40,7 +39,11 @@ import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.choosers.EntrantTypeChooser;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -69,7 +72,6 @@ public class EntrantRequestEditor extends Panel {
         final List<EntrantRequest> igenylista = igenyeketElokeszit(ert);
 
         Form<Valuation> igform = new Form<Valuation>("igenyekform", new Model<Valuation>(ert)) {
-
             @Override
             protected void onSubmit() {
                 // Van-e olyan, amit indokolni kell
@@ -96,7 +98,6 @@ public class EntrantRequestEditor extends Panel {
         add(igform);
 
         igform.add(new ListView<EntrantRequest>("igenyek", igenylista) {
-
             @Override
             protected void populateItem(ListItem<EntrantRequest> item) {
                 item.setDefaultModel(new CompoundPropertyModel<EntrantRequest>(item.getModelObject()));
@@ -124,25 +125,58 @@ public class EntrantRequestEditor extends Panel {
                 igenyek.add(new EntrantRequest(f, EntrantType.KDO));
             }
         } else {
-
-            //tényleges összefésülés
-            boolean szerepel;
-            if (igenyek.size() != csoporttagok.size()) {
-                for (User csoporttag : csoporttagok) {
-                    szerepel = false;
-                    for (EntrantRequest igeny : igenyek) {
-                        if (igeny.getUserId().equals(csoporttag.getId())) {
-                            szerepel = true;
-                            break;
-                        }
-                    }
-                    if (!szerepel) {
-                        igenyek.add(new EntrantRequest(csoporttag, EntrantType.KDO));
-                    }
-                }
-            }
+            //in case of exitsing request, we need merge if group members are changed
+            cleanOldBoysFromRequests(igenyek, csoporttagok);
+            addMissingEntrantRequests(igenyek, csoporttagok);
         }
 
         return igenyek;
+    }
+
+    /**
+     * Removes requests which don't belong to any active member. (In case of
+     * members changed between entrantrequests)
+     *
+     * @param requests
+     * @param actualMemberIds
+     */
+    private void cleanOldBoysFromRequests(final List<EntrantRequest> requests,
+            final List<User> actualMembers) {
+
+        for (final Iterator<EntrantRequest> requestIterator = requests.iterator(); requestIterator.hasNext();) {
+            final EntrantRequest request = requestIterator.next();
+
+            if (!actualMembers.contains(request.getUser())) {
+                requestIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Add missing entrantrequest to new active members. (In case of members
+     * changed between entrantrequests)
+     *
+     * @param requests
+     * @param actualMembers
+     */
+    private void addMissingEntrantRequests(final List<EntrantRequest> requests,
+            final List<User> actualMembers) {
+
+        final Set<User> usersHasRequest = new HashSet<User>(requests.size());
+        for (EntrantRequest request : requests) {
+            usersHasRequest.add(request.getUser());
+        }
+
+        boolean needReorder = false;
+        for (User member : actualMembers) {
+            if (!usersHasRequest.contains(member)) {
+                requests.add(new EntrantRequest(member, EntrantType.KDO));
+                needReorder = true;
+            }
+        }
+
+        if (needReorder) {
+            Collections.sort(requests);
+        }
     }
 }
