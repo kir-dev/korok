@@ -38,7 +38,9 @@ import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.TinyMCEContainer;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -77,7 +79,6 @@ public class PointRequestEditor extends Panel {
 
         // Űrlap létrehozása
         Form<Valuation> pointRequestsForm = new Form<Valuation>("pointRequestsForm", new Model<Valuation>(val)) {
-
             @Override
             protected void onSubmit() {
                 final Valuation valuation = getModelObject();
@@ -97,7 +98,6 @@ public class PointRequestEditor extends Panel {
 
         // Bevitelhez táblázat létrehozása
         ListView<PointRequest> listView = new ListView<PointRequest>("requestList", requestList) {
-
             // QPA group pontozásvalidátora
             final IValidator<Integer> QpaPontValidator = new RangeValidator<Integer>(0, 100);
             // A többi group pontozásvalidátora
@@ -128,7 +128,6 @@ public class PointRequestEditor extends Panel {
 
                 //olyan validátor, ami akkor dob hibát ha 0 és 5 pont között adott meg
                 pont.add(new IValidator<Integer>() {
-
                     @Override
                     public void validate(IValidatable<Integer> arg0) {
                         final Integer pont = arg0.getValue();
@@ -149,27 +148,67 @@ public class PointRequestEditor extends Panel {
         add(pointRequestsForm);
     }
 
-    private List<PointRequest> prepareRequests(Valuation ert) {
-        List<User> members =
+    private List<PointRequest> prepareRequests(final Valuation ert) {
+        final List<User> members =
                 userManager.getCsoporttagokWithoutOregtagok(ert.getGroupId());
-        List<PointRequest> pointRequests =
+        final List<PointRequest> pointRequests =
                 valuationManager.findPontIgenyekForErtekeles(ert.getId());
 
-        if (pointRequests.size() != members.size()) {
-            Set<Long> alreadyAdded =
-                    new HashSet<Long>(pointRequests.size());
-
-            for (PointRequest p : pointRequests) {
-                alreadyAdded.add(p.getUserId());
+        if (pointRequests.isEmpty()) {
+            for (User member : members) {
+                pointRequests.add(new PointRequest(member, 0));
             }
+        } else {
+            //in case of exitsing request, we need merge if group members are changed
+            cleanOldBoysFromRequests(pointRequests, members);
+            addMissingPointRequests(pointRequests, members);
+        }
+        return pointRequests;
+    }
 
-            for (User f : members) {
-                if (!alreadyAdded.contains(f.getId())) {
-                    pointRequests.add(new PointRequest(f, 0));
-                }
+    /**
+     * Removes requests which don't belong to any active member. (In case of
+     * members changed between pointrequests)
+     *
+     * @param requests
+     * @param actualMembers
+     */
+    private void cleanOldBoysFromRequests(final List<PointRequest> requests,
+            final List<User> actualMembers) {
+
+        for (final Iterator<PointRequest> requestIterator = requests.iterator(); requestIterator.hasNext();) {
+            final PointRequest request = requestIterator.next();
+            if (!actualMembers.contains(request.getUser())) {
+                requestIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Add missing pointrequest to new active members. (In case of members
+     * changed between pointrequests)
+     *
+     * @param requests
+     * @param actualMembers
+     */
+    private void addMissingPointRequests(final List<PointRequest> requests,
+            final List<User> actualMembers) {
+
+        final Set<User> usersHasRequest = new HashSet<User>(requests.size());
+        for (PointRequest request : requests) {
+            usersHasRequest.add(request.getUser());
+        }
+
+        boolean needReorder = false;
+        for (User member : actualMembers) {
+            if (!usersHasRequest.contains(member)) {
+                requests.add(new PointRequest(member, 0));
+                needReorder = true;
             }
         }
 
-        return pointRequests;
+        if (needReorder) {
+            Collections.sort(requests);
+        }
     }
 }

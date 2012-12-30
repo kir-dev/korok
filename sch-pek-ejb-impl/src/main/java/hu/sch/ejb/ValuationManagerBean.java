@@ -336,14 +336,6 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             }
         }
 
-        // ha eddig nem létezett az értékelés (most hoztuk létre az új verziót)
-        // akkor most mentsük el a db-be, hogy az újonnan kreált pontokat is
-        // megváltoztattuk.
-        if (!em.contains(valuation)) {
-            // ha új értékelés
-            em.persist(valuation);
-        }
-
         // a maradék pontok nem szerepelnek a DB-ben, ez azt jelenti, hogy őket
         // el kell menteni!
         for (PointRequest pr : form.values()) {
@@ -358,6 +350,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
         try {
             //System.out.println("[FLUSH]");
+            em.merge(valuation);
             em.flush();
             //System.out.println("[SUCCESS]]");
         } catch (OptimisticLockException ex) {

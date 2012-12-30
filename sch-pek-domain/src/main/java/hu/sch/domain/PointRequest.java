@@ -33,6 +33,8 @@ package hu.sch.domain;
 
 import hu.sch.domain.interfaces.HasUserRelation;
 import java.io.Serializable;
+import java.text.Collator;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -49,7 +51,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "pontigenyles")
-public class PointRequest implements Serializable, HasUserRelation {
+public class PointRequest implements Serializable, HasUserRelation, Comparable<PointRequest> {
 
     protected Long id;
     protected Valuation valuation;
@@ -150,5 +152,11 @@ public class PointRequest implements Serializable, HasUserRelation {
         pr.setPoint(point);
         pr.setUser(user);
         return pr;
+    }
+
+    @Override
+    public int compareTo(final PointRequest o) {
+        final Collator huCollator = Collator.getInstance(new Locale("hu"));
+        return huCollator.compare(user.getName(), o.getUser().getName());
     }
 }
