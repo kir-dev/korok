@@ -82,8 +82,11 @@ import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
+import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.cycle.RequestCycleContext;
+import org.apache.wicket.request.mapper.MountedMapper;
+import org.apache.wicket.request.mapper.parameter.UrlPathPageParametersEncoder;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
 import org.wicketstuff.javaee.naming.global.AppJndiNamingStrategy;
 import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
@@ -155,7 +158,6 @@ public class PhoenixApplication extends WebApplication {
 
         if (Configuration.getEnvironment().equals(Environment.PRODUCTION)) {
             setRequestCycleProvider(new IRequestCycleProvider() {
-
                 @Override
                 public RequestCycle get(RequestCycleContext c) {
                     c.setExceptionMapper(new DefaultExceptionMapper());
@@ -168,8 +170,7 @@ public class PhoenixApplication extends WebApplication {
 
         mountPackage("/error", InternalServerError.class);
         mountPage("/loggedout", Logout.class);
-        mountKorok();
-        mountProfil();
+        mountPages();
 
         //alkalmazás beállítások
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
@@ -215,53 +216,62 @@ public class PhoenixApplication extends WebApplication {
         return authorizationComponent;
     }
 
-    private void mountKorok() {
-        mountPage("/korok", ShowUser.class);
-        mountPage("/korok/showuser", ShowUser.class);
-        mountPage("/korok/userhistory", UserHistory.class);
-        mountPage("/korok/search", SearchResultsPage.class);
-        mountPage("/korok/confirm", ConfirmPage.class);
+    private void mountPages() {
+        mountPageWithPath("/korok", ShowUser.class);
+        mountPageWithPath("/korok/showuser", ShowUser.class);
+        mountPageWithPath("/korok/userhistory", UserHistory.class);
+        mountPageWithPath("/korok/search", SearchResultsPage.class);
+        mountPageWithPath("/korok/confirm", ConfirmPage.class);
 
-        mountPage("/korok/showgroup", ShowGroup.class);
-        mountPage("/korok/grouphierarchy", GroupHierarchy.class);
-        mountPage("/korok/grouphistory", GroupHistory.class);
-        mountPage("/korok/editgroupinfo", EditGroupInfo.class);
-        mountPage("/korok/changepost", ChangePost.class);
+        mountPageWithPath("/korok/showgroup", ShowGroup.class);
+        mountPageWithPath("/korok/grouphierarchy", GroupHierarchy.class);
+        mountPageWithPath("/korok/grouphistory", GroupHistory.class);
+        mountPageWithPath("/korok/editgroupinfo", EditGroupInfo.class);
+        mountPageWithPath("/korok/changepost", ChangePost.class);
 
-        mountPage("/korok/valuation", Valuations.class);
-        mountPage("/korok/valuationdetails", ValuationDetails.class);
-        mountPage("/korok/valuationhistory", ValuationHistory.class);
-        mountPage("/korok/newvaluation", NewValuation.class);
-        mountPage("/korok/valuationmessages", ValuationMessages.class);
+        mountPageWithPath("/korok/valuation", Valuations.class);
+        mountPageWithPath("/korok/valuationdetails", ValuationDetails.class);
+        mountPageWithPath("/korok/valuationhistory", ValuationHistory.class);
+        mountPageWithPath("/korok/newvaluation", NewValuation.class);
+        mountPageWithPath("/korok/valuationmessages", ValuationMessages.class);
 
-        mountPage("/korok/pointrequests", PointRequests.class);
-        mountPage("/korok/entrantrequests", EntrantRequests.class);
+        mountPageWithPath("/korok/pointrequests", PointRequests.class);
+        mountPageWithPath("/korok/entrantrequests", EntrantRequests.class);
 
-        mountPage("/korok/svieaccount", SvieAccount.class);
-        mountPage("/korok/delegates", ChangeDelegates.class);
-        mountPage("/korok/consider", ConsiderPage.class);
-        mountPage("/korok/administration", EditSettings.class);
-        mountPage("/korok/administration/svieusermgmt", SvieUserMgmt.class);
-        mountPage("/korok/administration/sviegroupmgmt", SvieGroupMgmt.class);
-        mountPage("/korok/showinactive", ShowInactive.class);
-        mountPage("/korok/creategroup", CreateGroup.class);
-        mountPage("/korok/createperson", CreateNewPerson.class);
+        mountPageWithPath("/korok/svieaccount", SvieAccount.class);
+        mountPageWithPath("/korok/delegates", ChangeDelegates.class);
+        mountPageWithPath("/korok/consider", ConsiderPage.class);
+        mountPageWithPath("/korok/administration", EditSettings.class);
+        mountPageWithPath("/korok/administration/svieusermgmt", SvieUserMgmt.class);
+        mountPageWithPath("/korok/administration/sviegroupmgmt", SvieGroupMgmt.class);
+        mountPageWithPath("/korok/showinactive", ShowInactive.class);
+        mountPageWithPath("/korok/creategroup", CreateGroup.class);
+        mountPageWithPath("/korok/createperson", CreateNewPerson.class);
 
         //IDM linkek
-        mountPage("/korok/reminder", UserNameReminder.class);
-        //mount(new HybridUrlCodingStrategy("/korok/register", RegistrationPage.class));
-        mountPage("/korok/register", RegistrationPage.class);
-        mountPage("/korok/registerfinished", RegistrationFinishedPage.class);
-        mountPage("/korok/logout", Logout.class);
+        mountPageWithPath("/korok/reminder", UserNameReminder.class);
+        mountPageWithPath("/korok/register", RegistrationPage.class);
+        mountPageWithPath("/korok/registerfinished", RegistrationFinishedPage.class);
+        mountPageWithPath("/korok/logout", Logout.class);
+
+        mountPageWithPath("/profile", ShowPersonPage.class);
+        mountPageWithPath("/profile/show", ShowPersonPage.class);
+        mountPageWithPath("/profile/edit", EditPage.class);
+        mountPageWithPath("/profile/changepassword", ChangePasswordPage.class);
+        mountPageWithPath("/profile/birthdays", BirthDayPage.class);
+        mountPageWithPath("/profile/admin", AdminPage.class);
     }
 
-    private void mountProfil() {
-        mountPage("/profile", ShowPersonPage.class);
-        mountPage("/profile/show", ShowPersonPage.class);
-        mountPage("/profile/edit", EditPage.class);
-        mountPage("/profile/changepassword", ChangePasswordPage.class);
-        mountPage("/profile/birthdays", BirthDayPage.class);
-        mountPage("/profile/admin", AdminPage.class);
+    /**
+     * This needed because page mounting changed in wicket 1.5
+     *
+     * @see <a
+     * href="https://cwiki.apache.org/WICKET/migration-to-wicket-15.html#MigrationtoWicket1.5-Pagemounting">
+     * MigrationtoWicket1.5-Pagemounting</a>
+     */
+    private void mountPageWithPath(final String path, final Class<? extends IRequestablePage> pageClass) {
+        mount(new MountedMapper(path, pageClass,
+                new UrlPathPageParametersEncoder()));
     }
 
     @Override
