@@ -36,14 +36,11 @@ import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.web.kp.valuation.ValuationDetails;
+import hu.sch.web.kp.valuation.request.Requests;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.choosers.EntrantTypeChooser;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -115,9 +112,11 @@ public class EntrantRequestEditor extends Panel {
         });
     }
 
-    private List<EntrantRequest> igenyeketElokeszit(Valuation ert) {
-        List<User> csoporttagok = userManager.getCsoporttagokWithoutOregtagok(ert.getGroupId());
-        List<EntrantRequest> igenyek = valuationManager.findBelepoIgenyekForErtekeles(ert.getId());
+    private List<EntrantRequest> igenyeketElokeszit(final Valuation ert) {
+        final List<User> csoporttagok =
+                userManager.getCsoporttagokWithoutOregtagok(ert.getGroupId());
+        final List<EntrantRequest> igenyek =
+                valuationManager.findBelepoIgenyekForErtekeles(ert.getId());
 
         //tagok és igények összefésülése
         if (igenyek.isEmpty()) {
@@ -126,57 +125,10 @@ public class EntrantRequestEditor extends Panel {
             }
         } else {
             //in case of exitsing request, we need merge if group members are changed
-            cleanOldBoysFromRequests(igenyek, csoporttagok);
-            addMissingEntrantRequests(igenyek, csoporttagok);
+            Requests.cleanOldBoysFromRequests(igenyek, csoporttagok);
+            Requests.addMissingRequests(igenyek, csoporttagok);
         }
 
         return igenyek;
-    }
-
-    /**
-     * Removes requests which don't belong to any active member. (In case of
-     * members changed between entrantrequests)
-     *
-     * @param requests
-     * @param actualMemberIds
-     */
-    private void cleanOldBoysFromRequests(final List<EntrantRequest> requests,
-            final List<User> actualMembers) {
-
-        for (final Iterator<EntrantRequest> requestIterator = requests.iterator(); requestIterator.hasNext();) {
-            final EntrantRequest request = requestIterator.next();
-
-            if (!actualMembers.contains(request.getUser())) {
-                requestIterator.remove();
-            }
-        }
-    }
-
-    /**
-     * Add missing entrantrequest to new active members. (In case of members
-     * changed between entrantrequests)
-     *
-     * @param requests
-     * @param actualMembers
-     */
-    private void addMissingEntrantRequests(final List<EntrantRequest> requests,
-            final List<User> actualMembers) {
-
-        final Set<User> usersHasRequest = new HashSet<User>(requests.size());
-        for (EntrantRequest request : requests) {
-            usersHasRequest.add(request.getUser());
-        }
-
-        boolean needReorder = false;
-        for (User member : actualMembers) {
-            if (!usersHasRequest.contains(member)) {
-                requests.add(new EntrantRequest(member, EntrantType.KDO));
-                needReorder = true;
-            }
-        }
-
-        if (needReorder) {
-            Collections.sort(requests);
-        }
     }
 }

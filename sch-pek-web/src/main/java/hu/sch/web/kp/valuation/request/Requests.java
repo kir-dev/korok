@@ -1,40 +1,47 @@
 /**
- * Copyright (c) 2008-2010, Peter Major
- * All rights reserved.
+ * Copyright (c) 2008-2010, Peter Major All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *  * Neither the name of the Peter Major nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
- *  * All advertising materials mentioning features or use of this software
- * must display the following acknowledgement:
- * This product includes software developed by the Kir-Dev Team, Hungary
- * and its contributors.
+ * modification, are permitted provided that the following conditions are met: *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. * Redistributions in binary
+ * form must reproduce the above copyright notice, this list of conditions and
+ * the following disclaimer in the documentation and/or other materials provided
+ * with the distribution. * Neither the name of the Peter Major nor the names of
+ * its contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission. * All advertising
+ * materials mentioning features or use of this software must display the
+ * following acknowledgement: This product includes software developed by the
+ * Kir-Dev Team, Hungary and its contributors.
  *
- * THIS SOFTWARE IS PROVIDED BY Peter Major ''AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL Peter Major BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY Peter Major ''AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL Peter Major BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package hu.sch.web.kp.valuation.request;
 
+import hu.sch.domain.AbstractValuationRequest;
+import hu.sch.domain.EntrantRequest;
+import hu.sch.domain.EntrantType;
+import hu.sch.domain.PointRequest;
+import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.valuation.Valuations;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -70,5 +77,57 @@ public class Requests extends KorokPage {
         setDefaultModel(new CompoundPropertyModel<Valuation>(valuation));
         add(new Label("group.name"));
         add(new Label("semester"));
+    }
+
+    /**
+     * Removes requests which don't belong to any active member. (In case of
+     * members changed between pointrequests)
+     *
+     * @param requests
+     * @param actualMembers
+     */
+    public static void cleanOldBoysFromRequests(final List<? extends AbstractValuationRequest> requests,
+            final List<User> actualMembers) {
+
+        for (final Iterator<? extends AbstractValuationRequest> requestIterator = requests.iterator();
+                requestIterator.hasNext();) {
+
+            final AbstractValuationRequest request = requestIterator.next();
+            if (!actualMembers.contains(request.getUser())) {
+                requestIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Add missing pointrequest to new active members. (In case of members
+     * changed between pointrequests)
+     *
+     * @param requests
+     * @param actualMembers
+     */
+    public static void addMissingRequests(final List<? extends AbstractValuationRequest> requests,
+            final List<User> actualMembers) {
+
+        final Set<User> usersHasRequest = new HashSet<User>(requests.size());
+        for (AbstractValuationRequest request : requests) {
+            usersHasRequest.add(request.getUser());
+        }
+
+        boolean needReorder = false;
+        for (User member : actualMembers) {
+            if (!usersHasRequest.contains(member)) {
+                if (requests.get(0) instanceof PointRequest) {
+                    requests.add(new PointRequest(member, 0));
+                } else {
+                    requests.add(new EntrantRequest(member, EntrantType.KDO));
+                }
+                needReorder = true;
+            }
+        }
+
+        if (needReorder) {
+            Collections.sort(requests);
+        }
     }
 }

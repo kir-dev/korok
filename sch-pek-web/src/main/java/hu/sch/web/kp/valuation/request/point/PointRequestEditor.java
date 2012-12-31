@@ -35,6 +35,7 @@ import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.web.kp.valuation.ValuationDetails;
+import hu.sch.web.kp.valuation.request.Requests;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.TinyMCEContainer;
@@ -160,55 +161,10 @@ public class PointRequestEditor extends Panel {
             }
         } else {
             //in case of exitsing request, we need merge if group members are changed
-            cleanOldBoysFromRequests(pointRequests, members);
-            addMissingPointRequests(pointRequests, members);
+            Requests.cleanOldBoysFromRequests(pointRequests, members);
+            Requests.addMissingRequests(pointRequests, members);
+            //requests.add(new PointRequest(member, 0));
         }
         return pointRequests;
-    }
-
-    /**
-     * Removes requests which don't belong to any active member. (In case of
-     * members changed between pointrequests)
-     *
-     * @param requests
-     * @param actualMembers
-     */
-    private void cleanOldBoysFromRequests(final List<PointRequest> requests,
-            final List<User> actualMembers) {
-
-        for (final Iterator<PointRequest> requestIterator = requests.iterator(); requestIterator.hasNext();) {
-            final PointRequest request = requestIterator.next();
-            if (!actualMembers.contains(request.getUser())) {
-                requestIterator.remove();
-            }
-        }
-    }
-
-    /**
-     * Add missing pointrequest to new active members. (In case of members
-     * changed between pointrequests)
-     *
-     * @param requests
-     * @param actualMembers
-     */
-    private void addMissingPointRequests(final List<PointRequest> requests,
-            final List<User> actualMembers) {
-
-        final Set<User> usersHasRequest = new HashSet<User>(requests.size());
-        for (PointRequest request : requests) {
-            usersHasRequest.add(request.getUser());
-        }
-
-        boolean needReorder = false;
-        for (User member : actualMembers) {
-            if (!usersHasRequest.contains(member)) {
-                requests.add(new PointRequest(member, 0));
-                needReorder = true;
-            }
-        }
-
-        if (needReorder) {
-            Collections.sort(requests);
-        }
     }
 }
