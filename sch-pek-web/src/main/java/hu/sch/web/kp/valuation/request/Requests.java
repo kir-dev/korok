@@ -28,20 +28,14 @@
 package hu.sch.web.kp.valuation.request;
 
 import hu.sch.domain.AbstractValuationRequest;
-import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.EntrantType;
-import hu.sch.domain.PointRequest;
 import hu.sch.domain.User;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.valuation.Valuations;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.EJB;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -81,7 +75,7 @@ public class Requests extends KorokPage {
 
     /**
      * Removes requests which don't belong to any active member. (In case of
-     * members changed between pointrequests)
+     * members changed between requests)
      *
      * @param requests
      * @param actualMembers
@@ -96,38 +90,6 @@ public class Requests extends KorokPage {
             if (!actualMembers.contains(request.getUser())) {
                 requestIterator.remove();
             }
-        }
-    }
-
-    /**
-     * Add missing pointrequest to new active members. (In case of members
-     * changed between pointrequests)
-     *
-     * @param requests
-     * @param actualMembers
-     */
-    public static void addMissingRequests(final List<? extends AbstractValuationRequest> requests,
-            final List<User> actualMembers) {
-
-        final Set<User> usersHasRequest = new HashSet<User>(requests.size());
-        for (AbstractValuationRequest request : requests) {
-            usersHasRequest.add(request.getUser());
-        }
-
-        boolean needReorder = false;
-        for (User member : actualMembers) {
-            if (!usersHasRequest.contains(member)) {
-                if (requests.get(0) instanceof PointRequest) {
-                    requests.add(new PointRequest(member, 0));
-                } else {
-                    requests.add(new EntrantRequest(member, EntrantType.KDO));
-                }
-                needReorder = true;
-            }
-        }
-
-        if (needReorder) {
-            Collections.sort(requests);
         }
     }
 }
