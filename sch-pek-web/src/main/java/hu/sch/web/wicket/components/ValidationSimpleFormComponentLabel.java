@@ -42,17 +42,18 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
  */
 public class ValidationSimpleFormComponentLabel extends SimpleFormComponentLabel {
 
-    public ValidationSimpleFormComponentLabel(String id, LabeledWebMarkupContainer labelProvider) {
+    public ValidationSimpleFormComponentLabel(final String id,
+            final LabeledWebMarkupContainer labelProvider) {
+
         super(id, labelProvider);
     }
 
     @Override
-    protected void onComponentTag(ComponentTag tag) {
+    protected void onComponentTag(final ComponentTag tag) {
         super.onComponentTag(tag);
-        FormComponent fc = (FormComponent) getFormComponent();
+        final FormComponent fc = (FormComponent) getFormComponent();
         if (!fc.isValid()) {
             tag.getAttributes().put("class", "labelError");
         }
     }
 }
-        

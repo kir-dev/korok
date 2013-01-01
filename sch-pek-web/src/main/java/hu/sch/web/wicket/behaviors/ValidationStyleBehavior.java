@@ -43,10 +43,8 @@ public class ValidationStyleBehavior extends Behavior {
 
     @Override
     public void onComponentTag(final Component component, final ComponentTag tag) {
-        FormComponent comp = (FormComponent) component;
-        if (comp.isValid() && comp.getConvertedInput() != null) {
-            //tag.getAttributes().put("class", "valid");
-        } else if (!comp.isValid()) {
+        final FormComponent comp = (FormComponent) component;
+        if (!comp.isValid()) {
             tag.getAttributes().put("class", "inputError");
         }
     }

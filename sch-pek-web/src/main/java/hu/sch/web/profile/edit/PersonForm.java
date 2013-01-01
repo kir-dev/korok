@@ -76,13 +76,15 @@ public class PersonForm extends Form<Person> {
 
     @EJB(name = "LdapManagerBean")
     private LdapManagerLocal ldapManager;
-    private static Logger logger = Logger.getLogger(PersonForm.class);
+    private static final Logger logger = Logger.getLogger(PersonForm.class);
     private final Person person;
     private Date dob;
     private List<FileUpload> upload;
     private final RefreshingView<IMAccount> refreshView;
+    private static final int NAMES_MIN_LENGTH = 2;
+    private static final int NAMES_MAX_LENGTH = 40;
 
-    public PersonForm(String componentName, final Person person) {
+    public PersonForm(final String componentName, final Person person) {
         super(componentName);
         this.person = person;
         setModel(new CompoundPropertyModel<Person>(person));
@@ -169,7 +171,7 @@ public class PersonForm extends Form<Person> {
         //van erre a gombra, különben az IM listás Ajax elromlik! A setResponsePage
         //true flag miatt készül ki valamiért.
         //Bővebben: http://osdir.com/ml/users-wicket.apache.org/2009-08/msg00836.html
-        Button submitButton = new Button("submitButton") {
+        final Button submitButton = new Button("submitButton") {
 
             @Override
             public void onSubmit() {
@@ -213,22 +215,22 @@ public class PersonForm extends Form<Person> {
     }
 
     private void createNameFields() {
-        RequiredTextField<String> lastNameTF = new RequiredTextField<String>("lastName");
-        lastNameTF.add(StringValidator.lengthBetween(2, 40));
+        final RequiredTextField<String> lastNameTF = new RequiredTextField<String>("lastName");
+        lastNameTF.add(StringValidator.lengthBetween(NAMES_MIN_LENGTH, NAMES_MAX_LENGTH));
         lastNameTF.add(new ValidationStyleBehavior());
         add(lastNameTF);
         lastNameTF.setLabel(new Model<String>("Vezetéknév *"));
         add(new ValidationSimpleFormComponentLabel("lastNameLabel", lastNameTF));
 
-        RequiredTextField<String> firstNameTF = new RequiredTextField<String>("firstName");
-        firstNameTF.add(StringValidator.lengthBetween(2, 40));
+        final RequiredTextField<String> firstNameTF = new RequiredTextField<String>("firstName");
+        firstNameTF.add(StringValidator.lengthBetween(NAMES_MIN_LENGTH, NAMES_MAX_LENGTH));
         firstNameTF.add(new ValidationStyleBehavior());
         add(firstNameTF);
         firstNameTF.setLabel(new Model<String>("Keresztnév *"));
         add(new ValidationSimpleFormComponentLabel("firstNameLabel", firstNameTF));
 
-        TextField<String> nickNameTF = new TextField<String>("nickName");
-        nickNameTF.add(StringValidator.lengthBetween(2, 40));
+        final TextField<String> nickNameTF = new TextField<String>("nickName");
+        nickNameTF.add(StringValidator.lengthBetween(NAMES_MIN_LENGTH, NAMES_MAX_LENGTH));
         nickNameTF.add(new ValidationStyleBehavior());
         add(nickNameTF);
         nickNameTF.setLabel(new Model<String>("Becenév"));
