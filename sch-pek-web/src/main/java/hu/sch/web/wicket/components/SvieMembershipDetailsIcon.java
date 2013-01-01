@@ -34,7 +34,7 @@ public class SvieMembershipDetailsIcon extends Panel {
         Membership ms = null;
         User u = innerUser;
 
-        if (getDefaultModelObject() != null) {
+        if (u == null) {
             ms = (Membership) getDefaultModelObject();
             u = ms.getUser();
         }
