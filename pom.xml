@@ -4,7 +4,7 @@
     <groupId>hu.sch</groupId>
     <artifactId>sch-pek</artifactId>
     <packaging>pom</packaging>
-    <version>2.4.13</version>
+    <version>2.5</version>
     <name>SCH PéK Application</name>
     <url>http://stewie.sch.bme.hu/projects/korok</url>
     <inceptionYear>2008</inceptionYear>
@@ -32,6 +32,11 @@
             <id>aldaris</id>
             <name>Peter Major</name>
             <email>majorpetya at sch dot bme dot hu</email>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>balo</id>
+            <name>Balazs Varga</name>
             <timezone>+1</timezone>
         </developer>
     </developers>
