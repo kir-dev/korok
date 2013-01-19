@@ -130,7 +130,7 @@ public class ValuationMessages extends KorokPage {
                 } else {
                     header.add(new UserLink("sender", vm.getSender()));
                 }
-                header.add(DateLabel.forDatePattern("date", "yyyy. MM. dd. kk:mm"));
+                header.add(DateLabel.forDatePattern("date", "yyyy. MM. dd. HH:mm"));
                 item.add(new MultiLineLabel("message"));
             }
         };
