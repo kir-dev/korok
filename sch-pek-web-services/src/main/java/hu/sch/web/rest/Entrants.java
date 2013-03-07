@@ -1,10 +1,11 @@
 package hu.sch.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.sch.domain.Semester;
 import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.ManagedBean;
@@ -34,11 +35,12 @@ public class Entrants {
     private ValuationManagerLocal valuationManager;
     @Context
     private UriInfo context;
+    private static ObjectMapper mapper = new ObjectMapper();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/get/{semester}/{neptun}")
-    public List<ApprovedEntrant> getEntrants(
+    public String getEntrants(
             @PathParam("neptun") final String neptun,
             @PathParam("semester") final String semesterId) {
 
@@ -69,7 +71,18 @@ public class Entrants {
             triggerErrorResponse(Response.Status.NOT_FOUND, logMsg);
         }
 
-        return entrants;
+        String s = "";
+        try {
+            s = mapper.writeValueAsString(entrants);
+        } catch (JsonProcessingException ex) {
+            final String errorMsg = "Couldn't process list to json; given values: neptun="
+                    + neptun + ";semester=" + semesterId;
+
+            LOGGER.error(errorMsg, ex);
+            triggerErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, errorMsg);
+        }
+
+        return s;
     }
 
     private void triggerErrorResponse(final Response.Status status, final String msg) {
