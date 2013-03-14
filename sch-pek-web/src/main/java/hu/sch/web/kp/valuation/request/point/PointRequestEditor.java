@@ -9,10 +9,8 @@ import hu.sch.web.kp.valuation.request.Requests;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.SvieMembershipDetailsIcon;
 import hu.sch.web.wicket.components.TinyMCEContainer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -26,9 +24,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.IValidator;
-import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.RangeValidator;
 
 /**
@@ -70,18 +65,11 @@ public class PointRequestEditor extends Panel {
 
         // Bevitelhez táblázat létrehozása
         ListView<PointRequest> listView = new ListView<PointRequest>("requestList", requestList) {
-            // QPA group pontozásvalidátora
-            final IValidator<Integer> QpaPontValidator = new RangeValidator<Integer>(0, 100);
-            // A többi group pontozásvalidátora
-            final IValidator<Integer> pontValidator = new RangeValidator<Integer>(0, 50);
-            // QPA group ID-ja
 
             @Override
             protected void populateItem(ListItem<PointRequest> item) {
                 PointRequest pontIgeny = item.getModelObject();
                 item.setModel(new CompoundPropertyModel<PointRequest>(pontIgeny));
-                final ValidationError validationError = new ValidationError();
-                validationError.addMessageKey("err.MinimumPontHiba");
 
                 item.add(new Label("user.name"));
                 item.add(new Label("user.nickName"));
@@ -93,21 +81,11 @@ public class PointRequestEditor extends Panel {
                 TextField<Integer> pont = new TextField<Integer>("point");
                 //csoportfüggő validátor hozzácsatolása
                 if (val.getGroupId().longValue() == Group.SCH_QPA) {
-                    pont.add(QpaPontValidator);
+                    pont.add(RangeValidator.range(5, 100));
                 } else {
-                    pont.add(pontValidator);
+                    pont.add(RangeValidator.range(5, 50));
                 }
 
-                //olyan validátor, ami akkor dob hibát ha 0 és 5 pont között adott meg
-                pont.add(new IValidator<Integer>() {
-                    @Override
-                    public void validate(IValidatable<Integer> arg0) {
-                        final Integer pont = arg0.getValue();
-                        if (0 < pont && pont < 5) {
-                            arg0.error(validationError);
-                        }
-                    }
-                });
                 item.add(pont);
             }
         };

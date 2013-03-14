@@ -37,16 +37,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.apache.wicket.IClusterable;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.io.IClusterable;
 import org.apache.wicket.util.string.StringValueConversionException;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 
 /**
  *
@@ -188,7 +188,7 @@ public final class ChangePost extends KorokPage {
 
         RequiredTextField<String> postNameTF =
                 new RequiredTextField<String>("postNameTF", new PropertyModel<String>(this, "postName"));
-        postNameTF.add(new LengthBetweenValidator(2, 30));
+        postNameTF.add(StringValidator.lengthBetween(2, 30));
         postNameTF.add(new PatternValidator(PatternHolder.GROUP_NAME_OR_POSTTYPE_PATTERN));
 
         CheckBox delegatedBox = new CheckBox("delegatedBox", new PropertyModel<Boolean>(this, "isDelegatedPost"));

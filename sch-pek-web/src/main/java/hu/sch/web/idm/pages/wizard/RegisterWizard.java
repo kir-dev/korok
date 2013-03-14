@@ -495,7 +495,7 @@ public class RegisterWizard extends Wizard {
                     String uid = validatable.getValue();
                     try {
                         ldapManager.getPersonByUid(uid);
-                        validatable.error(new ValidationError().addMessageKey("reg.err.existing.user"));
+                        validatable.error(new ValidationError().addKey("reg.err.existing.user"));
                     } catch (PersonNotFoundException pnfe) {
                         //nem találtuk meg a felhasználót, ez most pont jó :)
                     }
@@ -503,7 +503,7 @@ public class RegisterWizard extends Wizard {
             });
             add(uidField);
             PasswordTextField pwdTF = new PasswordTextField("newPass");
-            pwdTF.add(new StringValidator.MinimumLengthValidator(6));
+            pwdTF.add(StringValidator.minimumLength(6));
             PasswordTextField pwdTF2 = new PasswordTextField("newPass2");
             add(pwdTF, pwdTF2);
             add(new EqualPasswordInputValidator(pwdTF, pwdTF2));
