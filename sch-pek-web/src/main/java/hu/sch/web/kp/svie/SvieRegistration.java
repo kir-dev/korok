@@ -93,10 +93,8 @@ public final class SvieRegistration extends KorokPage {
             protected void onSubmit() {
                 ldapManager.update(person);
                 svieManager.applyToSvie(user, choosed);
-                if (!continueToOriginalDestination()) {
-                    setResponsePage(getApplication().getHomePage());
-                }
-                return;
+                continueToOriginalDestination();
+                setResponsePage(getApplication().getHomePage());
             }
         };
         form.setModel(new CompoundPropertyModel<Person>(person));
