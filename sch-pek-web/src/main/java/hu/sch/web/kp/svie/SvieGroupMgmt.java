@@ -85,7 +85,7 @@ public final class SvieGroupMgmt extends KorokPage {
         groups = userManager.getAllGroupsWithCount();
         filteredGroups = new ArrayList<Group>(groups);
 
-        List<IColumn<Group>> columns = new ArrayList<IColumn<Group>>();
+        List<IColumn<Group, String>> columns = new ArrayList<IColumn<Group, String>>();
         columns.add(new PanelColumn<Group>("Név", "name") {
 
             @Override
@@ -102,7 +102,7 @@ public final class SvieGroupMgmt extends KorokPage {
                 return new UserLink(componentId, korvezeto);
             }
         });
-        columns.add(new PropertyColumn<Group>(new Model<String>("Elsődleges tagok száma"), "numberOfPrimaryMembers"));
+        columns.add(new PropertyColumn<Group, String>(new Model<String>("Elsődleges tagok száma"), "numberOfPrimaryMembers"));
         columns.add(new PanelColumn<Group>("SVIE tag?") {
 
             @Override

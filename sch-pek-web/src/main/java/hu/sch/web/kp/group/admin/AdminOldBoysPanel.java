@@ -93,7 +93,7 @@ public final class AdminOldBoysPanel extends Panel {
         form.add(new MembershipTable<SelectableMembership>("table", lines, SelectableMembership.class) {
 
             @Override
-            public void onPopulateColumns(List<IColumn<SelectableMembership>> columns) {
+            public void onPopulateColumns(List<IColumn<SelectableMembership, String>> columns) {
                 columns.add(new DateIntervalPropertyColumn<SelectableMembership>(
                         new Model<String>("Tagság ideje"), "membershipStartEnd", "membership.start", "membership.end"));
             }

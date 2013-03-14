@@ -51,7 +51,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
  */
 public abstract class ValuationTable implements Serializable {
 
-    AjaxFallbackDefaultDataTable<ValuationData> table;
+    AjaxFallbackDefaultDataTable<ValuationData, String> table;
     MySortableDataProvider provider;
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
@@ -78,15 +78,15 @@ public abstract class ValuationTable implements Serializable {
         provider = new MySortableDataProvider(items);
         this.isShowSvieColumn = showSvieColumn;
 
-        final List<IColumn<ValuationData>> columns = new ArrayList<IColumn<ValuationData>>(5);
+        final List<IColumn<ValuationData, String>> columns = new ArrayList<IColumn<ValuationData, String>>(5);
         populateColumns(columns);
 
-        table = new AjaxFallbackDefaultDataTable<ValuationData>(id, columns, provider, rowsPerPage);
+        table = new AjaxFallbackDefaultDataTable<ValuationData, String>(id, columns, provider, rowsPerPage);
     }
 
-    protected abstract void populateColumns(List<IColumn<ValuationData>> columns);
+    protected abstract void populateColumns(List<IColumn<ValuationData, String>> columns);
 
-    public AjaxFallbackDefaultDataTable<ValuationData> getDataTable() {
+    public AjaxFallbackDefaultDataTable<ValuationData, String> getDataTable() {
         return table;
     }
 
@@ -103,7 +103,7 @@ public abstract class ValuationTable implements Serializable {
         provider.items = list;
     }
 
-    static class MySortableDataProvider extends SortableDataProvider<ValuationData> {
+    static class MySortableDataProvider extends SortableDataProvider<ValuationData, String> {
 
         private List<ValuationData> items;
         public static final String SORT_BY_USER = "user";
@@ -117,17 +117,17 @@ public abstract class ValuationTable implements Serializable {
         }
 
         @Override
-        public Iterator<ValuationData> iterator(int first, int count) {
+        public Iterator<ValuationData> iterator(long first, long count) {
             // Nagy adathalmaznál jobb lenne DB-be rendezni, de ez olyan
             // kismértékű adat, hogy nem számottevő ráadásul a lista nem a
             // DB-ből jön közvetlenül, így nehéz is lenne megoldani ;)
 
             sort();
-            return items.subList(first, first + count).iterator();
+            return items.subList((int) first, (int) (first + count)).iterator();
         }
 
         @Override
-        public int size() {
+        public long size() {
             return items.size();
         }
 

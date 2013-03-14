@@ -57,13 +57,13 @@ import org.apache.wicket.model.Model;
  */
 public abstract class UsersMembershipTable implements Serializable {
 
-    AjaxFallbackDefaultDataTable<Membership> table;
+    AjaxFallbackDefaultDataTable<Membership, String> table;
     MySortableDataProvider provider;
 
     public UsersMembershipTable(String id, List<Membership> memberships, boolean isOwnProfile, int rowsPerPage) {
         provider = new MySortableDataProvider(memberships);
 
-        List<IColumn<Membership>> columns = new ArrayList<IColumn<Membership>>(5);
+        List<IColumn<Membership, String>> columns = new ArrayList<IColumn<Membership, String>>(5);
         columns.add(new PanelColumn<Membership>("Kör neve", Membership.SORT_BY_GROUP) {
 
             @Override
@@ -71,7 +71,7 @@ public abstract class UsersMembershipTable implements Serializable {
                 return new GroupLink(componentId, ms.getGroup());
             }
         });
-        columns.add(new PropertyColumn<Membership>(new Model<String>("Betöltött poszt"), Membership.SORT_BY_POSTS, "membership"));
+        columns.add(new PropertyColumn<Membership, String>(new Model<String>("Betöltött poszt"), Membership.SORT_BY_POSTS, "membership"));
         columns.add(new DateIntervalPropertyColumn<Membership>(
                 new Model<String>("Tagsági idő"), Membership.SORT_BY_INTERVAL, "start", "end"));
         if (isOwnProfile) {
@@ -95,17 +95,17 @@ public abstract class UsersMembershipTable implements Serializable {
             });
         }
 
-        table = new AjaxFallbackDefaultDataTable<Membership>(id, columns, provider, rowsPerPage);
+        table = new AjaxFallbackDefaultDataTable<Membership, String>(id, columns, provider, rowsPerPage);
         provider.setSort(Membership.SORT_BY_GROUP, SortOrder.ASCENDING);
     }
 
-    public AjaxFallbackDefaultDataTable<Membership> getDataTable() {
+    public AjaxFallbackDefaultDataTable<Membership, String> getDataTable() {
         return table;
     }
 
     protected abstract void onWannabeOldBoy(Membership ms);
 
-    static class MySortableDataProvider extends SortableDataProvider<Membership> {
+    static class MySortableDataProvider extends SortableDataProvider<Membership, String> {
 
         private SortableList<Membership> items;
 
@@ -114,13 +114,13 @@ public abstract class UsersMembershipTable implements Serializable {
         }
 
         @Override
-        public Iterator<? extends Membership> iterator(int first, int count) {
+        public Iterator<? extends Membership> iterator(long first, long count) {
             items.sort(getSort());
-            return items.getList().subList(first, first + count).iterator();
+            return items.getList().subList((int) first, (int) (first + count)).iterator();
         }
 
         @Override
-        public int size() {
+        public long size() {
             return items.size();
         }
 

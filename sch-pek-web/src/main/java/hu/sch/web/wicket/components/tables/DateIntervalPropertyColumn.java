@@ -46,7 +46,7 @@ import org.apache.wicket.model.PropertyModel;
  * @author messo
  * @since 2.3.1
  */
-public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
+public class DateIntervalPropertyColumn<T> extends PropertyColumn<T, String> {
 
     private final String endPropertyExpression;
     private final DateFormat df = new SimpleDateFormat("yyyy.MM.dd.");
@@ -87,7 +87,7 @@ public class DateIntervalPropertyColumn<T> extends PropertyColumn<T> {
      */
     @Override
     public void populateItem(Item<ICellPopulator<T>> item, String componentId, IModel<T> rowModel) {
-        Date start = (Date) createLabelModel(rowModel).getObject();
+        Date start = (Date) getDataModel(rowModel).getObject();
         Date end = (Date) new PropertyModel(rowModel, endPropertyExpression).getObject();
 
         StringBuilder sb = new StringBuilder(df.format(start));

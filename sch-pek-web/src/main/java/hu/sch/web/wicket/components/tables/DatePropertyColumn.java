@@ -37,6 +37,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
  * Egy olyan {@link PropertyColumn} gyermekosztály, ami egy Date típusú propertyt
@@ -45,7 +46,7 @@ import org.apache.wicket.model.IModel;
  * @author  messo
  * @since   2.3.1
  */
-public class DatePropertyColumn<T> extends PropertyColumn<T> {
+public class DatePropertyColumn<T> extends PropertyColumn<T, String> {
 
     private static final String datePattern = "yyyy.MM.dd.";
 
@@ -79,7 +80,8 @@ public class DatePropertyColumn<T> extends PropertyColumn<T> {
      */
     @Override
     public void populateItem(Item<ICellPopulator<T>> item, String componentId, IModel<T> rowModel) {
+        Model<Date> dateModel = Model.of((Date) getDataModel(rowModel).getObject());
         item.add(DateLabel.forDatePattern(componentId,
-                (IModel<Date>) createLabelModel(rowModel), datePattern));
+                dateModel, datePattern));
     }
 }

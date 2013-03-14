@@ -177,7 +177,7 @@ public class ShowGroup extends KorokPage {
                     activeMembers, Membership.class) {
 
                 @Override
-                public void onPopulateColumns(List<IColumn<Membership>> columns) {
+                public void onPopulateColumns(List<IColumn<Membership, String>> columns) {
                     columns.add(new DatePropertyColumn<Membership>(new Model<String>("Tagság kezdete"),
                             MembershipTable.SORT_BY_MEMBERSHIP_DURATION, "start"));
                 }
@@ -187,7 +187,7 @@ public class ShowGroup extends KorokPage {
                     inactiveMembers, Membership.class) {
 
                 @Override
-                public void onPopulateColumns(List<IColumn<Membership>> columns) {
+                public void onPopulateColumns(List<IColumn<Membership, String>> columns) {
                     columns.add(new DateIntervalPropertyColumn<Membership>(new Model<String>("Tagság ideje"),
                             MembershipTable.SORT_BY_MEMBERSHIP_DURATION, "start", "end"));
                 }

@@ -65,7 +65,7 @@ import org.apache.wicket.util.convert.IConverter;
  */
 public abstract class MembershipTable<T extends MembershipTableEntry> implements Serializable {
 
-    protected AjaxFallbackDefaultDataTable<T> table;
+    protected AjaxFallbackDefaultDataTable<T, String> table;
     public static final Collator huCollator = Collator.getInstance(new Locale("hu"));
     // Ezek azért vannak itt, nem pedig a Provider-ben, hogy kívülről is hozzá lehessen
     // férni, és ehhez ne kelljen az egész Providert kifelé láthatóvá tenni
@@ -90,7 +90,7 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
      * hogy implementálja-e a {@link SelectableEntry} interfészt
      */
     public MembershipTable(String id, List<T> items, int rowsPerPage, Class<T> c) {
-        List<IColumn<T>> columns = new ArrayList<IColumn<T>>();
+        List<IColumn<T, String>> columns = new ArrayList<IColumn<T, String>>();
         columns.add(new PanelColumn<T>("Felhasználó neve", SORT_BY_NAME) {
 
             @Override
@@ -98,8 +98,8 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
                 return new UserLink(componentId, obj.getMembership().getUser());
             }
         });
-        columns.add(new PropertyColumn<T>(new Model<String>("Becenév"), SORT_BY_NICKNAME, "membership.user.nickName"));
-        columns.add(new PropertyColumn<T>(new Model<String>("Betöltött poszt"), SORT_BY_MEMBERSHIP, "membership"));
+        columns.add(new PropertyColumn<T, String>(new Model<String>("Becenév"), SORT_BY_NICKNAME, "membership.user.nickName"));
+        columns.add(new PropertyColumn<T, String>(new Model<String>("Betöltött poszt"), SORT_BY_MEMBERSHIP, "membership"));
 
         onPopulateColumns(columns);
 
@@ -118,7 +118,8 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
             });
         }
 
-        table = new AjaxFallbackDefaultDataTable<T>(id, columns, new SortableMembershipDataProvider<T>(items), rowsPerPage);
+        table = new AjaxFallbackDefaultDataTable<T, String>(id, columns,
+                new SortableMembershipDataProvider<T>(items), rowsPerPage);
         table.addBottomToolbar(new AjaxNavigationToolbar(table));
     }
 
@@ -142,7 +143,7 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
      *
      * @param columns az oszloplista, amihez új oszlopokat adhatunk
      */
-    public abstract void onPopulateColumns(List<IColumn<T>> columns);
+    public abstract void onPopulateColumns(List<IColumn<T, String>> columns);
 
     /**
      * Lekérjük a tényleges táblázatot, ami egy {@link AjaxFallbackDefaultDataTable}
@@ -151,11 +152,11 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
      *
      * @return táblázat
      */
-    public AjaxFallbackDefaultDataTable<T> getDataTable() {
+    public AjaxFallbackDefaultDataTable<T, String> getDataTable() {
         return table;
     }
 
-    class SortableMembershipDataProvider<T extends MembershipTableEntry> extends SortableDataProvider<T> {
+    class SortableMembershipDataProvider<T extends MembershipTableEntry> extends SortableDataProvider<T, String> {
 
         private List<T> items;
 
@@ -165,13 +166,13 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
         }
 
         @Override
-        public Iterator<T> iterator(int first, int count) {
-            SortParam sp = getSort();
-            return getIndex(sp.getProperty(), sp.isAscending()).subList(first, first + count).iterator();
+        public Iterator<T> iterator(final long first, final long count) {
+            SortParam<String> sp = getSort();
+            return getIndex(sp.getProperty(), sp.isAscending()).subList((int) first, (int) (first + count)).iterator();
         }
 
         @Override
-        public int size() {
+        public long size() {
             return items.size();
         }
 

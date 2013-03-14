@@ -87,7 +87,7 @@ public final class SvieUserMgmt extends KorokPage {
         users = svieManager.getSvieMembers();
         filteredUsers = new ArrayList<User>(users);
 
-        List<IColumn<User>> columns = new ArrayList<IColumn<User>>();
+        List<IColumn<User, String>> columns = new ArrayList<IColumn<User, String>>();
         columns.add(new PanelColumn<User>("Név", "name") {
 
             @Override
@@ -109,7 +109,7 @@ public final class SvieUserMgmt extends KorokPage {
                 return new SvieStatusChooser(componentId, u);
             }
         });
-        columns.add(new PropertyColumn<User>(new Model<String>("Elsődleges kör"), "sviePrimaryMembershipText"));
+        columns.add(new PropertyColumn<User, String>(new Model<String>("Elsődleges kör"), "sviePrimaryMembershipText"));
         columns.add(new LinkColumn<User>("Felvételi kérvény") {
 
             @Override
@@ -135,8 +135,8 @@ public final class SvieUserMgmt extends KorokPage {
         userProvider = new SortableUserDataProvider(filteredUsers);
         //azért van változóban, hogy később ha szeretnénk játszadozni a rowperpage-dzsel
         //egyszerűbb legyen.
-        final AjaxFallbackDefaultDataTable table =
-                new AjaxFallbackDefaultDataTable("table", columns, userProvider, 100);
+        final AjaxFallbackDefaultDataTable<User, String> table =
+                new AjaxFallbackDefaultDataTable<User, String>("table", columns, userProvider, 100);
         table.setOutputMarkupId(true);
         DropDownChoice<SvieStatus> filter =
                 new DropDownChoice<SvieStatus>("status",

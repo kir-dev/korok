@@ -77,8 +77,7 @@ public class SearchResultsPageTest extends WebTest {
         tester.startPage(SearchResultsPage.class, new PageParameters().add("type", "user").add("key", SEARCH_TERM));
         tester.assertRenderedPage(SearchResultsPage.class);
         tester.assertComponent("hitsPanel", PersonResultPanel.class);
-        AjaxFallbackDefaultDataTable<Person> table = (AjaxFallbackDefaultDataTable<Person>) tester.getComponentFromLastRenderedPage(
-                "hitsPanel:personTable");
+        AjaxFallbackDefaultDataTable<Person, String> table = (AjaxFallbackDefaultDataTable<Person, String>) tester.getComponentFromLastRenderedPage("hitsPanel:personTable");
         List<Person> result = ldapManager.search("László");
         assertTrue(table.getRowCount() == result.size());
     }

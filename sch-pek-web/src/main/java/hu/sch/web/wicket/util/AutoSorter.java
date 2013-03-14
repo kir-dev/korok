@@ -49,7 +49,7 @@ public class AutoSorter {
 
     private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
 
-    public static <T> void sort(final List<T> list, SortParam sortParam) {
+    public static <T> void sort(final List<T> list, SortParam<String> sortParam) {
         final String prop = sortParam.getProperty();
         final int r = sortParam.isAscending() ? 1 : -1;
 

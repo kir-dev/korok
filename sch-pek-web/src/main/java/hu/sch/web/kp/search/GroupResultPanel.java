@@ -59,7 +59,7 @@ public class GroupResultPanel extends Panel {
 
         Injector.get().inject(this);
 
-        List<IColumn<Group>> columns = new ArrayList<IColumn<Group>>();
+        List<IColumn<Group, String>> columns = new ArrayList<IColumn<Group, String>>();
         columns.add(new PanelColumn<Group>("Név", "name") {
 
             @Override
@@ -78,7 +78,8 @@ public class GroupResultPanel extends Panel {
         });
 
         SortableGroupDataProvider provider = new SortableGroupDataProvider(groups);
-        AjaxFallbackDefaultDataTable table = new AjaxFallbackDefaultDataTable("groupTable", columns, provider, 50);
+        AjaxFallbackDefaultDataTable<Group, String> table =
+                new AjaxFallbackDefaultDataTable<Group, String>("groupTable", columns, provider, 50);
         add(table);
     }
 }

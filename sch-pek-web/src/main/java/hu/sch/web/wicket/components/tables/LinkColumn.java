@@ -45,7 +45,7 @@ import org.apache.wicket.model.Model;
  * @author  messo
  * @since   2.3.1
  */
-public abstract class LinkColumn<T> extends AbstractColumn<T> {
+public abstract class LinkColumn<T> extends AbstractColumn<T, String> {
 
     public LinkColumn(IModel<String> displayModel) {
         // link alapján ne akarjunk rendezni

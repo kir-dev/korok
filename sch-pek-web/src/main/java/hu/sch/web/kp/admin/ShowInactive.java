@@ -62,7 +62,7 @@ public class ShowInactive extends KorokPage {
         setHeaderLabelText("Inaktív felhasználók");
         List<Person> inactivePersons = ldapManager.searchInactives();
 
-        List<IColumn<Person>> columns = new ArrayList<IColumn<Person>>();
+        List<IColumn<Person, String>> columns = new ArrayList<IColumn<Person, String>>();
         columns.add(new PanelColumn<Person>("Név", Person.SORT_BY_NAME) {
 
             @Override
@@ -70,9 +70,9 @@ public class ShowInactive extends KorokPage {
                 return new PersonLinkPanel(componentId, p);
             }
         });
-        columns.add(new PropertyColumn<Person>(new Model<String>("Uid"), Person.SORT_BY_UID, "uid"));
-        columns.add(new PropertyColumn<Person>(new Model<String>("E-mail"), Person.SORT_BY_MAIL, "mail"));
-        columns.add(new PropertyColumn<Person>(new Model<String>("Neptun kód"), Person.SORT_BY_NEPTUN, "neptun"));
+        columns.add(new PropertyColumn<Person, String>(new Model<String>("Uid"), Person.SORT_BY_UID, "uid"));
+        columns.add(new PropertyColumn<Person, String>(new Model<String>("E-mail"), Person.SORT_BY_MAIL, "mail"));
+        columns.add(new PropertyColumn<Person, String>(new Model<String>("Neptun kód"), Person.SORT_BY_NEPTUN, "neptun"));
         columns.add(new PanelColumn<Person>("Törlés") {
 
             @Override
@@ -82,8 +82,8 @@ public class ShowInactive extends KorokPage {
         });
 
         personProvider = new SortablePersonDataProvider(inactivePersons);
-        final AjaxFallbackDefaultDataTable table =
-                new AjaxFallbackDefaultDataTable("table", columns, personProvider, 100);
+        final AjaxFallbackDefaultDataTable<Person, String> table =
+                new AjaxFallbackDefaultDataTable<Person, String>("table", columns, personProvider, 100);
         table.setOutputMarkupId(true);
         add(table);
     }

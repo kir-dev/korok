@@ -68,7 +68,7 @@ public class ValuationTableForGroup extends ValuationTable {
     }
 
     @Override
-    protected void populateColumns(List<IColumn<ValuationData>> columns) {
+    protected void populateColumns(List<IColumn<ValuationData, String>> columns) {
         columns.add(new PanelColumn<ValuationData>("Név", MySortableDataProvider.SORT_BY_USER) {
 
             @Override
@@ -95,9 +95,14 @@ public class ValuationTableForGroup extends ValuationTable {
             });
         }
 
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Pont"), MySortableDataProvider.SORT_BY_POINT, "pointRequest.point"));
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Belépő típusa"), MySortableDataProvider.SORT_BY_ENTRANT, "entrantRequest.entrantType"));
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Szöveges értékelés"), "entrantRequest.valuationText") {
+        columns.add(new PropertyColumn<ValuationData, String>(new Model<String>("Pont"),
+                MySortableDataProvider.SORT_BY_POINT, "pointRequest.point"));
+
+        columns.add(new PropertyColumn<ValuationData, String>(new Model<String>("Belépő típusa"),
+                MySortableDataProvider.SORT_BY_ENTRANT, "entrantRequest.entrantType"));
+
+        columns.add(new PropertyColumn<ValuationData, String>(new Model<String>("Szöveges értékelés"),
+                "entrantRequest.valuationText") {
 
             @Override
             public void populateItem(Item<ICellPopulator<ValuationData>> item, String componentId, IModel<ValuationData> rowModel) {

@@ -63,11 +63,14 @@ public class ValuationTableForUser extends ValuationTable {
     }
 
     @Override
-    protected void populateColumns(List<IColumn<ValuationData>> columns) {
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Szemeszter"), MySortableDataProvider.SORT_BY_SEMESTER, "semester") {
+    protected void populateColumns(List<IColumn<ValuationData, String>> columns) {
+        columns.add(new PropertyColumn<ValuationData, String>(new Model<String>("Szemeszter"),
+                MySortableDataProvider.SORT_BY_SEMESTER, "semester") {
 
             @Override
-            public void populateItem(Item<ICellPopulator<ValuationData>> item, String componentId, IModel<ValuationData> rowModel) {
+            public void populateItem(Item<ICellPopulator<ValuationData>> item,
+                                String componentId, IModel<ValuationData> rowModel) {
+
                 super.populateItem(item, componentId, rowModel);
                 item.add(AttributeModifier.replace("style", "width: 130px"));
             }
@@ -81,9 +84,14 @@ public class ValuationTableForUser extends ValuationTable {
             }
         });
 
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Pont"), MySortableDataProvider.SORT_BY_POINT, "pointRequest.point"));
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Belépő típusa"), MySortableDataProvider.SORT_BY_ENTRANT, "entrantRequest.entrantType"));
-        columns.add(new PropertyColumn<ValuationData>(new Model<String>("Szöveges értékelés"), "entrantRequest.valuationText") {
+        columns.add(new PropertyColumn<ValuationData, String>(new Model<String>("Pont"),
+                MySortableDataProvider.SORT_BY_POINT, "pointRequest.point"));
+
+        columns.add(new PropertyColumn<ValuationData, String>(new Model<String>("Belépő típusa"),
+                MySortableDataProvider.SORT_BY_ENTRANT, "entrantRequest.entrantType"));
+
+        columns.add(new PropertyColumn<ValuationData, String>(new Model<String>("Szöveges értékelés"),
+                "entrantRequest.valuationText") {
 
             @Override
             public void populateItem(Item<ICellPopulator<ValuationData>> item, String componentId, IModel<ValuationData> rowModel) {

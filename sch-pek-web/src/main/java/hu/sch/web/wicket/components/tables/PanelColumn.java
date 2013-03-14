@@ -44,28 +44,29 @@ import org.apache.wicket.model.Model;
  * @author  messo
  * @since   2.3.1
  */
-public abstract class PanelColumn<T> extends AbstractColumn<T> {
+public abstract class PanelColumn<T> extends AbstractColumn<T, String> {
 
-    public PanelColumn(IModel<String> displayModel, String sortProperty) {
+    public PanelColumn(final IModel<String> displayModel, final String sortProperty) {
         super(displayModel, sortProperty);
     }
 
-    public PanelColumn(String header, String sortProperty) {
+    public PanelColumn(final String header, final String sortProperty) {
         this(new Model<String>(header), sortProperty);
     }
 
-    public PanelColumn(IModel<String> displayModel) {
+    public PanelColumn(final IModel<String> displayModel) {
         this(displayModel, null);
     }
 
-    public PanelColumn(String header) {
+    public PanelColumn(final String header) {
         this(header, null);
     }
 
     @Override
-    public void populateItem(Item<ICellPopulator<T>> item, String componentId, IModel<T> rowModel) {
+    public void populateItem(final Item<ICellPopulator<T>> item, final String componentId,
+                        final IModel<T> rowModel) {
         item.add(getPanel(componentId, rowModel.getObject()));
     }
 
-    protected abstract Panel getPanel(String componentId, T obj);
+    protected abstract Panel getPanel(final String componentId, final T obj);
 }
