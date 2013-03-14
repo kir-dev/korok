@@ -36,11 +36,13 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.CssResourceReference;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import wickettree.ITreeProvider;
 import wickettree.NestedTree;
@@ -79,7 +81,8 @@ public class GroupHierarchy extends KorokPage {
 
     @Override
     public void renderHead(IHeaderResponse response) {
-        response.renderCSSReference(new PackageResourceReference(WindowsTheme.class, "windows/theme.css"));
+        super.renderHead(response);
+        response.render(CssHeaderItem.forReference(new PackageResourceReference(WindowsTheme.class, "windows/theme.css")));
     }
 
     public class TreeProvider implements ITreeProvider<Group> {

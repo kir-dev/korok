@@ -51,7 +51,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
@@ -108,7 +109,8 @@ public class ValuationDetails extends KorokPage {
     public void renderHead(IHeaderResponse response) {
         //TinyMCE csak akkor működik AJAXszal, ha már az oldal betöltődésekor be
         //van töltve a js :(
-        response.renderJavaScriptReference(TinyMCESettings.javaScriptReference());
+        super.renderHead(response);
+        response.render(JavaScriptHeaderItem.forReference(TinyMCESettings.javaScriptReference()));
     }
 
     private void init(final Valuation valuation) {

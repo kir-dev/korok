@@ -31,7 +31,8 @@
 package hu.sch.web.error;
 
 import hu.sch.web.kp.KorokPage;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.StringHeaderItem;
 import org.apache.wicket.request.cycle.RequestCycle;
 
 /**
@@ -47,7 +48,11 @@ public final class PageExpiredError extends KorokPage {
 
     @Override
     public void renderHead(IHeaderResponse response) {
-        response.renderString("<meta http-equiv=\"refresh\" content=\"5;URL="
-                + RequestCycle.get().urlFor(getApplication().getHomePage(), null) + "\">");
+        super.renderHead(response);
+
+        final StringBuilder refreshMeta = new StringBuilder("<meta http-equiv=\"refresh\" content=\"5;URL=");
+        refreshMeta.append(RequestCycle.get().urlFor(getApplication().getHomePage(), null));
+        refreshMeta.append("\">");
+        response.render(StringHeaderItem.forString(refreshMeta.toString()));
     }
 }

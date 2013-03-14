@@ -30,9 +30,9 @@
  */
 package hu.sch.web.wicket.components;
 
-import hu.sch.web.PhoenixApplication;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 
@@ -48,6 +48,7 @@ public class CheckBoxHelper extends Panel implements IHeaderContributor {
 
     @Override
     public void renderHead(IHeaderResponse response) {
-        response.renderJavaScriptReference(new JavaScriptResourceReference(CheckBoxHelper.class, "CheckBoxHelper.js"));
+        response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(CheckBoxHelper.class,
+                "CheckBoxHelper.js")));
     }
 }
