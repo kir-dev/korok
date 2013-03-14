@@ -51,12 +51,12 @@ public class ValuationStatisticDataProvider implements IDataProvider<ValuationSt
     }
 
     @Override
-    public Iterator<ValuationStatistic> iterator(int first, int count) {
-        return statList.subList(first, first + count).iterator();
+    public Iterator<ValuationStatistic> iterator(final long first, final long count) {
+        return statList.subList((int) first, (int) (first + count)).iterator();
     }
 
     @Override
-    public int size() {
+    public long size() {
         return statList.size();
     }
 

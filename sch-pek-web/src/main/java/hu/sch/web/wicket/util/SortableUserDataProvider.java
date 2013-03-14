@@ -43,7 +43,7 @@ import org.apache.wicket.model.Model;
  *
  * @author aldaris
  */
-public class SortableUserDataProvider extends SortableDataProvider<User> {
+public class SortableUserDataProvider extends SortableDataProvider<User, String> {
 
     private List<User> users;
     private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
@@ -54,13 +54,13 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
     }
 
     @Override
-    public Iterator<User> iterator(int first, int count) {
-        SortParam sp = getSort();
+    public Iterator<User> iterator(long first, long count) {
+        SortParam<String> sp = getSort();
         return find(first, count, sp.getProperty(), sp.isAscending()).iterator();
     }
 
     @Override
-    public int size() {
+    public long size() {
         return users.size();
     }
 
@@ -124,8 +124,8 @@ public class SortableUserDataProvider extends SortableDataProvider<User> {
         return new Model<User>(object);
     }
 
-    private List<User> find(int first, int count, String property, boolean ascending) {
-        List<User> ret = getIndex(property, ascending).subList(first, first + count);
+    private List<User> find(long first, long count, String property, boolean ascending) {
+        List<User> ret = getIndex(property, ascending).subList((int) first, (int) (first + count));
         return ret;
     }
 

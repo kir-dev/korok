@@ -41,7 +41,7 @@ import org.apache.wicket.model.IModel;
  *
  * @author aldaris
  */
-public class SortablePersonDataProvider extends SortableDataProvider<Person> {
+public class SortablePersonDataProvider extends SortableDataProvider<Person, String> {
 
     private SortableList<Person> persons;
 
@@ -51,9 +51,9 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
     }
 
     @Override
-    public Iterator<? extends Person> iterator(int first, int count) {
+    public Iterator<? extends Person> iterator(final long first, final long count) {
         persons.sort(getSort());
-        return persons.getList().subList(first, first + count).iterator();
+        return persons.getList().subList((int) first, (int) (first + count)).iterator();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person> {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return persons.size();
     }
 

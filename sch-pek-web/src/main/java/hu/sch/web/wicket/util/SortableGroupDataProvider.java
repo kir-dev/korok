@@ -42,7 +42,7 @@ import org.apache.wicket.model.IModel;
  *
  * @author aldaris
  */
-public class SortableGroupDataProvider extends SortableDataProvider<Group> {
+public class SortableGroupDataProvider extends SortableDataProvider<Group, String> {
 
     private List<Group> groups;
     private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
@@ -53,13 +53,13 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
     }
 
     @Override
-    public Iterator<Group> iterator(int first, int count) {
-        SortParam sp = getSort();
+    public Iterator<Group> iterator(long first, long count) {
+        SortParam<String> sp = getSort();
         return find(first, count, sp.getProperty(), sp.isAscending()).iterator();
     }
 
     @Override
-    public int size() {
+    public long size() {
         return groups.size();
     }
 
@@ -92,8 +92,8 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group> {
         return groups;
     }
 
-    private List<Group> find(int first, int count, String property, boolean ascending) {
-        List<Group> ret = getIndex(property, ascending).subList(first, first + count);
+    private List<Group> find(long first, long count, String property, boolean ascending) {
+        List<Group> ret = getIndex(property, ascending).subList((int) first, (int) (first + count));
         return ret;
     }
 
