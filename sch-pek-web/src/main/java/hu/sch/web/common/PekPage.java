@@ -36,6 +36,7 @@ import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.session.VirSession;
+import hu.sch.web.wicket.components.choosers.GoogleAnalyticsScript;
 import javax.ejb.EJB;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebComponent;
@@ -102,6 +103,7 @@ public abstract class PekPage extends WebPage {
         add(getHeaderPanel("headerPanel"));
         add(headerLabel = new Label("headerLabel", new Model<String>("")));
         add(new FeedbackPanel("pagemessages").setEscapeModelStrings(false));
+        add(new GoogleAnalyticsScript("analyticsJs"));
     }
 
     private void loadUser() {
