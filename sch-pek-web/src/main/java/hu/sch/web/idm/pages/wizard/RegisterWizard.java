@@ -36,7 +36,6 @@ import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
-import hu.sch.web.wicket.components.AjaxWizardButtonBar;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,7 +49,6 @@ import javax.ejb.EJB;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
-import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.wizard.IWizardModel;
@@ -58,6 +56,7 @@ import org.apache.wicket.extensions.wizard.Wizard;
 import org.apache.wicket.extensions.wizard.dynamic.DynamicWizardModel;
 import org.apache.wicket.extensions.wizard.dynamic.DynamicWizardStep;
 import org.apache.wicket.extensions.wizard.dynamic.IDynamicWizardStep;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -81,7 +80,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 /**
  * Regisztrációs varázsló.
- * Utókornak: sorry a sok belső osztályért, de így a legegyszerűbb megoldani, 
+ * Utókornak: sorry a sok belső osztályért, de így a legegyszerűbb megoldani,
  * hogy a formok ne veszítsenek el adatokat, peace ;)
  *
  * @author aldaris
@@ -100,7 +99,7 @@ public class RegisterWizard extends Wizard {
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
     private Person person = new Person();
-    private Date dob;
+    private Date dob; //ezek a mezők használva vannak a CPM által
     private String virUserName;
     private String virPass;
     private String neptun;
@@ -115,6 +114,9 @@ public class RegisterWizard extends Wizard {
 
         IWizardModel model = new DynamicWizardModel(new RegistrationModeSelectStep());
         init(model);
+
+        //prevent duplicated feedback messages, PekPage already contains a feedbackpanel
+        getForm().replace(new WebMarkupContainer(FEEDBACK_ID));
     }
 
     @Override
@@ -143,12 +145,6 @@ public class RegisterWizard extends Wizard {
         }
         getSession().info("Sikeres regisztráció!");
         setResponsePage(RegistrationFinishedPage.class);
-    }
-
-    //lásd AjaxWizardButtonBar JavaDoc
-    @Override
-    protected Component newButtonBar(String id) {
-        return new AjaxWizardButtonBar(id, this);
     }
 
     private boolean checkExistingPerson(String neptun) throws IllegalArgumentException {
@@ -489,7 +485,6 @@ public class RegisterWizard extends Wizard {
             uidField.add(new PatternValidator(PatternHolder.UID_PATTERN));
             uidField.add(StringValidator.lengthBetween(2, 10));
             uidField.add(new IValidator<String>() {
-
                 @Override
                 public void validate(IValidatable<String> validatable) {
                     String uid = validatable.getValue();
