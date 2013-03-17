@@ -55,8 +55,6 @@ public class ValuationDetailPanel extends Panel {
     public ValuationDetailPanel(String id, boolean showSvieColumn) {
         super(id);
 
-        setDefaultModel(new CompoundPropertyModel<Valuation>((Valuation) null));
-
         MultiLineLabel valuationText = new MultiLineLabel("valuationText");
         valuationText.setEscapeModelStrings(false);
         add(valuationText);
@@ -72,7 +70,7 @@ public class ValuationDetailPanel extends Panel {
     public void updateValuation(Valuation ertekeles) {
         if (ertekeles != null) {
             valuationTable.updateList(valuationManager.findRequestsForValuation(ertekeles.getId()));
-            setDefaultModelObject(ertekeles);
+            setDefaultModel(new CompoundPropertyModel<Valuation>(ertekeles));
         }
     }
 }

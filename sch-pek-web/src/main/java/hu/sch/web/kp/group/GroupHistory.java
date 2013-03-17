@@ -96,7 +96,7 @@ public class GroupHistory extends KorokPage {
         }
 
         final boolean showSvieColumn = isCurrentUserJETI() || isUserGroupLeader(group);
-        ValuationDetailPanel valuationPanel = new ValuationDetailPanel("valuationInfo", showSvieColumn);
+        final ValuationDetailPanel valuationPanel = new ValuationDetailPanel("valuationInfo", showSvieColumn);
         if (selected != null) {
             setHeaderLabelText("A kör részletes pontozásai");
             ValuationStatistic stat = valuationManager.getStatisticForValuation(selected.getId());
