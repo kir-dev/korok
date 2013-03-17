@@ -24,6 +24,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.RangeValidator;
 
 /**
@@ -68,7 +71,7 @@ public class PointRequestEditor extends Panel {
 
             @Override
             protected void populateItem(ListItem<PointRequest> item) {
-                PointRequest pontIgeny = item.getModelObject();
+                final PointRequest pontIgeny = item.getModelObject();
                 item.setModel(new CompoundPropertyModel<PointRequest>(pontIgeny));
 
                 item.add(new Label("user.name"));
@@ -80,11 +83,24 @@ public class PointRequestEditor extends Panel {
 
                 TextField<Integer> pont = new TextField<Integer>("point");
                 //csoportfüggő validátor hozzácsatolása
+                //itt muszáj engedni a nullát, mert lehet olyan ember a listában, aki nem kap pontot (0-át kap)
                 if (val.getGroupId().longValue() == Group.SCH_QPA) {
-                    pont.add(RangeValidator.range(5, 100));
+                    pont.add(RangeValidator.range(0, 100));
                 } else {
-                    pont.add(RangeValidator.range(5, 50));
+                    pont.add(RangeValidator.range(0, 50));
                 }
+
+                //olyan validátor, ami akkor dob hibát ha 0 és 5 pont között adott meg
+                pont.add(new IValidator<Integer>() {
+                    @Override
+                    public void validate(IValidatable<Integer> arg0) {
+                        final Integer point = arg0.getValue();
+                        if (0 < point && point < 5) {
+                            arg0.error(new ValidationError().addKey("err.MinimumPoint")
+                                    .setVariable("user_name", pontIgeny.getUser().getName()));
+                        }
+                    }
+                });
 
                 item.add(pont);
             }
