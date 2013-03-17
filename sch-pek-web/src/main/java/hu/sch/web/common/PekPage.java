@@ -39,6 +39,8 @@ import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.choosers.GoogleAnalyticsScript;
 import javax.ejb.EJB;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -180,5 +182,14 @@ public abstract class PekPage extends WebPage {
 
     protected final User getUser() {
         return userManager.findUserWithMembershipsById(getSession().getUserId());
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+
+        if (getApplication().usesDeploymentConfig()) {
+            response.render(JavaScriptHeaderItem.forUrl(getString("navbar.url")));
+        }
     }
 }
