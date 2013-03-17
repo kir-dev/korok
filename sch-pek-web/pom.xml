@@ -90,11 +90,6 @@
             <artifactId>wicketstuff-javaee-inject</artifactId>
             <version>${wicketstuff.version}</version>
         </dependency>
-        <dependency>
-            <groupId>wicket-tree</groupId>
-            <artifactId>wicket-tree</artifactId>
-            <version>0.5-SNAPSHOT</version>
-        </dependency>
         <!-- TinyMCE függőségek -->
         <dependency>
             <groupId>org.wicketstuff</groupId>

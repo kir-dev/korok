@@ -36,18 +36,13 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.extensions.markup.html.repeater.tree.DefaultNestedTree;
+import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
+import org.apache.wicket.extensions.markup.html.repeater.tree.content.Folder;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.request.resource.CssResourceReference;
-import org.apache.wicket.request.resource.PackageResourceReference;
-import wickettree.ITreeProvider;
-import wickettree.NestedTree;
-import wickettree.content.Folder;
-import wickettree.theme.WindowsTheme;
 
 /**
  *
@@ -55,23 +50,21 @@ import wickettree.theme.WindowsTheme;
  */
 public class GroupHierarchy extends KorokPage {
 
-    private List<Group> roots = userManager.getGroupHierarchy();
+    private final List<Group> roots = userManager.getGroupHierarchy();
 
     public GroupHierarchy() {
         setHeaderLabelText("Csoportok listája");
 
-        add(new NestedTree<Group>("hierarchyTree", new TreeProvider()) {
-
+        add(new DefaultNestedTree<Group>("hierarchyTree", new TreeProvider()) {
             @Override
-            protected Component newContentComponent(String string, IModel<Group> model) {
-                return new Folder<Group>(string, this, model) {
-
+            protected Component newContentComponent(final String id, final IModel<Group> model) {
+                return new Folder<Group>(id, this, model) {
                     private static final long serialVersionUID = 1L;
 
                     @Override
-                    protected MarkupContainer newLinkComponent(String id, IModel<Group> model) {
-                        Group group = model.getObject();
-                        return new BookmarkablePageLink<Void>(id, ShowGroup.class,
+                    protected MarkupContainer newLinkComponent(final String id, final IModel<Group> model) {
+                        final Group group = model.getObject();
+                        return new BookmarkablePageLink<ShowGroup>(id, ShowGroup.class,
                                 new PageParameters().add("id", group.getId()));
                     }
                 };
@@ -79,16 +72,10 @@ public class GroupHierarchy extends KorokPage {
         });
     }
 
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
-        response.render(CssHeaderItem.forReference(new PackageResourceReference(WindowsTheme.class, "windows/theme.css")));
-    }
-
     public class TreeProvider implements ITreeProvider<Group> {
 
         @Override
-        public Iterator<? extends Group> getChildren(Group t) {
+        public Iterator<? extends Group> getChildren(final Group t) {
             return t.getSubGroups().iterator();
         }
 
@@ -98,8 +85,8 @@ public class GroupHierarchy extends KorokPage {
         }
 
         @Override
-        public boolean hasChildren(Group t) {
-            List<Group> groups = t.getSubGroups();
+        public boolean hasChildren(final Group t) {
+            final List<Group> groups = t.getSubGroups();
             if (groups == null) {
                 return false;
             } else {
@@ -108,7 +95,7 @@ public class GroupHierarchy extends KorokPage {
         }
 
         @Override
-        public IModel<Group> model(Group t) {
+        public IModel<Group> model(final Group t) {
             return new Model<Group>(t);
         }
 
