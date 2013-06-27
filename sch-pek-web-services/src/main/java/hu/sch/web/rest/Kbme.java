@@ -46,7 +46,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -56,7 +57,7 @@ import org.apache.log4j.Logger;
 @ManagedBean
 public class Kbme {
 
-    private static Logger logger = Logger.getLogger(Kbme.class);
+    private static final Logger logger = LoggerFactory.getLogger(Kbme.class);
     @EJB
     UserManagerLocal userManager;
     @EJB

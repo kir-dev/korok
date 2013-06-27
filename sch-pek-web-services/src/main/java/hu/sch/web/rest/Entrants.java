@@ -20,7 +20,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
 @ManagedBean
 public class Entrants {
 
-    private static final Logger LOGGER = Logger.getLogger(Entrants.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Entrants.class);
     @EJB
     private ValuationManagerLocal valuationManager;
     @Context
