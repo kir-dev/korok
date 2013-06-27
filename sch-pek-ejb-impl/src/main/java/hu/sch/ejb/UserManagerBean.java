@@ -39,8 +39,9 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.*;
-import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -61,7 +62,7 @@ public class UserManagerBean implements UserManagerLocal {
     PostManagerLocal postManager;
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
-    private static Logger log = Logger.getLogger(UserManagerBean.class);
+    private static Logger log = LoggerFactory.getLogger(UserManagerBean.class);
     private static Event DELETEMEMBERSHIP_EVENT;
     private static Event CREATEMEMBERSHIP_EVENT;
 

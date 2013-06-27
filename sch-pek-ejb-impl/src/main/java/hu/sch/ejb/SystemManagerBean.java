@@ -46,7 +46,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -57,7 +58,7 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     @PersistenceContext
     EntityManager em;
-    private static final Logger logger = Logger.getLogger(SystemManagerBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(SystemManagerBean.class);
 
     @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {

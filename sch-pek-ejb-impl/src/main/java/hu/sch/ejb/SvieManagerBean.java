@@ -49,7 +49,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -67,7 +68,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     LogManagerLocal logManager;
     @PersistenceContext
     EntityManager em;
-    private static Logger log = Logger.getLogger(SvieManagerBean.class);
+    private static Logger log = LoggerFactory.getLogger(SvieManagerBean.class);
     private static final String mailSubject = "Elsődleges kört váltottak";
     private static Event ADVOCATE_EVENT;
     private static Event ORDINAL_EVENT;

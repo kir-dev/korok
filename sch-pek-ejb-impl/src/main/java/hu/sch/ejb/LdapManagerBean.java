@@ -64,7 +64,8 @@ import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -95,7 +96,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     /**
      * A logolashoz szukseges objektum.
      */
-    private static final Logger logger = Logger.getLogger(LdapManagerBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(LdapManagerBean.class);
     private static final String[] objectClasses = new String[]{
         "top", "schacLinkageIdentifiers", "sunAMAuthAccountLockout", "schacContactLocation",
         "person", "schacPersonalCharacteristics", "inetUser", "inetorgperson",

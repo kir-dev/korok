@@ -77,7 +77,8 @@ import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -88,7 +89,7 @@ import org.apache.log4j.Logger;
 @Stateless
 public class ValuationManagerBean implements ValuationManagerLocal {
 
-    private static final Logger logger = Logger.getLogger(ValuationManagerBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(ValuationManagerBean.class);
     @PersistenceContext
     EntityManager em;
     @EJB

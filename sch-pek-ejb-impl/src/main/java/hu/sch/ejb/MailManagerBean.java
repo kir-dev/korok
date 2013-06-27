@@ -42,7 +42,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -51,7 +52,7 @@ import org.apache.log4j.Logger;
 @Stateless
 public class MailManagerBean implements MailManagerLocal {
 
-    private static final Logger log = Logger.getLogger(MailManagerBean.class);
+    private static final Logger log = LoggerFactory.getLogger(MailManagerBean.class);
     @Resource(name = "mail/korokMail")
     private Session mailSession;
 

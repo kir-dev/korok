@@ -46,7 +46,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -58,7 +59,7 @@ public class PostManagerBean implements PostManagerLocal {
 
     @PersistenceContext
     private EntityManager em;
-    private static Logger log = Logger.getLogger(PostManagerBean.class);
+    private static Logger log = LoggerFactory.getLogger(PostManagerBean.class);
 
     public List<PostType> getAvailablePostTypesForGroup(Group group) {
         Query q = em.createNamedQuery(PostType.availablePostsQuery);

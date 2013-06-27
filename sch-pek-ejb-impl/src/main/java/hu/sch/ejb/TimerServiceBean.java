@@ -45,7 +45,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -63,7 +64,7 @@ public class TimerServiceBean {
     private UserManagerLocal userManager;
     @PersistenceContext
     EntityManager em;
-    private static Logger logger = Logger.getLogger(TimerServiceBean.class);
+    private static Logger logger = LoggerFactory.getLogger(TimerServiceBean.class);
     private static String welcome = "Kedves %s!\n\nAz elmúlt időszakban a következő módosítások "
             + "történtek a körtagságok terén:\n\n";
     private static final String showUserLink = "https://korok.sch.bme.hu/korok/showuser/id/";
