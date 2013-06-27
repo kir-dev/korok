@@ -88,6 +88,16 @@
         <url>http://stewie.sch.bme.hu/gitweb</url>
     </scm>
 
+    <modules>
+        <module>sch-pek-domain</module>
+        <module>sch-pek-ejb-services</module>
+        <module>sch-pek-ejb-impl</module>
+        <module>sch-pek-web</module>
+        <module>sch-pek-web-services</module>
+        <module>sch-pek-ear</module>
+        <module>sch-pek-test</module>
+    </modules>
+
     <profiles>
         <profile>
             <id>hudson</id>
@@ -220,7 +230,7 @@
                 <dependency>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-entitymanager</artifactId>
-                    <version>3.5.0-Final</version>
+                    <!--<version>3.5.0-Final</version>-->
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -268,14 +278,17 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.5.8</version>
-                <scope>provided</scope>
+                <version>1.7.5</version>
             </dependency>
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.14</version>
-                <scope>provided</scope>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.0.13</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.0.13</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -297,15 +310,18 @@
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-annotations</artifactId>
+                <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
+                <artifactId>hibernate-entitymanager</artifactId>
                 <version>${hibernate.version}</version>
-                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-annotations</artifactId>
+                <version>${hibernate.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -316,29 +332,33 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
+                    <version>3.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.4.3</version>
+                    <version>2.6</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>2.15</version>
                 </plugin>
                 <plugin>
                     <groupId>com.mycila.maven-license-plugin</groupId>
                     <artifactId>maven-license-plugin</artifactId>
-                    <version>1.8.0</version>
+                    <version>1.9.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-ejb-plugin</artifactId>
                     <version>2.3</version>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.3.1</version>
+                    <version>2.4</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -390,16 +410,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <modules>
-        <module>sch-pek-domain</module>
-        <module>sch-pek-ejb-services</module>
-        <module>sch-pek-ejb-impl</module>
-        <module>sch-pek-web</module>
-        <module>sch-pek-web-services</module>
-        <module>sch-pek-ear</module>
-        <module>sch-pek-test</module>
-    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
