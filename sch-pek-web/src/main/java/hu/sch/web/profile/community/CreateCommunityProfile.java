@@ -41,7 +41,6 @@ import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Logger;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebPage;
@@ -51,6 +50,8 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -72,7 +73,7 @@ public class CreateCommunityProfile extends ProfilePage {
     private final static Pattern NEPTUN_PATTERN =
             Pattern.compile("[A-Za-z0-9]{6}");
     private static final Logger log =
-            Logger.getLogger(CreateCommunityProfile.class);
+            LoggerFactory.getLogger(CreateCommunityProfile.class);
     private Form dataForm;
     private Component importVIRProfile;
     private Component requestNEPTUNConfirmation;
@@ -144,7 +145,7 @@ public class CreateCommunityProfile extends ProfilePage {
                             setResponsePage(ShowPersonPage.class);
                         }
                     } catch (PersonNotFoundException e) {
-                        log.error(e);
+                        log.error("Hiba történt: nem található a felhasználó", e);
                         error("Hiba történt: nem található a felhasználó");
                     }
                     return;
@@ -180,7 +181,7 @@ public class CreateCommunityProfile extends ProfilePage {
                     inputKey = CONFIRMATION_CODE;
                     createProfileWithoutNEPTUN.setVisible(false);
                 } catch (Exception ex) {
-                    log.error(ex);
+                    log.error("Hiba történt", ex);
                     error("Hiba történt");
                 }
             }

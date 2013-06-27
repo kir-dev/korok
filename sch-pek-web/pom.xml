@@ -40,6 +40,25 @@
                 </excludes>
             </testResource>
         </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>WEB-INF/web.xml</include>
+                                <include>WEB-INF/sun-web.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
@@ -47,7 +66,7 @@
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-domain</artifactId>
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
         </dependency>
         <!-- Tranzitív függőség miatt rá kell függeni az EJB modulra is teszteknél :( -->
         <dependency>
@@ -58,7 +77,7 @@
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-ejb-services</artifactId>
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
@@ -97,8 +116,8 @@
             <version>${wicketstuff.version}</version>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <!-- PDF generáláshoz kell -->
         <dependency>
@@ -129,7 +148,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <wicket.version>6.6.0</wicket.version>
-        <wicketstuff.version>6.4.0</wicketstuff.version>
+        <wicket.version>6.8.0</wicket.version>
+        <wicketstuff.version>6.8.0</wicketstuff.version>
     </properties>
 </project>

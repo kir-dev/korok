@@ -33,8 +33,9 @@ package hu.sch.web.wicket.util;
 
 import hu.sch.domain.Membership;
 import java.util.Locale;
-import org.apache.log4j.Logger;
 import org.apache.wicket.util.convert.IConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -43,7 +44,7 @@ import org.apache.wicket.util.convert.IConverter;
 @SuppressWarnings("unchecked")
 public class PostTypeConverter implements IConverter {
 
-    private static Logger log = Logger.getLogger(PostTypeConverter.class);
+    private static Logger log = LoggerFactory.getLogger(PostTypeConverter.class);
 
     @Override
     public Object convertToObject(String value, Locale locale) {

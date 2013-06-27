@@ -32,10 +32,11 @@ package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.User;
-import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.request.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Fejlesztői teszt autorizációs modul. Lényegében meghazudja nekünk, hogy mely
@@ -48,7 +49,7 @@ public final class DummyAuthorization implements UserAuthorization {
     /**
      * A logoláshoz szükséges logger.
      */
-    private static Logger log = Logger.getLogger(DummyAuthorization.class);
+    private static Logger log = LoggerFactory.getLogger(DummyAuthorization.class);
 
     /**
      * {@inheritDoc}

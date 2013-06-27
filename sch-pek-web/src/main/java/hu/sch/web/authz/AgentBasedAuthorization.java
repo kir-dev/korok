@@ -39,9 +39,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
 import org.apache.wicket.request.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Autorizációs feladatok ellátásáért felelős osztály, mely feldolgozza az
@@ -57,7 +58,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
      * Logoláshoz szükséges objektum
      */
     private static final Logger log =
-            Logger.getLogger(AgentBasedAuthorization.class);
+            LoggerFactory.getLogger(AgentBasedAuthorization.class);
     /**
      * A HTTP headerben ezen kulcs alá kerül tárolásra a cache-elt autorizációs
      * adatok

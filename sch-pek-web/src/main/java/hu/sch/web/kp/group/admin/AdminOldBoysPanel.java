@@ -39,12 +39,13 @@ import hu.sch.web.wicket.components.tables.MembershipTable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Ezt a panelt látja a user akkor, ha jogosult arra, hogy aktiválhassa az
@@ -58,7 +59,7 @@ public final class AdminOldBoysPanel extends Panel {
 
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
-    private static Logger log = Logger.getLogger(AdminOldBoysPanel.class);
+    private static Logger log = LoggerFactory.getLogger(AdminOldBoysPanel.class);
 
     public AdminOldBoysPanel(String id, final List<Membership> inactiveMembers) {
         super(id);

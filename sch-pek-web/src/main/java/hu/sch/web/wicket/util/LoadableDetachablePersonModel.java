@@ -34,9 +34,10 @@ import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -45,7 +46,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 public class LoadableDetachablePersonModel extends LoadableDetachableModel<Person> {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(LoadableDetachablePersonModel.class);
+    private static Logger logger = LoggerFactory.getLogger(LoadableDetachablePersonModel.class);
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
     private transient Person person = null;

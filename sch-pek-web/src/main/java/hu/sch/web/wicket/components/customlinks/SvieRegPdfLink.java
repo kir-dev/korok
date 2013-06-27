@@ -49,11 +49,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.util.resource.IResourceStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -63,7 +64,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
 
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
-    private static final Logger logger = Logger.getLogger(SvieRegPdfLink.class);
+    private static final Logger logger = LoggerFactory.getLogger(SvieRegPdfLink.class);
     private static final long serialVersionUID = 1L;
     private static Image schLogo;
     private static Image signImage;

@@ -75,7 +75,6 @@ import hu.sch.web.wicket.util.ServerTimerFilter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.log4j.Logger;
 import org.apache.wicket.*;
 import org.apache.wicket.core.request.mapper.MountedMapper;
 import org.apache.wicket.injection.Injector;
@@ -87,6 +86,8 @@ import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.cycle.RequestCycleContext;
 import org.apache.wicket.request.mapper.parameter.UrlPathPageParametersEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
 import org.wicketstuff.javaee.naming.global.AppJndiNamingStrategy;
 import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
@@ -103,7 +104,7 @@ import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
 public class PhoenixApplication extends WebApplication {
 
     private static final String EJB_MODULE_NAME = "korok-ejb";
-    private static Logger log = Logger.getLogger(PhoenixApplication.class);
+    private static Logger log = LoggerFactory.getLogger(PhoenixApplication.class);
     @EJB(name = "SystemManagerBean")
     private SystemManagerLocal systemManager;
     private UserAuthorization authorizationComponent;

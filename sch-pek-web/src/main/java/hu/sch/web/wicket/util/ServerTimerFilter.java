@@ -30,10 +30,11 @@
  */
 package hu.sch.web.wicket.util;
 
-import org.apache.log4j.Logger;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.response.filter.IResponseFilter;
 import org.apache.wicket.util.string.AppendingStringBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,7 +42,7 @@ import org.apache.wicket.util.string.AppendingStringBuffer;
  */
 public class ServerTimerFilter implements IResponseFilter {
 
-    private static final Logger log = Logger.getLogger(ServerTimerFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(ServerTimerFilter.class);
 
     @Override
     public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer) {

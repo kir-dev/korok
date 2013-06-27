@@ -46,7 +46,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
@@ -67,6 +66,8 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.apache.wicket.validation.validator.UrlValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -76,7 +77,7 @@ public class PersonForm extends Form<Person> {
 
     @EJB(name = "LdapManagerBean")
     private LdapManagerLocal ldapManager;
-    private static final Logger logger = Logger.getLogger(PersonForm.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersonForm.class);
     private final Person person;
     private Date dob;
     private List<FileUpload> upload;

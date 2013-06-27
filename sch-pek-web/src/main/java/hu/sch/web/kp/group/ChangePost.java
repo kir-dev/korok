@@ -36,7 +36,6 @@ import hu.sch.web.kp.KorokPage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.*;
@@ -47,6 +46,8 @@ import org.apache.wicket.util.io.IClusterable;
 import org.apache.wicket.util.string.StringValueConversionException;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -54,7 +55,7 @@ import org.apache.wicket.validation.validator.StringValidator;
  */
 public final class ChangePost extends KorokPage {
 
-    private static Logger log = Logger.getLogger(ChangePost.class);
+    private static Logger log = LoggerFactory.getLogger(ChangePost.class);
     private String postName;
     private Boolean isDelegatedPost;
 

@@ -45,7 +45,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -57,6 +56,8 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -66,7 +67,7 @@ public final class SvieGroupMgmt extends KorokPage {
 
     @EJB(name = "SvieManagerBean")
     private SvieManagerLocal svieManager;
-    private static Logger log = Logger.getLogger(SvieUserMgmt.class);
+    private static Logger log = LoggerFactory.getLogger(SvieUserMgmt.class);
     private List<Group> groups;
     private List<Group> filteredGroups;
     private String currentFilter;

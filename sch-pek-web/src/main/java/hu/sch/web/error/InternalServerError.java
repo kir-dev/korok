@@ -34,10 +34,11 @@ import hu.sch.services.MailManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.log4j.Logger;
 import org.apache.wicket.Page;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
 import org.apache.wicket.util.string.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -45,7 +46,7 @@ import org.apache.wicket.util.string.Strings;
  */
 public final class InternalServerError extends KorokPage {
 
-    private static Logger logger = Logger.getLogger(InternalServerError.class);
+    private static Logger logger = LoggerFactory.getLogger(InternalServerError.class);
     @EJB(name = "MailManagerBean")
     MailManagerLocal mailManager;
 

@@ -47,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
@@ -60,6 +59,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.validator.RangeValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -67,7 +68,7 @@ import org.apache.wicket.validation.validator.RangeValidator;
  */
 public class EditSettings extends KorokPage {
 
-    private static Logger logger = Logger.getLogger(EditSettings.class);
+    private static Logger logger = LoggerFactory.getLogger(EditSettings.class);
 
     public EditSettings() {
         //Jogosultságellenőrzés

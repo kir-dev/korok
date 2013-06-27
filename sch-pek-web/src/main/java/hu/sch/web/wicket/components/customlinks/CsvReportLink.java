@@ -38,10 +38,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.util.resource.IResourceStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -49,7 +50,7 @@ import org.apache.wicket.util.resource.IResourceStream;
  */
 public final class CsvReportLink extends Link<Void> {
 
-    private static Logger logger = Logger.getLogger(CsvReportLink.class);
+    private static Logger logger = LoggerFactory.getLogger(CsvReportLink.class);
     @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;
 

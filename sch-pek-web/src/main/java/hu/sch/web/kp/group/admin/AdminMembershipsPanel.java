@@ -42,12 +42,13 @@ import hu.sch.web.wicket.components.tables.PanelColumn;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Ezt a panelt látja a user akkor, ha jogosult arra, hogy valakit öregtaggá
@@ -61,7 +62,7 @@ public final class AdminMembershipsPanel extends Panel {
 
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
-    private static Logger log = Logger.getLogger(AdminMembershipsPanel.class);
+    private static Logger log = LoggerFactory.getLogger(AdminMembershipsPanel.class);
 
     public AdminMembershipsPanel(String id, final List<Membership> activeMembers) {
         super(id);

@@ -40,8 +40,9 @@ import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.web.common.PekPage;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -53,7 +54,7 @@ public abstract class KorokPage extends PekPage {
     protected SystemManagerLocal systemManager;
     @EJB(name = "PostManagerBean")
     protected PostManagerLocal postManager;
-    private static final Logger log = Logger.getLogger(KorokPage.class);
+    private static final Logger log = LoggerFactory.getLogger(KorokPage.class);
 
     @Override
     protected String getTitle() {

@@ -40,7 +40,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -50,6 +49,8 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -58,7 +59,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  */
 public class UserHistory extends KorokPage {
 
-    private static final Logger log = Logger.getLogger(UserHistory.class);
+    private static final Logger log = LoggerFactory.getLogger(UserHistory.class);
     private Long id;
     private Long selectedGroupId = null;
     private final String EVERY_GROUP = "Összes kör";

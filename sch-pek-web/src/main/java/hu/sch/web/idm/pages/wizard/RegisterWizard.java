@@ -47,7 +47,6 @@ import java.util.StringTokenizer;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.sql.DataSource;
-import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -77,6 +76,8 @@ import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Regisztrációs varázsló.
@@ -91,7 +92,7 @@ public class RegisterWizard extends Wizard {
     private static final String VIR_CHECK_SQL = "SELECT kirauth(?, md5(?))";
     private static final String NEPTUN_CHECK_SQL = "SELECT neptun, nev FROM neptun_list WHERE UPPER(neptun)=UPPER(?) AND szuldat=?";
     //TODO: log4j konfiggal külön fájlba logolni!!!
-    private static final Logger logger = Logger.getLogger(RegisterWizard.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegisterWizard.class);
     //sima JDBC hogy ne kelljen csak emiatt felmappelni attribútumokat és 
     //foglalkozni velük
     @Resource(name = "jdbc/sch")

@@ -39,7 +39,6 @@ import hu.sch.web.wicket.components.tables.UsersMembershipTable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -48,6 +47,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValueConversionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -55,7 +56,7 @@ import org.apache.wicket.util.string.StringValueConversionException;
  */
 public class ShowUser extends KorokPage {
 
-    private static Logger logger = Logger.getLogger(ShowUser.class);
+    private static Logger logger = LoggerFactory.getLogger(ShowUser.class);
     private Long id;
     private boolean ownProfile = false;
     private Group addToCsoportSelected;

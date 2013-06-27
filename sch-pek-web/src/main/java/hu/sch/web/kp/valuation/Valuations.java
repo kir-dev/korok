@@ -42,7 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
-import org.apache.log4j.Logger;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -59,6 +58,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValueConversionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A körvezetők ezen lap segítségével adhatnak be értékeléseket a köreikhez.
@@ -70,7 +71,7 @@ public class Valuations extends KorokPage {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
-    private static Logger log = Logger.getLogger(Valuations.class);
+    private static Logger log = LoggerFactory.getLogger(Valuations.class);
     private static final String HEADER_TEXT = "Értékelések";
     private final Group group;
 
