@@ -36,7 +36,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  *
@@ -72,7 +72,7 @@ public class Configuration {
          */
         TESTING
     };
-    private static final Logger logger = Logger.getLogger(Configuration.class);
+    private static final Logger logger = Logger.getLogger(Configuration.class.getSimpleName());
     private static final String PROPERTY_NAME = "application.resource.dir";
     private static final String SPRINGLDAP_FILE = "springldap.file";
     private static final String TIMES_FONT_FILE = "times.font.file";
@@ -116,7 +116,7 @@ public class Configuration {
                 System.err.println("Illegal 'wicket.configuration' in the config.properties. Fallbacking to DEVELOPMENT.");
                 environment = Environment.DEVELOPMENT;
             }
-            logger.warn("The application is running in " + environment.toString() + " mode!");
+            logger.log(Level.WARNING, "The application is running in {0} mode!", environment.toString());
         }
         return environment;
     }
