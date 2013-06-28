@@ -60,6 +60,8 @@
 
         <properties>
             <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false" />
+            <property name="hibernate.use_sql_comments" value="false" />
             <property name="hibernate.bytecode.use_reflection_optimizer" value="true"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="hibernate.jdbc.use_streams_for_binary" value="false"/>
