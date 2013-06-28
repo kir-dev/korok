@@ -56,7 +56,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Singleton;
-import javax.ejb.Stateless;
 import javax.naming.Name;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -87,7 +86,6 @@ import org.springframework.ldap.filter.OrFilter;
  *
  * @author aldaris
  */
-@Stateless
 @Singleton
 @DeclareRoles("ADMIN")
 @SuppressWarnings("unchecked")
