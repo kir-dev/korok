@@ -44,7 +44,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.StringTokenizer;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.sql.DataSource;
@@ -65,7 +64,6 @@ import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -88,8 +86,6 @@ import org.apache.wicket.validation.validator.StringValidator;
  */
 public class RegisterWizard extends Wizard {
 
-    private static final String ATTRIBUTES_SQL = "SELECT * FROM users_full_dormitory WHERE usr_id=?";
-    private static final String VIR_CHECK_SQL = "SELECT kirauth(?, md5(?))";
     private static final String NEPTUN_CHECK_SQL = "SELECT neptun, nev FROM neptun_list WHERE UPPER(neptun)=UPPER(?) AND szuldat=?";
     //TODO: log4j konfiggal külön fájlba logolni!!!
     private static final Logger logger = Logger.getLogger(RegisterWizard.class);
@@ -100,9 +96,7 @@ public class RegisterWizard extends Wizard {
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
     private Person person = new Person();
-    private Date dob;
-    private String virUserName;
-    private String virPass;
+    private Date dob; //ezek a mezők használva vannak a CPM által
     private String neptun;
     private String newPass;
     private String newPass2;
@@ -123,7 +117,7 @@ public class RegisterWizard extends Wizard {
         regMode = null;
         dob = null;
         person = new Person();
-        virUserName = virPass = neptun = newPass = newPass2 = null;
+        neptun = newPass = newPass2 = null;
         getWizardModel().reset();
     }
 
@@ -168,7 +162,6 @@ public class RegisterWizard extends Wizard {
 
     private enum RegistrationMode {
 
-        VIR_ACCOUNT("Meglévő VIR regisztráció"),
         NEPTUN_CODE(((PhoenixApplication) Application.get()).isNewbieTime()
         ? "Gólya regisztráció" : "Aktív villanykaros hallgató NEPTUN kód");
         private String name;
@@ -208,160 +201,7 @@ public class RegisterWizard extends Wizard {
 
         @Override
         public IDynamicWizardStep next() {
-            if (regMode.equals(RegistrationMode.NEPTUN_CODE)) {
-                return new NeptunLoginStep(this);
-            } else {
-                return new VirLoginStep(this);
-            }
-        }
-    }
-
-    private class VirLoginStep extends DynamicWizardStep {
-
-        public VirLoginStep(IDynamicWizardStep previousStep) {
-            super(previousStep, new StringResourceModel("reg.virlogin.title", null), new StringResourceModel("reg.virlogin.help", null));
-            final TextField<String> userName = new RequiredTextField<String>("virUserName");
-            userName.add(StringValidator.maximumLength(80));
-            final TextField<String> pass = new PasswordTextField("virPass");
-            pass.setRequired(true);
-
-            add(userName, pass);
-            add(new IFormValidator() {
-
-                @Override
-                public FormComponent<?>[] getDependentFormComponents() {
-                    return new FormComponent<?>[]{userName, pass};
-                }
-
-                @Override
-                public void validate(Form<?> form) {
-                    try {
-                        if (!checkPwd(userName.getValue(), pass.getValue())) {
-                            error("Hiba lépett fel a regisztráció közben");
-                        }
-                    } catch (IllegalArgumentException iae) {
-                        error(iae.getMessage());
-                    }
-                }
-            });
-        }
-
-        @Override
-        public boolean isLastStep() {
-            return false;
-        }
-
-        @Override
-        public IDynamicWizardStep next() {
-            return new NewAccountStep(this);
-        }
-
-        private boolean checkPwd(String userName, String password) throws IllegalArgumentException {
-            Connection conn = null;
-            ResultSet results = null;
-            PreparedStatement stmt = null;
-            String virAuthString = null;
-
-            try {
-                conn = ds.getConnection();
-                stmt = conn.prepareStatement(VIR_CHECK_SQL);
-                stmt.setString(1, userName);
-                stmt.setString(2, password);
-
-                results = stmt.executeQuery();
-
-                int index = 0;
-
-                while (results.next()) {
-                    index++;
-                    if (index > 1) {
-                        logger.error("Too many results from kirauth()");
-                        throw new IllegalArgumentException("Hiba lépett fel a regisztráció közben");
-                    }
-                    virAuthString = results.getString(1);
-                    if (virAuthString == null) {
-                        logger.info("No results from kirauth()");
-                        throw new IllegalArgumentException("Nincs ilyen felhasználó!");
-                    }
-                }
-                if (index == 0) {
-                    logger.warn("No results from kirauth()");
-                    throw new IllegalArgumentException("Nincs ilyen felhasználó!");
-                }
-
-                // parse in the userid. its in the first field of response
-                // "userid/name/room"
-                StringTokenizer tok = new StringTokenizer(virAuthString);
-                String userId = tok.nextToken("/");
-
-                long usr_id = 0;
-                usr_id = Long.parseLong(userId);
-
-                if (usr_id <= 0) {
-                    logger.error("Usr_id parse error in: " + virAuthString);
-                    throw new IllegalArgumentException("Hiba lépett fel a regisztráció közben");
-                }
-                stmt.close();
-
-                // select user attributes
-                stmt = conn.prepareStatement(ATTRIBUTES_SQL);
-
-                stmt.setLong(1, usr_id);
-                results = stmt.executeQuery();
-
-                if (!results.next()) {
-                    logger.error("No record in users database for the user");
-                    throw new IllegalArgumentException("Nincs ilyen felhasználó!");
-                }
-
-                // fill in transient user attributes
-                person.setVirId(usr_id);
-                neptun = results.getString("usr_neptun");
-
-                //don't use the generated dummy _usrid neptun codes
-                if (!neptun.startsWith("_")) {
-                    person.setNeptun(neptun);
-                }
-
-
-                checkExistingPerson(neptun);
-                person.setFullName(results.getString("usr_name"));
-                person.setNickName(results.getString("usr_nickname"));
-                person.setFirstName(results.getString("usr_firstname"));
-                person.setLastName(results.getString("usr_lastname"));
-                person.setMail(results.getString("usr_email"));
-
-                String isGirl = results.getString("usr_is_a_girl");
-                if (isGirl != null) {
-                    if (isGirl.equals("t")) {
-                        person.setGender("2");
-                    } else if (isGirl.equals("f")) {
-                        person.setGender("1");
-                    }
-                }
-
-                person.setStudentStatus(results.getString("usr_status"));
-
-                return true;
-            } catch (SQLException sqle) {
-                logger.error("Error occured during trying to registration process", sqle);
-            } finally {
-                if (conn != null) {
-                    try {
-                        conn.close();
-                    } catch (Exception ex) {
-                        logger.error("Unable to close database connection!", ex);
-                    }
-                }
-                if (stmt != null) {
-                    try {
-                        stmt.close();
-                    } catch (SQLException ex) {
-                        logger.error("Unable to close the Statement object!", ex);
-                    }
-                }
-            }
-            return false;
+            return new NeptunLoginStep(this);
         }
     }
 
