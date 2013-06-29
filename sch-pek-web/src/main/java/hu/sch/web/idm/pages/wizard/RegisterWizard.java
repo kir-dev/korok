@@ -42,13 +42,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
-import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -160,28 +158,12 @@ public class RegisterWizard extends Wizard {
         return false;
     }
 
-    private enum RegistrationMode {
-
-        NEPTUN_CODE(((PhoenixApplication) Application.get()).isNewbieTime()
-        ? "Gólya regisztráció" : "Aktív villanykaros hallgató NEPTUN kód");
-        private String name;
-
-        private RegistrationMode(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
     private class RegistrationModeSelectStep extends DynamicWizardStep {
 
         public RegistrationModeSelectStep() {
             super(null, new StringResourceModel("reg.modeselect.title", null), new StringResourceModel("reg.modeselect.help", null));
             final RadioGroup<RegistrationMode> radioGroup = new RadioGroup<RegistrationMode>("regMode");
-            ListView<RegistrationMode> lv = new ListView<RegistrationMode>("choiceList", Arrays.asList(RegistrationMode.values())) {
+            ListView<RegistrationMode> lv = new ListView<RegistrationMode>("choiceList", new RegistrationModeListModel()) {
 
                 @Override
                 protected void populateItem(ListItem<RegistrationMode> item) {
@@ -201,7 +183,13 @@ public class RegisterWizard extends Wizard {
 
         @Override
         public IDynamicWizardStep next() {
-            return new NeptunLoginStep(this);
+            switch(regMode) {
+                case ACTIVE_WITH_NEPTUN_CODE:   return new NeptunLoginStep(this);
+                case NEWBIE_WITH_NEPTUN_CODE:   return new NeptunLoginStep(this);
+                case NEWBIE_WITH_OM_CODE:       return new NeptunLoginStep(this);
+                default:
+                    return new NeptunLoginStep(this);
+            }
         }
     }
 
