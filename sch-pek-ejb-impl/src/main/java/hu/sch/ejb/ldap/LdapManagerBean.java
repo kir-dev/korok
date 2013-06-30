@@ -154,8 +154,7 @@ public class LdapManagerBean implements LdapManagerLocal {
             final String dn = buildDN(p.getUid());
 
             SearchResultEntry entry = ldapConnPool.getEntry(dn);
-            List<Modification> mods = createModifications(p, entry);
-            ModifyRequest req = new ModifyRequest(dn, mods);
+            ModifyRequest req = new LdapPersonEntryMapper().buildModifyRequest(p, entry);
 
             ldapConnPool.modify(req);
         } catch (LDAPException ex) {
@@ -220,7 +219,7 @@ public class LdapManagerBean implements LdapManagerLocal {
                 Filter.createEqualityFilter(
                 LdapAttributeNames.PRIVATE.getName(),
                 LdapAttributeNames.DATE_OF_BIRHT.getName())),
-                Filter.createApproximateMatchFilter(LdapAttributeNames.DATE_OF_BIRHT.getName(), searchDate));
+                Filter.createSubstringFilter(LdapAttributeNames.DATE_OF_BIRHT.getName(), null, new String[] { searchDate }, null));
 
         return searchForPeople(filter);
     }
@@ -353,7 +352,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     private Person createPersonFromLDAPEntry(SearchResultEntry e) {
-        return new LdapPersonEntryMapper(e).toPerson();
+        return new LdapPersonEntryMapper().toPerson(e);
     }
 
     private String buildVirId(String virId) {
@@ -403,80 +402,5 @@ public class LdapManagerBean implements LdapManagerLocal {
         }
 
         return people;
-    }
-
-    private List<Modification> createModifications(Person p, Entry e) {
-        List<Modification> mods = new ArrayList<Modification>();
-
-        p.setToSave();
-
-        mods.add(buildModification(LdapAttributeNames.LASTNAME, p.getLastName()));
-        mods.add(buildModification(LdapAttributeNames.FIRSTNAME, p.getFirstName()));
-        mods.add(buildModification(LdapAttributeNames.NICKNAME, p.getNickName()));
-        mods.add(buildModification(LdapAttributeNames.FULLNAME, p.getFullName()));
-        mods.add(buildModification(LdapAttributeNames.MAIL, p.getMail()));
-        mods.add(buildModification(LdapAttributeNames.MOBILE, p.getMobile()));
-        mods.add(buildModification(LdapAttributeNames.HOMEPHONE, p.getHomePhone()));
-        mods.add(buildModification(LdapAttributeNames.ROOMNUMBER, p.getRoomNumber()));
-        mods.add(buildModification(LdapAttributeNames.POSTALADDRESS, p.getHomePostalAddress()));
-        mods.add(buildModification(LdapAttributeNames.WEBPAGE, p.getWebpage()));
-        mods.add(buildModification(LdapAttributeNames.DATE_OF_BIRHT, p.getDateOfBirth()));
-        mods.add(buildModification(LdapAttributeNames.GENDER, p.getGender()));
-        mods.add(buildModification(LdapAttributeNames.MOTHERSNAME, p.getMothersName()));
-        mods.add(buildModification(LdapAttributeNames.ESTIMATED_GRAD_YEAR, p.getEstimatedGraduationYear()));
-        mods.add(buildModification(LdapAttributeNames.STATUS, p.getStatus()));
-        mods.add(buildModification(LdapAttributeNames.CONFIRMATION_CODE, p.getConfirmationCode()));
-
-        mods.add(buildModification(LdapAttributeNames.PRIVATE, p.getSchacPrivateAttribute()));
-
-        // add missing objectClasses
-        List<String> attrs = Arrays.asList(e.getAttributeValues(LdapAttributeNames.OBJECTCLASS.getName()));
-        if (!attrs.contains("schacEntryConfidentiality")) {
-            mods.add(new Modification(ModificationType.ADD, LdapAttributeNames.OBJECTCLASS.getName(), "schacEntryConfidentiality"));
-        }
-        if (!attrs.contains("sch-vir")) {
-            mods.add(new Modification(ModificationType.ADD, LdapAttributeNames.OBJECTCLASS.getName(), "sch-vir"));
-        }
-
-        List<String> ims = new ArrayList<String>();
-        for (IMAccount im : p.getIMAccounts()) {
-            if (im.getPresenceID() == null) {
-                continue;
-            }
-
-            ims.add(im.toString());
-        }
-
-        mods.add(buildModification(LdapAttributeNames.IM, ims.toArray(new String[ims.size()])));
-
-        // Admin altal valtoztathato attributumok.
-        mods.add(buildModification(LdapAttributeNames.NEPTUN, p.getPersonalUniqueCode()));
-        mods.add(buildModification(LdapAttributeNames.VIRID, p.getPersonalUniqueID()));
-        mods.add(buildModification(LdapAttributeNames.USERSTATUS, p.getStudentUserStatus()));
-
-        return mods;
-    }
-
-    /**
-     * Builds a modification for replacing the specified attribute's value.
-     *
-     * @param attrname the attribute to replace
-     * @param value the new value
-     */
-    private Modification buildModification(LdapAttributeNames attrname, String value) {
-        if (value == null) {
-            return new Modification(ModificationType.REPLACE, attrname.getName());
-        }
-        return new Modification(ModificationType.REPLACE, attrname.getName(), value);
-    }
-
-    /**
-     * Builds a modification for replacing the specified attribute's value.
-     *
-     * @param attrname the attribute to replace
-     * @param values the new values
-     */
-    private Modification buildModification(LdapAttributeNames attrname, String[] values) {
-        return new Modification(ModificationType.REPLACE, attrname.getName(), values);
     }
 }
