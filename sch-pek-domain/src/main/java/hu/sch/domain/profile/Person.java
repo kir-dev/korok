@@ -19,11 +19,11 @@ public class Person implements Serializable {
     public static final String SORT_BY_NICKNAME = "nickName";
     public static final String SORT_BY_MAIL = "mail";
     public static final String SORT_BY_ROOMNUMBER = "roomNumber";
-    private static final String NEPTUN_PREFIX =
+    public static final String NEPTUN_PREFIX =
             "urn:mace:terena.org:schac:personalUniqueCode:hu:BME-NEPTUN:";
-    private static final String STUDENTSTATUS_PREFIX =
+    public static final String STUDENTSTATUS_PREFIX =
             "urn:mace:terena.org:schac:status:sch.hu:student_status:";
-    private static final String VIRID_PREFIX =
+    public static final String VIRID_PREFIX =
             "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:";
     /**
      * A felhasználó által feltölthető kép maximális mérete. Átméretezéshez kell
@@ -395,7 +395,7 @@ public class Person implements Serializable {
         return "Active".equalsIgnoreCase(status);
     }
 
-    public Object[] getSchacPrivateAttribute() {
+    public String[] getSchacPrivateAttribute() {
         return schacPrivateAttribute;
     }
 

@@ -2,6 +2,7 @@ package hu.sch.web.wicket.components.customlinks;
 
 import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
+import hu.sch.services.exceptions.LdapDeleteEntryFailedException;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import javax.ejb.EJB;
@@ -27,6 +28,8 @@ public class DeletePersonLink extends Panel {
                 try {
                     ldapManager.deletePersonByUid(person.getUid());
                 } catch (PersonNotFoundException e) {
+                } catch (LdapDeleteEntryFailedException ex) {
+                    // TODO: exception kezelés
                 }
 
                 getSession().info("A felhasználó (" + person.getUid() + ", " + person.getFullName() + ", "

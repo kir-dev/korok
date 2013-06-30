@@ -6,10 +6,13 @@ package hu.sch.services.exceptions;
  */
 public class PersonNotFoundException extends Exception {
 
+    private String id;
+
     public PersonNotFoundException() {
     }
 
-    public PersonNotFoundException(String msg) {
-        super(msg);
+    public PersonNotFoundException(String id) {
+        super("Could not find person with id: " + id);
+        this.id = id;
     }
 }

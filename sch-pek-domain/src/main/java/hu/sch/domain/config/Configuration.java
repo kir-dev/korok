@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 /**
  *
  * @author  aldaris
+ * @author  tomi
  */
 public class Configuration {
 
@@ -43,10 +44,14 @@ public class Configuration {
     };
     private static final Logger logger = Logger.getLogger(Configuration.class.getSimpleName());
     private static final String PROPERTY_NAME = "application.resource.dir";
-    private static final String SPRINGLDAP_FILE = "springldap.file";
     private static final String TIMES_FONT_FILE = "times.font.file";
     private static final String APPLICATION_FOLDER = "korok";
     private static final String CONFIG_FILE = "config.properties";
+    private static final String LDAP_HOST = "ldap.host";
+    private static final String LDAP_PORT = "ldap.port";
+    private static final String LDAP_USER = "ldap.user";
+    private static final String LDAP_PASSWORD = "ldap.password";
+
     private static Properties properties = new Properties();
     private static String baseDir;
     private static Environment environment = null;
@@ -97,11 +102,16 @@ public class Configuration {
     private Configuration() {
     }
 
-    public static String getSpringLdapPath() {
-        return baseDir + APPLICATION_FOLDER + "/" + properties.getProperty(SPRINGLDAP_FILE);
-    }
-
     public static String getFontPath() {
         return baseDir + APPLICATION_FOLDER + "/" + properties.getProperty(TIMES_FONT_FILE);
+    }
+
+    public static LdapConfig getLdapConfig() {
+        String user = properties.getProperty(LDAP_USER);
+        String password = properties.getProperty(LDAP_PASSWORD);
+        String host = properties.getProperty(LDAP_HOST);
+        int port = Integer.parseInt(properties.getProperty(LDAP_PORT));
+
+        return new LdapConfig(host, port, user, password);
     }
 }

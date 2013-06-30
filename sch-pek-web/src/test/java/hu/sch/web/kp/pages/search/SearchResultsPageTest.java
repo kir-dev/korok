@@ -1,7 +1,7 @@
 package hu.sch.web.kp.pages.search;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.ejb.LdapManagerBean;
+import hu.sch.ejb.ldap.LdapManagerBean;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.web.kp.search.PersonResultPanel;
 import hu.sch.web.kp.search.SearchResultsPage;

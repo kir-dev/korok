@@ -3,6 +3,7 @@ package hu.sch.services;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.InvalidPasswordException;
+import hu.sch.services.exceptions.LdapDeleteEntryFailedException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,7 +17,7 @@ public interface LdapManagerLocal {
     public void changePassword(String uid, String oldPassword, String newPassword)
             throws InvalidPasswordException;
 
-    void deletePersonByUid(String uid) throws PersonNotFoundException;
+    void deletePersonByUid(String uid) throws PersonNotFoundException, LdapDeleteEntryFailedException;
 
     Person getPersonByUid(String uid) throws PersonNotFoundException;
 
