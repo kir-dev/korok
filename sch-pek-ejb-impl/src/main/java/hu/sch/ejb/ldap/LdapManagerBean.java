@@ -6,8 +6,6 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPSearchException;
-import com.unboundid.ldap.sdk.Modification;
-import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.SearchRequest;
@@ -18,7 +16,6 @@ import com.unboundid.ldap.sdk.extensions.PasswordModifyExtendedRequest;
 import com.unboundid.ldap.sdk.extensions.PasswordModifyExtendedResult;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.config.LdapConfig;
-import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.InvalidPasswordException;
@@ -29,11 +26,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -60,7 +54,6 @@ public class LdapManagerBean implements LdapManagerLocal {
      * A logolashoz szukseges objektum.
      */
     private static final Logger logger = LoggerFactory.getLogger(LdapManagerBean.class);
-
     private static final String[] objectClasses = new String[]{
         "top", "schacLinkageIdentifiers", "sunAMAuthAccountLockout", "schacContactLocation",
         "person", "schacPersonalCharacteristics", "inetUser", "inetorgperson",
@@ -68,21 +61,17 @@ public class LdapManagerBean implements LdapManagerLocal {
         "sunFMSAML2NameIdentifier", "top", "schacEntryConfidentiality", "eduPerson",
         "schacEntryMetadata", "schacUserEntitlements"
     };
-
     private static final int INITIAL_CONNECTIONS = 5;
     private static final int MAX_CONNECTIONS = 20;
     private static final String BASEDN = "ou=people,ou=sch,o=bme,c=hu";
     private static final String ACTIVE_STATUS = "Active";
     private static final String INACTIVE_STATUS = "Inactive";
-
     /**
      * Levélküldéshez szükséges EJB referencia
      */
     @EJB(name = "MailManagerBean")
     private MailManagerLocal mailManager;
-
     private LDAPConnectionPool ldapConnPool;
-
     /**
      * Deklaratív jogkezeléshez
      */
@@ -105,7 +94,6 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     // <editor-fold desc="LdapManagerLocal members">
-
     @RolesAllowed("ADMIN")
     @Override
     public void deletePersonByUid(String uid) throws PersonNotFoundException, LdapDeleteEntryFailedException {
@@ -179,37 +167,35 @@ public class LdapManagerBean implements LdapManagerLocal {
          * (roomNumber = "*almafa*" and schacUserPrivateAttribute != "roomNumber")
          */
 
-//        AndFilter andFilter = new AndFilter();
-//
-//        for (String word : keyWord.split(" ")) {
-//            OrFilter orFilter = new OrFilter();
-//            orFilter.or(new I18nFilter("cn", "*" + word + "*"));
-//            orFilter.or(new I18nFilter("displayName", "*" + word + "*"));
-//            orFilter.or(new AndFilter().and(new NotFilter(
-//                    new EqualsFilter("schacUserPrivateAttribute", "mail"))).
-//                    and(new EqualsFilter("mail", word)));
-//            orFilter.or(new AndFilter().and(new NotFilter(
-//                    new EqualsFilter("schacUserPrivateAttribute", "roomNumber"))).
-//                    and(new I18nFilter("roomNumber", "*" + word + "*")));
-//            andFilter.and(orFilter);
-//        }
-//        andFilter.and(new EqualsFilter("objectclass", "person"));
-//
-//        List<Filter> fiterComponents = new ArrayList<Filter>();
-//
-//        for (String term : keyWord.split(" ")) {
-//        }
-//
-//        Filter filter = Filter.createANDFilter(fiterComponents);
-//
-//        AndFilter andFilter = setUpAndFilter(keyWord);
-//        if (!ctx.isCallerInRole("ADMIN")) {
-//            andFilter.and(new EqualsFilter("inetUserStatus", "active"));
-//        }
-//        return ldapTemplate.search("",
-//                andFilter.encode(), getSearchContextMapper());
+        List<Filter> conditions = new ArrayList<Filter>();
 
-        return Collections.emptyList();
+        for (String word : keyWord.split(" ")) {
+            List<Filter> filters = new ArrayList<Filter>();
+
+            // fullname (cn)
+            filters.add(createI18NFilter(LdapAttributeNames.FULLNAME, word));
+
+            // nickname
+            filters.add(createI18NFilter(LdapAttributeNames.NICKNAME, word));
+
+            // mail if not private
+            filters.add(Filter.createANDFilter(
+                    Filter.createNOTFilter(Filter.createEqualityFilter(LdapAttributeNames.PRIVATE.getName(), LdapAttributeNames.MAIL.getName())),
+                    Filter.createEqualityFilter(LdapAttributeNames.MAIL.getName(), word)));
+
+            // roomnumber if not private
+            filters.add(Filter.createANDFilter(
+                    Filter.createNOTFilter(Filter.createEqualityFilter(LdapAttributeNames.PRIVATE.getName(), LdapAttributeNames.ROOMNUMBER.getName())),
+                    createI18NFilter(LdapAttributeNames.ROOMNUMBER, word)));
+
+            conditions.add(Filter.createORFilter(filters));
+        }
+
+        if (!ctx.isCallerInRole("ADMIN")) {
+            conditions.add(Filter.createEqualityFilter(LdapAttributeNames.STATUS.getName(), ACTIVE_STATUS));
+        }
+
+        return searchForPeople(Filter.createANDFilter(conditions));
     }
 
     @Override
@@ -219,7 +205,7 @@ public class LdapManagerBean implements LdapManagerLocal {
                 Filter.createEqualityFilter(
                 LdapAttributeNames.PRIVATE.getName(),
                 LdapAttributeNames.DATE_OF_BIRHT.getName())),
-                Filter.createSubstringFilter(LdapAttributeNames.DATE_OF_BIRHT.getName(), null, new String[] { searchDate }, null));
+                Filter.createSubstringFilter(LdapAttributeNames.DATE_OF_BIRHT.getName(), null, new String[]{searchDate}, null));
 
         return searchForPeople(filter);
     }
@@ -261,6 +247,18 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     // </editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="private methods">
+    /**
+     * Creates a filter which is insensitive to accents and acts as a 'like'
+     * filter.
+     *
+     * @param attr attribute to query
+     * @param assertValue value to match against
+     * @return Filter containing the correct filter string
+     */
+    private Filter createI18NFilter(LdapAttributeNames attr, String assertValue) {
+        return Filter.createExtensibleMatchFilter(attr.getName(), "1.3.6.1.4.1.42.2.27.9.4.88.1.6", false, "*" + assertValue + "*");
+    }
 
     private void register(Person p, String password, boolean isNewbie) {
         boolean sendPass = (password == null);
@@ -403,4 +401,5 @@ public class LdapManagerBean implements LdapManagerLocal {
 
         return people;
     }
+    //</editor-fold>
 }
