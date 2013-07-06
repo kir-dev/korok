@@ -171,7 +171,7 @@ public class PersonForm extends Form<Person> {
 
                 if (!hasError()) {
                     if (dob != null) {
-                        person.setDateOfBirth(new SimpleDateFormat("yyyyMMdd").format(dob));
+                        person.setDateOfBirth(dob);
                     }
 
                     ldapManager.update(person);
@@ -227,13 +227,7 @@ public class PersonForm extends Form<Person> {
     }
 
     private void createAdditionalFields() {
-        if (person.getDateOfBirth() != null) {
-            try {
-                dob = new SimpleDateFormat("yyyyMMdd").parse(person.getDateOfBirth());
-            } catch (ParseException ex) {
-                logger.warn("Error while parsing date");
-            }
-        }
+        dob = person.getDateOfBirth();
         DateTextField dateTF = new DateTextField("dateOfBirth", new PropertyModel<Date>(this, "dob"), new StyleDateConverter("S-", true)) {
 
             @Override

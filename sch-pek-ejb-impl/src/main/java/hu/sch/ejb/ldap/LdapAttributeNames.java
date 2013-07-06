@@ -10,24 +10,27 @@ package hu.sch.ejb.ldap;
  * @author tomi
  */
 public enum LdapAttributeNames {
-    
+
     UID("uid"),
     FULLNAME("cn"),
     LASTNAME("sn"),
     FIRSTNAME("givenName"),
     NICKNAME("displayName"),
     ROOMNUMBER("roomNumber"),
-    DATE_OF_BIRHT("schacDateOfBirth"),
+    DATE_OF_BIRTH("schacDateOfBirth"),
     VIRID("schacPersonalUniqueID"),
     NEPTUN("schacPersonalUniqueCode"),
     MAIL("mail"),
-    
+
     /**
      * Active or inactive. (inetUserStatus)
      */
     STATUS("inetUserStatus"),
-    USERSTATUS("schacUserStatus"),
-    
+    /**
+     * Student status.
+     */
+    STUDENTSTATUS("schacUserStatus"),
+
     MOBILE("mobile"),
     HOMEPHONE("homeNumber"),
     POSTALADDRESS("homePostalAddress"),
@@ -39,16 +42,16 @@ public enum LdapAttributeNames {
     CONFIRMATION_CODE("sch-vir-confirmationCodes"),
     IM("schacUserPresenceID"),
     PASSWORD("userPassword"),
-    
+
     /**
      * Hidden (from displaying) user attributes.
      */
     PRIVATE("schacUserPrivateAttribute"),
-    
+
     OBJECTCLASS("objectClass");
-    
+
     private String name;
-    
+
     private LdapAttributeNames(String name) {
         this.name = name;
     }

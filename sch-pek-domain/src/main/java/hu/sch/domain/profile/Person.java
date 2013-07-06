@@ -2,14 +2,14 @@ package hu.sch.domain.profile;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  *
  * @author konvergal
+ * @author tomi
  */
 public class Person implements Serializable {
 
@@ -19,12 +19,7 @@ public class Person implements Serializable {
     public static final String SORT_BY_NICKNAME = "nickName";
     public static final String SORT_BY_MAIL = "mail";
     public static final String SORT_BY_ROOMNUMBER = "roomNumber";
-    public static final String NEPTUN_PREFIX =
-            "urn:mace:terena.org:schac:personalUniqueCode:hu:BME-NEPTUN:";
-    public static final String STUDENTSTATUS_PREFIX =
-            "urn:mace:terena.org:schac:status:sch.hu:student_status:";
-    public static final String VIRID_PREFIX =
-            "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:";
+
     /**
      * A felhasználó által feltölthető kép maximális mérete. Átméretezéshez kell
      */
@@ -50,33 +45,19 @@ public class Person implements Serializable {
      */
     private String lastName;
     /**
-     * Címtár megfelelő: cn
-     * A felhasználó teljes neve.
-     */
-    private String fullName;
-    /**
      * Címtár megfelelő: schacUserPresenceID
      * Az IM címeket tartalmazó lista.
      */
     private List<IMAccount> IMAccounts;
     /**
-     * Címtár megfelelő: schacPersonalUniqueID
-     * A felhasználó VIRID-jét tartalmazó sztring.
-     */
-    private String personalUniqueID;
-    /**
-     * Származtatott érték, a régi VIR adatbázisban lévő user id-ja.
+     * A régi VIR adatbázisban lévő user id-ja.
      * A schacPersonalUniqueId ldap attribútum virID része.
+     * Címtár megfelelő: schacPersonalUniqueID
      */
     private Long virId;
     /**
+     * Neptun kód.
      * Címtár megfelelő: schacPersonalUniqueCode
-     * A felhasználó neptun kódját tartalmazó sztring.
-     */
-    private String personalUniqueCode;
-    /**
-     * Származtatott érték, a felhasználó neptun kódja.
-     * A schacPersonalUniqueCode ldap attribútum neptun kód része.
      */
     private String neptun;
     /**
@@ -95,27 +76,20 @@ public class Person implements Serializable {
      */
     private String homePhone;
     /**
-     * Címtár megfelelő: nincs!
-     * Kényelmes editáló form készítéséhez szükséges.
-     * Ügyelni kell a konzisztenciájára!
+     * Kollégium.
+     *
+     * roomNumberrel párban adják a roomNumber címtár attribútumot.
      */
     private String dormitory;
     /**
      * Szobaszám.
-     * Címtár megfelelő: nincs!
-     * Kényelmes editáló form készítéséhez szükséges.
-     * Ügyelni kell a konzisztenciájára!
-     */
-    private String rNumber;
-    /**
-     * Címtár megfelelő: roomNumber
-     * Nem csak a szobaszámot tárolja, hanem a kollégiumot is!
-     * Formátum: <Kollégium> <Szobaszám>
+     *
+     * dormitory-val párban adják a roomNumber címtár attribútumot.
      */
     private String roomNumber;
     /**
-     * Címtár megfelelő: homePostalAddress
      * A felhasználó lakcíme.
+     * Címtár megfelelő: homePostalAddress
      */
     private String homePostalAddress;
     /**
@@ -124,17 +98,17 @@ public class Person implements Serializable {
      */
     private String webpage;
     /**
-     * Címtár megfelelő: schacGender
      * A felhasználó neme.
+     * Címtár megfelelő: schacGender
      * ISO-5218 szerint: 0-nem ismert, 1-férfi, 2-nő, 9-nem specifikált.
      */
-    private String gender;
+    private Gender gender;
     /**
-     * Címtár megfelelő: schacDateOfBirth
      * A felhasználó születési dátuma.
+     * Címtár megfelelő: schacDateOfBirth
      * RFC-3339 "YYYYMMDD" formátumban.
      */
-    private String dateOfBirth;
+    private Date dateOfBirth;
     /**
      * Címtár megfelelő: sch-vir-mothersName
      * A felhasználó édesanyjának neves.
@@ -147,50 +121,44 @@ public class Person implements Serializable {
      */
     private String estimatedGraduationYear;
     /**
+     * A felhasználó hallgatói státusza.
      * Címtár megfelelő: schacUserStatus
-     * A felhasználó hallgatói státusza. Ezek lehetnek:
-     * urn:mace:terena.org:schac:status:sch.hu:student_status:active
-     * urn:mace:terena.org:schac:status:sch.hu:student_status:newbie
-     * urn:mace:terena.org:schac:status:sch.hu:student_status:other
-     * urn:mace:terena.org:schac:status:sch.hu:student_status:graduated
      */
-    private String studentUserStatus;
+    private StudentStatus studentStatus;
     /**
-     * Címtár megfelelő: nincs!
-     * Származtatott érték, a hallgatói státuszt tárolja. Lehetnek:
-     * active
-     * newbie
-     * other
-     * graduated
-     */
-    private String studentStatus;
-    /**
-     * Címtár megfelelő: inetUserStatus
      * Az SSO felhasználó státusza.
-     * Active / Inactive
+     * Címtár megfelelő: inetUserStatus
      */
-    private String status;
+    private UserStatus userStatus;
+
     /**
-     * Címtár megfelelő: schacUserPrivateAttribute
-     * A felhasználó privát attribútumai sztringtömbben.
-     */
-    private String[] schacPrivateAttribute = {};
-    /**
-     * Címtár megfelelő: nincs!
      * A felhasználó privát attribútumai sztringlistában.
+     * Címtár megfelelő: schacUserPrivateAttribute
      */
-    private List<String> privateAttributes = new ArrayList<String>();
+    private List<String> privateAttributes;
     /**
+     * Profilkép.
      * Címtár megfelelő: jpegPhoto
-     * A felhasználói kép byte-tömbben.
      */
     private byte[] photo;
+
     /**
-     * Címtár megfelelő: nincs!
-     * A felhasználó által megadott adatokból van származtatva.
+     * Ellenőrző kód.
+     *
+     * NOTE: azért kell backing field, mert van olyan, hogy null, és erre
+     * építünk is.
      */
     private String confirmationCode;
 
+    public Person() {
+        this(new ArrayList<String>());
+    }
+
+    public Person(List<String> privateAttributes) {
+        this.privateAttributes = privateAttributes;
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getUid() {
         return uid;
     }
@@ -224,35 +192,15 @@ public class Person implements Serializable {
     }
 
     public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public void setPersonalUniqueCode(String personalUniqueCode) {
-        this.personalUniqueCode = personalUniqueCode;
-    }
-
-    public String getPersonalUniqueCode() {
-        return personalUniqueCode;
-    }
-
-    public void setPersonalUniqueID(String personalUniqueID) {
-        this.personalUniqueID = personalUniqueID;
-    }
-
-    public String getPersonalUniqueID() {
-        return personalUniqueID;
-    }
-
-    public void setVirId(Long virId) {
-        this.virId = virId;
+        return String.format("%s %s", lastName, firstName);
     }
 
     public Long getVirId() {
         return virId;
+    }
+
+    public void setVirId(Long virId) {
+        this.virId = virId;
     }
 
     public String getNeptun() {
@@ -299,14 +247,6 @@ public class Person implements Serializable {
         this.dormitory = dormitory;
     }
 
-    public String getRNumber() {
-        return rNumber;
-    }
-
-    public void setRNumber(String rNumber) {
-        this.rNumber = rNumber;
-    }
-
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
@@ -327,11 +267,11 @@ public class Person implements Serializable {
         this.webpage = webpage;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
@@ -351,27 +291,19 @@ public class Person implements Serializable {
         this.estimatedGraduationYear = estimatedGraduationYear;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getStudentUserStatus() {
-        return studentUserStatus;
-    }
-
-    public void setStudentUserStatus(String studentUserStatus) {
-        this.studentUserStatus = studentUserStatus;
-    }
-
-    public String getStudentStatus() {
+    public StudentStatus getStudentStatus() {
         return studentStatus;
     }
 
-    public void setStudentStatus(String studentStatus) {
+    public void setStudentStatus(StudentStatus studentStatus) {
         this.studentStatus = studentStatus;
     }
 
@@ -383,24 +315,20 @@ public class Person implements Serializable {
         this.IMAccounts = IMAccounts;
     }
 
-    public String getStatus() {
-        return status;
+    public UserStatus getStatus() {
+        return userStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus(UserStatus status) {
+        this.userStatus = status;
     }
 
     public boolean isActive() {
-        return "Active".equalsIgnoreCase(status);
+        return UserStatus.ACTIVE == userStatus;
     }
 
-    public String[] getSchacPrivateAttribute() {
-        return schacPrivateAttribute;
-    }
-
-    public void setSchacPrivateAttribute(String[] schacPrivateAttribute) {
-        this.schacPrivateAttribute = schacPrivateAttribute;
+    public String[] getPrivateAttributes() {
+        return privateAttributes.toArray(new String[privateAttributes.size()]);
     }
 
     public String getConfirmationCode() {
@@ -422,14 +350,15 @@ public class Person implements Serializable {
     public byte[] getPhoto() {
         return photo;
     }
+    //</editor-fold>
 
     /**
      * Ez a függvény az eddigi privát adatot publikussá, a publikusat pedig
      * privát adattá teszi.
-     * @param attribute Melyik attribútumot szeretnénk priváttá / publikussá
-     * tenni.
+     *
+     * @param attribute Az attribútum, amit priváttá / publikussá szeretnénk tenni.
      */
-    public void inversePrivateAttribute(String attribute) {
+    public void invertPrivateAttribute(String attribute) {
         if (isPrivateAttribute(attribute)) {
             privateAttributes.remove(attribute);
         } else {
@@ -437,84 +366,7 @@ public class Person implements Serializable {
         }
     }
 
-    /**
-     * A felhasználó objektumnak a származtatott értékeit ez a függvény határozza
-     * meg. A felhasználó objektum létrehozásakor hívódik meg a ContextMapper által.
-     */
-    public void setToUse() {
-        //a privát attribútomok tömbjének listává alakítása
-        privateAttributes.addAll(Arrays.asList(schacPrivateAttribute));
-
-        //TODO: szebbé tenni
-        if (personalUniqueCode != null) {
-            String[] personalUniqueCodeArray = personalUniqueCode.split(":");
-            neptun =
-                    personalUniqueCodeArray[personalUniqueCodeArray.length - 1];
-        }
-
-        //TODO: szebbé tenni
-        if (personalUniqueID != null) {
-            String[] personalUniqueIDArray = personalUniqueID.split(":");
-            try {
-                virId = Long.parseLong(
-                        personalUniqueIDArray[personalUniqueIDArray.length - 1]);
-            } catch (NumberFormatException ex) {
-                //TODO log
-            }
-        }
-
-        //TODO: szebbé tenni
-        if (studentUserStatus != null) {
-            String[] studentUserStatusArray = studentUserStatus.split(":");
-            this.studentStatus =
-                    studentUserStatusArray[studentUserStatusArray.length - 1];
-        }
-
-        if (roomNumber != null) {
-            Pattern p = Pattern.compile("^(.*)\\s([a-zA-Z]{0,1}[0-9]+)$");
-            Matcher m = p.matcher(roomNumber);
-
-            if (m.matches()) {
-                dormitory = m.group(1);
-                rNumber = m.group(2);
-            }
-        }
-    }
-
-    /**
-     * A címtárba történő visszamentés előtt szükség van a származtatott értékek
-     * változásának visszakövetésére a ContextMapper mapToContext függvényében
-     * hívódik meg.
-     */
-    public void setToSave() {
-        schacPrivateAttribute = privateAttributes.toArray(new String[privateAttributes.size()]);
-
-        if (lastName != null && firstName != null) {
-            fullName = lastName + " " + firstName;
-        }
-
-        if (dormitory != null && rNumber != null) {
-            roomNumber = dormitory + " " + rNumber;
-        } else {
-            roomNumber = null;
-        }
-
-        if (neptun != null) {
-            personalUniqueCode = NEPTUN_PREFIX + neptun;
-        } else {
-            personalUniqueCode = null;
-        }
-
-        if (virId != null) {
-            personalUniqueID = VIRID_PREFIX + virId;
-        } else {
-            personalUniqueID = null;
-        }
-
-        if (studentStatus != null) {
-            studentUserStatus = STUDENTSTATUS_PREFIX + studentStatus;
-        } else {
-            studentUserStatus = null;
-        }
+    public void generateAndSetConfirmationCode() {
+        confirmationCode = RandomStringUtils.randomAlphanumeric(30);
     }
 }

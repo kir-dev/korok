@@ -1,6 +1,8 @@
 package hu.sch.web.kp.admin;
 
 import hu.sch.domain.profile.Person;
+import hu.sch.domain.profile.StudentStatus;
+import hu.sch.domain.profile.UserStatus;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.KorokPage;
@@ -32,8 +34,8 @@ public class CreateNewPerson extends KorokPage {
 
             @Override
             protected void onSubmit() {
-                person.setStudentUserStatus("urn:mace:terena.org:schac:status:sch.hu:student_status:other");
-                person.setStatus("Active");
+                person.setStudentStatus(StudentStatus.OTHER);
+                person.setStatus(UserStatus.ACTIVE);
                 ldapManager.registerPerson(person, null);
                 setResponsePage(AdminPage.class, new PageParameters().set("uid", person.getUid()));
             }

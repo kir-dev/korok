@@ -1,6 +1,9 @@
 package hu.sch.web.idm.pages.wizard;
 
+import hu.sch.domain.profile.Gender;
 import hu.sch.domain.profile.Person;
+import hu.sch.domain.profile.StudentStatus;
+import hu.sch.domain.profile.UserStatus;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
@@ -63,7 +66,7 @@ public class RegisterWizard extends Wizard {
     private static final String NEPTUN_CHECK_SQL = "SELECT neptun, nev FROM neptun_list WHERE UPPER(neptun)=UPPER(?) AND szuldat=?";
     //TODO: log4j konfiggal külön fájlba logolni!!!
     private static final Logger logger = LoggerFactory.getLogger(RegisterWizard.class);
-    //sima JDBC hogy ne kelljen csak emiatt felmappelni attribútumokat és 
+    //sima JDBC hogy ne kelljen csak emiatt felmappelni attribútumokat és
     //foglalkozni velük
     @Resource(name = "jdbc/sch")
     private DataSource ds;
@@ -103,7 +106,7 @@ public class RegisterWizard extends Wizard {
     @Override
     public void onFinish() {
         super.onFinish();
-        person.setStatus("Inactive");
+        person.setStatus(UserStatus.INACTIVE);
         try {
             if (((PhoenixApplication) getApplication()).isNewbieTime()) {
                 ldapManager.registerNewbie(person, newPass);
@@ -292,7 +295,7 @@ public class RegisterWizard extends Wizard {
 
 
                 checkExistingPerson(neptun);
-                person.setFullName(results.getString("usr_name"));
+//                person.setFullName(results.getString("usr_name"));
                 person.setNickName(results.getString("usr_nickname"));
                 person.setFirstName(results.getString("usr_firstname"));
                 person.setLastName(results.getString("usr_lastname"));
@@ -301,13 +304,13 @@ public class RegisterWizard extends Wizard {
                 String isGirl = results.getString("usr_is_a_girl");
                 if (isGirl != null) {
                     if (isGirl.equals("t")) {
-                        person.setGender("2");
+                        person.setGender(Gender.FEMALE);
                     } else if (isGirl.equals("f")) {
-                        person.setGender("1");
+                        person.setGender(Gender.MALE);
                     }
                 }
 
-                person.setStudentStatus(results.getString("usr_status"));
+                person.setStudentStatus(StudentStatus.fromString(results.getString("usr_status")));
 
                 return true;
             } catch (SQLException sqle) {
@@ -388,11 +391,11 @@ public class RegisterWizard extends Wizard {
                     person.setNeptun(neptun);
                     checkExistingPerson(neptun);
                     if (((PhoenixApplication) getApplication()).isNewbieTime()) {
-                        person.setStudentStatus("newbie");
+                        person.setStudentStatus(StudentStatus.NEWBIE);
                     } else {
-                        person.setStudentStatus("active");
+                        person.setStudentStatus(StudentStatus.ACTIVE);
                     }
-                    person.setDateOfBirth(new SimpleDateFormat("yyyyMMdd").format(birthDate));
+                    person.setDateOfBirth(birthDate);
 
                     return true;
                 } else {
@@ -443,7 +446,7 @@ public class RegisterWizard extends Wizard {
 
         @Override
         public IDynamicWizardStep next() {
-            person.setFullName(person.getLastName() + " " + person.getFirstName());
+//            person.setFullName(person.getLastName() + " " + person.getFirstName());
             return new NewAccountStep(this);
         }
     }

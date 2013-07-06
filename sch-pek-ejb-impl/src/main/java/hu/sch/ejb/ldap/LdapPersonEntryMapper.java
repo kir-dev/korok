@@ -5,14 +5,21 @@ import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.SearchResultEntry;
+import hu.sch.domain.profile.Gender;
 import hu.sch.domain.profile.IMAccount;
 import hu.sch.domain.profile.IMProtocol;
 import hu.sch.domain.profile.Person;
+import hu.sch.domain.profile.UserStatus;
 import hu.sch.domain.util.PatternHolder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,29 +30,42 @@ import org.slf4j.LoggerFactory;
 public class LdapPersonEntryMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(LdapPersonEntryMapper.class);
+    private static final String[] objectClasses = new String[]{
+        "top", "schacLinkageIdentifiers", "sunAMAuthAccountLockout", "schacContactLocation",
+        "person", "schacPersonalCharacteristics", "inetUser", "inetorgperson",
+        "schacLinkageIdentifiers", "organizationalPerson", "schacEmployeeInfo", "sch-vir",
+        "sunFMSAML2NameIdentifier", "top", "schacEntryConfidentiality", "eduPerson",
+        "schacEntryMetadata", "schacUserEntitlements"
+    };
 
     public LdapPersonEntryMapper() {
     }
 
-    public Person toPerson(SearchResultEntry entry) {
-        Person person = new Person();
+    public Person toPerson(SearchResultEntry entry) throws ParseException {
+        String[] privateAttr = getAttributes(entry, LdapAttributeNames.PRIVATE);
+
+        Person person = null;
+        if (privateAttr == null) {
+            person = new Person();
+        } else {
+            person = new Person(Arrays.asList(privateAttr));
+        }
 
         person.setUid(getAttribute(entry, LdapAttributeNames.UID));
         person.setLastName(getAttribute(entry, LdapAttributeNames.LASTNAME));
         person.setFirstName(getAttribute(entry, LdapAttributeNames.FIRSTNAME));
-        person.setFullName(getAttribute(entry, LdapAttributeNames.FULLNAME));
         person.setNickName(getAttribute(entry, LdapAttributeNames.NICKNAME));
-        person.setRoomNumber(getAttribute(entry, LdapAttributeNames.ROOMNUMBER));
-        person.setDateOfBirth(getAttribute(entry, LdapAttributeNames.DATE_OF_BIRHT));
+        LdapUtil.parseAndSetRoomNumber(getAttribute(entry, LdapAttributeNames.ROOMNUMBER), person);
+        person.setDateOfBirth(LdapUtil.parseDateOfBirth(getAttribute(entry, LdapAttributeNames.DATE_OF_BIRTH)));
         person.setMail(getAttribute(entry, LdapAttributeNames.MAIL));
         person.setMobile(getAttribute(entry, LdapAttributeNames.MOBILE));
         person.setHomePhone(getAttribute(entry, LdapAttributeNames.HOMEPHONE));
         person.setHomePostalAddress(getAttribute(entry, LdapAttributeNames.POSTALADDRESS));
         person.setWebpage(getAttribute(entry, LdapAttributeNames.WEBPAGE));
-        person.setGender(getAttribute(entry, LdapAttributeNames.GENDER));
+        person.setGender(Gender.fromString(getAttribute(entry, LdapAttributeNames.GENDER)));
         person.setMothersName(getAttribute(entry, LdapAttributeNames.MOTHERSNAME));
         person.setEstimatedGraduationYear(getAttribute(entry, LdapAttributeNames.ESTIMATED_GRAD_YEAR));
-        person.setStatus(getAttribute(entry, LdapAttributeNames.STATUS));
+        person.setStatus(UserStatus.fromString(getAttribute(entry, LdapAttributeNames.STATUS)));
         person.setPhoto(entry.getAttributeValueBytes(LdapAttributeNames.PHOTO.getName()));
         person.setConfirmationCode(getAttribute(entry, LdapAttributeNames.CONFIRMATION_CODE));
 
@@ -69,24 +89,58 @@ public class LdapPersonEntryMapper {
         }
         person.setIMAccounts(ims);
 
-        // A tobbi sima attributumnal nem kell vizsgalni a null-t, itt viszont igen.
-        String[] privateAttr = getAttributes(entry, LdapAttributeNames.PRIVATE);
-        if (privateAttr != null) {
-            person.setSchacPrivateAttribute(privateAttr);
-        }
-
         // Admin altal valtoztathato attributumok.
-        person.setPersonalUniqueCode(getAttribute(entry, LdapAttributeNames.NEPTUN));
-        person.setPersonalUniqueID(getAttribute(entry, LdapAttributeNames.VIRID));
-        person.setStudentUserStatus(getAttribute(entry, LdapAttributeNames.USERSTATUS));
+        person.setNeptun(LdapUtil.getNeptun(getAttribute(entry, LdapAttributeNames.NEPTUN)));
+        person.setVirId(LdapUtil.getVirId(getAttribute(entry, LdapAttributeNames.VIRID)));
+        person.setStudentStatus(LdapUtil.getStudentStatus(getAttribute(entry, LdapAttributeNames.STUDENTSTATUS)));
 
-        person.setToUse();
         return person;
+    }
+
+    /**
+     * Creates an LDAP entry from the given person object.
+     *
+     * It also generates a new confirmation code for the person.
+     *
+     * @param person the person object to save
+     * @param password the password for the object
+     * @return the entry that can be saved in LDAP store
+     */
+    public Entry toEntry(Person person, String password) {
+        Entry entry = new Entry(LdapUtil.buildDN(person.getUid()));
+
+        entry.addAttribute(LdapAttributeNames.OBJECTCLASS.getName(), objectClasses);
+
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.UID, person.getUid());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.LASTNAME, person.getLastName());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.FIRSTNAME, person.getFirstName());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.FULLNAME, person.getFullName());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.MAIL, person.getMail());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.STUDENTSTATUS, person.getStudentStatus().getStatus());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.STATUS, person.getStatus().getStatus());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.DATE_OF_BIRTH, LdapUtil.dateOfBirthToString(person.getDateOfBirth()));
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.GENDER, person.getGender().getValueString());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.NEPTUN, LdapUtil.buildNeptun(person.getNeptun()));
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.NICKNAME, person.getNickName());
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.VIRID, LdapUtil.buildVirId(person.getVirId()));
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.PASSWORD, password);
+
+        // NOTE: ez nem biztos hogy kell...
+        person.generateAndSetConfirmationCode();
+        addAttributeIfNotEmpty(entry, LdapAttributeNames.CONFIRMATION_CODE, person.getConfirmationCode());
+
+        return entry;
     }
 
     public ModifyRequest buildModifyRequest(Person person, Entry entry) {
         List<Modification> mods = createModifications(person, entry);
         return new ModifyRequest(entry.getDN(), mods);
+    }
+
+    private void addAttributeIfNotEmpty(Entry entry, LdapAttributeNames attrname, String value) {
+        if (value != null && !value.trim().isEmpty()) {
+            entry.addAttribute(attrname.getName(), value);
+        }
     }
 
     private String getAttribute(SearchResultEntry entry, LdapAttributeNames attr) {
@@ -97,10 +151,8 @@ public class LdapPersonEntryMapper {
         return entry.getAttributeValues(attr.getName());
     }
 
-        private List<Modification> createModifications(Person p, Entry e) {
+    private List<Modification> createModifications(Person p, Entry e) {
         List<Modification> mods = new ArrayList<Modification>();
-
-        p.setToSave();
 
         mods.add(buildModification(LdapAttributeNames.LASTNAME, p.getLastName()));
         mods.add(buildModification(LdapAttributeNames.FIRSTNAME, p.getFirstName()));
@@ -112,14 +164,14 @@ public class LdapPersonEntryMapper {
         mods.add(buildModification(LdapAttributeNames.ROOMNUMBER, p.getRoomNumber()));
         mods.add(buildModification(LdapAttributeNames.POSTALADDRESS, p.getHomePostalAddress()));
         mods.add(buildModification(LdapAttributeNames.WEBPAGE, p.getWebpage()));
-        mods.add(buildModification(LdapAttributeNames.DATE_OF_BIRHT, p.getDateOfBirth()));
-        mods.add(buildModification(LdapAttributeNames.GENDER, p.getGender()));
+        mods.add(buildModification(LdapAttributeNames.DATE_OF_BIRTH, LdapUtil.dateOfBirthToString(p.getDateOfBirth())));
+        mods.add(buildModification(LdapAttributeNames.GENDER, p.getGender().getValueString()));
         mods.add(buildModification(LdapAttributeNames.MOTHERSNAME, p.getMothersName()));
         mods.add(buildModification(LdapAttributeNames.ESTIMATED_GRAD_YEAR, p.getEstimatedGraduationYear()));
-        mods.add(buildModification(LdapAttributeNames.STATUS, p.getStatus()));
+        mods.add(buildModification(LdapAttributeNames.STATUS, p.getStatus().getStatus()));
         mods.add(buildModification(LdapAttributeNames.CONFIRMATION_CODE, p.getConfirmationCode()));
 
-        mods.add(buildModification(LdapAttributeNames.PRIVATE, p.getSchacPrivateAttribute()));
+        mods.add(buildModification(LdapAttributeNames.PRIVATE, p.getPrivateAttributes()));
 
         // add missing objectClasses
         List<String> attrs = Arrays.asList(e.getAttributeValues(LdapAttributeNames.OBJECTCLASS.getName()));
@@ -142,9 +194,9 @@ public class LdapPersonEntryMapper {
         mods.add(buildModification(LdapAttributeNames.IM, ims.toArray(new String[ims.size()])));
 
         // Admin altal valtoztathato attributumok.
-        mods.add(buildModification(LdapAttributeNames.NEPTUN, p.getPersonalUniqueCode()));
-        mods.add(buildModification(LdapAttributeNames.VIRID, p.getPersonalUniqueID()));
-        mods.add(buildModification(LdapAttributeNames.USERSTATUS, p.getStudentUserStatus()));
+        mods.add(buildModification(LdapAttributeNames.NEPTUN, LdapUtil.buildNeptun(p.getNeptun())));
+        mods.add(buildModification(LdapAttributeNames.VIRID, LdapUtil.buildVirId(p.getVirId())));
+        mods.add(buildModification(LdapAttributeNames.STUDENTSTATUS, LdapUtil.buildStudentStatus(p.getStudentStatus())));
 
         return mods;
     }

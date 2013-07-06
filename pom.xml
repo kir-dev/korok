@@ -8,7 +8,7 @@
     <name>SCH PéK Application</name>
     <url>http://stewie.sch.bme.hu/projects/korok</url>
     <inceptionYear>2008</inceptionYear>
-    
+
     <licenses>
         <license>
             <name>BSD License (original)</name>
@@ -37,6 +37,11 @@
         <developer>
             <id>balo</id>
             <name>Balazs Varga</name>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>tomi</id>
+            <name>Tamas Michelberger</name>
             <timezone>+1</timezone>
         </developer>
     </developers>
@@ -230,7 +235,7 @@
                     </plugin>
                 </plugins>
             </reporting>
-    
+
             <dependencies>
                 <dependency>
                     <groupId>org.hibernate</groupId>
@@ -241,7 +246,7 @@
             </dependencies>
         </profile>
     </profiles>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -332,6 +337,11 @@
                 <groupId>com.unboundid</groupId>
                 <artifactId>unboundid-ldapsdk</artifactId>
                 <version>2.3.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

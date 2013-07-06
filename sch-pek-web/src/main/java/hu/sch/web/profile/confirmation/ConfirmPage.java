@@ -1,11 +1,10 @@
 package hu.sch.web.profile.confirmation;
 
 import hu.sch.domain.profile.Person;
+import hu.sch.domain.profile.UserStatus;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.show.ShowPersonPage;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
@@ -27,18 +26,10 @@ public final class ConfirmPage extends ProfilePage {
             Person person = ldapManager.getPersonByUid(uid);
 
             boolean success = false;
-
-            String confirmationString = person.getUid() + person.getMail()
-                    + person.getFullName();
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update(confirmationString.getBytes(), 0, confirmationString.length());
-            String confirmationStringMD5 =
-                    new BigInteger(1, m.digest()).toString(16);
-
             String confirmationCode = params.get("confirmationcode").toString();
 
-            if (confirmationCode.equals(confirmationStringMD5)) {
-                person.setStatus("Active");
+            if (confirmationCode.equals(person.getConfirmationCode())) {
+                person.setStatus(UserStatus.ACTIVE);
                 ldapManager.update(person);
                 success = true;
             }

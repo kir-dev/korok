@@ -35,7 +35,7 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-        person.inversePrivateAttribute(privateAttr);
+        person.invertPrivateAttribute(privateAttr);
         isPrivateAttr = !isPrivateAttr;
 
         img.setImageResourceReference(getImageResourceReference());

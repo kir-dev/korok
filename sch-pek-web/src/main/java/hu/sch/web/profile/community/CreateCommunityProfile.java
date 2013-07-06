@@ -13,7 +13,6 @@ import javax.ejb.EJB;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -29,21 +28,19 @@ import org.slf4j.LoggerFactory;
  */
 public class CreateCommunityProfile extends ProfilePage {
 
+    private static final Pattern NEPTUN_PATTERN = Pattern.compile("[A-Za-z0-9]{6}");
+    private static final Logger log = LoggerFactory.getLogger(CreateCommunityProfile.class);
+    private static final String CONFIRMATION_CODE = "Megerősítő kód";
+    private static final String VIR_PROFILE = "VIR Email cím vagy NEPTUN kód";
+    private static final String NEPTUN = "NEPTUN kód";
     @EJB(name = "EntitlementManagerBean")
-    EntitlementManagerLocal entitlementManager;
+    private EntitlementManagerLocal entitlementManager;
     @EJB(name = "MailManagerBean")
     private MailManagerLocal mailManager;
-    private final String CONFIRMATION_CODE = "Megerősítő kód";
-    private final String VIR_PROFILE = "VIR Email cím vagy NEPTUN kód";
-    private final String NEPTUN = "NEPTUN kód";
-    Person person;
-    String inputData;
-    String inputKey;
-    Long virid;
-    private final static Pattern NEPTUN_PATTERN =
-            Pattern.compile("[A-Za-z0-9]{6}");
-    private static final Logger log =
-            LoggerFactory.getLogger(CreateCommunityProfile.class);
+    private Person person;
+    private String inputData;
+    private String inputKey;
+    private Long virid;
     private Form dataForm;
     private Component importVIRProfile;
     private Component requestNEPTUNConfirmation;
@@ -51,21 +48,175 @@ public class CreateCommunityProfile extends ProfilePage {
     private Component createProfileWithoutNEPTUN;
     private Component enterConfirmationCode;
 
-    public CreateCommunityProfile(WebPage referer) {
-        if (referer == null) {
-            getSession().error("Hiba történt.");
-            throw new RestartResponseException(getApplication().getHomePage());
-        }
+    public CreateCommunityProfile() {
         setHeaderLabelText("Közösségi profil létrehozása");
+        loadPerson();
+
+        dataForm = createInputForm();
+        importVIRProfile = createImportVirProfileLink();
+        requestNEPTUNConfirmation = createRequestNeptunConfirmationLink();
+        createCommunityProfile = createCreateCommunityProfileLink();
+        createProfileWithoutNEPTUN = createCreateCommunityProfileWithoutNeptunLink();
+        enterConfirmationCode = createEnterConfirmationCodeLink();
+
+        add(createCommunityProfile);
+        add(createProfileWithoutNEPTUN);
+        add(importVIRProfile);
+        add(requestNEPTUNConfirmation);
+        add(enterConfirmationCode);
+        add(dataForm);
+
+        setLinkVisibility();
+    }
+
+    public String getInputData() {
+        return inputData;
+    }
+
+    public void setInputData(String inputData) {
+        this.inputData = inputData;
+    }
+
+    public String getInputKey() {
+        return inputKey;
+    }
+
+    public void setInputKey(String inputKey) {
+        this.inputKey = inputKey;
+    }
+
+    protected void createCommunityProfile(Person person) {
+        if (person.getVirId() == null) {
+            //ejb hívás
+            log.info("Közösségi profil létrehozása");
+            log.info("VIRID: " + person.getVirId());
+            User f = new User();
+            f.setNickName(person.getNickName());
+            f.setNeptunCode(person.getNeptun());
+            f.setFirstName(person.getFirstName());
+            f.setLastName(person.getLastName());
+            f.setEmailAddress(person.getMail());
+            f =
+                    getEntitlementManager().createUserEntry(f);
+            if (f.getId() == null) {
+                throw new RuntimeException("A közösségi profil létrehozás után null az ID");
+            }
+
+            if (!f.getId().equals(person.getVirId())) {
+                log.info("A VIRID megváltozott, mentés lokálisan");
+                log.info("Új VIRID: " + f.getId());
+                person.setVirId(f.getId());
+                if (person.getNeptun() == null && f.getNeptunCode()
+                        != null) {
+                    log.info("NEPTUN kód beállítása: "
+                            + f.getNeptunCode());
+                    person.setNeptun(f.getNeptunCode());
+                }
+
+                ldapManager.update(person);
+                getSession().info("Sikeres közösségi profil létrehozás");
+            }
+        }
+
+        setResponsePage(ShowPersonPage.class,
+                new PageParameters().add("uid", person.getUid().toString()));
+    }
+
+    public EntitlementManagerLocal getEntitlementManager() {
+        return entitlementManager;
+    }
+
+    private String generateConfirmationCode() throws Exception {
+
+        StringBuilder sb = new StringBuilder(100);
+        if (inputKey.equals(NEPTUN)) {
+            sb.append("NEPTUN:");
+            sb.append(inputData);
+        } else if (inputKey.equals(VIR_PROFILE)) {
+            sb.append("VIR:");
+            virid = getVirID(inputData);
+            if (virid != 0) {
+                sb.append(virid);
+            } else {
+                return null;
+            }
+
+        }
+        sb.append(":");
+        sb.append(RandomStringUtils.randomAlphanumeric(16));
+        return sb.toString();
+    }
+
+    private Long getVirID(String neptunOrEmail) throws Exception {
+        User user = entitlementManager.findUser(neptunOrEmail, neptunOrEmail);
+
+        return user.getId();
+    }
+
+    private String getNeptunForVirID(Long virid) {
+        User user = entitlementManager.findUser(virid);
+
+        if (user != null) {
+            return user.getNeptunCode();
+        }
+
+        return null;
+    }
+
+    private String getEmailForVirID(Long virid) {
+        User user = entitlementManager.findUser(virid);
+        if (user != null) {
+            return user.getEmailAddress();
+        }
+
+        return null;
+    }
+
+    private String sendConfirmationCode(String confirmationCode) {
+
+        String to;
+        String subject;
+        if (inputKey.equals(VIR_PROFILE)) {
+            to = getEmailForVirID(virid);
+            subject = "Profil megerősítő kód";
+        } else if (inputKey.equals(NEPTUN)) {
+            to = inputData + "@nc.hszk.bme.hu";
+            subject = "NEPTUN kód megerősítése";
+        } else {
+            throw new RuntimeException("Hibás kulcs a formban");
+        }
+        StringBuilder message = new StringBuilder(500);
+        message.append("Kedves ");
+        message.append(person.getFullName());
+        message.append("!\n\n");
+        message.append("Erről az e-mail címről közösségi profil létrehozását kezdeményezték.");
+        message.append("Amennyiben Te voltál, az ehhez szükséges megerősítő kód:\n");
+        message.append(confirmationCode);
+        message.append("\n\n");
+        message.append("FIGYELEM!\n");
+        message.append("A fentebbi sor egésze a megerősítő kód, NEM csak a kettőspont utáni rész!\n");
+        message.append("Ha időközben új kódot igényeltél, akkor a legutoljára kért kódod lesz az érvényes.\n\n\n");
+        message.append("Amennyiben nem Te regisztráltál, tekintsd levelünket tárgytalannak!\n\n");
+        message.append("Üdvözlettel:\n");
+        message.append("Kir-Dev fejlesztői csapat");
+        if (!mailManager.sendEmail(to, subject, message.toString())) {
+            getSession().error("Nem sikerült elküldeni az e-mailt a " + to + " címre!");
+            throw new RestartResponseException(ShowPersonPage.class);
+        }
+        return to;
+    }
+
+    private void loadPerson() throws RestartResponseException {
         try {
             person = ldapManager.getPersonByUid(getRemoteUser());
         } catch (PersonNotFoundException ex) {
             getSession().error("Hiba az adatok betöltésekor");
             throw new RestartResponseException(getApplication().getHomePage());
         }
+    }
 
-        dataForm = new Form("dataForm") {
-
+    private Form createInputForm() {
+        Form form = new Form("dataForm") {
             @Override
             protected void onSubmit() {
                 super.onSubmit();
@@ -157,71 +308,84 @@ public class CreateCommunityProfile extends ProfilePage {
             }
         };
 
-        dataForm.setVisible(false);
+        form.setVisible(false);
+        form.add(new TextField("inputData", new PropertyModel(this, "inputData")).setRequired(true));
+        form.add(new Label("inputKey", new PropertyModel(this, "inputKey")));
 
-        importVIRProfile =
-                new Link("importVIRProfile") {
+        return form;
+    }
 
-                    @Override
-                    public void onClick() {
-                        setInputKey(VIR_PROFILE);
-                        importVIRProfile.setVisible(false);
-                        dataForm.setVisible(true);
-                        if (person.getConfirmationCode() == null && person.getNeptun() == null) {
-                            requestNEPTUNConfirmation.setVisible(true);
-                            createProfileWithoutNEPTUN.setVisible(true);
-                        }
-                        enterConfirmationCode.setVisible(true);
-                    }
-                }.setVisible(false);
-        requestNEPTUNConfirmation =
-                new Link("requestNEPTUNConfirmation") {
+    private Component createImportVirProfileLink() {
+        return new Link("importVIRProfile") {
+            @Override
+            public void onClick() {
+                setInputKey(VIR_PROFILE);
+                importVIRProfile.setVisible(false);
+                dataForm.setVisible(true);
+                if (person.getConfirmationCode() == null && person.getNeptun() == null) {
+                    requestNEPTUNConfirmation.setVisible(true);
+                    createProfileWithoutNEPTUN.setVisible(true);
+                }
+                enterConfirmationCode.setVisible(true);
+            }
+        }.setVisible(false);
+    }
 
-                    @Override
-                    public void onClick() {
-                        setInputKey(NEPTUN);
-                        dataForm.setVisible(true);
-                        requestNEPTUNConfirmation.setVisible(false);
-                        importVIRProfile.setVisible(true);
-                        createProfileWithoutNEPTUN.setVisible(false);
-                        enterConfirmationCode.setVisible(true);
-                    }
-                }.setVisible(false);
-        createCommunityProfile =
-                new Link("createCommunityProfile") {
+    private Component createRequestNeptunConfirmationLink() {
+        return new Link("requestNEPTUNConfirmation") {
+            @Override
+            public void onClick() {
+                setInputKey(NEPTUN);
+                dataForm.setVisible(true);
+                requestNEPTUNConfirmation.setVisible(false);
+                importVIRProfile.setVisible(true);
+                createProfileWithoutNEPTUN.setVisible(false);
+                enterConfirmationCode.setVisible(true);
+            }
+        }.setVisible(false);
+    }
 
-                    @Override
-                    public void onClick() {
-                        createCommunityProfile(person);
-                    }
-                }.setVisible(false);
-        createProfileWithoutNEPTUN =
-                new Link("createProfileWithoutNEPTUN") {
+    private Component createCreateCommunityProfileLink() {
+        return new Link("createCommunityProfile") {
+            @Override
+            public void onClick() {
+                createCommunityProfile(person);
+            }
+        }.setVisible(false);
+    }
 
-                    @Override
-                    public void onClick() {
-                        createCommunityProfile(person);
-                    }
-                }.setVisible(false);
+    private Component createCreateCommunityProfileWithoutNeptunLink() {
+        Component link = new Link("createProfileWithoutNEPTUN") {
+            @Override
+            public void onClick() {
+                createCommunityProfile(person);
+            }
+        }.setVisible(false);
+        link.add(new ConfirmationBehavior("Biztos, hogy külsős vagy, és nincs NEPTUN-kódod?"));
+        return link;
+    }
 
-        createProfileWithoutNEPTUN.add(new ConfirmationBehavior("Biztos, hogy külsős vagy, és nincs NEPTUN-kódod?"));
-        enterConfirmationCode =
-                new Link("enterConfirmationCode") {
+    private Component createEnterConfirmationCodeLink() {
+        return new Link("enterConfirmationCode") {
+            @Override
+            public void onClick() {
+                setInputKey(CONFIRMATION_CODE);
+                dataForm.setVisible(true);
+            }
+        }.setVisible(true);
+    }
 
-                    @Override
-                    public void onClick() {
-                        setInputKey(CONFIRMATION_CODE);
-                        dataForm.setVisible(true);
-                    }
-                }.setVisible(true);
-
-        dataForm.add(new TextField("inputData",
-                new PropertyModel(this, "inputData")).setRequired(true));
-        dataForm.add(
-                new Label("inputKey", new PropertyModel(this, "inputKey")));
-
+    private void setLinkVisibility() {
         if (person.getConfirmationCode() != null) {
             enterConfirmationCode.setVisible(true);
+            if (person.getConfirmationCode().startsWith("VIR:")) {
+                createProfileWithoutNEPTUN.setVisible(false);
+                requestNEPTUNConfirmation.setVisible(false);
+            } else if (person.getConfirmationCode().startsWith("NEPTUN:")) {
+                createProfileWithoutNEPTUN.setVisible(false);
+            }
+        } else {
+            enterConfirmationCode.setVisible(false);
         }
         if (person.getNeptun() == null) {
             requestNEPTUNConfirmation.setVisible(true);
@@ -237,169 +401,9 @@ public class CreateCommunityProfile extends ProfilePage {
         if (person.getVirId() == null && person.getNeptun() == null) {
             createProfileWithoutNEPTUN.setVisible(true);
         }
-
-        add(createCommunityProfile);
-        add(createProfileWithoutNEPTUN);
-        add(importVIRProfile);
-        add(requestNEPTUNConfirmation);
-        add(enterConfirmationCode);
-        add(dataForm);
-        String code = person.getConfirmationCode();
-        if (code != null) {
-            if (code.startsWith("VIR:")) {
-                createProfileWithoutNEPTUN.setVisible(false);
-                requestNEPTUNConfirmation.setVisible(false);
-            } else if (code.startsWith("NEPTUN:")) {
-                createProfileWithoutNEPTUN.setVisible(false);
-            }
-        } else {
-            enterConfirmationCode.setVisible(false);
-        }
         if (person.getNeptun() != null) {
             requestNEPTUNConfirmation.setVisible(false);
             createProfileWithoutNEPTUN.setVisible(false);
         }
-    }
-
-    public String getInputData() {
-        return inputData;
-    }
-
-    public void setInputData(String inputData) {
-        this.inputData = inputData;
-    }
-
-    public String getInputKey() {
-        return inputKey;
-    }
-
-    public void setInputKey(String inputKey) {
-        this.inputKey = inputKey;
-    }
-
-    protected void createCommunityProfile(Person person) {
-        if (person.getVirId() == null) {
-            //ejb hívás
-            log.info("Közösségi profil létrehozása");
-            log.info("VIRID: " + person.getVirId());
-            User f = new User();
-            f.setNickName(person.getNickName());
-            f.setNeptunCode(person.getNeptun());
-            f.setFirstName(person.getFirstName());
-            f.setLastName(person.getLastName());
-            f.setEmailAddress(person.getMail());
-            f =
-                    getEntitlementManager().createUserEntry(f);
-            if (f.getId() == null) {
-                throw new RuntimeException("A közösségi profil létrehozás után null az ID");
-            }
-
-            if (!f.getId().equals(person.getVirId())) {
-                log.info("A VIRID megváltozott, mentés lokálisan");
-                log.info("Új VIRID: " + f.getId());
-                person.setVirId(f.getId());
-                if (person.getNeptun() == null && f.getNeptunCode()
-                        != null) {
-                    log.info("NEPTUN kód beállítása: "
-                            + f.getNeptunCode());
-                    person.setNeptun(f.getNeptunCode());
-                }
-
-                ldapManager.update(person);
-                getSession().info("Sikeres közösségi profil létrehozás");
-            }
-
-
-        }
-
-        setResponsePage(ShowPersonPage.class,
-                new PageParameters().add("uid", person.getUid().toString()));
-
-    }
-
-    public EntitlementManagerLocal getEntitlementManager() {
-        return entitlementManager;
-    }
-
-    private String generateConfirmationCode()
-            throws Exception {
-
-        StringBuilder sb = new StringBuilder(100);
-        if (inputKey.equals(NEPTUN)) {
-            sb.append("NEPTUN:");
-            sb.append(inputData);
-        } else if (inputKey.equals(VIR_PROFILE)) {
-            sb.append("VIR:");
-            virid =
-                    getVirID(inputData);
-            if (virid != 0) {
-                sb.append(virid);
-            } else {
-                return null;
-            }
-
-        }
-        sb.append(":");
-        sb.append(RandomStringUtils.randomAlphanumeric(16));
-        return sb.toString();
-    }
-
-    private Long getVirID(String neptunOrEmail) throws Exception {
-        User user = entitlementManager.findUser(neptunOrEmail, neptunOrEmail);
-
-        return user.getId();
-    }
-
-    private String getNeptunForVirID(Long virid) {
-        User user = entitlementManager.findUser(virid);
-
-        if (user != null) {
-            return user.getNeptunCode();
-        }
-
-        return null;
-    }
-
-    private String getEmailForVirID(Long virid) {
-        User user = entitlementManager.findUser(virid);
-        if (user != null) {
-            return user.getEmailAddress();
-        }
-
-        return null;
-    }
-
-    private String sendConfirmationCode(String confirmationCode) {
-
-        String to;
-        String subject;
-        if (inputKey.equals(VIR_PROFILE)) {
-            to = getEmailForVirID(virid);
-            subject = "Profil megerősítő kód";
-        } else if (inputKey.equals(NEPTUN)) {
-            to = inputData + "@nc.hszk.bme.hu";
-            subject = "NEPTUN kód megerősítése";
-        } else {
-            throw new RuntimeException("Hibás kulcs a formban");
-        }
-        StringBuilder message = new StringBuilder(500);
-        message.append("Kedves ");
-        message.append(person.getFullName());
-        message.append("!\n\n");
-        message.append("Erről az e-mail címről közösségi profil létrehozását kezdeményezték.");
-        message.append("Amennyiben Te voltál, az ehhez szükséges megerősítő kód:\n");
-        message.append(confirmationCode);
-        message.append("\n\n");
-        message.append("FIGYELEM!\n");
-        message.append("A fentebbi sor egésze a megerősítő kód, NEM csak a kettőspont utáni rész!\n");
-        message.append("Ha időközben új kódot igényeltél, akkor a legutoljára kért kódod lesz az érvényes.\n\n\n");
-        message.append("Amennyiben nem Te regisztráltál, tekintsd levelünket tárgytalannak!\n\n");
-        message.append("Üdvözlettel:\n");
-        message.append("Kir-Dev fejlesztői csapat");
-        if (!mailManager.sendEmail(to, subject, message.toString())) {
-            getSession().error("Nem sikerült elküldeni az e-mailt a " + to + " címre!");
-            throw new RestartResponseException(ShowPersonPage.class);
-        }
-        return to;
     }
 }

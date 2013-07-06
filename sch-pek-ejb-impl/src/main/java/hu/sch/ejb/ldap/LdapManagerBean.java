@@ -26,9 +26,11 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.annotation.security.DeclareRoles;
@@ -54,16 +56,8 @@ public class LdapManagerBean implements LdapManagerLocal {
      * A logolashoz szukseges objektum.
      */
     private static final Logger logger = LoggerFactory.getLogger(LdapManagerBean.class);
-    private static final String[] objectClasses = new String[]{
-        "top", "schacLinkageIdentifiers", "sunAMAuthAccountLockout", "schacContactLocation",
-        "person", "schacPersonalCharacteristics", "inetUser", "inetorgperson",
-        "schacLinkageIdentifiers", "organizationalPerson", "schacEmployeeInfo", "sch-vir",
-        "sunFMSAML2NameIdentifier", "top", "schacEntryConfidentiality", "eduPerson",
-        "schacEntryMetadata", "schacUserEntitlements"
-    };
     private static final int INITIAL_CONNECTIONS = 5;
     private static final int MAX_CONNECTIONS = 20;
-    private static final String BASEDN = "ou=people,ou=sch,o=bme,c=hu";
     private static final String ACTIVE_STATUS = "Active";
     private static final String INACTIVE_STATUS = "Inactive";
     /**
@@ -101,7 +95,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         getPersonByUid(uid);
 
         // User torlese.
-        String dn = buildDN(uid);
+        String dn = LdapUtil.buildDN(uid);
         try {
             ldapConnPool.delete(dn);
         } catch (LDAPException ex) {
@@ -114,7 +108,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     @Override
     public Person getPersonByUid(String uid) throws PersonNotFoundException {
         try {
-            SearchResultEntry e = ldapConnPool.getEntry(buildDN(uid));
+            SearchResultEntry e = ldapConnPool.getEntry(LdapUtil.buildDN(uid));
             if (e == null) {
                 throw new PersonNotFoundException(uid);
             }
@@ -128,18 +122,18 @@ public class LdapManagerBean implements LdapManagerLocal {
 
     @Override
     public Person getPersonByVirId(String virId) throws PersonNotFoundException {
-        return getPersonBy(LdapAttributeNames.VIRID, buildVirId(virId));
+        return getPersonBy(LdapAttributeNames.VIRID, LdapUtil.buildVirId(virId));
     }
 
     @Override
     public Person getPersonByNeptun(String neptun) throws PersonNotFoundException {
-        return getPersonBy(LdapAttributeNames.NEPTUN, buildNeptun(neptun));
+        return getPersonBy(LdapAttributeNames.NEPTUN, LdapUtil.buildNeptun(neptun));
     }
 
     @Override
     public void update(Person p) {
         try {
-            final String dn = buildDN(p.getUid());
+            final String dn = LdapUtil.buildDN(p.getUid());
 
             SearchResultEntry entry = ldapConnPool.getEntry(dn);
             ModifyRequest req = new LdapPersonEntryMapper().buildModifyRequest(p, entry);
@@ -204,8 +198,8 @@ public class LdapManagerBean implements LdapManagerLocal {
                 Filter.createNOTFilter(
                 Filter.createEqualityFilter(
                 LdapAttributeNames.PRIVATE.getName(),
-                LdapAttributeNames.DATE_OF_BIRHT.getName())),
-                Filter.createSubstringFilter(LdapAttributeNames.DATE_OF_BIRHT.getName(), null, new String[]{searchDate}, null));
+                LdapAttributeNames.DATE_OF_BIRTH.getName())),
+                Filter.createSubstringFilter(LdapAttributeNames.DATE_OF_BIRTH.getName(), null, new String[]{searchDate}, null));
 
         return searchForPeople(filter);
     }
@@ -221,8 +215,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     public void changePassword(String uid, String oldPassword, String newPassword)
             throws InvalidPasswordException {
 
-        // FIXME: lehet, hogy a password valami custom cucc és nem LDAP szabvány?
-        PasswordModifyExtendedRequest req = new PasswordModifyExtendedRequest(buildDN(uid), oldPassword, newPassword);
+        PasswordModifyExtendedRequest req = new PasswordModifyExtendedRequest(LdapUtil.buildDN(uid), oldPassword, newPassword);
         PasswordModifyExtendedResult result = null;
         try {
             result = (PasswordModifyExtendedResult) ldapConnPool.processExtendedOperation(req);
@@ -269,6 +262,7 @@ public class LdapManagerBean implements LdapManagerLocal {
         }
 
         storePerson(p, password);
+
         StringBuilder sb = new StringBuilder(300);
         if (isNewbie) {
             sb.append("Tisztelt leendő VIR felhasználó!\n\n");
@@ -286,7 +280,7 @@ public class LdapManagerBean implements LdapManagerLocal {
             sb.append("egy böngészőbe beírni az alábbi URL-t: ");
         }
         sb.append("https://korok.sch.bme.hu/korok/confirm/uid/").append(p.getUid());
-        sb.append("/confirmationcode/").append(getConfirmationCode(p)).append("\n\n");
+        sb.append("/confirmationcode/").append(p.getConfirmationCode()).append("\n\n");
 
         if (sendPass) {
             sb.append("Felhasználói név: ").append(p.getUid()).append('\n');
@@ -300,23 +294,8 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     private void storePerson(Person p, String password) {
-        p.setToSave();
-        Entry entry = new Entry(buildDN(p.getUid()));
+        Entry entry = new LdapPersonEntryMapper().toEntry(p, password);
 
-        entry.addAttribute(LdapAttributeNames.OBJECTCLASS.getName(), objectClasses);
-
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.LASTNAME, p.getLastName());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.FIRSTNAME, p.getFirstName());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.FULLNAME, p.getFullName());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.MAIL, p.getMail());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.USERSTATUS, p.getStudentUserStatus());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.STATUS, p.getStatus());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.DATE_OF_BIRHT, p.getDateOfBirth());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.GENDER, p.getGender());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.NEPTUN, p.getPersonalUniqueCode());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.NICKNAME, p.getNickName());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.VIRID, p.getPersonalUniqueID());
-        addAttributeIfNotEmpty(entry, LdapAttributeNames.PASSWORD, password);
         try {
             ldapConnPool.add(entry);
         } catch (LDAPException ex) {
@@ -325,45 +304,20 @@ public class LdapManagerBean implements LdapManagerLocal {
         }
     }
 
-    private void addAttributeIfNotEmpty(Entry entry, LdapAttributeNames attrname, String value) {
-        if (value != null && !value.trim().isEmpty()) {
-            entry.addAttribute(attrname.getName(), value);
-        }
-    }
-
-    private String getConfirmationCode(Person p) {
-        try {
-            String confirmationString = p.getUid() + p.getMail() + p.getFullName();
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update(confirmationString.getBytes(), 0, confirmationString.length());
-            String confirmationStringMD5 = new BigInteger(1, m.digest()).toString(16);
-
-            return confirmationStringMD5;
-        } catch (NoSuchAlgorithmException ex) {
-        }
-
-        return null;
-    }
-
-    private String buildDN(String uid) {
-        return String.format("uid=%s,%s", uid, BASEDN);
-    }
-
     private Person createPersonFromLDAPEntry(SearchResultEntry e) {
-        return new LdapPersonEntryMapper().toPerson(e);
-    }
+        try {
+            return new LdapPersonEntryMapper().toPerson(e);
+        } catch (ParseException ex) {
+            // TODO: exception handling in web layer.
+            logger.error("Failed to parse date of birth.", ex);
+        }
 
-    private String buildVirId(String virId) {
-        return Person.VIRID_PREFIX + virId;
-    }
-
-    private String buildNeptun(String neptun) {
-        return Person.NEPTUN_PREFIX + neptun;
+        return new Person();
     }
 
     private Person getPersonBy(LdapAttributeNames attr, String value) throws PersonNotFoundException {
         SearchRequest req = new SearchRequest(
-                BASEDN,
+                LdapUtil.BASEDN,
                 SearchScope.SUB,
                 Filter.createEqualityFilter(attr.getName(), value));
 
@@ -383,7 +337,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     private List<Person> searchForPeople(Filter filter) {
-        SearchRequest req = new SearchRequest(BASEDN, SearchScope.SUB, filter);
+        SearchRequest req = new SearchRequest(LdapUtil.BASEDN, SearchScope.SUB, filter);
 
         SearchResult result;
         try {

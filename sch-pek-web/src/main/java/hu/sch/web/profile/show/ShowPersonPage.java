@@ -86,7 +86,7 @@ public class ShowPersonPage extends ProfilePage {
 
                 @Override
                 public void onClick() {
-                    setResponsePage(new CreateCommunityProfile(new ShowPersonPage()));
+                    setResponsePage(CreateCommunityProfile.class);
                 }
             };
 
@@ -174,16 +174,12 @@ public class ShowPersonPage extends ProfilePage {
                 && person.getHomePostalAddress() != null);
         add(homePostalAddressWMC);
 
-        Label dateOfBirth = new Label("dateOfBirth");
-        Date dob;
-        if (person.getDateOfBirth() != null) {
-            try {
-                dob = new SimpleDateFormat("yyyyMMdd").parse(person.getDateOfBirth());
-                dateOfBirth = new Label("dateOfBirth", new SimpleDateFormat("yyyy. MMMM dd.",
-                        new Locale("hu")).format(dob));
-            } catch (ParseException ex) {
-            }
-        }
+        String labelText = person.getDateOfBirth() == null ? null :
+                new SimpleDateFormat("yyyy. MMMM dd.", new Locale("hu"))
+                    .format(person.getDateOfBirth());
+
+        Label dateOfBirth = new Label("dateOfBirth", labelText);
+
         WebMarkupContainer dateOfBirthWMC = new WebMarkupContainer("dateOfBirthWMC");
 
         dateOfBirthWMC.add(dateOfBirth);
