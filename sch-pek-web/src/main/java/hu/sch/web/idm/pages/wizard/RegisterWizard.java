@@ -34,13 +34,12 @@ import hu.sch.domain.RegisteringPerson;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.RegistrationManagerLocal;
+import hu.sch.services.exceptions.InvalidNewbieStateException;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
-import hu.sch.web.wicket.components.AjaxWizardButtonBar;
 import javax.ejb.EJB;
 import org.apache.log4j.Logger;
-import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.wizard.IWizardModel;
@@ -48,6 +47,7 @@ import org.apache.wicket.extensions.wizard.Wizard;
 import org.apache.wicket.extensions.wizard.dynamic.DynamicWizardModel;
 import org.apache.wicket.extensions.wizard.dynamic.DynamicWizardStep;
 import org.apache.wicket.extensions.wizard.dynamic.IDynamicWizardStep;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -134,7 +134,6 @@ public class RegisterWizard extends Wizard {
             super(null, new StringResourceModel("reg.modeselect.title", null), new StringResourceModel("reg.modeselect.help", null));
             final RadioGroup<RegistrationMode> radioGroup = new RadioGroup<RegistrationMode>("regMode");
             ListView<RegistrationMode> lv = new ListView<RegistrationMode>("choiceList", new RegistrationModeListModel()) {
-
                 @Override
                 protected void populateItem(ListItem<RegistrationMode> item) {
                     item.add(new Radio("radio", item.getModel()));
@@ -183,7 +182,6 @@ public class RegisterWizard extends Wizard {
             add(dob);
 
             add(new IFormValidator() {
-
                 @Override
                 public FormComponent<?>[] getDependentFormComponents() {
                     return new FormComponent<?>[]{neptun, dob};
@@ -192,11 +190,14 @@ public class RegisterWizard extends Wizard {
                 @Override
                 public void validate(Form<?> form) {
                     try {
-                        if (!registrationManager.canPersonRegisterWithNeptun(person)) {
-                            error(new StringResourceModel("reg.neptun.error.invalid-neptun-dateOfBirth", null));
-                        }
+                        person.setDateOfBirth(dob.getConvertedInput());
+                        person.setNeptun(neptun.getConvertedInput().toUpperCase());
+                        registrationManager.canPersonRegisterWithNeptun(person);
+                    } catch (PersonNotFoundException | InvalidNewbieStateException ex) {
+                        error(new StringResourceModel(ex.getMessage(), getForm(), null).getString());
                     } catch (UserAlreadyExistsException ex) {
-                        error(new StringResourceModel(ex.getMessage(), null, ex.getUid()));
+                        error(new StringResourceModel(ex.getMessage(), getForm(),
+                                null, new Object[]{ex.getUid()}).getString());
                     }
                 }
             });
@@ -251,7 +252,6 @@ public class RegisterWizard extends Wizard {
             uidField.add(new PatternValidator(PatternHolder.UID_PATTERN));
             uidField.add(StringValidator.lengthBetween(2, 10));
             uidField.add(new IValidator<String>() {
-
                 @Override
                 public void validate(IValidatable<String> validatable) {
                     String uid = validatable.getValue();

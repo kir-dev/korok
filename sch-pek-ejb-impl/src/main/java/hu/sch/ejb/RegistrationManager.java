@@ -4,14 +4,16 @@ import hu.sch.domain.profile.Person;
 import hu.sch.domain.RegisteringPerson;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.RegistrationManagerLocal;
+import hu.sch.services.exceptions.InvalidNewbieStateException;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -21,22 +23,44 @@ import org.slf4j.LoggerFactory;
 public class RegistrationManager implements RegistrationManagerLocal {
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
     //
     @EJB(name = "LdapManagerBean")
-    LdapManagerLocal ldapManager;
+    private LdapManagerLocal ldapManager;
     //
-    private static Logger log = LoggerFactory.getLogger(RegistrationManager.class);
+    private static Logger log = Logger.getLogger(RegistrationManager.class);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean canPersonRegisterWithNeptun(final RegisteringPerson registeringPerson)
-            throws UserAlreadyExistsException {
+    public void canPersonRegisterWithNeptun(final RegisteringPerson registeringPerson)
+            throws UserAlreadyExistsException, InvalidNewbieStateException, PersonNotFoundException {
 
-        //checkExistingPerson(neptun);
-        return false;
+        if (!checksIfUserExists(registeringPerson.getNeptun())) {
+            final TypedQuery<RegisteringPerson> neptunQuery =
+                    em.createNamedQuery(RegisteringPerson.findRegPersonByNeptun, RegisteringPerson.class);
+
+            neptunQuery.setParameter("neptun", registeringPerson.getNeptun().toUpperCase());
+            neptunQuery.setParameter("dateOfBirth", registeringPerson.getDateOfBirth());
+
+            try {
+                final RegisteringPerson dbPerson = neptunQuery.getSingleResult();
+
+                //newbie tries to register as active student
+                if (dbPerson.isNewbie() && !registeringPerson.isNewbie()) {
+                    throw new InvalidNewbieStateException("reg.neptun.error.invalid-newbie-state.newbie-as-active");
+                }
+
+                //active student tries to register as newbie
+                if (!dbPerson.isNewbie() && registeringPerson.isNewbie()) {
+                    throw new InvalidNewbieStateException("reg.neptun.error.invalid-newbie-state.active-as-newbie");
+                }
+
+            } catch (NoResultException ex) {
+                throw new PersonNotFoundException("reg.neptun.error.invalid-neptun-dateOfBirth");
+            }
+        }
     }
 
     /**
@@ -59,7 +83,15 @@ public class RegistrationManager implements RegistrationManagerLocal {
 //        ldapManager.registerPerson(person, newPass);
     }
 
-    private boolean existingPerson(final String neptun) throws UserAlreadyExistsException {
+    /**
+     * Search the user in the ldap with the given neptun code.
+     *
+     * @param neptun
+     * @return false if user is not registered yet
+     * @throws UserAlreadyExistsException when user already registered, with
+     * different key in the message whether the user is active or not
+     */
+    private boolean checksIfUserExists(final String neptun) throws UserAlreadyExistsException {
         try {
             final Person dummy = ldapManager.getPersonByNeptun(neptun);
             if (dummy.isActive()) {

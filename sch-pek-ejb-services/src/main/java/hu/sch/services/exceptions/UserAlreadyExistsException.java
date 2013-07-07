@@ -61,6 +61,7 @@ public class UserAlreadyExistsException extends Exception {
      */
     public UserAlreadyExistsException(final String msg, final String uid) {
         super(msg);
+        this.uid = uid;
     }
 
     /**

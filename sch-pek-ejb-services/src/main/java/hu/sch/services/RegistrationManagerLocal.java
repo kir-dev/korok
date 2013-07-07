@@ -1,6 +1,8 @@
 package hu.sch.services;
 
-import hu.sch.domain.profile.RegisteringPerson;
+import hu.sch.domain.RegisteringPerson;
+import hu.sch.services.exceptions.InvalidNewbieStateException;
+import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import javax.ejb.Local;
 
@@ -16,9 +18,12 @@ public interface RegistrationManagerLocal {
      * status in our list.
      *
      * @param registeringPerson
-     * @return
+     * @throws IllegalArgumentException the user gives invalid neptun-date of birth pair
+     * @throws UserAlreadyExistsException user already registered
+     * @throws InvalidNewbieStateException the user chooses different newbie state than we have
      */
-    boolean canPersonRegisterWithNeptun(final RegisteringPerson registeringPerson) throws UserAlreadyExistsException;
+    void canPersonRegisterWithNeptun(final RegisteringPerson registeringPerson)
+            throws UserAlreadyExistsException, InvalidNewbieStateException, PersonNotFoundException;
 
     /**
      * Checks if there is an eductaion id with the given date of birth and
