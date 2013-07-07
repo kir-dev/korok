@@ -30,22 +30,13 @@
  */
 package hu.sch.web.idm.pages.wizard;
 
-import hu.sch.domain.profile.Person;
+import hu.sch.domain.profile.RegisteringPerson;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
-import hu.sch.web.PhoenixApplication;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
 import hu.sch.web.wicket.components.AjaxWizardButtonBar;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
@@ -81,22 +72,17 @@ import org.apache.wicket.validation.validator.StringValidator;
  * hogy a formok ne veszítsenek el adatokat, peace ;)
  *
  * @author aldaris
+ * @author balo
  */
 public class RegisterWizard extends Wizard {
 
-    private static final String NEPTUN_CHECK_SQL = "SELECT neptun, nev FROM neptun_list WHERE UPPER(neptun)=UPPER(?) AND szuldat=?";
     //TODO: log4j konfiggal külön fájlba logolni!!!
     private static final Logger logger = Logger.getLogger(RegisterWizard.class);
-    //sima JDBC hogy ne kelljen csak emiatt felmappelni attribútumokat és 
-    //foglalkozni velük
-    @Resource(name = "jdbc/sch")
-    private DataSource ds;
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
-    private Person person = new Person();
-    private Date dob; //ezek a mezők használva vannak a CPM által
-    private String neptun;
-    private String newPass;
+    //
+    private RegisteringPerson person = new RegisteringPerson();
+    private String newPass; //ezek a mezők használva vannak a CPM által
     private String newPass2;
     private RegistrationMode regMode;
 
@@ -113,22 +99,18 @@ public class RegisterWizard extends Wizard {
     public void onCancel() {
         super.onCancel();
         regMode = null;
-        dob = null;
-        person = new Person();
-        neptun = newPass = newPass2 = null;
+        person = new RegisteringPerson();
+        newPass = newPass2 = null;
         getWizardModel().reset();
     }
 
     @Override
     public void onFinish() {
         super.onFinish();
-        person.setStatus("Inactive");
+
         try {
-            if (((PhoenixApplication) getApplication()).isNewbieTime()) {
-                ldapManager.registerNewbie(person, newPass);
-            } else {
-                ldapManager.registerPerson(person, newPass);
-            }
+//            registrationManager.reg(person);
+            logger.warn("registration.onFinish()");
         } catch (RuntimeException re) {
             getSession().error("A regisztráció közben hiba lépett fel!");
             throw new RestartResponseException(RegistrationFinishedPage.class);
@@ -143,21 +125,6 @@ public class RegisterWizard extends Wizard {
         return new AjaxWizardButtonBar(id, this);
     }
 
-    private boolean checkExistingPerson(String neptun) throws IllegalArgumentException {
-        try {
-            Person dummy = ldapManager.getPersonByNeptun(neptun);
-            if (!dummy.isActive()) {
-                throw new IllegalArgumentException("A jelenlegi felhasználód (\"" + dummy.getUid()
-                        + "\") inaktív, kérlek adj fel egy ticketet a support.sch.bme.hu oldalon!");
-            }
-            throw new IllegalArgumentException("Már rendelkezel felhasználóval (\"" + dummy.getUid()
-                    + "\"), kérlek igényelj új jelszót a https://idp.sch.bme.hu/opensso/password oldalon!");
-        } catch (PersonNotFoundException pnfe) {
-        }
-
-        return false;
-    }
-
     private class RegistrationModeSelectStep extends DynamicWizardStep {
 
         public RegistrationModeSelectStep() {
@@ -168,7 +135,7 @@ public class RegisterWizard extends Wizard {
                 @Override
                 protected void populateItem(ListItem<RegistrationMode> item) {
                     item.add(new Radio("radio", item.getModel()));
-                    item.add(new Label("name", item.getModelObject().toString()));
+                    item.add(new Label("name", new StringResourceModel(item.getModelObject().toString(), null)));
                 }
             };
             radioGroup.add(lv);
@@ -183,10 +150,16 @@ public class RegisterWizard extends Wizard {
 
         @Override
         public IDynamicWizardStep next() {
-            switch(regMode) {
-                case ACTIVE_WITH_NEPTUN_CODE:   return new NeptunLoginStep(this);
-                case NEWBIE_WITH_NEPTUN_CODE:   return new NeptunLoginStep(this);
-                case NEWBIE_WITH_OM_CODE:       return new NeptunLoginStep(this);
+            switch (regMode) {
+                case ACTIVE_WITH_NEPTUN_CODE:
+                    person.setNewbie(false);
+                    return new NeptunLoginStep(this);
+                case NEWBIE_WITH_NEPTUN_CODE:
+                    person.setNewbie(true);
+                    return new NeptunLoginStep(this);
+                case NEWBIE_WITH_OM_CODE:
+                    person.setNewbie(true);
+                    return new NeptunLoginStep(this);
                 default:
                     return new NeptunLoginStep(this);
             }
@@ -196,11 +169,13 @@ public class RegisterWizard extends Wizard {
     private class NeptunLoginStep extends DynamicWizardStep {
 
         public NeptunLoginStep(IDynamicWizardStep previousStep) {
-            super(previousStep, new StringResourceModel("reg.neptun.title", null), new StringResourceModel("reg.neptun.help", null));
-            final RequiredTextField<String> neptun = new RequiredTextField<String>("neptun");
+            super(previousStep, new StringResourceModel("reg.neptun.title", null),
+                    new StringResourceModel("reg.neptun.help", null));
+
+            final RequiredTextField<String> neptun = new RequiredTextField<String>("person.neptun");
             neptun.add(StringValidator.exactLength(6));
             add(neptun);
-            final DateTextField dob = new DateTextField("dob", "yyyy.MM.dd.");
+            final DateTextField dob = new DateTextField("person.dateOfBirth", "yyyy.MM.dd.");
             dob.setRequired(true);
             add(dob);
 
@@ -214,9 +189,9 @@ public class RegisterWizard extends Wizard {
                 @Override
                 public void validate(Form<?> form) {
                     try {
-                        if (!checkNeptun(neptun.getValue().toUpperCase(), dob.getConvertedInput())) {
-                            error("Érvénytelen Neptun kód-születésnap pár!");
-                        }
+//                        if (!checkNeptun(neptun.getValue().toUpperCase(), dob.getConvertedInput())) {
+//                            error("Érvénytelen Neptun kód-születésnap pár!");
+//                        }
                     } catch (IllegalArgumentException iae) {
                         error(iae.getMessage());
                     }
@@ -233,59 +208,14 @@ public class RegisterWizard extends Wizard {
         public IDynamicWizardStep next() {
             return new NeptunInfoStep(this);
         }
-
-        private boolean checkNeptun(String neptun, Date birthDate) throws IllegalArgumentException {
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet results = null;
-
-            try {
-                conn = ds.getConnection();
-                stmt = conn.prepareStatement(NEPTUN_CHECK_SQL);
-                stmt.setString(1, neptun);
-                stmt.setDate(2, new java.sql.Date(birthDate.getTime()));
-                results = stmt.executeQuery();
-                if (results.next()) {
-                    person.setNeptun(neptun);
-                    checkExistingPerson(neptun);
-                    if (((PhoenixApplication) getApplication()).isNewbieTime()) {
-                        person.setStudentStatus("newbie");
-                    } else {
-                        person.setStudentStatus("active");
-                    }
-                    person.setDateOfBirth(new SimpleDateFormat("yyyyMMdd").format(birthDate));
-
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (SQLException ex) {
-                logger.error("SQLException during neptun check", ex);
-                throw new IllegalArgumentException("Hiba lépett fel a regisztráció közben!");
-            } finally {
-                if (conn != null) {
-                    try {
-                        conn.close();
-                    } catch (Exception dbe) {
-                        logger.warn("Fail to close database:", dbe);
-                        throw new IllegalArgumentException("Hiba lépett fel a regisztráció közben!");
-                    }
-                }
-                if (stmt != null) {
-                    try {
-                        stmt.close();
-                    } catch (SQLException ex) {
-                        logger.error("Unable to close the Statement object!", ex);
-                    }
-                }
-            }
-        }
     }
 
     private class NeptunInfoStep extends DynamicWizardStep {
 
         public NeptunInfoStep(IDynamicWizardStep previousStep) {
-            super(previousStep, new StringResourceModel("reg.neptuninfo.title", null), new StringResourceModel("reg.neptuninfo.help", null));
+            super(previousStep, new StringResourceModel("reg.neptuninfo.title", null),
+                    new StringResourceModel("reg.neptuninfo.help", null));
+
             RequiredTextField<String> mail = new RequiredTextField<String>("person.mail");
             mail.add(EmailAddressValidator.getInstance());
             add(mail);
@@ -304,7 +234,6 @@ public class RegisterWizard extends Wizard {
 
         @Override
         public IDynamicWizardStep next() {
-            person.setFullName(person.getLastName() + " " + person.getFirstName());
             return new NewAccountStep(this);
         }
     }
@@ -312,7 +241,9 @@ public class RegisterWizard extends Wizard {
     private class NewAccountStep extends DynamicWizardStep {
 
         public NewAccountStep(DynamicWizardStep previousStep) {
-            super(previousStep, new StringResourceModel("reg.new.user.title", null), new StringResourceModel("reg.new.user.help", null));
+            super(previousStep, new StringResourceModel("reg.new.user.title", null),
+                    new StringResourceModel("reg.new.user.help", null));
+
             final RequiredTextField<String> uidField = new RequiredTextField<String>("person.uid");
             uidField.add(new PatternValidator(PatternHolder.UID_PATTERN));
             uidField.add(StringValidator.lengthBetween(2, 10));
