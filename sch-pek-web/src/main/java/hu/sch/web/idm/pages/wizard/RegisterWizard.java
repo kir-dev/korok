@@ -99,6 +99,9 @@ public class RegisterWizard extends Wizard {
 
         IWizardModel model = new DynamicWizardModel(new RegistrationModeSelectStep());
         init(model);
+
+        //prevent duplicated feedback messages, PekPage already contains a feedbackpanel
+        getForm().replace(new WebMarkupContainer(FEEDBACK_ID));
     }
 
     @Override
