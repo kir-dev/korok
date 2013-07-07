@@ -33,7 +33,9 @@ package hu.sch.web.idm.pages.wizard;
 import hu.sch.domain.profile.RegisteringPerson;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
+import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
 import hu.sch.web.wicket.components.AjaxWizardButtonBar;
 import javax.ejb.EJB;
@@ -78,6 +80,10 @@ public class RegisterWizard extends Wizard {
 
     //TODO: log4j konfiggal külön fájlba logolni!!!
     private static final Logger logger = Logger.getLogger(RegisterWizard.class);
+    //
+    @EJB(name = "RegistrationManager")
+    RegistrationManagerLocal registrationManager;
+    //
     @EJB(name = "LdapManagerBean")
     LdapManagerLocal ldapManager;
     //
@@ -189,11 +195,11 @@ public class RegisterWizard extends Wizard {
                 @Override
                 public void validate(Form<?> form) {
                     try {
-//                        if (!checkNeptun(neptun.getValue().toUpperCase(), dob.getConvertedInput())) {
-//                            error("Érvénytelen Neptun kód-születésnap pár!");
-//                        }
-                    } catch (IllegalArgumentException iae) {
-                        error(iae.getMessage());
+                        if (!registrationManager.canPersonRegisterWithNeptun(person)) {
+                            error(new StringResourceModel("reg.neptun.error.invalid-neptun-dateOfBirth", null));
+                        }
+                    } catch (UserAlreadyExistsException ex) {
+                        error(new StringResourceModel(ex.getMessage(), null, ex.getUid()));
                     }
                 }
             });
