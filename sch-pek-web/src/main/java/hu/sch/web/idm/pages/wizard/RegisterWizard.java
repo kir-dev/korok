@@ -30,7 +30,7 @@
  */
 package hu.sch.web.idm.pages.wizard;
 
-import hu.sch.domain.profile.RegisteringPerson;
+import hu.sch.domain.RegisteringPerson;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.RegistrationManagerLocal;

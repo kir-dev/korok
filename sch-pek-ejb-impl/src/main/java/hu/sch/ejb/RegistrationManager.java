@@ -1,7 +1,7 @@
 package hu.sch.ejb;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.domain.profile.RegisteringPerson;
+import hu.sch.domain.RegisteringPerson;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;

@@ -49,6 +49,7 @@
         <class>hu.sch.domain.ValuationStatus</class>
         <class>hu.sch.domain.ValuationMessage</class>
         <class>hu.sch.domain.User</class>
+        <class>hu.sch.domain.RegisteringPerson</class>
         <class>hu.sch.domain.PointRequest</class>
         <class>hu.sch.domain.SystemAttribute</class>
         <class>hu.sch.domain.Semester</class>

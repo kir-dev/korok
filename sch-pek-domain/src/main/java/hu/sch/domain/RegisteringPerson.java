@@ -1,4 +1,4 @@
-package hu.sch.domain.profile;
+package hu.sch.domain;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,16 +20,21 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "neptun_list")
 @NamedQueries({
-    @NamedQuery(name = "active_neptun_check", query = "SELECT p FROM RegisteringPerson p "
-            + "WHERE UPPER(neptun)=UPPER(:neptun) AND szuldat = :szuldat AND newbie = false"),
-    @NamedQuery(name = "newbie_neptun_check", query = "SELECT p FROM RegisteringPerson p "
-            + "WHERE UPPER(neptun)=UPPER(:neptun) AND szuldat = :szuldat AND newbie = true"),
-    @NamedQuery(name = "newbie_om_check", query = "SELECT p FROM RegisteringPerson p "
-            + "WHERE education_id = :educationid AND szuldat = :szuldat AND newbie = true")
+    @NamedQuery(name = RegisteringPerson.findRegPersonByNeptun,
+            query = "SELECT p FROM RegisteringPerson p "
+            + "WHERE UPPER(neptun)=:neptun AND szuldat = :dateOfBirth"),
+    //-----------------------------------------------------------------------//
+    @NamedQuery(name = RegisteringPerson.findRegPersonByEducationId,
+            query = "SELECT p FROM RegisteringPerson p "
+            + "WHERE education_id = :educationid AND szuldat = :dateOfBirth")
 })
 public class RegisteringPerson implements Serializable {
 
+    public static final String findRegPersonByNeptun = "neptun_check";
+    public static final String findRegPersonByEducationId = "newbie_om_check";
+    //
     @Id
+    @Column(length = 6)
     private String neptun;
     //
     @Column(name = "nev", nullable = false)
@@ -39,7 +44,7 @@ public class RegisteringPerson implements Serializable {
     @Column(name = "szuldat", nullable = false)
     private Date dateOfBirth;
     //
-    @Column(name = "education_id", nullable = true)
+    @Column(name = "education_id", length = 11, nullable = true)
     private String educationId;
     //
     @Column(nullable = false)
@@ -58,8 +63,6 @@ public class RegisteringPerson implements Serializable {
     //
     @Transient
     private String lastName;
-
-
 
     public String getName() {
         return name;
@@ -90,6 +93,9 @@ public class RegisteringPerson implements Serializable {
     }
 
     public Date getDateOfBirth() {
+        if (dateOfBirth == null) {
+            dateOfBirth = new Date();
+        }
         return new Date(dateOfBirth.getTime());
     }
 
