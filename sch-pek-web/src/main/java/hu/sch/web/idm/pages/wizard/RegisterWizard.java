@@ -125,12 +125,6 @@ public class RegisterWizard extends Wizard {
         setResponsePage(RegistrationFinishedPage.class);
     }
 
-    //lásd AjaxWizardButtonBar JavaDoc
-    @Override
-    protected Component newButtonBar(String id) {
-        return new AjaxWizardButtonBar(id, this);
-    }
-
     private class RegistrationModeSelectStep extends DynamicWizardStep {
 
         public RegistrationModeSelectStep() {
