@@ -39,4 +39,12 @@ public interface RegistrationManagerLocal {
      * @param registeringPerson
      */
     void reg(final RegisteringPerson registeringPerson);
+
+    /**
+     * Checks if the given uid already registered.
+     *
+     * @param uid
+     * @return
+     */
+    boolean isUidTaken(final String uid);
 }

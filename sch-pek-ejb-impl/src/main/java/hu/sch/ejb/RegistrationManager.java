@@ -103,4 +103,15 @@ public class RegistrationManager implements RegistrationManagerLocal {
 
         return false;
     }
+
+    @Override
+    public boolean isUidTaken(final String uid) {
+        try {
+            ldapManager.getPersonByUid(uid);
+            return true;
+        } catch (PersonNotFoundException ex) {
+        }
+
+        return false;
+    }
 }

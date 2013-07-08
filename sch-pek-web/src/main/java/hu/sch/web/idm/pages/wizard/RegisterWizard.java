@@ -32,7 +32,6 @@ package hu.sch.web.idm.pages.wizard;
 
 import hu.sch.domain.RegisteringPerson;
 import hu.sch.domain.util.PatternHolder;
-import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
 import hu.sch.services.exceptions.PersonNotFoundException;
@@ -83,9 +82,6 @@ public class RegisterWizard extends Wizard {
     //
     @EJB(name = "RegistrationManager")
     RegistrationManagerLocal registrationManager;
-    //
-    @EJB(name = "LdapManagerBean")
-    LdapManagerLocal ldapManager;
     //
     private RegisteringPerson person = new RegisteringPerson();
     private String newPass; //ezek a mezők használva vannak a CPM által
@@ -248,18 +244,15 @@ public class RegisterWizard extends Wizard {
             super(previousStep, new StringResourceModel("reg.new.user.title", null),
                     new StringResourceModel("reg.new.user.help", null));
 
-            final RequiredTextField<String> uidField = new RequiredTextField<String>("person.uid");
+            final RequiredTextField<String> uidField = new RequiredTextField<>("person.uid");
             uidField.add(new PatternValidator(PatternHolder.UID_PATTERN));
             uidField.add(StringValidator.lengthBetween(2, 10));
             uidField.add(new IValidator<String>() {
                 @Override
-                public void validate(IValidatable<String> validatable) {
-                    String uid = validatable.getValue();
-                    try {
-                        ldapManager.getPersonByUid(uid);
+                public void validate(final IValidatable<String> validatable) {
+                    final String uid = validatable.getValue();
+                    if (registrationManager.isUidTaken(uid)) {
                         validatable.error(new ValidationError().addMessageKey("reg.err.existing.user"));
-                    } catch (PersonNotFoundException pnfe) {
-                        //nem találtuk meg a felhasználót, ez most pont jó :)
                     }
                 }
             });
