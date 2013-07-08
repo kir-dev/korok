@@ -2,7 +2,7 @@ package hu.sch.web.kp.admin;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.GroupStatus;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;

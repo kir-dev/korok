@@ -1,5 +1,6 @@
 package hu.sch.web.kp.user;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import hu.sch.web.kp.KorokPage;

@@ -1,5 +1,6 @@
 package hu.sch.ejb;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;

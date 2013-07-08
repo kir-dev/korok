@@ -2,7 +2,7 @@ package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.group.admin.AdminMembershipsPanel;

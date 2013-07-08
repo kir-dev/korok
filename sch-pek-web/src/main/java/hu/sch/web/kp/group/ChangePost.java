@@ -1,5 +1,6 @@
 package hu.sch.web.kp.group;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.web.kp.KorokPage;

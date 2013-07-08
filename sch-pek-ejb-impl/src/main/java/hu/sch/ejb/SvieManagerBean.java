@@ -4,7 +4,7 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.services.LogManagerLocal;

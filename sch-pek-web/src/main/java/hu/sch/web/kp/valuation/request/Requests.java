@@ -1,7 +1,7 @@
 package hu.sch.web.kp.valuation.request;
 
 import hu.sch.domain.AbstractValuationRequest;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.services.ValuationManagerLocal;

@@ -6,7 +6,7 @@ import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.PostManagerLocal;
 import java.util.ArrayList;
 import java.util.List;

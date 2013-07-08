@@ -1,5 +1,6 @@
 package hu.sch.web.kp.valuation.request.point;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;

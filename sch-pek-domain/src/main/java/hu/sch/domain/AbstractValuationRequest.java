@@ -1,5 +1,6 @@
 package hu.sch.domain;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.interfaces.HasUserRelation;
 import java.io.Serializable;
 import java.text.Collator;

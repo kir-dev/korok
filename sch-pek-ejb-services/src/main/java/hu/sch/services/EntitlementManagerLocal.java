@@ -1,6 +1,6 @@
 package hu.sch.services;
 
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import javax.ejb.Local;
 
 /**

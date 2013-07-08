@@ -1,7 +1,7 @@
 package hu.sch.web.kp.svie;
 
 import hu.sch.domain.SvieMembershipType;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.services.exceptions.PersonNotFoundException;

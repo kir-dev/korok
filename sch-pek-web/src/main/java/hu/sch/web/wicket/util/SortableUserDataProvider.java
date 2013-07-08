@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.util;
 
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import java.text.Collator;
 import java.util.*;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;

@@ -2,7 +2,7 @@ package hu.sch.web.rest;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;

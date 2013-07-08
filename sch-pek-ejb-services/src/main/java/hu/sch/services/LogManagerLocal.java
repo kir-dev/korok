@@ -1,7 +1,7 @@
 package hu.sch.services;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.logging.Event;
 import javax.ejb.Local;
 

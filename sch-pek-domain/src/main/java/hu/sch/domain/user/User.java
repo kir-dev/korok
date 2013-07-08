@@ -1,5 +1,9 @@
-package hu.sch.domain;
+package hu.sch.domain.user;
 
+import hu.sch.domain.Group;
+import hu.sch.domain.Membership;
+import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.SvieStatus;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.*;

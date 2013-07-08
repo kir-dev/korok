@@ -1,7 +1,7 @@
 package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import org.apache.wicket.Application;
 import org.apache.wicket.request.Request;
 

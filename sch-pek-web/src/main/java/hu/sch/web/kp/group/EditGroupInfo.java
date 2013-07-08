@@ -1,7 +1,7 @@
 package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;

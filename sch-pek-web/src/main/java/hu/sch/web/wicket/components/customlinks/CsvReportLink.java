@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.components.customlinks;
 
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.io.ByteArrayOutputStream;

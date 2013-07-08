@@ -1,6 +1,6 @@
 package hu.sch.domain.interfaces;
 
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 
 /**
  * Azokat az entitások implementálják ezt, amelyeknek van kapcsolatuk felhasználóval,

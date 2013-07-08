@@ -1,5 +1,6 @@
 package hu.sch.domain;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.util.DateInterval;
 import hu.sch.domain.interfaces.MembershipTableEntry;
 import java.util.Date;

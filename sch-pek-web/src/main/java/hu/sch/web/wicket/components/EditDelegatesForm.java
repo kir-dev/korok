@@ -1,7 +1,7 @@
 package hu.sch.web.wicket.components;
 
 import hu.sch.web.wicket.components.customlinks.UserLink;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import java.io.Serializable;
 import java.util.ArrayList;

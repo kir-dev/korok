@@ -5,7 +5,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import hu.sch.domain.SvieMembershipType;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.LdapManagerLocal;
