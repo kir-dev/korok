@@ -1,4 +1,4 @@
-package hu.sch.domain.profile;
+package hu.sch.domain.user;
 
 import java.io.Serializable;
 import java.util.UUID;

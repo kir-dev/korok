@@ -1,6 +1,6 @@
 package hu.sch.web.profile.show;
 
-import hu.sch.domain.profile.IMAccount;
+import hu.sch.domain.user.IMAccount;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.kp.user.ShowUser;

@@ -1,4 +1,4 @@
-package hu.sch.domain.profile;
+package hu.sch.domain.user;
 
 /**
  * Student statuses.

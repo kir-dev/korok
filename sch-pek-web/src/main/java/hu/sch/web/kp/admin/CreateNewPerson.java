@@ -1,7 +1,7 @@
 package hu.sch.web.kp.admin;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.domain.profile.StudentStatus;
+import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.profile.UserStatus;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.error.NotFound;
