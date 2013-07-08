@@ -1,24 +1,50 @@
 package hu.sch.domain.user;
 
 import java.io.Serializable;
-import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  *
  * @author hege
+ * @author tomi
  */
+@Entity
+@Table(name = "im_accounts")
+@SequenceGenerator(name = "im_accounts_seq", sequenceName = "im_accounts_seq")
 public class IMAccount implements Serializable {
 
+    private Long id;
     private IMProtocol protocol;
-    private String presenceID;
-    private UUID uuid;
+    private String screenName;
+
+    public IMAccount() {
+    }
 
     public IMAccount(IMProtocol protocol, String presenceID) {
         this.protocol = protocol;
-        this.presenceID = presenceID;
-        uuid = UUID.randomUUID();
+        this.screenName = presenceID;
     }
 
+    @Id
+    @GeneratedValue(generator = "im_accounts_seq")
+    @Column(name = "id")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Column(name = "protocol")
+    @Enumerated(EnumType.STRING)
     public IMProtocol getProtocol() {
         return protocol;
     }
@@ -27,25 +53,22 @@ public class IMAccount implements Serializable {
         this.protocol = protocol;
     }
 
-    public String getPresenceID() {
-        return presenceID;
+    @Column(name = "screen_name")
+    public String getScreenName() {
+        return screenName;
     }
 
-    public void setPresenceID(String presenceID) {
-        this.presenceID = presenceID;
-    }
-
-    public UUID getUuid() {
-        return uuid;
+    public void setScreenName(String screenName) {
+        this.screenName = screenName;
     }
 
     /**
      * Az IMAccount string formában
-     * @return protocol:presenceID
+     * @return protocol:screenName
      */
     @Override
     public String toString() {
-        return protocol.toString() + ":" + presenceID;
+        return protocol.toString() + ":" + screenName;
     }
 
     @Override
@@ -55,7 +78,7 @@ public class IMAccount implements Serializable {
         }
         if (obj instanceof IMAccount) {
             IMAccount o2 = (IMAccount) obj;
-            return o2.getUuid().equals(uuid);
+            return o2.getId().equals(this.id);
         }
         return false;
     }
@@ -63,7 +86,7 @@ public class IMAccount implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 79 * hash + (this.uuid != null ? this.uuid.hashCode() : 0);
+        hash = 79 * hash + this.id.hashCode();
         return hash;
     }
 }

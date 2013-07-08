@@ -14,7 +14,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Felhasználót reprezentáló entitás
+ * Felhasználót reprezentáló entitás.
+ *
  * @author hege
  */
 @Entity
@@ -115,6 +116,11 @@ public class User implements Serializable, Comparable<User> {
      * Megmutassuk-e neki, hogy van egy fotó, amit javaslunk
      */
     private boolean showRecommendedPhoto;
+
+    /**
+     * Instant messaging accounts.
+     */
+    private List<IMAccount> imAccounts;
 
     /**
      * A felhasználó egyedi azonosítóját visszaadó függvény
@@ -291,6 +297,19 @@ public class User implements Serializable, Comparable<User> {
 
     public void setMemberships(List<Membership> memberships) {
         this.memberships = memberships;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "usr_id")
+    public List<IMAccount> getImAccounts() {
+        if (imAccounts == null) {
+            imAccounts = new ArrayList<IMAccount>();
+        }
+        return imAccounts;
+    }
+
+    public void setImAccounts(List<IMAccount> imAccounts) {
+        this.imAccounts = imAccounts;
     }
 
     @Transient

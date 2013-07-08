@@ -184,7 +184,7 @@ public class LdapPersonEntryMapper {
 
         List<String> ims = new ArrayList<String>();
         for (IMAccount im : p.getIMAccounts()) {
-            if (im.getPresenceID() == null) {
+            if (im.getScreenName() == null) {
                 continue;
             }
 
