@@ -37,7 +37,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
     public void canPersonRegisterWithNeptun(final RegisteringPerson registeringPerson)
             throws UserAlreadyExistsException, InvalidNewbieStateException, PersonNotFoundException {
 
-        if (!checksIfUserExists(registeringPerson.getNeptun())) {
+        if (!isUserExists(registeringPerson.getNeptun())) {
             final TypedQuery<RegisteringPerson> neptunQuery =
                     em.createNamedQuery(RegisteringPerson.findRegPersonByNeptun, RegisteringPerson.class);
 
@@ -46,19 +46,10 @@ public class RegistrationManager implements RegistrationManagerLocal {
 
             try {
                 final RegisteringPerson dbPerson = neptunQuery.getSingleResult();
-
-                //newbie tries to register as active student
-                if (dbPerson.isNewbie() && !registeringPerson.isNewbie()) {
-                    throw new InvalidNewbieStateException("reg.neptun.error.invalid-newbie-state.newbie-as-active");
-                }
-
-                //active student tries to register as newbie
-                if (!dbPerson.isNewbie() && registeringPerson.isNewbie()) {
-                    throw new InvalidNewbieStateException("reg.neptun.error.invalid-newbie-state.active-as-newbie");
-                }
-
+                checkNewbieState(dbPerson, registeringPerson);
+                //
             } catch (NoResultException ex) {
-                throw new PersonNotFoundException("reg.neptun.error.invalid-neptun-dateOfBirth");
+                throw new PersonNotFoundException("reg.error.invalid-neptun-dateOfBirth");
             }
         }
     }
@@ -67,11 +58,24 @@ public class RegistrationManager implements RegistrationManagerLocal {
      * {@inheritDoc}
      */
     @Override
-    public boolean canPersonRegisterWithEducationId(final RegisteringPerson registeringPerson)
-            throws UserAlreadyExistsException {
+    public void canPersonRegisterWithEducationId(final RegisteringPerson registeringPerson)
+            throws UserAlreadyExistsException, InvalidNewbieStateException, PersonNotFoundException {
 
-        //checkExistingPerson(neptun);
-        return false;
+        //get user's neptun from the database
+        final TypedQuery<RegisteringPerson> educationIdQuery =
+                em.createNamedQuery(RegisteringPerson.findRegPersonByEducationId, RegisteringPerson.class);
+
+        educationIdQuery.setParameter("educationid", registeringPerson.getEducationId().toUpperCase());
+        educationIdQuery.setParameter("dateOfBirth", registeringPerson.getDateOfBirth());
+
+        try {
+            final RegisteringPerson dbPerson = educationIdQuery.getSingleResult();
+            isUserExists(dbPerson.getNeptun());
+            checkNewbieState(dbPerson, registeringPerson);
+            //
+        } catch (NoResultException ex) {
+            throw new PersonNotFoundException("reg.error.invalid-educationId-dateOfBirth");
+        }
     }
 
     /**
@@ -87,17 +91,17 @@ public class RegistrationManager implements RegistrationManagerLocal {
      * Search the user in the ldap with the given neptun code.
      *
      * @param neptun
-     * @return false if user is not registered yet
+     * @return false if user is not registered yet, never returns true
      * @throws UserAlreadyExistsException when user already registered, with
      * different key in the message whether the user is active or not
      */
-    private boolean checksIfUserExists(final String neptun) throws UserAlreadyExistsException {
+    private boolean isUserExists(final String neptun) throws UserAlreadyExistsException {
         try {
             final Person dummy = ldapManager.getPersonByNeptun(neptun);
             if (dummy.isActive()) {
-                throw new UserAlreadyExistsException("reg.neptun.error.user_exists.active", dummy.getUid());
+                throw new UserAlreadyExistsException("reg.error.user_exists.active", dummy.getUid());
             }
-            throw new UserAlreadyExistsException("reg.neptun.error.user_exists.inactive", dummy.getUid());
+            throw new UserAlreadyExistsException("reg.error.user_exists.inactive", dummy.getUid());
         } catch (PersonNotFoundException pnfe) {
         }
 
@@ -113,5 +117,28 @@ public class RegistrationManager implements RegistrationManagerLocal {
         }
 
         return false;
+    }
+
+    /**
+     * Checks if the user tries to register with wrong registration method. Ex.:
+     * He's a newbie and tries as active or he's active and tries as newbie
+     *
+     * @param dbPerson
+     * @param registeringPerson
+     * @throws InvalidNewbieStateException when user tries to register with a
+     * wrong method, with different key in the message whether the user is
+     * newbie or not
+     */
+    private void checkNewbieState(final RegisteringPerson dbPerson, final RegisteringPerson registeringPerson)
+            throws InvalidNewbieStateException {
+        //newbie tries to register as active student
+        if (dbPerson.isNewbie() && !registeringPerson.isNewbie()) {
+            throw new InvalidNewbieStateException("reg.error.invalid-newbie-state.newbie-as-active");
+        }
+
+        //active student tries to register as newbie
+        if (!dbPerson.isNewbie() && registeringPerson.isNewbie()) {
+            throw new InvalidNewbieStateException("reg.error.invalid-newbie-state.active-as-newbie");
+        }
     }
 }

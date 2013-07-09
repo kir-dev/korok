@@ -30,9 +30,9 @@ public interface RegistrationManagerLocal {
      * newbie status in our list.
      *
      * @param registeringPerson
-     * @return
      */
-    boolean canPersonRegisterWithEducationId(final RegisteringPerson registeringPerson) throws UserAlreadyExistsException;
+    void canPersonRegisterWithEducationId(final RegisteringPerson registeringPerson)
+            throws UserAlreadyExistsException, InvalidNewbieStateException, PersonNotFoundException;
 
     /**
      *

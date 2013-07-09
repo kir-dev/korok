@@ -157,7 +157,7 @@ public class RegisterWizard extends Wizard {
                     return new NeptunLoginStep(this);
                 case NEWBIE_WITH_OM_CODE:
                     person.setNewbie(true);
-                    return new NeptunLoginStep(this);
+                    return new EducationIdLoginStep(this);
                 default:
                     return new NeptunLoginStep(this);
             }
@@ -189,6 +189,54 @@ public class RegisterWizard extends Wizard {
                         person.setDateOfBirth(dob.getConvertedInput());
                         person.setNeptun(neptun.getConvertedInput().toUpperCase());
                         registrationManager.canPersonRegisterWithNeptun(person);
+                        //
+                    } catch (PersonNotFoundException | InvalidNewbieStateException ex) {
+                        error(new StringResourceModel(ex.getMessage(), getForm(), null).getString());
+                    } catch (UserAlreadyExistsException ex) {
+                        error(new StringResourceModel(ex.getMessage(), getForm(),
+                                null, new Object[]{ex.getUid()}).getString());
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean isLastStep() {
+            return false;
+        }
+
+        @Override
+        public IDynamicWizardStep next() {
+            return new PersonalInfoStep(this);
+        }
+    }
+
+    private class EducationIdLoginStep extends DynamicWizardStep {
+
+        public EducationIdLoginStep(IDynamicWizardStep previousStep) {
+            super(previousStep, new StringResourceModel("reg.educationId.title", null),
+                    new StringResourceModel("reg.educationId.help", null));
+
+            final RequiredTextField<String> educationId = new RequiredTextField<>("person.educationId");
+            educationId.add(new PatternValidator(PatternHolder.EDUCATION_ID_PATTERN));
+            add(educationId);
+            final DateTextField dob = new DateTextField("person.dateOfBirth", "yyyy.MM.dd.");
+            dob.setRequired(true);
+            add(dob);
+
+            add(new IFormValidator() {
+                @Override
+                public FormComponent<?>[] getDependentFormComponents() {
+                    return new FormComponent<?>[]{educationId, dob};
+                }
+
+                @Override
+                public void validate(Form<?> form) {
+                    try {
+                        person.setDateOfBirth(dob.getConvertedInput());
+                        person.setEducationId(educationId.getConvertedInput());
+                        registrationManager.canPersonRegisterWithEducationId(person);
+                        //
                     } catch (PersonNotFoundException | InvalidNewbieStateException ex) {
                         error(new StringResourceModel(ex.getMessage(), getForm(), null).getString());
                     } catch (UserAlreadyExistsException ex) {
