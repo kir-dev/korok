@@ -252,7 +252,7 @@ public class RegisterWizard extends Wizard {
                 public void validate(final IValidatable<String> validatable) {
                     final String uid = validatable.getValue();
                     if (registrationManager.isUidTaken(uid)) {
-                        validatable.error(new ValidationError().addMessageKey("reg.err.existing.user"));
+                        validatable.error(new ValidationError().addMessageKey("reg.error.existing.user"));
                     }
                 }
             });
