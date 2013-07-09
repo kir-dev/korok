@@ -8,7 +8,7 @@
     <name>SCH PéK Application</name>
     <url>http://stewie.sch.bme.hu/projects/korok</url>
     <inceptionYear>2008</inceptionYear>
-    
+
     <licenses>
         <license>
             <name>BSD License (original)</name>
@@ -102,7 +102,6 @@
         <module>sch-pek-web</module>
         <module>sch-pek-web-services</module>
         <module>sch-pek-ear</module>
-        <module>sch-pek-test</module>
     </modules>
 
     <dependencyManagement>
@@ -159,24 +158,6 @@
                 <version>1.0.13</version>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.11</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.extras</groupId>
-                <artifactId>glassfish-embedded-all</artifactId>
-                <version>3.1</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>6.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
@@ -185,6 +166,12 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>6.0</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -200,6 +187,24 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>9.1-901.jdbc4</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>5.0.1.Final</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

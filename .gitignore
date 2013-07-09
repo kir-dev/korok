@@ -2,5 +2,4 @@ target/
 .*
 gfembed*
 derby.log
-resources/test/*
-nb-configuration.xml
+nb*
