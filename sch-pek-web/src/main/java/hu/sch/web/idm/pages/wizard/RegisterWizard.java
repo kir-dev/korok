@@ -170,7 +170,7 @@ public class RegisterWizard extends Wizard {
             super(previousStep, new StringResourceModel("reg.neptun.title", null),
                     new StringResourceModel("reg.neptun.help", null));
 
-            final RequiredTextField<String> neptun = new RequiredTextField<String>("person.neptun");
+            final RequiredTextField<String> neptun = new RequiredTextField<>("person.neptun");
             neptun.add(StringValidator.exactLength(6));
             add(neptun);
             final DateTextField dob = new DateTextField("person.dateOfBirth", "yyyy.MM.dd.");
@@ -206,23 +206,23 @@ public class RegisterWizard extends Wizard {
 
         @Override
         public IDynamicWizardStep next() {
-            return new NeptunInfoStep(this);
+            return new PersonalInfoStep(this);
         }
     }
 
-    private class NeptunInfoStep extends DynamicWizardStep {
+    private class PersonalInfoStep extends DynamicWizardStep {
 
-        public NeptunInfoStep(IDynamicWizardStep previousStep) {
-            super(previousStep, new StringResourceModel("reg.neptuninfo.title", null),
-                    new StringResourceModel("reg.neptuninfo.help", null));
+        public PersonalInfoStep(IDynamicWizardStep previousStep) {
+            super(previousStep, new StringResourceModel("reg.personalinfo.title", null),
+                    new StringResourceModel("reg.personalinfo.help", null));
 
-            RequiredTextField<String> mail = new RequiredTextField<String>("person.mail");
+            RequiredTextField<String> mail = new RequiredTextField<>("person.mail");
             mail.add(EmailAddressValidator.getInstance());
             add(mail);
-            RequiredTextField<String> sn = new RequiredTextField<String>("person.lastName");
+            RequiredTextField<String> sn = new RequiredTextField<>("person.lastName");
             sn.add(new PatternValidator(PatternHolder.NAME_PATTERN));
             add(sn);
-            RequiredTextField<String> givenName = new RequiredTextField<String>("person.firstName");
+            RequiredTextField<String> givenName = new RequiredTextField<>("person.firstName");
             givenName.add(new PatternValidator(PatternHolder.NAME_PATTERN));
             add(givenName);
         }
