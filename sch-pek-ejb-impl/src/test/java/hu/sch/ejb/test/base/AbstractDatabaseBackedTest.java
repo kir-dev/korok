@@ -43,7 +43,7 @@ public abstract class AbstractDatabaseBackedTest {
     public void tearDown() {
         after();
 
-        if (transaction != null) {
+        if (transaction != null && transaction.isActive()) {
             transaction.rollback();
         }
         if (em != null) {
