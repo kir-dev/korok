@@ -74,132 +74,41 @@ public class User implements Serializable, Comparable<User> {
      usr_room                    | character varying(10)  |
      usr_confirm                 | character(64)          |
      */
-    /**
-     * Felhasználó azonosítója
-     */
     private Long id;
-    /**
-     * A felhasználó választott felhasználóneve.
-     */
     private String screenName;
-    /**
-     * E-mail cím
-     */
     @XmlElement
     private String emailAddress;
-    /**
-     * Neptun-kód
-     */
     private String neptunCode;
-    /**
-     * Keresztnév
-     */
     @XmlElement
     private String firstName;
-    /**
-     * Vezetéknév
-     */
     @XmlElement
     private String lastName;
-    /**
-     * Bejelentkezési név
-     */
     @XmlElement
     private String nickName;
-    /**
-     * Születési dátum.
-     */
     private Date dateOfBirth;
-    /**
-     * A felhasználó neme.
-     */
     private Gender gender;
-    /**
-     * Hallgatói státusz.
-     */
     private StudentStatus studentStatus;
-    /**
-     * Anyaja neve.
-     */
     private String mothersName;
-    /**
-     * A profilkép elérési útja.
-     */
     private String photoPath;
-    /**
-     * A hallgató weboldala.
-     */
     private String webpage;
-    /**
-     * Mobil szám.
-     */
     private String cellPhone;
-    /**
-     * Otthoni cím.
-     */
     private String homeAddress;
-    /**
-     * Végzés várható éve.
-     *
-     * Formátum: YYYYYYYY[12] Például: 201220132 a 2012/13-as év második féléve
-     */
     private String estimatedGraduationYear;
-    /**
-     * Kollégium neve.
-     */
     private String dormitory;
-    /**
-     * Szobaszám.
-     *
-     * String, hogy az esetlegesen betűt is tartamlazó szobákat.
-     */
     private String room;
-    /**
-     * Regisztrációhoz szükéges megerősítő kód.
-     */
     private String confirmationCode;
-    /**
-     * SVIE tagság státusza
-     */
     private SvieStatus svieStatus;
-    /**
-     * SVIE tagság típusa
-     */
     private SvieMembershipType svieMembershipType;
-    /**
-     * SVIE elsődleges kör Rendes tagsága kell legyen a körben
-     */
     private Membership sviePrimaryMembership;
-    /**
-     * Csoporttagságok - tagsági idővel kiegészítve
-     */
     private List<Membership> memberships;
-    /**
-     * Az illető küldött-e az elsődleges körében
-     */
     private boolean delegated;
-    /**
-     * Tranziens csoporttagsagok
-     */
     private List<Group> groups;
-    /**
-     * Megmutassuk-e neki, hogy van egy fotó, amit javaslunk
-     */
     private boolean showRecommendedPhoto;
-    /**
-     * IM elérhetőségek.
-     */
     private List<IMAccount> imAccounts;
-    /**
-     * Rejtett attribútumok.
-     *
-     * Egy attribútum csak akkor látható, ha benne van a kollekcióban és a
-     * 'visibile' mezője true értékű.
-     */
     private List<UserAttribute> privateAttributes;
 
     /**
-     * A felhasználó egyedi azonosítóját visszaadó függvény
+     * Felhasználó azonosítója.
      *
      * @return A user virId-je
      */
@@ -214,6 +123,9 @@ public class User implements Serializable, Comparable<User> {
         this.id = id;
     }
 
+    /**
+     * E-mail cím
+     */
     @Column(name = "usr_email", length = 64, columnDefinition = "varchar(64)")
     public String getEmailAddress() {
         return emailAddress;
@@ -223,6 +135,9 @@ public class User implements Serializable, Comparable<User> {
         this.emailAddress = emailAddress;
     }
 
+    /**
+     * Neptun-kód
+     */
     @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6,
             nullable = true, updatable = false)
     public String getNeptunCode() {
@@ -233,6 +148,9 @@ public class User implements Serializable, Comparable<User> {
         this.neptunCode = neptunCode;
     }
 
+    /**
+     * Keresztnév
+     */
     @Column(name = "usr_firstname", nullable = false, columnDefinition = "text")
     public String getFirstName() {
         return firstName;
@@ -242,6 +160,9 @@ public class User implements Serializable, Comparable<User> {
         this.firstName = firstName;
     }
 
+    /**
+     * Vezetéknév
+     */
     @Column(name = "usr_lastname", nullable = false, columnDefinition = "text")
     public String getLastName() {
         return lastName;
@@ -251,6 +172,9 @@ public class User implements Serializable, Comparable<User> {
         this.lastName = lastName;
     }
 
+    /**
+     * Becenév
+     */
     @Column(name = "usr_nickname", nullable = true, columnDefinition = "text")
     public String getNickName() {
         return nickName;
@@ -260,6 +184,9 @@ public class User implements Serializable, Comparable<User> {
         this.nickName = nickName;
     }
 
+    /**
+     * SVIE tagság státusza
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_svie_state", nullable = false)
     public SvieStatus getSvieStatus() {
@@ -311,6 +238,9 @@ public class User implements Serializable, Comparable<User> {
         this.svieStatus = svieStatus;
     }
 
+    /**
+     * SVIE tagság típusa
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_svie_member_type", nullable = false)
     public SvieMembershipType getSvieMembershipType() {
@@ -321,6 +251,9 @@ public class User implements Serializable, Comparable<User> {
         this.svieMembershipType = svieMembershipType;
     }
 
+    /**
+     * Az illető küldött-e az elsődleges körében
+     */
     @Column(name = "usr_delegated", nullable = false, columnDefinition = "boolean default false")
     public boolean getDelegated() {
         return delegated;
@@ -330,6 +263,9 @@ public class User implements Serializable, Comparable<User> {
         this.delegated = newValue;
     }
 
+    /**
+     * Megmutassuk-e neki, hogy van egy fotó, amit javaslunk
+     */
     @Column(name = "usr_show_recommended_photo", nullable = false, columnDefinition = "boolean default false")
     public boolean isShowRecommendedPhoto() {
         return showRecommendedPhoto;
@@ -339,6 +275,11 @@ public class User implements Serializable, Comparable<User> {
         this.showRecommendedPhoto = showRecommendedPhoto;
     }
 
+    /**
+     * SVIE elsődleges kör.
+     *
+     * Rendes tagsága kell legyen a körben.
+     */
     @ManyToOne
     @JoinColumn(name = "usr_svie_primary_membership", insertable = true, updatable = true)
     public Membership getSviePrimaryMembership() {
@@ -349,6 +290,11 @@ public class User implements Serializable, Comparable<User> {
         this.sviePrimaryMembership = sviePrimaryMembership;
     }
 
+    /**
+     * Körtagságok.
+     *
+     * TODO: rendes fetch legyen?
+     */
     @Transient
     public List<Group> getGroups() {
         if (groups == null) {
@@ -357,8 +303,14 @@ public class User implements Serializable, Comparable<User> {
         return groups;
     }
 
+    /**
+     * Csoporttagságok - tagsági idővel kiegészítve
+     */
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     public List<Membership> getMemberships() {
+        if (memberships == null) {
+            memberships = new ArrayList<>();
+        }
         return memberships;
     }
 
@@ -366,6 +318,9 @@ public class User implements Serializable, Comparable<User> {
         this.memberships = memberships;
     }
 
+    /**
+     * IM elérhetőségek.
+     */
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "usr_id")
     public List<IMAccount> getImAccounts() {
@@ -399,6 +354,11 @@ public class User implements Serializable, Comparable<User> {
         }
     }
 
+    /**
+     * A felhasználó választott felhasználóneve.
+     *
+     * Ezzel jelentkezik be. OpenDJ-ben 'uid' volt az attribútum neve.
+     */
     @Column(name = "usr_screen_name", nullable = false, length = 50)
     public String getScreenName() {
         return screenName;
@@ -408,6 +368,9 @@ public class User implements Serializable, Comparable<User> {
         this.screenName = screenName;
     }
 
+    /**
+     * Születési dátum.
+     */
     @Column(name = "usr_date_of_birth")
     @Temporal(TemporalType.DATE)
     public Date getDateOfBirth() {
@@ -418,6 +381,9 @@ public class User implements Serializable, Comparable<User> {
         this.dateOfBirth = dateOfBirth;
     }
 
+    /**
+     * A felhasználó neme.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_gender", nullable = false)
     public Gender getGender() {
@@ -428,6 +394,9 @@ public class User implements Serializable, Comparable<User> {
         this.gender = gender;
     }
 
+    /**
+     * Hallgatói státusz.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_student_status", nullable = false)
     public StudentStatus getStudentStatus() {
@@ -438,6 +407,9 @@ public class User implements Serializable, Comparable<User> {
         this.studentStatus = studentStatus;
     }
 
+    /**
+     * Anyaja neve.
+     */
     @Column(name = "usr_mother_name", length = 100)
     public String getMothersName() {
         return mothersName;
@@ -447,6 +419,9 @@ public class User implements Serializable, Comparable<User> {
         this.mothersName = mothersName;
     }
 
+    /**
+     * A profilkép elérési útja.
+     */
     @Column(name = "usr_photo_path")
     public String getPhotoPath() {
         return photoPath;
@@ -456,6 +431,9 @@ public class User implements Serializable, Comparable<User> {
         this.photoPath = photoPath;
     }
 
+    /**
+     * A hallgató weboldala.
+     */
     @Column(name = "usr_webpage")
     public String getWebpage() {
         return webpage;
@@ -465,6 +443,9 @@ public class User implements Serializable, Comparable<User> {
         this.webpage = webpage;
     }
 
+    /**
+     * Mobil szám.
+     */
     @Column(name = "usr_cell_phone")
     public String getCellPhone() {
         return cellPhone;
@@ -474,6 +455,9 @@ public class User implements Serializable, Comparable<User> {
         this.cellPhone = cellPhone;
     }
 
+    /**
+     * Otthoni cím.
+     */
     @Column(name = "usr_home_address")
     public String getHomeAddress() {
         return homeAddress;
@@ -483,6 +467,11 @@ public class User implements Serializable, Comparable<User> {
         this.homeAddress = homeAddress;
     }
 
+    /**
+     * Végzés várható éve.
+     *
+     * Formátum: YYYYYYYY[12] Például: 201220132 a 2012/13-as év második féléve
+     */
     @Column(name = "usr_est_grad")
     public String getEstimatedGraduationYear() {
         return estimatedGraduationYear;
@@ -492,6 +481,9 @@ public class User implements Serializable, Comparable<User> {
         this.estimatedGraduationYear = estimatedGraduationYear;
     }
 
+    /**
+     * Kollégium neve.
+     */
     @Column(name = "usr_dormitory")
     public String getDormitory() {
         return dormitory;
@@ -501,6 +493,11 @@ public class User implements Serializable, Comparable<User> {
         this.dormitory = dormitory;
     }
 
+    /**
+     * Szobaszám.
+     *
+     * String, hogy az esetlegesen betűt is tartamlazó szobákat.
+     */
     @Column(name = "usr_room")
     public String getRoom() {
         return room;
@@ -510,6 +507,9 @@ public class User implements Serializable, Comparable<User> {
         this.room = room;
     }
 
+    /**
+     * Regisztrációhoz szükéges megerősítő kód.
+     */
     @Column(name = "usr_confirm")
     public String getConfirmationCode() {
         return confirmationCode;
@@ -519,6 +519,12 @@ public class User implements Serializable, Comparable<User> {
         this.confirmationCode = confirmationCode;
     }
 
+    /**
+     * Rejtett attribútumok.
+     *
+     * Egy attribútum csak akkor látható, ha benne van a kollekcióban és a
+     * 'visibile' mezője true értékű.
+     */
     @ElementCollection
     @CollectionTable(name = "usr_private_attrs", joinColumns = {
         @JoinColumn(name = "usr_id")})
@@ -534,6 +540,12 @@ public class User implements Serializable, Comparable<User> {
         this.privateAttributes = privateAttributes;
     }
 
+    /**
+     * Eldönti egy megadott attribútum típsuról, hogy az látható-e.
+     *
+     * @param attr az attritbútum neve
+     * @return true ha látható, egyébként false.
+     */
     public boolean isAttributeVisible(UserAttributeName attr) {
         UserAttribute userAttr = null;
         for (UserAttribute a : getPrivateAttributes()) {
