@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.text.Collator;
 import java.util.*;
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -107,6 +108,13 @@ public class User implements Serializable, Comparable<User> {
     private List<IMAccount> imAccounts;
     private List<UserAttribute> privateAttributes;
 
+    public User() {
+        this.delegated = false;
+        this.showRecommendedPhoto = false;
+    }
+
+
+
     /**
      * Felhasználó azonosítója.
      *
@@ -138,6 +146,7 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Neptun-kód
      */
+    @Size(max = 6, min = 6)
     @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6,
             nullable = true, updatable = false)
     public String getNeptunCode() {
@@ -151,6 +160,7 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Keresztnév
      */
+    @NotNull
     @Column(name = "usr_firstname", nullable = false, columnDefinition = "text")
     public String getFirstName() {
         return firstName;
@@ -163,6 +173,7 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Vezetéknév
      */
+    @NotNull
     @Column(name = "usr_lastname", nullable = false, columnDefinition = "text")
     public String getLastName() {
         return lastName;
@@ -187,10 +198,15 @@ public class User implements Serializable, Comparable<User> {
     /**
      * SVIE tagság státusza
      */
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_svie_state", nullable = false)
     public SvieStatus getSvieStatus() {
         return svieStatus;
+    }
+
+    public void setSvieStatus(SvieStatus svieStatus) {
+        this.svieStatus = svieStatus;
     }
 
     /**
@@ -234,13 +250,10 @@ public class User implements Serializable, Comparable<User> {
         }
     }
 
-    public void setSvieStatus(SvieStatus svieStatus) {
-        this.svieStatus = svieStatus;
-    }
-
     /**
      * SVIE tagság típusa
      */
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_svie_member_type", nullable = false)
     public SvieMembershipType getSvieMembershipType() {
@@ -254,20 +267,22 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Az illető küldött-e az elsődleges körében
      */
+    @NotNull
     @Column(name = "usr_delegated", nullable = false, columnDefinition = "boolean default false")
-    public boolean getDelegated() {
+    public Boolean getDelegated() {
         return delegated;
     }
 
-    public void setDelegated(boolean newValue) {
+    public void setDelegated(Boolean newValue) {
         this.delegated = newValue;
     }
 
     /**
      * Megmutassuk-e neki, hogy van egy fotó, amit javaslunk
      */
+    @NotNull
     @Column(name = "usr_show_recommended_photo", nullable = false, columnDefinition = "boolean default false")
-    public boolean isShowRecommendedPhoto() {
+    public Boolean isShowRecommendedPhoto() {
         return showRecommendedPhoto;
     }
 
@@ -359,6 +374,8 @@ public class User implements Serializable, Comparable<User> {
      *
      * Ezzel jelentkezik be. OpenDJ-ben 'uid' volt az attribútum neve.
      */
+    @NotNull
+    @Size(max = 50)
     @Column(name = "usr_screen_name", nullable = false, length = 50)
     public String getScreenName() {
         return screenName;
@@ -384,6 +401,7 @@ public class User implements Serializable, Comparable<User> {
     /**
      * A felhasználó neme.
      */
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_gender", nullable = false)
     public Gender getGender() {
@@ -397,6 +415,7 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Hallgatói státusz.
      */
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_student_status", nullable = false)
     public StudentStatus getStudentStatus() {
@@ -446,6 +465,7 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Mobil szám.
      */
+    @Size(max = 15)
     @Column(name = "usr_cell_phone")
     public String getCellPhone() {
         return cellPhone;
@@ -472,6 +492,7 @@ public class User implements Serializable, Comparable<User> {
      *
      * Formátum: YYYYYYYY[12] Például: 201220132 a 2012/13-as év második féléve
      */
+    @Size(max = 9, min = 9)
     @Column(name = "usr_est_grad")
     public String getEstimatedGraduationYear() {
         return estimatedGraduationYear;
@@ -587,6 +608,13 @@ public class User implements Serializable, Comparable<User> {
         return huCollator.compare(getSvieMemberText(compareToMs), u.getSvieMemberText(compareToMs));
     }
 
+    /**
+     * Egyenlőség vizsgálat id alapján.
+     *
+     * Először referencia szerinti vizsgálatot végez.
+     * Ha az id null, akkor csak önmagával referencia szitnen megegyező objektumra
+     * ad vissza true-t.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
