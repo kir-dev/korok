@@ -227,7 +227,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
 
     private String createUserInfo() {
         StringBuilder sb = new StringBuilder(300);
-        sb.append("Alulírott ").append(user.getName());
+        sb.append("Alulírott ").append(user.getFullName());
         sb.append(" (lakcím: ").append(person.getHomePostalAddress());
         sb.append(", anyja neve: ").append(person.getMothersName());
         sb.append(", e-mail cím: ").append(person.getMail());

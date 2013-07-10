@@ -96,6 +96,6 @@ public abstract class AbstractValuationRequest
     @Override
     public int compareTo(final AbstractValuationRequest o) {
         final Collator huCollator = Collator.getInstance(new Locale("hu"));
-        return huCollator.compare(user.getName(), o.getUser().getName());
+        return huCollator.compare(user.getFullName(), o.getUser().getFullName());
     }
 }

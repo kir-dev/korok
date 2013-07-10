@@ -23,7 +23,7 @@ public class UserLink extends Panel {
 
         Link<ShowUser> l = new BookmarkablePageLink<ShowUser>("link", ShowUser.class,
                 new PageParameters().add("id", user.getId()));
-        l.add(new Label("name", user.getName()));
+        l.add(new Label("name", user.getFullName()));
         add(l);
     }
 }

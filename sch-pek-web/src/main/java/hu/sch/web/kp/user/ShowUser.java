@@ -69,8 +69,8 @@ public class ShowUser extends KorokPage {
             throw new RestartResponseException(GroupHierarchy.class);
         }
         setDefaultModel(new CompoundPropertyModel<User>(user));
-        setTitleText(user.getName());
-        setHeaderLabelText(user.getName() + " felhasználó lapja");
+        setTitleText(user.getFullName());
+        setHeaderLabelText(user.getFullName() + " felhasználó lapja");
         if (ownProfile) {
             add(new BookmarkablePageLink<UserHistory>("detailView", UserHistory.class));
         } else {

@@ -61,7 +61,7 @@ public final class ChangePost extends KorokPage {
             throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", group.getId()));
         }
         add(new Label("groupname", group.getName()));
-        add(new Label("username", user.getName()));
+        add(new Label("username", user.getFullName()));
         final Input input = new Input(ms);
         setDefaultModel(new CompoundPropertyModel<Input>(input));
 

@@ -116,7 +116,7 @@ public class CreateGroup extends KorokPage {
 
         @Override
         public Object getDisplayValue(User user) {
-            return user.getName() + " [" + user.getEmailAddress() + ", " + user.getNeptunCode() + "]";
+            return user.getFullName() + " [" + user.getEmailAddress() + ", " + user.getNeptunCode() + "]";
         }
 
         @Override

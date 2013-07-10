@@ -380,8 +380,8 @@ public class User implements Serializable, Comparable<User> {
     }
 
     @Transient
-    public String getName() {
-        return getLastName() + " " + getFirstName();
+    public String getFullName() {
+        return String.format("%s %s", getLastName(), getFirstName());
     }
 
     public void sortMemberships() {
@@ -563,12 +563,12 @@ public class User implements Serializable, Comparable<User> {
 
     @Override
     public String toString() {
-        return String.format("User#%d name: %s, email: %s", getId(), getName(), getEmailAddress());
+        return String.format("User#%d name: %s, email: %s", getId(), getFullName(), getEmailAddress());
     }
 
     @Override
     public int compareTo(User o) {
-        return huCollator.compare(getName(), o.getName());
+        return huCollator.compare(getFullName(), o.getFullName());
     }
 
     public int compareToBySvieMemberText(final User u, final Membership compareToMs) {
