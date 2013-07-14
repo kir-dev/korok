@@ -134,4 +134,9 @@ public class RegisteringPerson implements Serializable {
     public void setUid(final String uid) {
         this.uid = uid;
     }
+
+    @Override
+    public String toString() {
+        return "RegisteringPerson{" + "neptun=" + neptun + ", name=" + name + ", dateOfBirth=" + dateOfBirth + ", educationId=" + educationId + ", newbie=" + newbie + ", uid=" + uid + ", mail=" + mail + ", firstName=" + firstName + ", lastName=" + lastName + '}';
+    }
 }
