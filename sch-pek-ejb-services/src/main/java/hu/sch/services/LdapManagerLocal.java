@@ -65,7 +65,5 @@ public interface LdapManagerLocal {
 
     List<Person> searchMyUid(String mail);
 
-    void registerPerson(Person p, String password);
-
-    void registerNewbie(Person p, String password);
+    void register(Person p, String password, boolean isNewbie);
 }

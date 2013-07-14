@@ -445,16 +445,7 @@ public class LdapManagerBean implements LdapManagerLocal {
     }
 
     @Override
-    public void registerPerson(Person p, String password) {
-        register(p, password, false);
-    }
-
-    @Override
-    public void registerNewbie(Person p, String password) {
-        register(p, password, true);
-    }
-
-    private void register(Person p, String password, boolean isNewbie) {
+    public void register(Person p, String password, boolean isNewbie) {
         boolean sendPass = (password == null);
         //az attribútumok formára hozása
         if (sendPass) {

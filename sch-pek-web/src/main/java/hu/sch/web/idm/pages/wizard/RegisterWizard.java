@@ -114,10 +114,10 @@ public class RegisterWizard extends Wizard {
         super.onFinish();
 
         try {
-//            registrationManager.reg(person);
-            logger.warn("registration.onFinish()");
-        } catch (RuntimeException re) {
+            registrationManager.doRegistration(person, newPass);
+        } catch (PersonNotFoundException | RuntimeException ex) {
             getSession().error("A regisztráció közben hiba lépett fel!");
+            logger.warn("Exception on finishing registration, RegisteringPerson=", ex);
             throw new RestartResponseException(RegistrationFinishedPage.class);
         }
         getSession().info("Sikeres regisztráció!");

@@ -64,7 +64,7 @@ public class CreateNewPerson extends KorokPage {
             protected void onSubmit() {
                 person.setStudentUserStatus("urn:mace:terena.org:schac:status:sch.hu:student_status:other");
                 person.setStatus("Active");
-                ldapManager.registerPerson(person, null);
+                ldapManager.register(person, null, false);
                 setResponsePage(AdminPage.class, new PageParameters().set("uid", person.getUid()));
             }
         };

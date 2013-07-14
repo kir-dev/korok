@@ -38,7 +38,8 @@ public interface RegistrationManagerLocal {
      *
      * @param registeringPerson
      */
-    void reg(final RegisteringPerson registeringPerson);
+    void doRegistration(final RegisteringPerson registeringPerson, final String password)
+            throws PersonNotFoundException;
 
     /**
      * Checks if the given uid already registered.

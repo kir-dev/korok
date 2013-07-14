@@ -7,6 +7,7 @@ import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
 import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
+import java.text.SimpleDateFormat;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -61,30 +62,53 @@ public class RegistrationManager implements RegistrationManagerLocal {
     public void canPersonRegisterWithEducationId(final RegisteringPerson registeringPerson)
             throws UserAlreadyExistsException, InvalidNewbieStateException, PersonNotFoundException {
 
-        //get user's neptun from the database
-        final TypedQuery<RegisteringPerson> educationIdQuery =
-                em.createNamedQuery(RegisteringPerson.findRegPersonByEducationId, RegisteringPerson.class);
-
-        educationIdQuery.setParameter("educationid", registeringPerson.getEducationId().toUpperCase());
-        educationIdQuery.setParameter("dateOfBirth", registeringPerson.getDateOfBirth());
-
-        try {
-            final RegisteringPerson dbPerson = educationIdQuery.getSingleResult();
-            isUserExists(dbPerson.getNeptun());
-            checkNewbieState(dbPerson, registeringPerson);
-            //
-        } catch (NoResultException ex) {
-            throw new PersonNotFoundException("reg.error.invalid-educationId-dateOfBirth");
-        }
+        final RegisteringPerson dbPerson = findRegPersonByEducationId(registeringPerson);
+        isUserExists(dbPerson.getNeptun());
+        checkNewbieState(dbPerson, registeringPerson);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void reg(final RegisteringPerson registeringPerson) {
-//        person.setStatus("Inactive");
-//        ldapManager.registerPerson(person, newPass);
+    public void doRegistration(final RegisteringPerson regPerson, final String password)
+            throws PersonNotFoundException {
+
+        final Person person = new Person();
+        person.setUid(regPerson.getUid());
+        person.setMail(regPerson.getMail());
+        person.setFirstName(regPerson.getFirstName());
+        person.setLastName(regPerson.getLastName());
+        person.setDateOfBirth(new SimpleDateFormat("yyyyMMdd").format(regPerson.getDateOfBirth()));
+        person.setStudentStatus(regPerson.isNewbie() ? "newbie" : "active");
+        person.setStatus("Inactive");
+
+        //if we don't have the neptun code, we have to search user by educationId
+        if (regPerson.getNeptun() == null || regPerson.getNeptun().isEmpty()) {
+            final RegisteringPerson dbRegPerson = findRegPersonByEducationId(regPerson);
+            regPerson.setNeptun(dbRegPerson.getNeptun());
+        }
+
+        person.setNeptun(regPerson.getNeptun());
+
+        ldapManager.register(person, password, regPerson.isNewbie());
+    }
+
+    private RegisteringPerson findRegPersonByEducationId(final RegisteringPerson regPerson)
+            throws PersonNotFoundException {
+        //get user's neptun from the database
+        final TypedQuery<RegisteringPerson> educationIdQuery =
+                em.createNamedQuery(RegisteringPerson.findRegPersonByEducationId, RegisteringPerson.class);
+
+        educationIdQuery.setParameter("educationid", regPerson.getEducationId());
+        educationIdQuery.setParameter("dateOfBirth", regPerson.getDateOfBirth());
+
+        try {
+            final RegisteringPerson dbPerson = educationIdQuery.getSingleResult();
+            return dbPerson;
+        } catch (NoResultException ex) {
+            throw new PersonNotFoundException("reg.error.invalid-educationId-dateOfBirth");
+        }
     }
 
     /**
