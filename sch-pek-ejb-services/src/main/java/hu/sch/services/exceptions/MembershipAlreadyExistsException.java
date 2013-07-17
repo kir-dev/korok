@@ -1,7 +1,7 @@
 package hu.sch.services.exceptions;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 
 /**
  *

@@ -1,8 +1,8 @@
 package hu.sch.web.idm.pages.wizard;
 
-import hu.sch.domain.profile.Gender;
+import hu.sch.domain.user.Gender;
 import hu.sch.domain.profile.Person;
-import hu.sch.domain.profile.StudentStatus;
+import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.profile.UserStatus;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.services.LdapManagerLocal;

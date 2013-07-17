@@ -1,7 +1,7 @@
 package hu.sch.ejb;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.logging.Log;
 import hu.sch.services.MailManagerLocal;
@@ -84,7 +84,7 @@ public class TimerServiceBean {
                     sb.append(evtType.toString());
                 }
                 for (Log log : logs) {
-                    sb.append(log.getUser().getName()).append(" -> ");
+                    sb.append(log.getUser().getFullName()).append(" -> ");
                     sb.append(showUserLink).append(log.getUser().getId()).append("\n");
                 }
                 if (!logs.isEmpty()) {
@@ -115,7 +115,7 @@ public class TimerServiceBean {
                 sb.append(eventType.toString());
             }
             for (Log log : logs) {
-                sb.append(log.getUser().getName()).append(" -> ");
+                sb.append(log.getUser().getFullName()).append(" -> ");
                 sb.append(showUserLink).append(log.getUser().getId()).append("\n");
             }
             if (!logs.isEmpty()) {
@@ -129,7 +129,7 @@ public class TimerServiceBean {
                 // mert különben az utolsó admin jó sok üdvözletet kapna ;)
                 StringBuilder sb2 = new StringBuilder(sb.toString());
                 sendEmail(u.getEmailAddress(), sb2);
-                logger.info("SVIE adminnak (" + u.getName() + ") kiment a levél.");
+                logger.info("SVIE adminnak (" + u.getFullName() + ") kiment a levél.");
             }
         }
     }
@@ -145,7 +145,7 @@ public class TimerServiceBean {
             sb.append(EventType.ELFOGADASALATT.toString());
         }
         for (Log log : logs) {
-            sb.append(log.getUser().getName()).append(" -> ");
+            sb.append(log.getUser().getFullName()).append(" -> ");
             sb.append(showUserLink).append(log.getUser().getId()).append("\n");
         }
         if (!logs.isEmpty()) {

@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.components.customlinks;
 
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.io.ByteArrayOutputStream;
@@ -48,7 +48,7 @@ public final class CsvReportLink extends Link<Void> {
 
         sb.append("Delegált neve,Delegált e-mail címe,Képviselt kör\n");
         for (User user : users) {
-            sb.append(user.getName()).append(",");
+            sb.append(user.getFullName()).append(",");
             sb.append(user.getEmailAddress()).append(",");
             sb.append(user.getSviePrimaryMembership().getGroup().getName()).append("\n");
         }

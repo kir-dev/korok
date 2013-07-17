@@ -8,7 +8,7 @@ import hu.sch.domain.GivenPoint;
 import hu.sch.domain.Group;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.Valuation;
 import hu.sch.domain.ValuationData;
 import hu.sch.domain.ValuationMessage;

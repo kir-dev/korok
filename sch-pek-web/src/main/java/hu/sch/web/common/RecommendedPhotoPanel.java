@@ -1,7 +1,7 @@
 package hu.sch.web.common;
 
 import hu.sch.domain.SpotImage;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.wicket.components.ImageResource;
 import javax.ejb.EJB;

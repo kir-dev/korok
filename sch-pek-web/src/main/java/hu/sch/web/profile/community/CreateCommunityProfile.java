@@ -1,6 +1,6 @@
 package hu.sch.web.profile.community;
 
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.profile.Person;
 import hu.sch.services.EntitlementManagerLocal;
 import hu.sch.services.MailManagerLocal;

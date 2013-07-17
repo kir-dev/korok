@@ -81,22 +81,10 @@
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-domain</artifactId>
-            <!--<scope>provided</scope>-->
-        </dependency>
-        <!-- Tranzitív függőség miatt rá kell függeni az EJB modulra is teszteknél :( -->
-        <dependency>
-            <groupId>hu.sch</groupId>
-            <artifactId>sch-pek-ejb-impl</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-ejb-services</artifactId>
-            <!--<scope>provided</scope>-->
-        </dependency>
-        <dependency>
-            <groupId>hu.sch</groupId>
-            <artifactId>sch-pek-test</artifactId>
         </dependency>
         <!-- Wicket függőségek -->
         <dependency>
@@ -152,11 +140,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.extras</groupId>
-            <artifactId>glassfish-embedded-all</artifactId>
-        </dependency>
-        <!-- Mindenképp később kell legyen mint a GF embedded, különben ClassFormatError lesz teszteknél!! -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="PEK-DOMAIN-TEST-PU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>hu.sch.domain.EntrantExportRecord</class>
+        <class>hu.sch.domain.EntrantRequest</class>
+        <class>hu.sch.domain.EntrantType</class>
+        <class>hu.sch.domain.GivenPoint</class>
+        <class>hu.sch.domain.Group</class>
+        <class>hu.sch.domain.GroupStatus</class>
+        <class>hu.sch.domain.Membership</class>
+        <class>hu.sch.domain.Valuation</class>
+        <class>hu.sch.domain.ValuationStatistic</class>
+        <class>hu.sch.domain.ValuationStatus</class>
+        <class>hu.sch.domain.ValuationMessage</class>
+        <class>hu.sch.domain.PointRequest</class>
+        <class>hu.sch.domain.SystemAttribute</class>
+        <class>hu.sch.domain.Semester</class>
+        <class>hu.sch.domain.SpotImage</class>
+        <class>hu.sch.domain.Post</class>
+        <class>hu.sch.domain.PostType</class>
+        <class>hu.sch.domain.logging.Log</class>
+        <class>hu.sch.domain.logging.Event</class>
+
+        <class>hu.sch.domain.user.User</class>
+        <class>hu.sch.domain.user.IMAccount</class>
+
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql:vir-test" />
+            <property name="javax.persistence.jdbc.user" value="kir" />
+
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false" />
+        </properties>
+    </persistence-unit>
+</persistence>

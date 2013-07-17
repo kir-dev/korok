@@ -37,7 +37,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <systemProperties>
+                        <property>
+                            <name>java.util.logging.config.file</name>
+                            <value>${build.testOutputDirectory}/logging.properties</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
@@ -51,10 +56,6 @@
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-ejb-services</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>hu.sch</groupId>
-            <artifactId>sch-pek-test</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -72,15 +73,6 @@
             <artifactId>unboundid-ldapsdk</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.extras</groupId>
-            <artifactId>glassfish-embedded-all</artifactId>
-        </dependency>
-        <!-- Mindenképp később kell legyen mint a GF embedded, különben ClassFormatError lesz teszteknél!! -->
-        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
@@ -88,6 +80,22 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
+
+        <!-- test dependecies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
+        <!-- Ennek később kell lennie mint a öszes hibernate depnek. -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>

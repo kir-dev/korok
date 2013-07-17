@@ -1,5 +1,6 @@
 package hu.sch.web.kp.group;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.domain.util.PatternHolder;
 import hu.sch.web.kp.KorokPage;
@@ -60,7 +61,7 @@ public final class ChangePost extends KorokPage {
             throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", group.getId()));
         }
         add(new Label("groupname", group.getName()));
-        add(new Label("username", user.getName()));
+        add(new Label("username", user.getFullName()));
         final Input input = new Input(ms);
         setDefaultModel(new CompoundPropertyModel<Input>(input));
 

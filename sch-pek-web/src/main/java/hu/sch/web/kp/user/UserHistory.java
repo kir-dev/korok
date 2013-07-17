@@ -1,5 +1,6 @@
 package hu.sch.web.kp.user;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
@@ -71,8 +72,8 @@ public class UserHistory extends KorokPage {
             throw new RestartResponseException(GroupHierarchy.class);
         }
 
-        setHeaderLabelText(user.getName() + " közösségi története");
-        setTitleText(user.getName() + " közösségi története");
+        setHeaderLabelText(user.getFullName() + " közösségi története");
+        setTitleText(user.getFullName() + " közösségi története");
         if (own_profile) {
             add(new BookmarkablePageLink<ShowUser>("simpleView", ShowUser.class));
         } else {

@@ -1,7 +1,7 @@
 package hu.sch.web.kp.svie;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.CheckBoxHolder;

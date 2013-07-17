@@ -3,7 +3,7 @@ package hu.sch.web.kp.svie;
 import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.wicket.components.customlinks.SvieRegPdfLink;

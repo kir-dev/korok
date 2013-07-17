@@ -1,7 +1,7 @@
 package hu.sch.domain.logging;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;

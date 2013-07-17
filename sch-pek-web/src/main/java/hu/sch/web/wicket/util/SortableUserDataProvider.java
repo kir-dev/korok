@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.util;
 
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import java.text.Collator;
 import java.util.*;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
@@ -44,7 +44,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User, String>
 
                     @Override
                     public int compare(User o1, User o2) {
-                        return huCollator.compare(o1.getName(), o2.getName());
+                        return huCollator.compare(o1.getFullName(), o2.getFullName());
                     }
                 });
             } else {
@@ -52,7 +52,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User, String>
 
                     @Override
                     public int compare(User o1, User o2) {
-                        return huCollator.compare(o2.getName(), o1.getName());
+                        return huCollator.compare(o2.getFullName(), o1.getFullName());
                     }
                 });
             }
@@ -63,7 +63,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User, String>
                     @Override
                     public int compare(User o1, User o2) {
                         if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
-                            return huCollator.compare(o1.getName(), o2.getName());
+                            return huCollator.compare(o1.getFullName(), o2.getFullName());
                         } else {
                             return o1.getSvieMembershipType().compareTo(o2.getSvieMembershipType());
                         }
@@ -75,7 +75,7 @@ public class SortableUserDataProvider extends SortableDataProvider<User, String>
                     @Override
                     public int compare(User o1, User o2) {
                         if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
-                            return huCollator.compare(o2.getName(), o1.getName());
+                            return huCollator.compare(o2.getFullName(), o1.getFullName());
                         } else {
                             return o2.getSvieMembershipType().compareTo(o1.getSvieMembershipType());
                         }

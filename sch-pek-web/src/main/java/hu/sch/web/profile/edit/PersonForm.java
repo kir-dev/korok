@@ -1,7 +1,7 @@
 package hu.sch.web.profile.edit;
 
-import hu.sch.domain.profile.IMAccount;
-import hu.sch.domain.profile.IMProtocol;
+import hu.sch.domain.user.IMAccount;
+import hu.sch.domain.user.IMProtocol;
 import hu.sch.domain.profile.Person;
 import hu.sch.domain.util.ImageResizer;
 import hu.sch.domain.util.PatternHolder;

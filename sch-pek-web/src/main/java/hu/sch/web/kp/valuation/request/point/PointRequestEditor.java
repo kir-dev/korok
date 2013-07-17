@@ -1,5 +1,6 @@
 package hu.sch.web.kp.valuation.request.point;
 
+import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
@@ -97,7 +98,7 @@ public class PointRequestEditor extends Panel {
                         final Integer point = arg0.getValue();
                         if (0 < point && point < 5) {
                             arg0.error(new ValidationError().addKey("err.MinimumPoint")
-                                    .setVariable("user_name", pontIgeny.getUser().getName()));
+                                    .setVariable("user_name", pontIgeny.getUser().getFullName()));
                         }
                     }
                 });

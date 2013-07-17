@@ -1,7 +1,7 @@
 package hu.sch.ejb;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.Log;
 import hu.sch.services.LogManagerLocal;

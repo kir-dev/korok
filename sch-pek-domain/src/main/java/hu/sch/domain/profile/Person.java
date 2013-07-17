@@ -1,5 +1,8 @@
 package hu.sch.domain.profile;
 
+import hu.sch.domain.user.IMAccount;
+import hu.sch.domain.user.Gender;
+import hu.sch.domain.user.StudentStatus;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

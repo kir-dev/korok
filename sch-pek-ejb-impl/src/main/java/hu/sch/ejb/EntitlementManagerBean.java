@@ -2,7 +2,7 @@ package hu.sch.ejb;
 
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.EntitlementManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import javax.ejb.EJB;

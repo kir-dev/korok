@@ -15,7 +15,6 @@
         <class>hu.sch.domain.ValuationStatistic</class>
         <class>hu.sch.domain.ValuationStatus</class>
         <class>hu.sch.domain.ValuationMessage</class>
-        <class>hu.sch.domain.User</class>
         <class>hu.sch.domain.PointRequest</class>
         <class>hu.sch.domain.SystemAttribute</class>
         <class>hu.sch.domain.Semester</class>
@@ -24,6 +23,9 @@
         <class>hu.sch.domain.PostType</class>
         <class>hu.sch.domain.logging.Log</class>
         <class>hu.sch.domain.logging.Event</class>
+
+        <class>hu.sch.domain.user.User</class>
+        <class>hu.sch.domain.user.IMAccount</class>
 
         <properties>
             <property name="hibernate.show_sql" value="false"/>

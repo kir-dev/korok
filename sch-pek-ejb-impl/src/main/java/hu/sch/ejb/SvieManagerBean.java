@@ -4,7 +4,7 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.services.LogManagerLocal;
@@ -131,7 +131,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     private void sendPrimaryMembershipChangedMail(User user) {
         StringBuilder sb = new StringBuilder(200);
         sb.append("Kedves Körvezető!\n\nAz egyik körtagod, ");
-        sb.append(user.getName());
+        sb.append(user.getFullName());
         sb.append(" az előbb változtatta meg elsődleges körét.\n");
         sb.append("Link a felhasználó profiljára:\n");
         sb.append("https://korok.sch.bme.hu/korok/showuser/id/").append(user.getId());

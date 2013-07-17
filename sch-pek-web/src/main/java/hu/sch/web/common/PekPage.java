@@ -1,6 +1,6 @@
 package hu.sch.web.common;
 
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;

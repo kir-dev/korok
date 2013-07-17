@@ -1,7 +1,7 @@
 package hu.sch.web.kp.search;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.User;
+import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;

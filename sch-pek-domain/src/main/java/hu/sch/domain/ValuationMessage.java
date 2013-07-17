@@ -1,5 +1,6 @@
 package hu.sch.domain;
 
+import hu.sch.domain.user.User;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -130,7 +131,7 @@ public class ValuationMessage implements Serializable {
     @Override
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy. MMMMM dd. HH:mm:ss", new Locale("hu"));
-        return "Feladó: " + sender.getName() + "\n"
+        return "Feladó: " + sender.getFullName() + "\n"
                 + "Dátum: " + dateFormat.format(new Date()) + "\n"
                 + "Üzenet szövege:\n\n" + message;
     }

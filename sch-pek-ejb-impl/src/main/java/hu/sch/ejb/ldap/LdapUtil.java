@@ -1,7 +1,7 @@
 package hu.sch.ejb.ldap;
 
 import hu.sch.domain.profile.Person;
-import hu.sch.domain.profile.StudentStatus;
+import hu.sch.domain.user.StudentStatus;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
