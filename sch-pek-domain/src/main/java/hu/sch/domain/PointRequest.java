@@ -13,6 +13,7 @@ import javax.persistence.Table;
 @Table(name = "pontigenyles")
 public class PointRequest extends AbstractValuationRequest {
 
+    @Column(name = "pont")
     private Integer point;
 
     public PointRequest() {
@@ -24,7 +25,6 @@ public class PointRequest extends AbstractValuationRequest {
         setUser(user);
     }
 
-    @Column(name = "pont")
     public Integer getPoint() {
         return point;
     }

@@ -61,110 +61,83 @@ public class Group implements Serializable, Comparable<Group> {
     public static final String findAll = "findAllGroup";
     public static final String findWithMemberships = "findGroupWithMemberships";
     public static final String groupHierarchy = "groupHierarchy";
-
-    /*
-    grp_id               | integer               | not null default nextval('groups_grp_id_seq'::regclass)
-    grp_name             | text                  | not null
-    grp_type             | character varying(20) | not null
-    grp_parent           | integer               |
-    grp_state            | character(3)          | default 'akt'::bpchar
-    grp_description      | text                  |
-    grp_webpage          | character varying(64) |
-    grp_maillist         | character varying(64) |
-    grp_head             | character varying(48) |
-    grp_founded          | integer               |
-    grp_issvie           | boolean               | not null default false
-    grp_svie_delegate_nr | integer               |
-    grp_users_can_apply  | boolean               | not null default true
-     */
-    /**
-     * Group azonosító id
-     */
+    //----------------------------------------------------
+    @Id
+    @GeneratedValue(generator = "groups_seq")
+    @Column(name = "grp_id")
     private Long id;
-    /**
-     * Group neve
-     */
+    //----------------------------------------------------
+    @Column(name = "grp_name", length = 255, columnDefinition = "text")
     private String name;
-    /**
-     * Típus
-     */
+    //----------------------------------------------------
+    @Column(name = "grp_type")
     private String type;
-    /**
-     * Szülő csoport
-     */
+    //----------------------------------------------------
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "grp_parent")
     private Group parent;
-    /**
-     * Státusz (aktiv / öreg)
-     */
+    //----------------------------------------------------
+    @Enumerated(EnumType.STRING)
+    @Column(name = "grp_state")
     private GroupStatus status;
-    /**
-     * Kör bemutatkozása
-     */
+    //----------------------------------------------------
+    @Column(name = "grp_description", columnDefinition = "text")
     private String introduction;
-    /**
-     * Publikus weboldal címe
-     */
+    //----------------------------------------------------
+    @Column(name = "grp_webpage", length = 64)
     private String webPage;
-    /**
-     * Levelezési lista címe
-     */
+    //----------------------------------------------------
+    @Column(name = "grp_maillist", length = 64)
     private String mailingList;
-    /**
-     * Jelentkezhetnek-e új tagok a körbe
-     */
+    //----------------------------------------------------
+    @Column(name = "grp_users_can_apply")
     private boolean usersCanApply;
-    /**
-     * A kör vezetőjének egyéni titulusa
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @Column(name = "grp_head", length = 48)
     private String head;
-    /**
-     * Alapítás éve
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @Column(name = "grp_founded")
     private Integer founded;
-    /**
-     * Az adott kör tagja-e a SVIE-nek
-     */
+    //----------------------------------------------------
+    @Column(name = "grp_issvie")
     private Boolean isSvie;
-    /**
-     * Az adott kör hány tagot küldhet küldött gyülésre
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @Column(name = "grp_svie_delegate_nr")
     private Integer delegateNumber;
-    /**
-     * Alcsoportok
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @Transient
     private List<Group> subGroups;
-    /**
-     * Az elsődleges körtagok száma
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @Transient
     private Long numberOfPrimaryMembers;
-    /**
-     * Csoporttagságok
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Membership> memberships;
-    /**
-     * Cache-elt mező
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @Transient
     private List<User> members;
-    /**
-     * Aktív tagságok
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @Transient
     private List<Membership> activeMemberships;
-    /**
-     * Öregtagok
-     */
+    //----------------------------------------------------
     @XmlTransient
+    @Transient
     private List<Membership> inactiveMemberships;
+    //----------------------------------------------------
     @XmlTransient
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Log> logs;
+    //----------------------------------------------------
     @XmlTransient
+    @Transient
     private List<User> activeUsers;
 
     public Group() {
@@ -178,9 +151,6 @@ public class Group implements Serializable, Comparable<Group> {
         isSvie = group.getIsSvie();
     }
 
-    @Id
-    @GeneratedValue(generator = "groups_seq")
-    @Column(name = "grp_id")
     public Long getId() {
         return id;
     }
@@ -189,7 +159,6 @@ public class Group implements Serializable, Comparable<Group> {
         this.id = id;
     }
 
-    @Column(name = "grp_name", length = 255, columnDefinition = "text")
     public String getName() {
         return name;
     }
@@ -198,7 +167,6 @@ public class Group implements Serializable, Comparable<Group> {
         this.name = name;
     }
 
-    @Column(name = "grp_type")
     public String getType() {
         return type;
     }
@@ -207,8 +175,6 @@ public class Group implements Serializable, Comparable<Group> {
         this.type = type;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "grp_parent")
     public Group getParent() {
         return parent;
     }
@@ -217,7 +183,6 @@ public class Group implements Serializable, Comparable<Group> {
         this.parent = parent;
     }
 
-    @Transient
     public User getGroupLeader() {
         for (Membership ms : activeMemberships) {
             for (Post post : ms.getPosts()) {
@@ -230,8 +195,9 @@ public class Group implements Serializable, Comparable<Group> {
         return null;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "grp_state")
+    /**
+     * Státusz (aktiv / öreg)
+     */
     public GroupStatus getStatus() {
         return status;
     }
@@ -240,7 +206,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.status = status;
     }
 
-    @Column(name = "grp_description", columnDefinition = "text")
+    /**
+     * Kör bemutatkozása
+     */
     public String getIntroduction() {
         return introduction;
     }
@@ -249,7 +217,6 @@ public class Group implements Serializable, Comparable<Group> {
         this.introduction = introduction;
     }
 
-    @Column(name = "grp_webpage", length = 64)
     public String getWebPage() {
         return webPage;
     }
@@ -258,7 +225,6 @@ public class Group implements Serializable, Comparable<Group> {
         this.webPage = webPage;
     }
 
-    @Column(name = "grp_maillist", length = 64)
     public String getMailingList() {
         return mailingList;
     }
@@ -267,7 +233,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.mailingList = mailingList;
     }
 
-    @Column(name = "grp_head", length = 48)
+    /**
+     * A kör vezetőjének egyéni titulusa
+     */
     public String getHead() {
         return head;
     }
@@ -276,7 +244,6 @@ public class Group implements Serializable, Comparable<Group> {
         this.head = head;
     }
 
-    @Column(name = "grp_founded")
     public Integer getFounded() {
         return founded;
     }
@@ -285,7 +252,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.founded = founded;
     }
 
-    @Column(name = "grp_issvie")
+    /**
+     * Az adott kör tagja-e a SVIE-nek
+     */
     public Boolean getIsSvie() {
         return isSvie;
     }
@@ -294,7 +263,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.isSvie = isSvie;
     }
 
-    @Column(name = "grp_svie_delegate_nr")
+    /**
+     * Az adott kör hány tagot küldhet küldött gyülésre
+     */
     public Integer getDelegateNumber() {
         return delegateNumber;
     }
@@ -303,7 +274,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.delegateNumber = delegateNumber;
     }
 
-    @Transient
+    /**
+     * Az elsődleges körtagok száma
+     */
     public Long getNumberOfPrimaryMembers() {
         return numberOfPrimaryMembers;
     }
@@ -312,7 +285,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.numberOfPrimaryMembers = numberOfPrimaryMembers;
     }
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    /**
+     * Csoporttagságok
+     */
     public List<Membership> getMemberships() {
         return memberships;
     }
@@ -321,7 +296,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.memberships = memberships;
     }
 
-    @Transient
+    /**
+     * Alcsoportok
+     */
     public List<Group> getSubGroups() {
         return subGroups;
     }
@@ -330,7 +307,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.subGroups = subGroups;
     }
 
-    @Transient
+    /**
+     * Cache-elt mező
+     */
     public List<User> getMembers() {
         if (members == null) {
             loadMembers();
@@ -338,7 +317,6 @@ public class Group implements Serializable, Comparable<Group> {
         return members;
     }
 
-    @Transient
     public List<User> getActiveMembers() {
         if (members == null) {
             loadMembers();
@@ -350,10 +328,10 @@ public class Group implements Serializable, Comparable<Group> {
         sortMemberships();
         List<Membership> list = getMemberships();
 
-        members = new ArrayList<User>(list.size());
-        activeMemberships = new ArrayList<Membership>();
-        inactiveMemberships = new ArrayList<Membership>();
-        activeUsers = new ArrayList<User>(list.size());
+        members = new ArrayList<>(list.size());
+        activeMemberships = new ArrayList<>();
+        inactiveMemberships = new ArrayList<>();
+        activeUsers = new ArrayList<>(list.size());
         for (Membership cst : list) {
             members.add(cst.getUser());
             if (cst.getEnd() == null) {
@@ -365,7 +343,9 @@ public class Group implements Serializable, Comparable<Group> {
         }
     }
 
-    @Transient
+    /**
+     * Aktív tagságok
+     */
     public List<Membership> getActiveMemberships() {
         if (members == null) {
             loadMembers();
@@ -373,7 +353,9 @@ public class Group implements Serializable, Comparable<Group> {
         return activeMemberships;
     }
 
-    @Transient
+    /**
+     * Öregtagok
+     */
     public List<Membership> getInactiveMemberships() {
         if (members == null) {
             loadMembers();
@@ -383,20 +365,18 @@ public class Group implements Serializable, Comparable<Group> {
 
     public void sortMemberships() {
         if (getMemberships() != null) {
-            Collections.sort(getMemberships(),
-                    new Comparator<Membership>() {
-
-                        public int compare(Membership o1, Membership o2) {
-                            if (o1.getEnd() == null ^ o2.getEnd() == null) {
-                                return o1.getEnd() == null ? -1 : 1;
-                            }
-                            return o1.getUser().compareTo(o2.getUser());
-                        }
-                    });
+            Collections.sort(getMemberships(), new Comparator<Membership>() {
+                @Override
+                public int compare(Membership o1, Membership o2) {
+                    if (o1.getEnd() == null ^ o2.getEnd() == null) {
+                        return o1.getEnd() == null ? -1 : 1;
+                    }
+                    return o1.getUser().compareTo(o2.getUser());
+                }
+            });
         }
     }
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     public List<Log> getLogs() {
         return logs;
     }
@@ -405,7 +385,9 @@ public class Group implements Serializable, Comparable<Group> {
         this.logs = logs;
     }
 
-    @Column(name = "grp_users_can_apply")
+    /**
+     * Jelentkezhetnek-e új tagok a körbe
+     */
     public boolean getUsersCanApply() {
         return usersCanApply;
     }

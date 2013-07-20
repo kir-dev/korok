@@ -25,14 +25,24 @@ import javax.persistence.MappedSuperclass;
 public abstract class AbstractValuationRequest
         implements Serializable, HasUserRelation, Comparable<AbstractValuationRequest> {
 
-    private Long id;
-    private Valuation valuation;
-    private User user;
-    private Long userId;
-    private Long valuationId;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    //----------------------------------------------------
+    @ManyToOne
+    @JoinColumn(name = "ertekeles_id", nullable = false)
+    private Valuation valuation;
+    //----------------------------------------------------
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usr_id")
+    private User user;
+    //----------------------------------------------------
+    @Column(name = "usr_id", insertable = false, updatable = false)
+    private Long userId;
+    //----------------------------------------------------
+    @Column(name = "ertekeles_id", updatable = false, insertable = false)
+    private Long valuationId;
+
     public Long getId() {
         return id;
     }
@@ -41,8 +51,6 @@ public abstract class AbstractValuationRequest
         this.id = id;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "ertekeles_id", nullable = false)
     public Valuation getValuation() {
         return valuation;
     }
@@ -51,7 +59,6 @@ public abstract class AbstractValuationRequest
         this.valuation = valuation;
     }
 
-    @Column(name = "ertekeles_id", updatable = false, insertable = false)
     public Long getValuationId() {
         return valuationId;
     }
@@ -60,8 +67,6 @@ public abstract class AbstractValuationRequest
         this.valuationId = valuationId;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usr_id")
     @Override
     public User getUser() {
         return user;
@@ -82,7 +87,6 @@ public abstract class AbstractValuationRequest
      *
      * @return felhasználó azonosítója, akié a belépőkérelem.
      */
-    @Column(name = "usr_id", insertable = false, updatable = false)
     @Override
     public Long getUserId() {
         return userId;

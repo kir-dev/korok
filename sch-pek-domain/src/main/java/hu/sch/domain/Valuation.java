@@ -79,27 +79,83 @@ public class Valuation implements Serializable {
             + "(SELECT count(*) as numKB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'KB\') as givenKB, "
             + "(SELECT count(*) as numAB FROM EntrantRequest as e WHERE e.valuation = v AND e.entrantType=\'AB\') as givenAB"
             + ") FROM Valuation v ";
+    //----------------------------------------------------
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
+    //----------------------------------------------------
+    @OneToOne
+    @JoinColumn(name = "next_version")
     protected Valuation nextVersion;
+    //----------------------------------------------------
+    @ManyToOne
+    @JoinColumn(name = "grp_id")
     protected Group group;
+    //----------------------------------------------------
+    @Column(name = "grp_id", insertable = false, updatable = false)
     protected Long groupId;
+    //----------------------------------------------------
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "felado_usr_id")
     protected User sender;
+    //----------------------------------------------------
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "feladas")
     protected Date sended;
+    //----------------------------------------------------
+    @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096, nullable = false)
+    @Basic(fetch = FetchType.LAZY)
     protected String valuationText;
+    //----------------------------------------------------
+    @Column(name = "pontozasi_elvek", columnDefinition = "text", nullable = false)
     protected String principle;
+    //----------------------------------------------------
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pontigeny_statusz")
     protected ValuationStatus pointStatus;
+    //----------------------------------------------------
+    @Enumerated(EnumType.STRING)
+    @Column(name = "belepoigeny_statusz")
     protected ValuationStatus entrantStatus;
+    //----------------------------------------------------
+    @Embedded
     protected Semester semester;
+    //----------------------------------------------------
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "utolso_modositas")
     protected Date lastModified;
+    //----------------------------------------------------
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "elbiralo_usr_id")
     protected User consideredBy;
+    //----------------------------------------------------
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "utolso_elbiralas")
     protected Date lastConsidered;
+    //----------------------------------------------------
+    @Column(name = "explanation", columnDefinition = "text", nullable = false)
     protected String explanation;
+    //----------------------------------------------------
+    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
     protected List<EntrantRequest> entrantRequests;
+    //----------------------------------------------------
+    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
     protected List<PointRequest> pointRequests;
+    //----------------------------------------------------
+    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     protected Set<EntrantRequest> entrantRequestsAsSet;
+    //----------------------------------------------------
+    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     protected Set<PointRequest> pointRequestsAsSet;
+    //----------------------------------------------------
+    @Transient
     protected Float averagePoint;
+    //----------------------------------------------------
+    @Version
+    @Column(name = "optlock")
     protected int optLock;
+    //----------------------------------------------------
+    @Column(name = "is_considered")
     protected boolean considered;
 
     @PrePersist
@@ -118,8 +174,6 @@ public class Valuation implements Serializable {
         }
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -128,8 +182,6 @@ public class Valuation implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "grp_id")
     public Group getGroup() {
         return group;
     }
@@ -138,7 +190,6 @@ public class Valuation implements Serializable {
         this.group = group;
     }
 
-    @Column(name = "grp_id", insertable = false, updatable = false)
     public Long getGroupId() {
         return groupId;
     }
@@ -147,8 +198,6 @@ public class Valuation implements Serializable {
         this.groupId = groupId;
     }
 
-    @OneToOne
-    @JoinColumn(name = "next_version")
     public Valuation getNextVersion() {
         return nextVersion;
     }
@@ -157,8 +206,6 @@ public class Valuation implements Serializable {
         this.nextVersion = nextVersion;
     }
 
-    @Version
-    @Column(name = "optlock")
     public int getOptLock() {
         return optLock;
     }
@@ -167,7 +214,6 @@ public class Valuation implements Serializable {
         this.optLock = optLock;
     }
 
-    @Column(name = "is_considered")
     public boolean isConsidered() {
         return considered;
     }
@@ -176,8 +222,6 @@ public class Valuation implements Serializable {
         this.considered = considered;
     }
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "felado_usr_id")
     public User getSender() {
         return sender;
     }
@@ -186,7 +230,6 @@ public class Valuation implements Serializable {
         this.sender = sender;
     }
 
-    @Embedded
     public Semester getSemester() {
         return semester;
     }
@@ -195,8 +238,6 @@ public class Valuation implements Serializable {
         this.semester = semester;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "utolso_elbiralas")
     public Date getLastConsidered() {
         return lastConsidered;
     }
@@ -205,8 +246,6 @@ public class Valuation implements Serializable {
         this.lastConsidered = lastConsidered;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "feladas")
     public Date getSended() {
         return sended;
     }
@@ -215,8 +254,6 @@ public class Valuation implements Serializable {
         this.sended = sended;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "utolso_modositas")
     public Date getLastModified() {
         return lastModified;
     }
@@ -225,8 +262,6 @@ public class Valuation implements Serializable {
         this.lastModified = lastModified;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "belepoigeny_statusz")
     public ValuationStatus getEntrantStatus() {
         return entrantStatus;
     }
@@ -235,8 +270,6 @@ public class Valuation implements Serializable {
         this.entrantStatus = entrantStatus;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "pontigeny_statusz")
     public ValuationStatus getPointStatus() {
         return pointStatus;
     }
@@ -245,8 +278,14 @@ public class Valuation implements Serializable {
         this.pointStatus = pointStatus;
     }
 
+    /**
+     * Get entrant requests as list.
+     * You should use {@link #getEntrantRequestsAsSet() } instead
+     *
+     * @return
+     * @deprecated
+     */
     @Deprecated
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
     public List<EntrantRequest> getEntrantRequests() {
         return entrantRequests;
     }
@@ -255,7 +294,6 @@ public class Valuation implements Serializable {
         this.entrantRequests = entrantRequests;
     }
 
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     public Set<EntrantRequest> getEntrantRequestsAsSet() {
         return entrantRequestsAsSet;
     }
@@ -264,8 +302,14 @@ public class Valuation implements Serializable {
         this.entrantRequestsAsSet = entrantRequestsAsSet;
     }
 
+    /**
+     * Get point requests as list.
+     * You should use {@link #getPointRequestsAsSet() } instead
+     *
+     * @return
+     * @deprecated
+     */
     @Deprecated
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
     public List<PointRequest> getPointRequests() {
         return pointRequests;
     }
@@ -274,7 +318,6 @@ public class Valuation implements Serializable {
         this.pointRequests = pointRequests;
     }
 
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     public Set<PointRequest> getPointRequestsAsSet() {
         return pointRequestsAsSet;
     }
@@ -283,8 +326,6 @@ public class Valuation implements Serializable {
         this.pointRequestsAsSet = pointRequestsAsSet;
     }
 
-    @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096, nullable = false)
-    @Basic(fetch = FetchType.LAZY)
     public String getValuationText() {
         return valuationText;
     }
@@ -293,7 +334,6 @@ public class Valuation implements Serializable {
         this.valuationText = valuationText;
     }
 
-    @Column(name = "explanation", columnDefinition = "text", nullable = false)
     public String getExplanation() {
         return explanation;
     }
@@ -302,7 +342,6 @@ public class Valuation implements Serializable {
         this.explanation = explanation;
     }
 
-    @Column(name = "pontozasi_elvek", columnDefinition = "text", nullable = false)
     public String getPrinciple() {
         return principle;
     }
@@ -311,8 +350,6 @@ public class Valuation implements Serializable {
         this.principle = principle;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "elbiralo_usr_id")
     public User getConsideredBy() {
         return consideredBy;
     }
@@ -321,7 +358,6 @@ public class Valuation implements Serializable {
         this.consideredBy = consideredBy;
     }
 
-    @Transient
     public Float getAveragePoint() {
         return averagePoint;
     }
@@ -370,7 +406,7 @@ public class Valuation implements Serializable {
      */
     public void copyPointRequests(Valuation v) {
         Set<PointRequest> pReqs = getPointRequestsAsSet();
-        Set<PointRequest> result = new HashSet<PointRequest>(pReqs.size());
+        Set<PointRequest> result = new HashSet<>(pReqs.size());
 
         for (PointRequest pr : pReqs) {
             result.add(pr.copy(v));
@@ -387,7 +423,7 @@ public class Valuation implements Serializable {
      */
     public void copyEntrantRequests(Valuation newVersion) {
         Set<EntrantRequest> eReqs = getEntrantRequestsAsSet();
-        Set<EntrantRequest> result = new HashSet<EntrantRequest>(eReqs.size());
+        Set<EntrantRequest> result = new HashSet<>(eReqs.size());
 
         for (EntrantRequest er : eReqs) {
             result.add(er.copy(newVersion));
@@ -396,7 +432,6 @@ public class Valuation implements Serializable {
         newVersion.setEntrantRequestsAsSet(result);
     }
 
-    @Transient
     public boolean isObsolete() {
         return nextVersion != null;
     }

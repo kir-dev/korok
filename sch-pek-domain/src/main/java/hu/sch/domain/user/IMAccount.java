@@ -20,8 +20,16 @@ import javax.persistence.Table;
 @SequenceGenerator(name = "im_accounts_seq", sequenceName = "im_accounts_seq")
 public class IMAccount implements Serializable {
 
+    @Id
+    @GeneratedValue(generator = "im_accounts_seq")
+    @Column(name = "id")
     private Long id;
+    //--------------------------------
+    @Column(name = "protocol")
+    @Enumerated(EnumType.STRING)
     private IMProtocol protocol;
+    //--------------------------------
+    @Column(name = "screen_name")
     private String screenName;
 
     public IMAccount() {
@@ -32,9 +40,6 @@ public class IMAccount implements Serializable {
         this.screenName = presenceID;
     }
 
-    @Id
-    @GeneratedValue(generator = "im_accounts_seq")
-    @Column(name = "id")
     public Long getId() {
         return id;
     }
@@ -43,8 +48,6 @@ public class IMAccount implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "protocol")
-    @Enumerated(EnumType.STRING)
     public IMProtocol getProtocol() {
         return protocol;
     }
@@ -53,7 +56,6 @@ public class IMAccount implements Serializable {
         this.protocol = protocol;
     }
 
-    @Column(name = "screen_name")
     public String getScreenName() {
         return screenName;
     }

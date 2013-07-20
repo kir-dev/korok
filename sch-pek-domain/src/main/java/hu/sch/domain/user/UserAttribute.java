@@ -21,6 +21,7 @@ public class UserAttribute implements Serializable {
      * NOTE: DO NOT RENAME IT. Hibernate uses its name for the mapping, because
      * it is an embeddable class.
      */
+    @Transient
     private String attr_name;
     /**
      * Visibility of the attribute.
@@ -35,7 +36,6 @@ public class UserAttribute implements Serializable {
         this.visible = visible;
     }
 
-    @Transient
     public UserAttributeName getAttributeName() {
         return UserAttributeName.valueOf(attr_name);
     }

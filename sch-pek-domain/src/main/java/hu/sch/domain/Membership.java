@@ -58,45 +58,45 @@ public class Membership implements MembershipTableEntry {
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
     public static final String getMembershipForUserAndGroup = "getMembershipForUserAndGroup";
 
-    /*
-    id               | integer | not null default nextval('grp_members_seq'::regclass)
-    grp_id           | integer |
-    usr_id           | integer |
-    membership_start | date    | default now()
-    membership_end   | date    |
-     */
-    /**
-     * Egy csoporttagság egyéni azonosítója
-     */
-    private Long id;
-    /**
-     * Melyik csoport tagja
-     */
-    private Group group;
-    private Long groupId;
-    /**
-     * Ki a tagja a csoportnak
-     */
-    private User user;
-    private Long userId;
-    /**
-     * A csoporttagság idejének kezdete - kötelező
-     */
-    private Date start;
-    /**
-     * A csoporttagság vége - nem kötelező
-     */
-    private Date end;
-    private DateInterval interval;
-    /**
-     * A csoportban betöltött posztok
-     */
-    private List<Post> posts;
-    private String postsAsString;
-
     @Id
     @GeneratedValue(generator = "grp_members_seq")
     @Column(name = "id")
+    private Long id;
+    //----------------------------------------------------
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "grp_id", insertable = true, updatable = true)
+    private Group group;
+    //----------------------------------------------------
+    @Column(name = "grp_id", insertable = false, updatable = false)
+    private Long groupId;
+    //----------------------------------------------------
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "usr_id", insertable = true, updatable = true)
+    private User user;
+    //----------------------------------------------------
+    @Column(name = "usr_id", insertable = false, updatable = false)
+    private Long userId;
+    //----------------------------------------------------
+    @Column(name = "membership_start", nullable = false, columnDefinition = "date")
+    @Temporal(TemporalType.DATE)
+    private Date start;
+    //----------------------------------------------------
+    @Column(name = "membership_end", nullable = true, columnDefinition = "date")
+    @Temporal(TemporalType.DATE)
+    private Date end;
+    //----------------------------------------------------
+    @Transient
+    private DateInterval interval;
+    //----------------------------------------------------
+    @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER)
+    private List<Post> posts;
+    //----------------------------------------------------
+    @Transient
+    private String postsAsString;
+
+    /**
+     * Egy csoporttagság egyedi azonosítója
+     */
     public Long getId() {
         return id;
     }
@@ -105,8 +105,9 @@ public class Membership implements MembershipTableEntry {
         this.id = id;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "grp_id", insertable = true, updatable = true)
+    /**
+     * Melyik csoport tagja
+     */
     public Group getGroup() {
         return group;
     }
@@ -115,7 +116,6 @@ public class Membership implements MembershipTableEntry {
         this.group = group;
     }
 
-    @Column(name = "grp_id", insertable = false, updatable = false)
     public Long getGroupId() {
         return groupId;
     }
@@ -124,8 +124,9 @@ public class Membership implements MembershipTableEntry {
         this.groupId = groupId;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "usr_id", insertable = true, updatable = true)
+    /**
+     * Ki a tagja a csoportnak
+     */
     public User getUser() {
         return user;
     }
@@ -134,7 +135,6 @@ public class Membership implements MembershipTableEntry {
         this.user = user;
     }
 
-    @Column(name = "usr_id", insertable = false, updatable = false)
     public Long getUserId() {
         return userId;
     }
@@ -143,8 +143,9 @@ public class Membership implements MembershipTableEntry {
         this.userId = userId;
     }
 
-    @Column(name = "membership_start", nullable = false, columnDefinition = "date")
-    @Temporal(TemporalType.DATE)
+    /**
+     * A csoporttagság idejének kezdete - kötelező
+     */
     public Date getStart() {
         return start;
     }
@@ -153,8 +154,9 @@ public class Membership implements MembershipTableEntry {
         this.start = start;
     }
 
-    @Column(name = "membership_end", nullable = true, columnDefinition = "date")
-    @Temporal(TemporalType.DATE)
+    /**
+     * A csoporttagság vége - nem kötelező
+     */
     public Date getEnd() {
         return end;
     }
@@ -163,7 +165,6 @@ public class Membership implements MembershipTableEntry {
         this.end = end;
     }
 
-    @Transient
     public DateInterval getInterval() {
         if (interval == null) {
             interval = new DateInterval(start, end);
@@ -171,7 +172,9 @@ public class Membership implements MembershipTableEntry {
         return interval;
     }
 
-    @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER)
+    /**
+     * A csoportban betöltött posztok
+     */
     public List<Post> getPosts() {
         return posts;
     }
@@ -210,13 +213,11 @@ public class Membership implements MembershipTableEntry {
     /**
      * Ez csak azért kell, hogy általánosítani lehessen a MembershipTable logikáját.
      */
-    @Transient
     @Override
     public Membership getMembership() {
         return this;
     }
 
-    @Transient
     public String getPostsAsString() {
         if (postsAsString == null) {
             StringBuilder sb = new StringBuilder(posts.size() * 16 + 3);

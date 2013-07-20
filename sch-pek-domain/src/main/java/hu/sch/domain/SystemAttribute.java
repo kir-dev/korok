@@ -26,8 +26,10 @@ public class SystemAttribute implements Serializable {
     @Id
     @GeneratedValue
     Long attributeId;
+    //----------------------------------------------------
     @Column(nullable = false)
     String attributeName;
+    //----------------------------------------------------
     @Column(nullable = false)
     String attributeValue;
 

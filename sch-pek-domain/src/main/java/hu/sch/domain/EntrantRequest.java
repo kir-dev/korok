@@ -17,7 +17,12 @@ import javax.persistence.Transient;
 @Table(name = "belepoigenyles")
 public class EntrantRequest extends AbstractValuationRequest {
 
+    //----------------------------------------------------
+    @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096)
     private String valuationText;
+    //----------------------------------------------------
+    @Enumerated(EnumType.STRING)
+    @Column(name = "belepo_tipus")
     private EntrantType entrantType;
 
     public EntrantRequest() {
@@ -29,8 +34,6 @@ public class EntrantRequest extends AbstractValuationRequest {
         setUser(user);
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "belepo_tipus")
     public EntrantType getEntrantType() {
         return entrantType;
     }
@@ -39,7 +42,6 @@ public class EntrantRequest extends AbstractValuationRequest {
         this.entrantType = entrantType;
     }
 
-    @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096)
     public String getValuationText() {
         return valuationText;
     }
@@ -74,7 +76,6 @@ public class EntrantRequest extends AbstractValuationRequest {
      *
      * @return
      */
-    @Transient
     public boolean isValid() {
         return !((entrantType == EntrantType.AB || entrantType == EntrantType.KB) && valuationText == null);
     }

@@ -36,19 +36,22 @@ public class PostType implements Serializable {
     public static final String searchForPostType = "searchForCertainPostType";
     public static final String getByNameAndGroup = "getByNameAndGroup";
     public static final String KORVEZETO = "körvezető";
-    /*
-    pttip_id   | integer       | not null default nextval('poszttipus_seq'::regclass)
-    grp_id     | integer       |
-    pttip_name | character(30) | not null
-     */
-    Long id;
-    Group group;
-    String postName;
-    Boolean delegatedPost;
-
+    //----------------------------------------------------
     @Id
     @GeneratedValue(generator = "poszttipus_seq")
     @Column(name = "pttip_id")
+    Long id;
+    //----------------------------------------------------
+    @ManyToOne
+    @JoinColumn(name = "grp_id", insertable = true, updatable = true)
+    Group group;
+    //----------------------------------------------------
+    @Column(name = "pttip_name", length = 30)
+    String postName;
+    //----------------------------------------------------
+    @Column(name = "delegated_post")
+    Boolean delegatedPost;
+
     public Long getId() {
         return id;
     }
@@ -57,8 +60,6 @@ public class PostType implements Serializable {
         this.id = id;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "grp_id", insertable = true, updatable = true)
     public Group getGroup() {
         return group;
     }
@@ -67,7 +68,6 @@ public class PostType implements Serializable {
         this.group = group;
     }
 
-    @Column(name = "pttip_name", length = 30)
     public String getPostName() {
         return postName;
     }
@@ -76,7 +76,6 @@ public class PostType implements Serializable {
         this.postName = postName;
     }
 
-    @Column(name = "delegated_post")
     public Boolean getDelegatedPost() {
         return delegatedPost;
     }

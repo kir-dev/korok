@@ -16,6 +16,7 @@ public class Semester implements Serializable, Comparable<Semester> {
      * Semester azonosító, ÉV1ÉV2FÉLÉV formában
      * Pl. 200720081 -> 2007/2008 tanév 1. (őszi) féléve
      */
+    @Column(name = "semester", length = 9, columnDefinition = "character(9)", nullable = false)
     protected String id;
 
     public Semester() {
@@ -35,7 +36,6 @@ public class Semester implements Serializable, Comparable<Semester> {
         setId(firstYear.toString() + secondYear.toString() + (isAutumn ? "1" : "2"));
     }
 
-    @Transient
     public Semester getPrevious() {
         Semester ret = new Semester();
 
@@ -53,7 +53,6 @@ public class Semester implements Serializable, Comparable<Semester> {
         return ret;
     }
 
-    @Transient
     public Semester getNext() {
         Semester ret = new Semester();
 
@@ -71,7 +70,6 @@ public class Semester implements Serializable, Comparable<Semester> {
         return ret;
     }
 
-    @Column(name = "semester", length = 9, columnDefinition = "character(9)", nullable = false)
     public String getId() {
         return id;
     }
@@ -80,7 +78,6 @@ public class Semester implements Serializable, Comparable<Semester> {
         this.id = id;
     }
 
-    @Transient
     public boolean isAutumn() {
         Long sem = Long.parseLong(id);
         return Long.lowestOneBit(sem) == 1;
@@ -90,7 +87,6 @@ public class Semester implements Serializable, Comparable<Semester> {
         setId(getFirstYear().toString() + getSecondYear().toString() + (isAutumn ? "1" : "2"));
     }
 
-    @Transient
     public Integer getFirstYear() {
         return Integer.parseInt(id.substring(0, 4));
     }
@@ -103,7 +99,6 @@ public class Semester implements Serializable, Comparable<Semester> {
         setId(firstYear.toString() + getSecondYear().toString() + (isAutumn() ? "1" : "2"));
     }
 
-    @Transient
     public Integer getSecondYear() {
         return Integer.parseInt(id.substring(4, 8));
     }
@@ -116,7 +111,6 @@ public class Semester implements Serializable, Comparable<Semester> {
         setId(getFirstYear() + secondYear.toString() + (isAutumn() ? "1" : "2"));
     }
 
-    @Transient
     public boolean isValid() {
         int firstYear = 0;
         int secondYear = 0;

@@ -35,17 +35,35 @@ import javax.persistence.TemporalType;
 public class ValuationMessage implements Serializable {
 
     public static final String listMessages = "listMessages";
+    //
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
+    //----------------------------------------------------
+    @ManyToOne
+    @JoinColumn(name = "group_id")
     protected Group group;
+    //----------------------------------------------------
+    @Column(name = "group_id", insertable = false, updatable = false)
     protected Long groupId;
+    //----------------------------------------------------
+    @Embedded
     protected Semester semester;
+    //----------------------------------------------------
+    @ManyToOne
+    @JoinColumn(name = "felado_usr_id")
     protected User sender;
-    protected Date date;
-    protected String message;
-    protected boolean fromSystem;
-
+    //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "feladas_ido")
+    protected Date date;
+    //----------------------------------------------------
+    @Column(name = "uzenet", columnDefinition = "text", length = 4096)
+    protected String message;
+    //----------------------------------------------------
+    @Column(name = "from_system")
+    protected boolean fromSystem;
+
     public Date getDate() {
         return date;
     }
@@ -54,8 +72,6 @@ public class ValuationMessage implements Serializable {
         this.date = date;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
     public Group getGroup() {
         return group;
     }
@@ -67,7 +83,6 @@ public class ValuationMessage implements Serializable {
         }
     }
 
-    @Column(name = "group_id", insertable = false, updatable = false)
     public Long getGroupId() {
         return groupId;
     }
@@ -76,7 +91,6 @@ public class ValuationMessage implements Serializable {
         this.groupId = groupId;
     }
 
-    @Embedded
     public Semester getSemester() {
         return semester;
     }
@@ -85,8 +99,6 @@ public class ValuationMessage implements Serializable {
         this.semester = semester;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "felado_usr_id")
     public User getSender() {
         return sender;
     }
@@ -95,8 +107,6 @@ public class ValuationMessage implements Serializable {
         this.sender = sender;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -105,7 +115,6 @@ public class ValuationMessage implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "uzenet", columnDefinition = "text", length = 4096)
     public String getMessage() {
         return message;
     }
@@ -114,7 +123,6 @@ public class ValuationMessage implements Serializable {
         this.message = uzenet;
     }
 
-    @Column(name = "from_system")
     public boolean isFromSystem() {
         return fromSystem;
     }

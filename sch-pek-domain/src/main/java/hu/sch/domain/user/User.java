@@ -49,63 +49,119 @@ public class User implements Serializable, Comparable<User> {
     public static final String findUser = "findUser";
     public static final String findUsersForGroupAndPost = "getMembersForGroupAndPost";
     public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
-    /*
-     usr_id                      | bigint                 | not null default nextval('users_usr_id_seq'::regclass)
-     usr_email                   | character varying(64)  |
-     usr_neptun                  | character(6)           |
-     usr_firstname               | text                   | not null
-     usr_lastname                | text                   | not null
-     usr_nickname                | text                   |
-     usr_svie_state              | character varying(255) | not null default 'NEMTAG'::character varying
-     usr_svie_member_type        | character varying(255) | not null default 'NEMTAG'::character varying
-     usr_svie_primary_membership | integer                |
-     usr_delegated               | boolean                | not null default false
-     usr_show_recommended_photo  | boolean                | not null default false
-     usr_screen_name             | character varying(50)  | not null
-     usr_date_of_birth           | date                   |
-     usr_gender                  | character varying(50)  | not null
-     usr_student_status          | character varying(50)  | not null
-     usr_mother_name             | character varying(100) |
-     usr_photo_path              | character varying(255) |
-     usr_webpage                 | character varying(255) |
-     usr_cell_phone              | character varying(15)  |
-     usr_home_address            | character varying(255) |
-     usr_est_grad                | character(9)           |
-     usr_dormitory               | character varying(50)  |
-     usr_room                    | character varying(10)  |
-     usr_confirm                 | character(64)          |
-     */
+    //----------------------------------------------------
+    @Id
+    @GeneratedValue(generator = "users_seq")
+    @Column(name = "usr_id", nullable = false)
     private Long id;
+    //----------------------------------------------------
+    @NotNull
+    @Size(max = 50)
+    @Column(name = "usr_screen_name", nullable = false, length = 50)
     private String screenName;
+    //----------------------------------------------------
     @XmlElement
+    @Column(name = "usr_email", length = 64, columnDefinition = "varchar(64)")
     private String emailAddress;
+    //----------------------------------------------------
+    @Size(max = 6, min = 6)
+    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6,
+            nullable = true, updatable = false)
     private String neptunCode;
+    //----------------------------------------------------
     @XmlElement
+    @NotNull
+    @Column(name = "usr_firstname", nullable = false, columnDefinition = "text")
     private String firstName;
+    //----------------------------------------------------
     @XmlElement
+    @NotNull
+    @Column(name = "usr_lastname", nullable = false, columnDefinition = "text")
     private String lastName;
+    //----------------------------------------------------
     @XmlElement
+    @Column(name = "usr_nickname", nullable = true, columnDefinition = "text")
     private String nickName;
+    //----------------------------------------------------
+    @Column(name = "usr_date_of_birth")
+    @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
+    //----------------------------------------------------
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usr_gender", nullable = false)
     private Gender gender;
+    //----------------------------------------------------
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usr_student_status", nullable = false)
     private StudentStatus studentStatus;
+    //----------------------------------------------------
+    @Column(name = "usr_mother_name", length = 100)
     private String mothersName;
+    //----------------------------------------------------
+    @Column(name = "usr_photo_path")
     private String photoPath;
+    //----------------------------------------------------
+    @Column(name = "usr_webpage")
     private String webpage;
+    //----------------------------------------------------
+    @Size(max = 15)
+    @Column(name = "usr_cell_phone")
     private String cellPhone;
+    //----------------------------------------------------
+    @Column(name = "usr_home_address")
     private String homeAddress;
+    //----------------------------------------------------
+    @Size(max = 9, min = 9)
+    @Column(name = "usr_est_grad")
     private String estimatedGraduationYear;
+    //----------------------------------------------------
+    @Column(name = "usr_dormitory")
     private String dormitory;
+    //----------------------------------------------------
+    @Column(name = "usr_room")
     private String room;
+    //----------------------------------------------------
+    @Column(name = "usr_confirm")
     private String confirmationCode;
+    //----------------------------------------------------
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usr_svie_state", nullable = false)
     private SvieStatus svieStatus;
+    //----------------------------------------------------
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "usr_svie_member_type", nullable = false)
     private SvieMembershipType svieMembershipType;
+    //----------------------------------------------------
+    @ManyToOne
+    @JoinColumn(name = "usr_svie_primary_membership", insertable = true, updatable = true)
     private Membership sviePrimaryMembership;
+    //----------------------------------------------------
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Membership> memberships;
+    //----------------------------------------------------
+    @NotNull
+    @Column(name = "usr_delegated", nullable = false, columnDefinition = "boolean default false")
     private boolean delegated;
+    //----------------------------------------------------
+    @Transient
     private List<Group> groups;
+    //----------------------------------------------------
+    @NotNull
+    @Column(name = "usr_show_recommended_photo", nullable = false, columnDefinition = "boolean default false")
     private boolean showRecommendedPhoto;
+    //----------------------------------------------------
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "usr_id")
     private List<IMAccount> imAccounts;
+    //----------------------------------------------------
+    @ElementCollection
+    @CollectionTable(name = "usr_private_attrs", joinColumns = {
+        @JoinColumn(name = "usr_id")})
+    @OrderColumn(name = "attr_name")
     private List<UserAttribute> privateAttributes;
 
     public User() {
@@ -120,9 +176,6 @@ public class User implements Serializable, Comparable<User> {
      *
      * @return A user virId-je
      */
-    @Id
-    @GeneratedValue(generator = "users_seq")
-    @Column(name = "usr_id", nullable = false)
     public Long getId() {
         return id;
     }
@@ -134,7 +187,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * E-mail cím
      */
-    @Column(name = "usr_email", length = 64, columnDefinition = "varchar(64)")
     public String getEmailAddress() {
         return emailAddress;
     }
@@ -146,9 +198,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Neptun-kód
      */
-    @Size(max = 6, min = 6)
-    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6,
-            nullable = true, updatable = false)
     public String getNeptunCode() {
         return neptunCode;
     }
@@ -160,8 +209,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Keresztnév
      */
-    @NotNull
-    @Column(name = "usr_firstname", nullable = false, columnDefinition = "text")
     public String getFirstName() {
         return firstName;
     }
@@ -173,8 +220,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Vezetéknév
      */
-    @NotNull
-    @Column(name = "usr_lastname", nullable = false, columnDefinition = "text")
     public String getLastName() {
         return lastName;
     }
@@ -186,7 +231,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Becenév
      */
-    @Column(name = "usr_nickname", nullable = true, columnDefinition = "text")
     public String getNickName() {
         return nickName;
     }
@@ -198,9 +242,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * SVIE tagság státusza
      */
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "usr_svie_state", nullable = false)
     public SvieStatus getSvieStatus() {
         return svieStatus;
     }
@@ -253,9 +294,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * SVIE tagság típusa
      */
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "usr_svie_member_type", nullable = false)
     public SvieMembershipType getSvieMembershipType() {
         return svieMembershipType;
     }
@@ -267,8 +305,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Az illető küldött-e az elsődleges körében
      */
-    @NotNull
-    @Column(name = "usr_delegated", nullable = false, columnDefinition = "boolean default false")
     public Boolean getDelegated() {
         return delegated;
     }
@@ -280,8 +316,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Megmutassuk-e neki, hogy van egy fotó, amit javaslunk
      */
-    @NotNull
-    @Column(name = "usr_show_recommended_photo", nullable = false, columnDefinition = "boolean default false")
     public Boolean isShowRecommendedPhoto() {
         return showRecommendedPhoto;
     }
@@ -295,8 +329,6 @@ public class User implements Serializable, Comparable<User> {
      *
      * Rendes tagsága kell legyen a körben.
      */
-    @ManyToOne
-    @JoinColumn(name = "usr_svie_primary_membership", insertable = true, updatable = true)
     public Membership getSviePrimaryMembership() {
         return sviePrimaryMembership;
     }
@@ -310,7 +342,6 @@ public class User implements Serializable, Comparable<User> {
      *
      * TODO: rendes fetch legyen?
      */
-    @Transient
     public List<Group> getGroups() {
         if (groups == null) {
             loadGroups();
@@ -321,7 +352,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Csoporttagságok - tagsági idővel kiegészítve
      */
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     public List<Membership> getMemberships() {
         if (memberships == null) {
             memberships = new ArrayList<>();
@@ -336,11 +366,9 @@ public class User implements Serializable, Comparable<User> {
     /**
      * IM elérhetőségek.
      */
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "usr_id")
     public List<IMAccount> getImAccounts() {
         if (imAccounts == null) {
-            imAccounts = new ArrayList<IMAccount>();
+            imAccounts = new ArrayList<>();
         }
         return imAccounts;
     }
@@ -349,7 +377,6 @@ public class User implements Serializable, Comparable<User> {
         this.imAccounts = imAccounts;
     }
 
-    @Transient
     public String getFullName() {
         return String.format("%s %s", getLastName(), getFirstName());
     }
@@ -374,9 +401,6 @@ public class User implements Serializable, Comparable<User> {
      *
      * Ezzel jelentkezik be. OpenDJ-ben 'uid' volt az attribútum neve.
      */
-    @NotNull
-    @Size(max = 50)
-    @Column(name = "usr_screen_name", nullable = false, length = 50)
     public String getScreenName() {
         return screenName;
     }
@@ -388,8 +412,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Születési dátum.
      */
-    @Column(name = "usr_date_of_birth")
-    @Temporal(TemporalType.DATE)
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
@@ -401,9 +423,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * A felhasználó neme.
      */
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "usr_gender", nullable = false)
     public Gender getGender() {
         return gender;
     }
@@ -415,9 +434,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Hallgatói státusz.
      */
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "usr_student_status", nullable = false)
     public StudentStatus getStudentStatus() {
         return studentStatus;
     }
@@ -429,7 +445,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Anyaja neve.
      */
-    @Column(name = "usr_mother_name", length = 100)
     public String getMothersName() {
         return mothersName;
     }
@@ -441,7 +456,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * A profilkép elérési útja.
      */
-    @Column(name = "usr_photo_path")
     public String getPhotoPath() {
         return photoPath;
     }
@@ -453,7 +467,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * A hallgató weboldala.
      */
-    @Column(name = "usr_webpage")
     public String getWebpage() {
         return webpage;
     }
@@ -465,8 +478,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Mobil szám.
      */
-    @Size(max = 15)
-    @Column(name = "usr_cell_phone")
     public String getCellPhone() {
         return cellPhone;
     }
@@ -478,7 +489,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Otthoni cím.
      */
-    @Column(name = "usr_home_address")
     public String getHomeAddress() {
         return homeAddress;
     }
@@ -492,8 +502,6 @@ public class User implements Serializable, Comparable<User> {
      *
      * Formátum: YYYYYYYY[12] Például: 201220132 a 2012/13-as év második féléve
      */
-    @Size(max = 9, min = 9)
-    @Column(name = "usr_est_grad")
     public String getEstimatedGraduationYear() {
         return estimatedGraduationYear;
     }
@@ -505,7 +513,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Kollégium neve.
      */
-    @Column(name = "usr_dormitory")
     public String getDormitory() {
         return dormitory;
     }
@@ -519,7 +526,6 @@ public class User implements Serializable, Comparable<User> {
      *
      * String, hogy az esetlegesen betűt is tartamlazó szobákat.
      */
-    @Column(name = "usr_room")
     public String getRoom() {
         return room;
     }
@@ -531,7 +537,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Regisztrációhoz szükéges megerősítő kód.
      */
-    @Column(name = "usr_confirm")
     public String getConfirmationCode() {
         return confirmationCode;
     }
@@ -546,10 +551,6 @@ public class User implements Serializable, Comparable<User> {
      * Egy attribútum csak akkor látható, ha benne van a kollekcióban és a
      * 'visibile' mezője true értékű.
      */
-    @ElementCollection
-    @CollectionTable(name = "usr_private_attrs", joinColumns = {
-        @JoinColumn(name = "usr_id")})
-    @OrderColumn(name = "attr_name")
     public List<UserAttribute> getPrivateAttributes() {
         if (privateAttributes == null) {
             privateAttributes = new ArrayList<>();
@@ -585,7 +586,6 @@ public class User implements Serializable, Comparable<User> {
      *
      * @return az elsődleges kör neve, ha van, különben egy üres string.
      */
-    @Transient
     public String getSviePrimaryMembershipText() {
         if (sviePrimaryMembership != null) {
             return sviePrimaryMembership.getGroup().getName();
@@ -646,7 +646,7 @@ public class User implements Serializable, Comparable<User> {
     }
 
     private void loadGroups() {
-        groups = new ArrayList<Group>();
+        groups = new ArrayList<>();
         if (memberships != null) {
             for (Membership m : memberships) {
                 groups.add(m.getGroup());
