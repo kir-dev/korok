@@ -10,7 +10,7 @@ import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;

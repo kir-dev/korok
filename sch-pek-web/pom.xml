@@ -13,9 +13,6 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**</include>
@@ -25,21 +22,6 @@
                 </excludes>
             </resource>
         </resources>
-
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-            <testResource>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-        </testResources>
 
         <plugins>
             <plugin>
@@ -60,21 +42,15 @@
                             <filtering>true</filtering>
                             <includes>
                                 <include>WEB-INF/web.xml</include>
-                                <include>WEB-INF/sun-web.xml</include>
                             </includes>
                         </resource>
                     </webResources>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 
     <dependencies>
-        <!-- Modul függőségek -->
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-domain</artifactId>
@@ -83,67 +59,45 @@
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-ejb-services</artifactId>
         </dependency>
-        <!-- Wicket függőségek -->
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-core</artifactId>
-            <version>${wicket.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-datetime</artifactId>
-            <version>${wicket.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-extensions</artifactId>
-            <version>${wicket.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-ioc</artifactId>
-            <version>${wicket.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>wicketstuff-javaee-inject</artifactId>
-            <version>${wicketstuff.version}</version>
         </dependency>
-        <!-- TinyMCE függőségek -->
         <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>wicketstuff-tinymce</artifactId>
-            <version>${wicketstuff.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-        <!-- PDF generáláshoz kell -->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
-            <version>5.0.6</version>
         </dependency>
-        <!-- Profilba kódgeneráláshoz -->
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Teszt függőségek -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
         </dependency>
     </dependencies>
-    <properties>
-        <wicket.version>6.8.0</wicket.version>
-        <wicketstuff.version>6.8.0</wicketstuff.version>
-    </properties>
 </project>
