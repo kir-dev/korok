@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.sch.domain.Semester;
 import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.services.ValuationManagerLocal;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.services.exceptions.UserNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.ManagedBean;
@@ -64,9 +64,9 @@ public class Entrants {
         final List<ApprovedEntrant> entrants = new LinkedList<ApprovedEntrant>();
         try {
             entrants.addAll(valuationManager.getApprovedEntrants(neptun, new Semester(semesterId)));
-        } catch (PersonNotFoundException ex) {
+        } catch (UserNotFoundException ex) {
             final String logMsg =
-                    new StringBuilder("Person not found with neptun code=").append(neptun).toString();
+                    new StringBuilder("User not found with neptun code=").append(neptun).toString();
 
             LOGGER.info(logMsg, ex);
             triggerErrorResponse(Response.Status.NOT_FOUND, logMsg);

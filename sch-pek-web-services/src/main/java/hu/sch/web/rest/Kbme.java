@@ -4,6 +4,7 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
 import hu.sch.domain.user.User;
 import hu.sch.domain.rest.PointInfo;
+import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Kbme {
 
     private static final Logger logger = LoggerFactory.getLogger(Kbme.class);
     @EJB
-    UserManagerLocal userManager;
+    GroupManagerLocal groupManager;
     @EJB
     ValuationManagerLocal valuationManager;
     @Context
@@ -39,8 +40,9 @@ public class Kbme {
     @Produces(MediaType.APPLICATION_XML)
     @Path("/parent")
     public Group getParentGroups(@QueryParam("id") Long id) {
-        doAudit();
-        return userManager.getParentGroups(id);
+//         doAudit();
+//         return userManager.getParentGroups(id);
+        throw new UnsupportedOperationException();
     }
 
     @GET
@@ -48,7 +50,7 @@ public class Kbme {
     @Path("/child")
     public List<Group> getChildGroups(@QueryParam("id") Long id) {
         doAudit();
-        return userManager.getChildGroups(id);
+        return groupManager.getSubGroups(id);
     }
 
     @GET
@@ -56,7 +58,7 @@ public class Kbme {
     @Path("/leader")
     public User getLeader(@QueryParam("id") Long id) {
         doAudit();
-        return userManager.getGroupLeaderForGroup(id);
+        return groupManager.findLeaderForGroup(id);
     }
 
     @GET
