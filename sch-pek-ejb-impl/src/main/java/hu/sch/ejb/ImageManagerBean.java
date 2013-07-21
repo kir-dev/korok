@@ -1,7 +1,6 @@
 package hu.sch.ejb;
 
 import hu.sch.domain.SpotImage;
-import hu.sch.domain.profile.Person;
 import hu.sch.domain.util.ImageResizer;
 import hu.sch.services.ImageManagerLocal;
 import java.io.File;
@@ -17,6 +16,8 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class ImageManagerBean implements ImageManagerLocal {
+
+    private static final int IMAGE_MAX_SIZE = 320;
 
     @PersistenceContext
     private EntityManager em;
@@ -39,7 +40,7 @@ public class ImageManagerBean implements ImageManagerLocal {
                 }
             }
 
-            ImageResizer imageResizer = new ImageResizer(fileContent, Person.IMAGE_MAX_SIZE);
+            ImageResizer imageResizer = new ImageResizer(fileContent, IMAGE_MAX_SIZE);
             imageResizer.resizeImage();
             fileContent = imageResizer.getByteArray();
 
@@ -47,7 +48,8 @@ public class ImageManagerBean implements ImageManagerLocal {
             fileName = fileName.substring(0, 6);
             SpotImage spotImage = new SpotImage();
             spotImage.setNeptunCode(fileName);
-            spotImage.setImage(fileContent);
+            // TODO: save files to filesystem
+            //spotImage.setImage(fileContent);
             em.persist(spotImage);
             file.delete();
         }

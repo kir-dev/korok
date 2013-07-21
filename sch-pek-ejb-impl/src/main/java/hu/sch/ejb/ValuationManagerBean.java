@@ -15,17 +15,16 @@ import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationPeriod;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.ValuationStatus;
-import hu.sch.domain.profile.Person;
 import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.domain.util.MapUtils;
-import hu.sch.services.LdapManagerLocal;
+import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.services.exceptions.UserNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
@@ -63,13 +62,13 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     @PersistenceContext
     EntityManager em;
     @EJB
-    UserManagerLocal userManager;
+    private UserManagerLocal userManager;
     @EJB
-    SystemManagerLocal systemManager;
+    private SystemManagerLocal systemManager;
     @EJB
-    MailManagerLocal mailManager;
+    private MailManagerLocal mailManager;
     @EJB
-    LdapManagerLocal ldapManager;
+    private GroupManagerLocal groupManager;
 
     @Override
     public void createValuation(Valuation ertekeles) {
@@ -442,7 +441,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 // a JETI a feladó
                 System.out.println("JETI a feladó");
                 // az értékelt group körvezetőjének a mail címének kikeresése
-                User groupLeader = userManager.getGroupLeaderForGroup(msg.getGroupId());
+                User groupLeader = groupManager.findLeaderForGroup(msg.getGroupId());
                 if (groupLeader != null) {
                     emailTo = groupLeader.getEmailAddress();
                 }
@@ -453,7 +452,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             } else {
                 // nem a JETI a feladó
                 // jeti körvezetőjének a mail címének kikeresése
-                User leader = userManager.getGroupLeaderForGroup(Group.JET);
+                User leader = groupManager.findLeaderForGroup(Group.JET);
                 if (leader != null) {
                     emailTo = leader.getEmailAddress();
                 }
@@ -741,7 +740,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         String emailText = null;
 
         if (sendMailToGL) {
-            User groupLeader = userManager.getGroupLeaderForGroup(vm.getGroupId());
+            User groupLeader = groupManager.findLeaderForGroup(vm.getGroupId());
             if (groupLeader != null) {
                 address = groupLeader.getEmailAddress();
             }
@@ -770,49 +769,44 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
     }
 
+    // TODO: review specs for KBME
     @Override
     public List<PointInfo> getPointInfoForUid(String uid, Semester semester) {
-        Person person = null;
-        try {
-            person = ldapManager.getPersonByUid(uid);
-            if (person.getVirId() != null) {
-                Query q = em.createQuery("SELECT new hu.sch.domain.rest.PointInfo (p.valuation.groupId, p.point) "
-                        + "FROM PointRequest p "
-                        + "WHERE p.valuation.semester =:semester AND p.userId =:userid");
-                q.setParameter("semester", semester);
-                q.setParameter("userid", person.getVirId());
-                return q.getResultList();
-            }
-        } catch (PersonNotFoundException pnfe) {
-            logger.error("Unable to find user with uid: " + uid);
-        }
-
-        throw new IllegalArgumentException("Unable to find user with points");
+        User person = null;
+        person = userManager.findUserByScreenName(uid);
+        Query q = em.createQuery("SELECT new hu.sch.domain.rest.PointInfo (p.valuation.groupId, p.point) "
+                + "FROM PointRequest p "
+                + "WHERE p.valuation.semester =:semester AND p.userId =:userid");
+        q.setParameter("semester", semester);
+        q.setParameter("userid", person.getId());
+        return q.getResultList();
     }
 
     @Override
     public List<ApprovedEntrant> getApprovedEntrants(final String neptun,
-            final Semester semester) throws PersonNotFoundException {
+            final Semester semester) throws UserNotFoundException {
 
-        final Person person = ldapManager.getPersonByNeptun(neptun);
+        final User person = userManager.findUserByNeptun(neptun);
 
-        final List<ApprovedEntrant> results = new LinkedList<ApprovedEntrant>();
-
-        if (person.getVirId() != null) {
-            final Query query =
-                    em.createQuery("SELECT new hu.sch.domain.rest.ApprovedEntrant("
-                    + "entrantReq.valuation.groupId, entrantReq.valuation.group.name, "
-                    + "entrantReq.entrantType) "
-                    + "FROM EntrantRequest entrantReq "
-                    + "WHERE entrantReq.userId = :virId AND "
-                    + "entrantReq.valuation.semester = :semester AND "
-                    + "entrantReq.valuation.entrantStatus = hu.sch.domain.ValuationStatus.ELFOGADVA AND "
-                    + "entrantReq.valuation.nextVersion = null");
-            query.setParameter("semester", semester);
-            query.setParameter("virId", person.getVirId());
-
-            results.addAll(query.getResultList());
+        if (person == null) {
+            throw new UserNotFoundException(String.format("User cannot be found with %s neptun.", neptun));
         }
+
+        final List<ApprovedEntrant> results = new LinkedList<>();
+
+        final Query query =
+                em.createQuery("SELECT new hu.sch.domain.rest.ApprovedEntrant("
+                + "entrantReq.valuation.groupId, entrantReq.valuation.group.name, "
+                + "entrantReq.entrantType) "
+                + "FROM EntrantRequest entrantReq "
+                + "WHERE entrantReq.userId = :virId AND "
+                + "entrantReq.valuation.semester = :semester AND "
+                + "entrantReq.valuation.entrantStatus = hu.sch.domain.ValuationStatus.ELFOGADVA AND "
+                + "entrantReq.valuation.nextVersion = null");
+        query.setParameter("semester", semester);
+        query.setParameter("virId", person.getId());
+
+        results.addAll(query.getResultList());
 
         return results;
     }

@@ -14,7 +14,7 @@ import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.rest.PointInfo;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.services.exceptions.UserNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
@@ -32,7 +32,7 @@ public interface ValuationManagerLocal {
 
     /**
      * Új értékelés mentése
-     * 
+     *
      * @param ertekeles
      */
     void createValuation(Valuation ertekeles);
@@ -54,7 +54,7 @@ public interface ValuationManagerLocal {
 
     /**
      * Egy csoport összes értékelését keresi ki
-     * 
+     *
      * @param csoport
      * @return Csoporthoz tartozó értékelések listája
      */
@@ -64,27 +64,27 @@ public interface ValuationManagerLocal {
 
     /**
      * Az adott szemeszterben elbírálatlan értékelések megkeresése.
-     * Elbírálatlan az értékelés, amiben vagy a pontigénylés vagy a 
+     * Elbírálatlan az értékelés, amiben vagy a pontigénylés vagy a
      * belépőigénylés elbírálatlan.
-     * 
+     *
      * @return Elbírálatlan értékelések statisztikája
      */
     List<ValuationStatistic> findElbiralatlanErtekelesStatisztika();
-    
+
      /**
      * Megkeresi azokat a felhasználókat, akik kaptak a megadott belépőből az adott
      * szemeszterben és egy CSV-nek formázott Stringgel tér vissza
      *
      * @param semester
      * @param entrantType
-     * @param minEntrantNum csak az ennyi vagy ennél több belépőt kapott emberek 
+     * @param minEntrantNum csak az ennyi vagy ennél több belépőt kapott emberek
      * szerepeljenek
-     * @return azon felhasználókról export String, akik legalább <pre>mitEntrantNum</pre> 
+     * @return azon felhasználókról export String, akik legalább <pre>mitEntrantNum</pre>
      * db adott belépőt kaptak a félévben
      */
     String findApprovedEntrantsForExport(Semester semester,
             EntrantType entrantType, int mintEntrantNum);
-    
+
     void considerValuations(Collection<ConsideredValuation> elbiralas)
             throws NoExplanationException, NothingChangedException, AlreadyModifiedException;
 
@@ -118,7 +118,7 @@ public interface ValuationManagerLocal {
 
     /**
      * Üzenetek lekérése az adott csoport adott félévéhez tartozó értékeléséhez.
-     * 
+     *
      * @param group
      * @param semester
      * @return üzenetek listája
@@ -134,7 +134,7 @@ public interface ValuationManagerLocal {
 
     /**
      * Új értékelés létrehozása az aktuális szemeszterben
-     * 
+     *
      * @param group Melyik csoporthoz adtak le értékelést
      * @param sender Az értékelés feladója
      * @param valuationText Szöveges értékelés
@@ -145,7 +145,7 @@ public interface ValuationManagerLocal {
     /**
      * Az aktuális szemeszterben leadhat-e új értékelést az adott csoport.
      * Leadhat, ha leadási időszak van és még nem adott le.
-     * 
+     *
      * @param group
      * @return Az adott kör leadhat-e értékelést
      */
@@ -153,7 +153,7 @@ public interface ValuationManagerLocal {
 
     /**
      * Értékelést ad vissza ID alapján (de nem adja vissza az igényléseket és az üzeneteket)
-     * 
+     *
      * @param ertekelesId
      * @return ID-hoz tartozó értékelés
      */
@@ -161,7 +161,7 @@ public interface ValuationManagerLocal {
 
     /**
      * Adott értékeléshez kapcsolódó belépőigényeket adja vissza
-     * 
+     *
      * @param ertekelesId
      * @return Értékeléshez tartozó belépőigények
      */
@@ -169,7 +169,7 @@ public interface ValuationManagerLocal {
 
     /**
      * Adott értékeléshez kapcsolódó pontigényeket adja vissza
-     * 
+     *
      * @param ertekelesId
      * @return Értékeléshez tartozó pontigények
      */
@@ -188,7 +188,7 @@ public interface ValuationManagerLocal {
     /**
      * Az adott értékelésekhez kapcsolódó statisztikát adja vissza
      * (pontátlag, kiosztott belépők típusonként)
-     * 
+     *
      * @param ertekelesId
      * @return Értékelésekhez tartozó statisztika
      */
@@ -240,8 +240,8 @@ public interface ValuationManagerLocal {
      * @param neptun
      * @param semester
      * @return
-     * @throws PersonNotFoundException
+     * @throws UserNotFoundException
      */
     List<ApprovedEntrant> getApprovedEntrants(final String neptun,
-            final Semester semester) throws PersonNotFoundException;
+            final Semester semester) throws UserNotFoundException;
 }

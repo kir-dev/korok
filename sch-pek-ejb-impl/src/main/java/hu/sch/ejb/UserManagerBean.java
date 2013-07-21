@@ -1,19 +1,22 @@
 package hu.sch.ejb;
 
+import com.unboundid.ldap.sdk.LDAPException;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
-import hu.sch.domain.logging.Event;
-import hu.sch.domain.logging.EventType;
-import hu.sch.domain.profile.Person;
+import hu.sch.domain.user.UserAttribute;
+import hu.sch.domain.user.UserAttributeName;
+import hu.sch.domain.user.UserStatus;
+import hu.sch.ejb.ldap.LdapSynchronizer;
 import hu.sch.services.*;
-import hu.sch.services.exceptions.MembershipAlreadyExistsException;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.services.exceptions.CreateFailedException;
+import hu.sch.services.exceptions.DuplicateUserException;
+import hu.sch.services.exceptions.InvalidPasswordException;
+import hu.sch.services.exceptions.UpdateFailedException;
 import java.util.*;
-import javax.annotation.PostConstruct;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.*;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,11 +24,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author hege
  * @author messo
+ * @author tomi
  */
 @Stateless
-@SuppressWarnings("unchecked")
 public class UserManagerBean implements UserManagerLocal {
 
+    private static Logger logger = LoggerFactory.getLogger(UserManagerBean.class);
     @PersistenceContext
     EntityManager em;
     @EJB(name = "LogManagerBean")
@@ -34,246 +38,76 @@ public class UserManagerBean implements UserManagerLocal {
     MailManagerLocal mailManager;
     @EJB(name = "PostManagerBean")
     PostManagerLocal postManager;
-    @EJB(name = "LdapManagerBean")
-    LdapManagerLocal ldapManager;
-    private static Logger log = LoggerFactory.getLogger(UserManagerBean.class);
-    private static Event DELETEMEMBERSHIP_EVENT;
-    private static Event CREATEMEMBERSHIP_EVENT;
-
-    @PostConstruct
-    protected void initialize() {
-        if (DELETEMEMBERSHIP_EVENT == null) {
-            Query q = em.createNamedQuery(Event.getEventForEventType);
-            q.setParameter("evt", EventType.TAGSAGTORLES);
-            DELETEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
-            q.setParameter("evt", EventType.JELENTKEZES);
-            CREATEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
-        }
-    }
-
-    @Override
-    public void updateUserAttributes(User user) {
-        User f = em.find(User.class, user.getId());
-        boolean changed = false;
-
-        if (user.getEmailAddress() != null && !user.getEmailAddress().equals(f.getEmailAddress())) {
-            f.setEmailAddress(user.getEmailAddress());
-            changed = true;
-        }
-        if (user.getNickName() != null && !user.getNickName().equals(f.getNickName())) {
-            f.setNickName(user.getNickName());
-            changed = true;
-        }
-        if (user.getNeptunCode() != null && !user.getNeptunCode().equals(f.getNeptunCode())) {
-            f.setNeptunCode(user.getNeptunCode());
-            changed = true;
-        }
-        if (user.getLastName() != null && !user.getLastName().equals(f.getLastName())) {
-            f.setLastName(user.getLastName());
-            changed = true;
-        }
-        if (user.getFirstName() != null && !user.getFirstName().equals(f.getFirstName())) {
-            f.setFirstName(user.getFirstName());
-            changed = true;
-        }
-
-        if (changed) {
-            em.merge(f);
-            em.flush();
-        }
-    }
 
     @Override
     public User findUserById(Long userId) {
-        try {
+        return findUserById(userId, false);
+    }
+
+    @Override
+    public User findUserById(Long userId, boolean includeMemberships) {
+        if (userId.equals(0L)) {
+            // ha nincs használható userId, akkor ne menjünk el a DB-hez.
+            return null;
+        }
+
+        if (!includeMemberships) {
             return em.find(User.class, userId);
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addUserToGroup(User user, Group group, Date start, Date veg, boolean isAuthorized)
-            throws MembershipAlreadyExistsException {
-        Membership ms = new Membership();
-        User _user = em.find(User.class, user.getId());
-        Group _group = em.find(Group.class, group.getId());
-
-        ms.setUser(_user);
-        ms.setGroup(_group);
-        ms.setStart(start);
-        ms.setEnd(null);
-
-        if (!isAuthorized) {
-            Post post = new Post();
-            post.setMembership(ms);
-
-            Query q = em.createNamedQuery(PostType.searchForPostType);
-            q.setParameter("pn", "feldolgozás alatt");
-            PostType postType = (PostType) q.getSingleResult();
-
-            post.setPostType(postType);
-            List<Post> posts = new ArrayList<Post>();
-            posts.add(post);
-            ms.setPosts(posts);
-
-            em.persist(post);
         }
 
-        _user.getMemberships().add(ms);
-        _group.getMemberships().add(ms);
+        TypedQuery<User> q = em.createNamedQuery(User.findWithMemberships, User.class);
+        q.setParameter("id", userId);
 
-        em.persist(ms);
-        em.merge(_user);
-        em.merge(_group);
         try {
-            em.flush();
-        } catch (PersistenceException ex) {
-            if (ex.getCause().getClass().equals(ConstraintViolationException.class)) {
-                // már van ilyen tagság
-                throw new MembershipAlreadyExistsException(group, user);
-            } else {
-                // valami egyéb rondaság, dobjuk vissza :)
-                throw ex;
-            }
-        }
-        logManager.createLogEntry(group, user, CREATEMEMBERSHIP_EVENT);
-    }
-
-    @Override
-    public void createNewGroupWithLeader(Group group, User user) {
-        em.persist(group);
-        Membership ms = new Membership();
-        ms.setGroup(group);
-        ms.setUser(user);
-        ms.setStart(new Date());
-        em.persist(ms);
-        Post post = new Post();
-        post.setMembership(ms);
-        PostType leader = (PostType) em.createNamedQuery(PostType.searchForPostType).setParameter("pn", "körvezető").getSingleResult();
-        post.setPostType(leader);
-        em.persist(post);
-    }
-
-    @Override
-    public List<Group> getAllGroups() {
-        Query q = em.createNamedQuery(Group.findAll);
-
-        return q.getResultList();
-    }
-
-    @Override
-    public List<String> getEveryGroupName() {
-        Query q =
-                em.createQuery("SELECT g.name FROM Group g "
-                + "ORDER BY g.name");
-
-        return q.getResultList();
-    }
-
-    @Override
-    public List<Group> findGroupByName(String name) {
-        Query q =
-                em.createQuery("SELECT g FROM Group g "
-                + "WHERE UPPER(g.name) LIKE UPPER(:groupName) "
-                + "ORDER BY g.name");
-        q.setParameter("groupName", name);
-
-        return q.getResultList();
-    }
-
-    @Override
-    public Group getGroupByName(String name) {
-        Query q = em.createQuery("SELECT g FROM Group g "
-                + "WHERE g.name=:groupName");
-        q.setParameter("groupName", name);
-        try {
-            Group csoport = (Group) q.getSingleResult();
-            return csoport;
-        } catch (Exception e) {
+            return q.getSingleResult();
+        } catch (Exception ex) {
+            logger.warn("Can't find user with memberships for this id: " + userId);
             return null;
         }
     }
 
     @Override
-    public Group findGroupById(Long id) {
-        return em.find(Group.class, id);
-    }
-
-    @Override
-    public void deleteMembership(Membership ms) {
-        Membership temp = em.find(Membership.class, ms.getId());
-        User user = ms.getUser();
-        boolean userChanged = false;
-
-        em.remove(temp);
-        em.flush();
-        if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG)
-                && user.getSvieStatus().equals(SvieStatus.ELFOGADVA)
-                && ms.getGroup().getIsSvie()) {
-            try {
-                Query q = em.createQuery("SELECT ms.user FROM Membership ms "
-                        + "WHERE ms.user = :user AND ms.group.isSvie = true");
-                q.setParameter("user", user);
-                q.getSingleResult();
-            } catch (NoResultException nre) {
-                user.setSvieMembershipType(SvieMembershipType.PARTOLOTAG);
-                userChanged = true;
-            }
+    public User findUserByScreenName(String screenName) {
+        try {
+            return em.createNamedQuery(User.findByScreenName, User.class)
+                    .setParameter("screenName", screenName)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            logger.info("User with {} screenname was not found.", screenName);
         }
-        if (user.getSviePrimaryMembership() != null && ms.getId().equals(user.getSviePrimaryMembership().getId())) {
-            user.setSviePrimaryMembership(null);
-            userChanged = true;
+
+        return null;
+    }
+
+    @Override
+    public User findUserByNeptun(final String neptun) {
+        try {
+            return em.createQuery("SELECT u FROM User u WHERE u.neptunCode = :neptun", User.class)
+                    .setParameter("neptun", neptun)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            logger.info("User not found with {} neptun.", neptun);
         }
-        if (userChanged) {
-            em.merge(user);
+        return null;
+    }
+
+    @Override
+    public User findUserByEmail(final String email) throws DuplicateUserException {
+        try {
+            return em.createQuery("SELECT u FROM User u WHERE u.emailAddress = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            logger.info("Could not find user with email: {}", email);
+        } catch (NonUniqueResultException ex) {
+            throw new DuplicateUserException(String.format("Duplicate user with %s email", email), ex);
         }
-        logManager.createLogEntry(ms.getGroup(), ms.getUser(), DELETEMEMBERSHIP_EVENT);
+
+        return null;
     }
 
     @Override
-    public List<User> getCsoporttagokWithoutOregtagok(Long csoportId) {
-        Query q =
-                em.createQuery("SELECT ms.user FROM Membership ms JOIN "
-                + "ms.user "
-                + "WHERE ms.group.id=:groupId AND ms.end=NULL "
-                + "ORDER BY ms.user.lastName ASC, ms.user.firstName ASC");
-
-        q.setParameter("groupId", csoportId);
-
-        return q.getResultList();
-    }
-
-    @Override
-    public List<User> getUsersWithPrimaryMembership(Long groupId) {
-        Query q = em.createQuery("SELECT ms.user FROM Membership ms "
-                + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms "
-                + "AND ms.user.svieStatus = :svieStatus "
-                + "ORDER BY ms.user.lastName, ms.user.firstName");
-        q.setParameter("groupId", groupId);
-        q.setParameter("svieStatus", SvieStatus.ELFOGADVA);
-        return q.getResultList();
-    }
-
-    @Override
-    public List<User> getMembersForGroup(Long csoportId) {
-        //Group cs = em.find(Group.class, csoportId);
-        Query q =
-                em.createQuery("SELECT ms.user FROM Membership ms JOIN "
-                + "ms.user "
-                + "WHERE ms.group.id=:groupId "
-                + "ORDER BY ms.user.lastName ASC, ms.user.firstName ASC");
-
-        q.setParameter("groupId", csoportId);
-
-        return q.getResultList();
-    }
-
-    @Override
-    public List<EntrantRequest> getBelepoIgenyekForUser(User felhasznalo) {
+    public List<EntrantRequest> getEntrantRequestsForUser(User felhasznalo) {
         Query q = em.createQuery("SELECT e FROM EntrantRequest e "
                 + "WHERE e.user=:user "
                 + "ORDER BY e.valuation.semester DESC, e.entrantType ASC");
@@ -283,7 +117,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public List<PointRequest> getPontIgenyekForUser(User felhasznalo) {
+    public List<PointRequest> getPointRequestsForUser(User felhasznalo) {
         Query q = em.createQuery("SELECT p FROM PointRequest p "
                 + "WHERE p.user=:user "
                 + "ORDER BY p.valuation.semester DESC, p.valuation.group.name ASC");
@@ -293,154 +127,30 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public List<Group> getGroupHierarchy() {
-        Query q = em.createNamedQuery(Group.groupHierarchy);
-        List<Group> csoportok = q.getResultList();
-        List<Group> rootCsoportok = new ArrayList<Group>();
-
-        for (Group cs : csoportok) {
-            if (cs.getParent() != null) {
-                if (cs.getParent().getSubGroups() == null) {
-                    cs.getParent().setSubGroups(new ArrayList<Group>());
-                }
-                cs.getParent().getSubGroups().add(cs);
-            } else {
-                rootCsoportok.add(cs);
-            }
-        }
-
-        return rootCsoportok;
-    }
-
-    @Override
-    public User findUserWithMembershipsById(Long userId) {
-        if (userId.equals(0L)) {
-            // ha nincs használható userId, akkor ne menjünk el a DB-hez.
-            return null;
-        }
-
-        TypedQuery<User> q = em.createNamedQuery(User.findWithMemberships, User.class);
-        q.setParameter("id", userId);
-
+    public void createUser(User user, String password, UserStatus status) throws CreateFailedException {
+        em.persist(user);
         try {
-            return q.getSingleResult();
-        } catch (Exception ex) {
-            log.warn("Can't find user with memberships for this id: " + userId);
-            return null;
+            new LdapSynchronizer().createEntry(user, password, status);
+        } catch (InvalidPasswordException ex) {
+            throw new CreateFailedException("Password is not valid. It must be at least 6 chars long.", ex);
+        } catch (LDAPException ex) {
+            throw new CreateFailedException("Could not create entry in DS", ex);
         }
     }
 
     @Override
-    public Group findGroupWithMembershipsById(Long id) {
-        TypedQuery<Group> q = em.createNamedQuery(Group.findWithMemberships, Group.class);
-        q.setParameter("id", id);
-
-        try {
-            return q.getSingleResult();
-        } catch (Exception ex) {
-            log.warn("Can't find group with memberships", ex);
-            return null;
-        }
-    }
-
-    @Override
-    public void loadMemberships(Group g) {
-        TypedQuery<Membership> q = em.createNamedQuery(Membership.findMembershipsForGroup, Membership.class);
-        q.setParameter("id", g.getId());
-
-        try {
-            g.setMemberships(q.getResultList());
-        } catch (Exception ex) {
-            log.warn("Can't find group with memberships", ex);
-        }
-    }
-
-    @Override
-    public void groupInfoUpdate(Group cs) {
-        Group csoport = em.find(Group.class, cs.getId());
-        csoport.setFounded(cs.getFounded());
-        csoport.setName(cs.getName());
-        csoport.setWebPage(cs.getWebPage());
-        csoport.setIntroduction(cs.getIntroduction());
-        csoport.setMailingList(cs.getMailingList());
-        csoport.setUsersCanApply(cs.getUsersCanApply());
-    }
-
-    @Override
-    public Membership getMembership(Long memberId) {
-        return em.find(Membership.class, memberId);
-    }
-
-    @Override
-    public Membership getMembership(final Long groupId, final Long userId) {
-        Query q = em.createQuery("SELECT ms FROM Membership ms WHERE ms.user.id = :userId "
-                + "AND ms.group.id = :groupId");
-        q.setParameter("groupId", groupId);
-        q.setParameter("userId", userId);
-
-        try {
-            return (Membership) q.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
-        }
-    }
-
-    @Override
-    public void setMemberToOldBoy(Membership ms) {
-        ms.setEnd(new Date());
-        em.merge(ms);
-    }
-
-    @Override
-    public void setUserDelegateStatus(User user, boolean isDelegated) {
-        user.setDelegated(isDelegated);
+    public void updateUser(User user) throws UpdateFailedException {
         em.merge(user);
-    }
 
-    @Override
-    public void setOldBoyToActive(Membership ms) {
-        ms.setEnd(null);
-        em.merge(ms);
-    }
-
-    @Override
-    public void updateUser(User user) {
-        em.merge(user);
-    }
-
-    @Override
-    public void updateGroup(Group group) {
-        em.merge(group);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public User getGroupLeaderForGroup(Long groupId) {
-        Query q = em.createNamedQuery(Post.getGroupLeaderForGroup);
-        q.setParameter("id", groupId);
         try {
-            User ret = (User) q.getSingleResult();
-            return ret;
-        } catch (NoResultException nre) {
-            log.error("Nem találtam meg ennek a körnek a körvezetőjét: " + groupId);
-            return null;
+            new LdapSynchronizer().syncEntry(user);
+        } catch (LDAPException ex) {
+            throw new UpdateFailedException("Failed updating the DS entry for the user.", ex);
         }
     }
 
     @Override
-    public List<Group> getAllGroupsWithCount() {
-        Query q = em.createQuery("SELECT new hu.sch.domain.Group(g, "
-                + "(SELECT COUNT(*) FROM Membership ms WHERE ms.user.sviePrimaryMembership = ms "
-                + "AND ms.group.id = g.id AND ms.user.svieStatus = 'ELFOGADVA' "
-                + "AND ms.user.svieMembershipType = 'RENDESTAG')) "
-                + "FROM Group g WHERE g.status='akt'");
-        return q.getResultList();
-    }
-
-    @Override
-    public List<User> searchForUserByName(String name) {
+    public List<User> findUsersByName(String name) {
         Query q = em.createQuery("SELECT u FROM User u WHERE UPPER(concat(concat(u.lastName, ' '), "
                 + "u.firstName)) LIKE UPPER(:name) "
                 + "ORDER BY u.lastName ASC, u.firstName ASC");
@@ -463,7 +173,7 @@ public class UserManagerBean implements UserManagerLocal {
     @Override
     public int getSemesterPointForUser(User user, Semester semester) {
         // Beszerezzük a pontokat
-        List<PointRequest> pontigenyek = getPontIgenyekForUser(user);
+        List<PointRequest> pontigenyek = getPointRequestsForUser(user);
 
         // Ebbe a Map-be lesz tárolva, hogy melyik körtől hány pontot kapott
         Map<Group, Integer> points = new HashMap<Group, Integer>();
@@ -491,47 +201,6 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public Group getParentGroups(Long id) {
-        List<Group> groups = em.createNamedQuery(Group.groupHierarchy).getResultList();
-        for (Group group : groups) {
-            if (group.getId().equals(id)) {
-                return group;
-            }
-        }
-        throw new IllegalArgumentException("No such group");
-    }
-
-    /**
-     * Tagja-e a körnek a felhasználó?
-     *
-     * @param group kör
-     * @param user felhasználó
-     * @return
-     */
-    private boolean isMember(Group group, User user) {
-        Query q = em.createNamedQuery(Membership.getMembershipForUserAndGroup);
-        q.setParameter("groupId", group.getId());
-        q.setParameter("userId", user.getId());
-
-        return !q.getResultList().isEmpty();
-    }
-
-    @Override
-    public List<User> getMembersForGroupAndPost(Long groupId, String post) {
-        Query q = em.createNamedQuery(User.findUsersForGroupAndPost);
-        q.setParameter("groupId", groupId);
-        q.setParameter("post", post);
-
-        return q.getResultList();
-    }
-
-    @Override
-    public List<Group> getChildGroups(Long id) {
-        return em.createQuery("SELECT g FROM Group g WHERE g.parent.id =:id").setParameter("id", id).getResultList();
-
-    }
-
-    @Override
     public SpotImage getSpotImage(User user) {
         TypedQuery<SpotImage> q = em.createNamedQuery(SpotImage.findByNeptun, SpotImage.class);
         q.setParameter("neptunCode", user.getNeptunCode());
@@ -543,21 +212,15 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public boolean acceptRecommendedPhoto(String userUid) {
-        Person p;
-        try {
-            p = ldapManager.getPersonByUid(userUid);
-        } catch (PersonNotFoundException ex) {
-            return false;
-        }
+    public boolean acceptRecommendedPhoto(String screenName) {
+        User user = findUserByScreenName(screenName);
 
         TypedQuery<SpotImage> q = em.createNamedQuery(SpotImage.findByNeptun, SpotImage.class);
-        q.setParameter("neptunCode", p.getNeptun());
+        q.setParameter("neptunCode", user.getNeptunCode());
         try {
             SpotImage si = q.getSingleResult();
-            p.setPhoto(si.getImage());
-            ldapManager.update(p);
-            em.remove(si); // töröljük a fotót a DB-ből
+            user.setPhotoPath(si.getImagePath());
+            em.remove(si);
             return true;
         } catch (NoResultException ex) {
             return false;
@@ -569,5 +232,44 @@ public class UserManagerBean implements UserManagerLocal {
         Query q = em.createNamedQuery(SpotImage.deleteByNeptun);
         q.setParameter("neptunCode", user.getNeptunCode());
         q.executeUpdate();
+    }
+
+    @Override
+    public void invertAttributeVisibility(User user, UserAttributeName attr) {
+        User managedUser = em.merge(user);
+
+        boolean done = false;
+        for (UserAttribute a : managedUser.getPrivateAttributes()) {
+            if (a.getAttributeName() == attr) {
+                a.setVisible(!a.isVisible());
+                done = true;
+                break;
+            }
+        }
+
+        // user's attribute list does not contian the given attribute
+        // which means it is NOT visible, so we'll make it visible
+        if (!done) {
+            managedUser.getPrivateAttributes().add(new UserAttribute(attr, true));
+        }
+    }
+
+    @Override
+    public void updateUserStatus(User user, UserStatus userStatus) throws UpdateFailedException {
+        try {
+            new LdapSynchronizer().updateStatus(user, userStatus);
+        } catch (LDAPException ex) {
+            throw new UpdateFailedException("Could not update the user's status in the directory entry.", ex);
+        }
+    }
+
+    @Override
+    public void changePassword(String screenName, String oldPwd, String newPwd) throws InvalidPasswordException {
+        try {
+            new LdapSynchronizer().changePassword(screenName, oldPwd, newPwd);
+        } catch (LDAPException ex) {
+            // TODO: rethrow wrapped
+        }
+
     }
 }

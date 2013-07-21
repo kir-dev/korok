@@ -5,12 +5,13 @@ import hu.sch.domain.SvieStatus;
 import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.User;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author tomi
  */
-public class UserBuilder implements Builder<User> {
+public class UserBuilder extends AbstractBuilder<User> {
 
     private String lastName = "Teszt";
     private String firstName = "Elek";
@@ -68,5 +69,4 @@ public class UserBuilder implements Builder<User> {
 
         return user;
     }
-
 }

@@ -7,8 +7,10 @@ import hu.sch.domain.SvieStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
+import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MailManagerLocal;
+import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import java.util.List;
@@ -29,14 +31,18 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unchecked")
 public class SvieManagerBean implements SvieManagerLocal {
 
+    @EJB
+    private GroupManagerLocal groupManager;
+    @EJB
+    private MembershipManagerLocal membershipManager;
     @EJB(name = "MailManagerBean")
-    MailManagerLocal mailManager;
+    private MailManagerLocal mailManager;
     @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
+    private UserManagerLocal userManager;
     @EJB(name = "LogManagerBean")
-    LogManagerLocal logManager;
+    private LogManagerLocal logManager;
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
     private static Logger log = LoggerFactory.getLogger(SvieManagerBean.class);
     private static final String mailSubject = "Elsődleges kört váltottak";
     private static Event ADVOCATE_EVENT;
@@ -93,11 +99,11 @@ public class SvieManagerBean implements SvieManagerLocal {
             temp.setIsSvie(group.getIsSvie());
             em.merge(temp);
 
-            User user = userManager.getGroupLeaderForGroup(group.getId());
+            User user = groupManager.findLeaderForGroup(group.getId());
             if (group.getIsSvie() && user != null && user.getSvieMembershipType().equals(SvieMembershipType.NEMTAG)) {
                 user.setSvieMembershipType(SvieMembershipType.RENDESTAG);
                 user.setSvieStatus(SvieStatus.ELFOGADVA);
-                user.setSviePrimaryMembership(userManager.getMembership(group.getId(), user.getId()));
+                user.setSviePrimaryMembership(membershipManager.findMembership(group.getId(), user.getId()));
                 em.merge(user);
             }
         }
@@ -138,7 +144,8 @@ public class SvieManagerBean implements SvieManagerLocal {
         sb.append("\n\nÜdvözlettel:\nKir-Dev");
         log.info("Erről a csoportról van szó: " + user.getSviePrimaryMembership().getGroup().getName());
         mailManager.sendEmail(
-                (userManager.getGroupLeaderForGroup(user.getSviePrimaryMembership().getGroup().getId()).getEmailAddress()),
+                // TODO: null check és miegymás
+                groupManager.findLeaderForGroup(user.getSviePrimaryMembership().getGroup().getId()).getEmailAddress(),
                 mailSubject, sb.toString());
     }
 

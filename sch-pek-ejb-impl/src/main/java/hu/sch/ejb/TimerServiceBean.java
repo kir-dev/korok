@@ -4,6 +4,7 @@ import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.logging.Log;
+import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
@@ -32,6 +33,8 @@ public class TimerServiceBean {
     private SystemManagerLocal systemManager;
     @EJB(name = "UserManagerBean")
     private UserManagerLocal userManager;
+    @EJB
+    private GroupManagerLocal groupManager;
     @PersistenceContext
     EntityManager em;
     private static Logger logger = LoggerFactory.getLogger(TimerServiceBean.class);
@@ -91,7 +94,7 @@ public class TimerServiceBean {
                     sb.append("\n\n");
                 }
             }
-            User user = userManager.getGroupLeaderForGroup(group.getId());
+            User user = groupManager.findLeaderForGroup(group.getId());
             if (user != null) {
                 sendEmail(user.getEmailAddress(), sb);
             }
@@ -123,7 +126,7 @@ public class TimerServiceBean {
             }
         }
         if (wasRecord) {
-            List<User> svieAdmins = userManager.getMembersForGroupAndPost(Group.SVIE, "adminisztrátor");
+            List<User> svieAdmins = groupManager.findMembersByGroupAndPost(Group.SVIE, "adminisztrátor");
             for (User u : svieAdmins) {
                 // mindig hozzászúródik a végére, hogy Üdvözlettel, ezért le kell másolni
                 // mert különben az utolsó admin jó sok üdvözletet kapna ;)
@@ -150,7 +153,7 @@ public class TimerServiceBean {
         }
         if (!logs.isEmpty()) {
             sb.append("\n\n");
-            sendEmail(userManager.getGroupLeaderForGroup(Group.VALASZTMANY).getEmailAddress(), sb);
+            sendEmail(groupManager.findLeaderForGroup(Group.VALASZTMANY).getEmailAddress(), sb);
         }
     }
 
