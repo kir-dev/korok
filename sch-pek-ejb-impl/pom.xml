@@ -35,7 +35,7 @@
                     <systemProperties>
                         <property>
                             <name>java.util.logging.config.file</name>
-                            <value>${build.testOutputDirectory}/logging.properties</value>
+                            <value>${project.build.testOutputDirectory}/logging.properties</value>
                         </property>
                     </systemProperties>
                 </configuration>
@@ -91,6 +91,10 @@
         </dependency>
 
         <!-- Ennek később kell lennie mint a öszes hibernate depnek. -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
