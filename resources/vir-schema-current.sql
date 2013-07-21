@@ -445,7 +445,7 @@ CREATE TABLE poszttipus (
 
 CREATE TABLE spot_images (
     usr_neptun character(6) NOT NULL,
-    image oid NOT NULL
+    image_path character varying(255) NOT NULL
 );
 
 

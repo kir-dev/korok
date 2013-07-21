@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package hu.sch.domain.profile;
+package hu.sch.domain.user;
 
 /**
  * User status in SSO service.

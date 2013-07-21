@@ -27,14 +27,10 @@ import javax.xml.bind.annotation.XmlRootElement;
             query = "SELECT u FROM User u LEFT OUTER JOIN FETCH u.memberships WHERE u.id = :id"),
     @NamedQuery(name = User.findUserByNeptunCode,
             query = "SELECT u FROM User u WHERE u.neptunCode = :neptun"),
+    @NamedQuery(name = User.findByScreenName,
+            query = "SELECT u FROM User u WHERE u.screenName = :screenName"),
     @NamedQuery(name = User.findUser, query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
             + "upper(u.emailAddress) = upper(:emailcim)"),
-    @NamedQuery(name = User.findUsersForGroupAndPost,
-            query = "SELECT u FROM User u "
-            + "LEFT JOIN u.memberships ms "
-            + "LEFT JOIN ms.posts p "
-            + "LEFT JOIN p.postType pt "
-            + "WHERE ms.groupId = :groupId AND pt.postName = :post"),
     @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
 })
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
@@ -47,7 +43,7 @@ public class User implements Serializable, Comparable<User> {
     public static final String findWithMemberships = "findUserWithMemberships";
     public static final String findUserByNeptunCode = "findUserByNeptunCode";
     public static final String findUser = "findUser";
-    public static final String findUsersForGroupAndPost = "getMembersForGroupAndPost";
+    public static final String findByScreenName = "findByScreenName";
     public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
     //----------------------------------------------------
     @Id
@@ -168,8 +164,6 @@ public class User implements Serializable, Comparable<User> {
         this.delegated = false;
         this.showRecommendedPhoto = false;
     }
-
-
 
     /**
      * Felhasználó azonosítója.
@@ -535,6 +529,16 @@ public class User implements Serializable, Comparable<User> {
     }
 
     /**
+     * Gets the combined dormitory and room number.
+     *
+     * Fromat [Dormitory] [Room]
+     * @return
+     */
+    public String getFullRoomNumber() {
+        return String.format("%s %s", dormitory, room);
+    }
+
+    /**
      * Regisztrációhoz szükéges megerősítő kód.
      */
     public String getConfirmationCode() {
@@ -611,9 +615,8 @@ public class User implements Serializable, Comparable<User> {
     /**
      * Egyenlőség vizsgálat id alapján.
      *
-     * Először referencia szerinti vizsgálatot végez.
-     * Ha az id null, akkor csak önmagával referencia szitnen megegyező objektumra
-     * ad vissza true-t.
+     * Először referencia szerinti vizsgálatot végez. Ha az id null, akkor csak
+     * önmagával referencia szitnen megegyező objektumra ad vissza true-t.
      */
     @Override
     public boolean equals(Object obj) {

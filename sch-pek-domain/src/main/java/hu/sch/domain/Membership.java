@@ -41,7 +41,7 @@ import javax.persistence.Transient;
     @NamedQuery(name = Membership.findMembershipsForGroup, query =
     "SELECT ms FROM Membership ms "
     + "WHERE ms.groupId = :id"),
-    @NamedQuery(name = Membership.getMembershipForUserAndGroup, query =
+    @NamedQuery(name = Membership.findMembershipForUserAndGroup, query =
     "SELECT ms FROM Membership ms WHERE ms.groupId = :groupId AND ms.userId = :userId")
 })
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq")
@@ -56,7 +56,7 @@ public class Membership implements MembershipTableEntry {
     public static final String getDelegatedMemberForGroup = "getDelegatedMemberForGroup";
     public static final String getAllDelegated = "getAllDelegated";
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
-    public static final String getMembershipForUserAndGroup = "getMembershipForUserAndGroup";
+    public static final String findMembershipForUserAndGroup = "getMembershipForUserAndGroup";
 
     @Id
     @GeneratedValue(generator = "grp_members_seq")

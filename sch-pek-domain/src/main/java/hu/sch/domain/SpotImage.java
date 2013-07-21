@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 /**
@@ -28,11 +29,10 @@ public class SpotImage implements Serializable {
     private String neptunCode;
     /**
      * A SPOT által készített képet tartalmazza
-     * @see <a href="http://stackoverflow.com/questions/3677380/proper-hibernate-annotation-for-byte">Hibernate és BLOB</a>
      */
-    @Type(type = "org.hibernate.type.PrimitiveByteArrayBlobType")
-    @Column(name = "image", nullable = false)
-    private byte[] image;
+    @NotNull
+    @Column(name = "image_path", nullable = false)
+    private String imagePath;
 
     public String getNeptunCode() {
         return neptunCode;
@@ -42,11 +42,11 @@ public class SpotImage implements Serializable {
         this.neptunCode = neptunCode;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

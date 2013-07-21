@@ -36,13 +36,20 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "groups")
 @NamedQueries({
-    @NamedQuery(name = "findAllGroup", query = "SELECT g FROM Group g "
-    + "WHERE g.status='akt' ORDER BY g.name"),
-    @NamedQuery(name = "groupHierarchy", query =
-    "SELECT g FROM Group g LEFT JOIN FETCH g.parent "
-    + "WHERE g.status='akt' ORDER BY g.name"),
-    @NamedQuery(name = "findGroupWithMemberships", query = "SELECT g FROM "
-    + "Group g LEFT JOIN FETCH g.memberships WHERE g.id = :id")
+    @NamedQuery(name = Group.findAll, query = "SELECT g FROM Group g "
+            + "WHERE g.status='akt' ORDER BY g.name"),
+    @NamedQuery(name = Group.groupHierarchy, query =
+            "SELECT g FROM Group g LEFT JOIN FETCH g.parent "
+            + "WHERE g.status='akt' ORDER BY g.name"),
+    @NamedQuery(name = Group.findWithMemberships, query = "SELECT g FROM "
+            + "Group g LEFT JOIN FETCH g.memberships WHERE g.id = :id"),
+    @NamedQuery(name = Group.findByName, query = "SELECT g FROM Group g WHERE g.name = :name"),
+    @NamedQuery(name = Group.findMembersByGroupAndPost,
+            query = "SELECT u FROM User u "
+            + "LEFT JOIN u.memberships ms "
+            + "LEFT JOIN ms.posts p "
+            + "LEFT JOIN p.postType pt "
+            + "WHERE ms.groupId = :groupId AND pt.postName = :post")
 })
 @SequenceGenerator(name = "groups_seq", sequenceName = "groups_grp_id_seq")
 @XmlRootElement
@@ -61,6 +68,8 @@ public class Group implements Serializable, Comparable<Group> {
     public static final String findAll = "findAllGroup";
     public static final String findWithMemberships = "findGroupWithMemberships";
     public static final String groupHierarchy = "groupHierarchy";
+    public static final String findByName = "findByName";
+    public static final String findMembersByGroupAndPost = "findMembersByGroupAndPost";
     //----------------------------------------------------
     @Id
     @GeneratedValue(generator = "groups_seq")
@@ -79,7 +88,7 @@ public class Group implements Serializable, Comparable<Group> {
     //----------------------------------------------------
     @Enumerated(EnumType.STRING)
     @Column(name = "grp_state")
-    private GroupStatus status;
+    private GroupStatus status = GroupStatus.akt;
     //----------------------------------------------------
     @Column(name = "grp_description", columnDefinition = "text")
     private String introduction;
@@ -102,7 +111,7 @@ public class Group implements Serializable, Comparable<Group> {
     private Integer founded;
     //----------------------------------------------------
     @Column(name = "grp_issvie")
-    private Boolean isSvie;
+    private Boolean isSvie = Boolean.FALSE;
     //----------------------------------------------------
     @XmlTransient
     @Column(name = "grp_svie_delegate_nr")
@@ -143,14 +152,6 @@ public class Group implements Serializable, Comparable<Group> {
     public Group() {
     }
 
-    public Group(Group group, Long pMs) {
-        id = group.getId();
-        numberOfPrimaryMembers = pMs;
-        name = group.getName();
-        delegateNumber = group.getDelegateNumber();
-        isSvie = group.getIsSvie();
-    }
-
     public Long getId() {
         return id;
     }
@@ -181,18 +182,6 @@ public class Group implements Serializable, Comparable<Group> {
 
     public void setParent(Group parent) {
         this.parent = parent;
-    }
-
-    public User getGroupLeader() {
-        for (Membership ms : activeMemberships) {
-            for (Post post : ms.getPosts()) {
-                if (post.getPostType().getPostName().equals(PostType.KORVEZETO)) {
-                    return ms.getUser();
-                }
-            }
-        }
-        System.out.println("Unable to find GroupLeader for group: " + getId());
-        return null;
     }
 
     /**

@@ -25,8 +25,12 @@ ALTER TABLE users ADD COLUMN usr_dormitory varchar(50);
 ALTER TABLE users ADD COLUMN usr_room varchar(10);
 ALTER TABLE users ADD COLUMN usr_confirm char(64); -- confirmation code for registration
 
--- chnage users id type to biging
+-- change users id type to bigint
 ALTER TABLE users ALTER COLUMN usr_id TYPE bigint;
+
+-- altering spot images to have image path instead of a blob
+ALTER TABLE spot_images DROP COLUMN image;
+ALTER TABLE spot_images ADD COLUMN image_path varchar(255) NOT NULL;
 
 -- private attributes for users
 CREATE TABLE usr_private_attrs (

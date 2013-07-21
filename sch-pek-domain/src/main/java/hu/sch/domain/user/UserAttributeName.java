@@ -10,5 +10,7 @@ public enum UserAttributeName {
     // TODO: copy user attributes here
     SCREEN_NAME,
     GENDER,
-    DATE_OF_BIRTH;
+    DATE_OF_BIRTH,
+    ROOM_NUMBER,
+    HOME_ADDRESS;
 }
