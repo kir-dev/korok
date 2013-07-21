@@ -182,5 +182,6 @@ public interface UserManagerLocal {
      * @param newPwd
      * @throws InvalidPasswordException if the old password does not match the stored one.
      */
-    public void changePassword(String screenName, String oldPwd, String newPwd) throws InvalidPasswordException;
+    public void changePassword(String screenName, String oldPwd, String newPwd)
+            throws InvalidPasswordException, UpdateFailedException;
 }

@@ -786,9 +786,9 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     public List<ApprovedEntrant> getApprovedEntrants(final String neptun,
             final Semester semester) throws UserNotFoundException {
 
-        final User person = userManager.findUserByNeptun(neptun);
+        final User user = userManager.findUserByNeptun(neptun);
 
-        if (person == null) {
+        if (user == null) {
             throw new UserNotFoundException(String.format("User cannot be found with %s neptun.", neptun));
         }
 
@@ -804,7 +804,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 + "entrantReq.valuation.entrantStatus = hu.sch.domain.ValuationStatus.ELFOGADVA AND "
                 + "entrantReq.valuation.nextVersion = null");
         query.setParameter("semester", semester);
-        query.setParameter("virId", person.getId());
+        query.setParameter("virId", user.getId());
 
         results.addAll(query.getResultList());
 

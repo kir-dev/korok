@@ -129,12 +129,14 @@ public class UserManagerBean implements UserManagerLocal {
     @Override
     public void createUser(User user, String password, UserStatus status) throws CreateFailedException {
         em.persist(user);
-        try {
-            new LdapSynchronizer().createEntry(user, password, status);
+        try (LdapSynchronizer sync = new LdapSynchronizer()){
+            sync.createEntry(user, password, status);
         } catch (InvalidPasswordException ex) {
             throw new CreateFailedException("Password is not valid. It must be at least 6 chars long.", ex);
         } catch (LDAPException ex) {
             throw new CreateFailedException("Could not create entry in DS", ex);
+        } catch (Exception ex) {
+            throw new CreateFailedException("Unknown error.", ex);
         }
     }
 
@@ -142,9 +144,9 @@ public class UserManagerBean implements UserManagerLocal {
     public void updateUser(User user) throws UpdateFailedException {
         em.merge(user);
 
-        try {
-            new LdapSynchronizer().syncEntry(user);
-        } catch (LDAPException ex) {
+        try (LdapSynchronizer sync = new LdapSynchronizer()) {
+            sync.syncEntry(user);
+        } catch (Exception ex) {
             throw new UpdateFailedException("Failed updating the DS entry for the user.", ex);
         }
     }
@@ -256,20 +258,22 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public void updateUserStatus(User user, UserStatus userStatus) throws UpdateFailedException {
-        try {
-            new LdapSynchronizer().updateStatus(user, userStatus);
+        try (LdapSynchronizer sync = new LdapSynchronizer()){
+            sync.updateStatus(user, userStatus);
         } catch (LDAPException ex) {
             throw new UpdateFailedException("Could not update the user's status in the directory entry.", ex);
+        } catch (Exception ex) {
+            throw new UpdateFailedException("Unknown error.", ex);
         }
     }
 
     @Override
-    public void changePassword(String screenName, String oldPwd, String newPwd) throws InvalidPasswordException {
-        try {
-            new LdapSynchronizer().changePassword(screenName, oldPwd, newPwd);
-        } catch (LDAPException ex) {
-            // TODO: rethrow wrapped
+    public void changePassword(String screenName, String oldPwd, String newPwd)
+            throws InvalidPasswordException, UpdateFailedException {
+        try(LdapSynchronizer sync = new LdapSynchronizer()) {
+            sync.changePassword(screenName, oldPwd, newPwd);
+        } catch (Exception ex) {
+            throw new UpdateFailedException("Could not update password.", ex);
         }
-
     }
 }

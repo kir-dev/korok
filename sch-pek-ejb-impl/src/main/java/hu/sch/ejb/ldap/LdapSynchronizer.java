@@ -1,6 +1,5 @@
 package hu.sch.ejb.ldap;
 
-import com.unboundid.ldap.sdk.DN;
 import com.unboundid.ldap.sdk.Entry;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
@@ -18,15 +17,13 @@ import hu.sch.domain.user.User;
 import hu.sch.services.exceptions.InvalidPasswordException;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Synchronizes relevant user modifications to directory service (DS) via LDAP.
  *
  * @author tomi
  */
-public class LdapSynchronizer {
+public class LdapSynchronizer implements AutoCloseable {
 
     // TODO: review and clean up after LDAP schema has been updated
     private static final String[] objectClasses = new String[]{
@@ -164,5 +161,12 @@ public class LdapSynchronizer {
             return new Modification(ModificationType.REPLACE, attrname.getName());
         }
         return new Modification(ModificationType.REPLACE, attrname.getName(), value);
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (conn != null) {
+            conn.close();
+        }
     }
 }
