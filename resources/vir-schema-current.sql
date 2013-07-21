@@ -371,8 +371,10 @@ CREATE TABLE log (
 
 CREATE TABLE neptun_list (
     nev character varying(128) NOT NULL,
-    neptun character(6) NOT NULL,
-    szuldat date NOT NULL
+    neptun character varying(6) NOT NULL,
+    szuldat date NOT NULL,
+    education_id character varying(11) DEFAULT NULL,
+    newbie BOOLEAN DEFAULT FALSE
 );
 
 
