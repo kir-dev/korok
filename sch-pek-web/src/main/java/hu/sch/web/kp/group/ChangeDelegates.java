@@ -2,6 +2,7 @@ package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
+import hu.sch.services.exceptions.NotImplementedException;
 import hu.sch.services.exceptions.UpdateFailedException;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.EditDelegatesForm;
@@ -75,7 +76,7 @@ public final class ChangeDelegates extends KorokPage {
                         //userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
                     } catch (UpdateFailedException ex) {
                         // TODO: deal with db and ds errors
-                        throw new UnsupportedOperationException("TODO: error handling for db and ds errors");
+                        throw new NotImplementedException("TODO: error handling for db and ds errors");
                     }
                 }
                 getSession().info("A változások sikeresen mentésre kerültek");

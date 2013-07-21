@@ -3,6 +3,7 @@ package hu.sch.web.common;
 import hu.sch.domain.SpotImage;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.exceptions.NotImplementedException;
 import hu.sch.web.wicket.components.ImageResource;
 import javax.ejb.EJB;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -45,7 +46,7 @@ class RecommendedPhotoPanel extends Panel {
             public ImageResource getObject() {
                 // TODO: read image from filesystem
                 // return new ImageResource(si.getImage(), "png");
-                throw new UnsupportedOperationException("TODO: read image from file system.");
+                throw new NotImplementedException("TODO: read image from file system.");
             }
         });
 
