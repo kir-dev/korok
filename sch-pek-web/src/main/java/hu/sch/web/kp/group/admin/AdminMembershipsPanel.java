@@ -1,6 +1,7 @@
 package hu.sch.web.kp.group.admin;
 
 import hu.sch.domain.Membership;
+import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.session.VirSession;
@@ -30,9 +31,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class AdminMembershipsPanel extends Panel {
 
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
     private static Logger log = LoggerFactory.getLogger(AdminMembershipsPanel.class);
+
+    @EJB(name = "MembershipManagerBean")
+    private MembershipManagerLocal membershipManager;
 
     public AdminMembershipsPanel(String id, final List<Membership> activeMembers) {
         super(id);
@@ -80,7 +82,7 @@ public final class AdminMembershipsPanel extends Panel {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
                             if (!ms.getUser().getId().equals(myId)) {
-                                userManager.setMemberToOldBoy(ms);
+                                membershipManager.inactivateMembership(ms);
                             }
                         }
                     }
@@ -108,7 +110,7 @@ public final class AdminMembershipsPanel extends Panel {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
                             if (!ms.getUser().getId().equals(myId)) {
-                                userManager.deleteMembership(ms);
+                                membershipManager.deleteMembership(ms);
                             }
                         }
                     }

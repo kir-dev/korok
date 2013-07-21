@@ -1,6 +1,8 @@
 package hu.sch.web.kp.search;
 
+import hu.sch.services.SearchManagerLocal;
 import hu.sch.web.kp.KorokPage;
+import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
@@ -9,6 +11,9 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  * @author aldaris
  */
 public class SearchResultsPage extends KorokPage {
+
+    @EJB(name = "SearchManagerBean")
+    private SearchManagerLocal searchManager;
 
     public SearchResultsPage() {
         getSession().error("Nem adtál meg keresési feltételt");
@@ -31,10 +36,10 @@ public class SearchResultsPage extends KorokPage {
 
         setHeaderLabelText("Találatok");
         if (type.equals("group")) {
-            GroupResultPanel groups = new GroupResultPanel("hitsPanel", userManager.findGroupByName("%" + keyword + "%"));
+            GroupResultPanel groups = new GroupResultPanel("hitsPanel", groupManager.findGroupsByName(keyword));
             add(groups);
         } else if (type.equals("user")) {
-            PersonResultPanel users = new PersonResultPanel("hitsPanel", ldapManager.search(keyword));
+            PersonResultPanel users = new PersonResultPanel("hitsPanel", searchManager.searchUsers(keyword));
             add(users);
         }
     }

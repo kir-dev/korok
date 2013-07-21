@@ -1,19 +1,15 @@
 package hu.sch.web.idm.pages.wizard;
 
 import hu.sch.domain.user.Gender;
-import hu.sch.domain.profile.Person;
 import hu.sch.domain.user.StudentStatus;
-import hu.sch.domain.profile.UserStatus;
+import hu.sch.domain.user.UserStatus;
 import hu.sch.domain.util.PatternHolder;
-import hu.sch.services.LdapManagerLocal;
-import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.StringTokenizer;
@@ -70,9 +66,9 @@ public class RegisterWizard extends Wizard {
     //foglalkozni velük
     @Resource(name = "jdbc/sch")
     private DataSource ds;
-    @EJB(name = "LdapManagerBean")
-    LdapManagerLocal ldapManager;
-    private Person person = new Person();
+//    @EJB(name = "LdapManagerBean")
+//    LdapManagerLocal ldapManager;
+//    private Person person = new Person();
     private Date dob; //ezek a mezők használva vannak a CPM által
     private String virUserName;
     private String virPass;
@@ -98,7 +94,7 @@ public class RegisterWizard extends Wizard {
         super.onCancel();
         regMode = null;
         dob = null;
-        person = new Person();
+//        person = new Person();
         virUserName = virPass = neptun = newPass = newPass2 = null;
         getWizardModel().reset();
     }
@@ -106,13 +102,13 @@ public class RegisterWizard extends Wizard {
     @Override
     public void onFinish() {
         super.onFinish();
-        person.setStatus(UserStatus.INACTIVE);
+//        person.setStatus(UserStatus.INACTIVE);
         try {
-            if (((PhoenixApplication) getApplication()).isNewbieTime()) {
-                ldapManager.registerNewbie(person, newPass);
-            } else {
-                ldapManager.registerPerson(person, newPass);
-            }
+//            if (((PhoenixApplication) getApplication()).isNewbieTime()) {
+//                ldapManager.registerNewbie(person, newPass);
+//            } else {
+//                ldapManager.registerPerson(person, newPass);
+//            }
         } catch (RuntimeException re) {
             getSession().error("A regisztráció közben hiba lépett fel!");
             throw new RestartResponseException(RegistrationFinishedPage.class);
@@ -122,16 +118,16 @@ public class RegisterWizard extends Wizard {
     }
 
     private boolean checkExistingPerson(String neptun) throws IllegalArgumentException {
-        try {
-            Person dummy = ldapManager.getPersonByNeptun(neptun);
-            if (!dummy.isActive()) {
-                throw new IllegalArgumentException("A jelenlegi felhasználód (\"" + dummy.getUid()
-                        + "\") inaktív, kérlek adj fel egy ticketet a support.sch.bme.hu oldalon!");
-            }
-            throw new IllegalArgumentException("Már rendelkezel felhasználóval (\"" + dummy.getUid()
-                    + "\"), kérlek igényelj új jelszót a https://idp.sch.bme.hu/opensso/password oldalon!");
-        } catch (PersonNotFoundException pnfe) {
-        }
+//        try {
+//            Person dummy = ldapManager.getPersonByNeptun(neptun);
+//            if (!dummy.isActive()) {
+//                throw new IllegalArgumentException("A jelenlegi felhasználód (\"" + dummy.getUid()
+//                        + "\") inaktív, kérlek adj fel egy ticketet a support.sch.bme.hu oldalon!");
+//            }
+//            throw new IllegalArgumentException("Már rendelkezel felhasználóval (\"" + dummy.getUid()
+//                    + "\"), kérlek igényelj új jelszót a https://idp.sch.bme.hu/opensso/password oldalon!");
+//        } catch (PersonNotFoundException pnfe) {
+//        }
 
         return false;
     }
@@ -284,33 +280,33 @@ public class RegisterWizard extends Wizard {
                     throw new IllegalArgumentException("Nincs ilyen felhasználó!");
                 }
 
-                // fill in transient user attributes
-                person.setVirId(usr_id);
-                neptun = results.getString("usr_neptun");
-
-                //don't use the generated dummy _usrid neptun codes
-                if (!neptun.startsWith("_")) {
-                    person.setNeptun(neptun);
-                }
-
-
-                checkExistingPerson(neptun);
-//                person.setFullName(results.getString("usr_name"));
-                person.setNickName(results.getString("usr_nickname"));
-                person.setFirstName(results.getString("usr_firstname"));
-                person.setLastName(results.getString("usr_lastname"));
-                person.setMail(results.getString("usr_email"));
-
-                String isGirl = results.getString("usr_is_a_girl");
-                if (isGirl != null) {
-                    if (isGirl.equals("t")) {
-                        person.setGender(Gender.FEMALE);
-                    } else if (isGirl.equals("f")) {
-                        person.setGender(Gender.MALE);
-                    }
-                }
-
-                person.setStudentStatus(StudentStatus.fromString(results.getString("usr_status")));
+//                // fill in transient user attributes
+//                person.setVirId(usr_id);
+//                neptun = results.getString("usr_neptun");
+//
+//                //don't use the generated dummy _usrid neptun codes
+//                if (!neptun.startsWith("_")) {
+//                    person.setNeptun(neptun);
+//                }
+//
+//
+//                checkExistingPerson(neptun);
+////                person.setFullName(results.getString("usr_name"));
+//                person.setNickName(results.getString("usr_nickname"));
+//                person.setFirstName(results.getString("usr_firstname"));
+//                person.setLastName(results.getString("usr_lastname"));
+//                person.setMail(results.getString("usr_email"));
+//
+//                String isGirl = results.getString("usr_is_a_girl");
+//                if (isGirl != null) {
+//                    if (isGirl.equals("t")) {
+//                        person.setGender(Gender.FEMALE);
+//                    } else if (isGirl.equals("f")) {
+//                        person.setGender(Gender.MALE);
+//                    }
+//                }
+//
+//                person.setStudentStatus(StudentStatus.fromString(results.getString("usr_status")));
 
                 return true;
             } catch (SQLException sqle) {
@@ -388,14 +384,14 @@ public class RegisterWizard extends Wizard {
                 stmt.setDate(2, new java.sql.Date(birthDate.getTime()));
                 results = stmt.executeQuery();
                 if (results.next()) {
-                    person.setNeptun(neptun);
-                    checkExistingPerson(neptun);
-                    if (((PhoenixApplication) getApplication()).isNewbieTime()) {
-                        person.setStudentStatus(StudentStatus.NEWBIE);
-                    } else {
-                        person.setStudentStatus(StudentStatus.ACTIVE);
-                    }
-                    person.setDateOfBirth(birthDate);
+//                    person.setNeptun(neptun);
+//                    checkExistingPerson(neptun);
+//                    if (((PhoenixApplication) getApplication()).isNewbieTime()) {
+//                        person.setStudentStatus(StudentStatus.NEWBIE);
+//                    } else {
+//                        person.setStudentStatus(StudentStatus.ACTIVE);
+//                    }
+//                    person.setDateOfBirth(birthDate);
 
                     return true;
                 } else {
@@ -461,13 +457,13 @@ public class RegisterWizard extends Wizard {
             uidField.add(new IValidator<String>() {
                 @Override
                 public void validate(IValidatable<String> validatable) {
-                    String uid = validatable.getValue();
-                    try {
-                        ldapManager.getPersonByUid(uid);
-                        validatable.error(new ValidationError().addKey("reg.err.existing.user"));
-                    } catch (PersonNotFoundException pnfe) {
-                        //nem találtuk meg a felhasználót, ez most pont jó :)
-                    }
+//                    String uid = validatable.getValue();
+//                    try {
+//                        ldapManager.getPersonByUid(uid);
+//                        validatable.error(new ValidationError().addKey("reg.err.existing.user"));
+//                    } catch (PersonNotFoundException pnfe) {
+//                        //nem találtuk meg a felhasználót, ez most pont jó :)
+//                    }
                 }
             });
             add(uidField);

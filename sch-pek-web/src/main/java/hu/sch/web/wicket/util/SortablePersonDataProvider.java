@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.util;
 
-import hu.sch.domain.profile.Person;
+import hu.sch.domain.user.User;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
@@ -11,24 +11,24 @@ import org.apache.wicket.model.IModel;
  *
  * @author aldaris
  */
-public class SortablePersonDataProvider extends SortableDataProvider<Person, String> {
+public class SortablePersonDataProvider extends SortableDataProvider<User, String> {
 
-    private SortableList<Person> persons;
+    private SortableList<User> persons;
 
-    public SortablePersonDataProvider(List<Person> persons) {
-        this.persons = new SortableList<Person>(persons);
-        setSort(Person.SORT_BY_NAME, SortOrder.ASCENDING);
+    public SortablePersonDataProvider(List<User> persons) {
+        this.persons = new SortableList<User>(persons);
+        setSort("fullName", SortOrder.ASCENDING);
     }
 
     @Override
-    public Iterator<? extends Person> iterator(final long first, final long count) {
+    public Iterator<? extends User> iterator(final long first, final long count) {
         persons.sort(getSort());
         return persons.getList().subList((int) first, (int) (first + count)).iterator();
     }
 
     @Override
-    public IModel<Person> model(Person p) {
-        return new LoadableDetachablePersonModel(p);
+    public IModel<User> model(User p) {
+        return new LoadableDetachableUserModel(p);
     }
 
     @Override
@@ -36,11 +36,11 @@ public class SortablePersonDataProvider extends SortableDataProvider<Person, Str
         return persons.size();
     }
 
-    public List<Person> getPersons() {
+    public List<User> getPersons() {
         return persons.getList();
     }
 
-    public void setPersons(List<Person> list) {
+    public void setPersons(List<User> list) {
         persons.setList(list);
         persons.sort(getSort());
     }

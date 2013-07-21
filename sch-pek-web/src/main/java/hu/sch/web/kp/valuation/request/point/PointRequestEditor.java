@@ -2,6 +2,8 @@ package hu.sch.web.kp.valuation.request.point;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
+import hu.sch.services.GroupManagerLocal;
+import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
@@ -39,8 +41,10 @@ public class PointRequestEditor extends Panel {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal valuationManager;
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
+    @EJB(name = "MembershipManagerBean")
+    private MembershipManagerLocal membershipManager;
+    @EJB(name = "GroupManagerBean")
+    private GroupManagerLocal groupManager;
 
     public PointRequestEditor(String id, final Valuation val) {
         super(id);
@@ -78,7 +82,7 @@ public class PointRequestEditor extends Panel {
                 item.add(new Label("user.name"));
                 item.add(new Label("user.nickName"));
 
-                Membership ms = userManager.getMembership(val.getGroupId(),
+                Membership ms = membershipManager.findMembership(val.getGroupId(),
                         item.getModelObject().getUserId());
                 item.add(new SvieMembershipDetailsIcon("user.svie", ms));
 
@@ -117,7 +121,7 @@ public class PointRequestEditor extends Panel {
 
     private List<PointRequest> prepareRequests(final Valuation ert) {
         final List<User> members =
-                userManager.getCsoporttagokWithoutOregtagok(ert.getGroupId());
+                groupManager.findActiveMembers(ert.getGroupId());
         final List<PointRequest> pointRequests =
                 valuationManager.findPontIgenyekForErtekeles(ert.getId());
 

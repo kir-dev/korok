@@ -53,7 +53,7 @@ public final class SvieGroupMgmt extends KorokPage {
         }
 
         setHeaderLabelText("Csoportok adminisztrálása");
-        groups = userManager.getAllGroupsWithCount();
+        groups = groupManager.getAllGroups(true);
         filteredGroups = new ArrayList<Group>(groups);
 
         List<IColumn<Group, String>> columns = new ArrayList<IColumn<Group, String>>();
@@ -69,7 +69,7 @@ public final class SvieGroupMgmt extends KorokPage {
             @Override
             protected Panel getPanel(String componentId, Group g) {
                 // FIXME: nagyon gány, soronként 1 lekérdezés!!!
-                User korvezeto = userManager.getGroupLeaderForGroup(g.getId());
+                User korvezeto = groupManager.findLeaderForGroup(g.getId());
                 return new UserLink(componentId, korvezeto);
             }
         });

@@ -56,7 +56,7 @@ public class Valuations extends KorokPage {
     public Valuations(PageParameters params) {
         try {
             Long groupId = params.get("id").toLong();
-            group = userManager.findGroupById(groupId);
+            group = groupManager.findGroupById(groupId);
         } catch (StringValueConversionException svce) {
             getSession().error("Érvénytelen paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
@@ -72,7 +72,7 @@ public class Valuations extends KorokPage {
     }
 
     private void init() {
-        User user = userManager.findUserWithMembershipsById(getSession().getUserId());
+        User user = userManager.findUserById(getSession().getUserId(), true);
         if (user == null || !isUserGroupLeaderInSomeGroup()) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
             throw new RestartResponseException(GroupHierarchy.class);

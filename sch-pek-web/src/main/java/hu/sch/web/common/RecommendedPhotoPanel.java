@@ -43,10 +43,12 @@ class RecommendedPhotoPanel extends Panel {
 
             @Override
             public ImageResource getObject() {
-                return new ImageResource(si.getImage(), "png");
+                // TODO: read image from filesystem
+                // return new ImageResource(si.getImage(), "png");
+                throw new UnsupportedOperationException("TODO: read image from file system.");
             }
         });
-        photo.setVisible(si.getImage() != null);
+
         fragment.add(photo);
 
         form.add(new AjaxButton("accept") {

@@ -1,10 +1,10 @@
 package hu.sch.web.idm.pages;
 
-import hu.sch.domain.profile.Person;
+import hu.sch.domain.user.User;
 import hu.sch.services.MailManagerLocal;
+import hu.sch.services.exceptions.DuplicateUserException;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.kp.KorokPage;
-import java.util.List;
 import javax.ejb.EJB;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -30,27 +30,30 @@ public class UserNameReminder extends KorokPage {
         }
 
         StatelessForm<Void> reminderForm = new StatelessForm<Void>("reminderForm") {
-
             @Override
             protected void onSubmit() {
-                List<Person> results = ldapManager.searchMyUid(mail);
-                if (results.isEmpty()) {
-                    getSession().error(getLocalizer().getString("err.NoSuchEmail", this));
-                    return;
-                } else if (results.size() > 1) {
+                User result;
+                try {
+                    result = userManager.findUserByEmail(mail);
+                } catch (DuplicateUserException ex) {
                     getSession().error(getLocalizer().getString("err.DuplicatedUsers", this));
                     return;
+                }
+
+                if (result == null) {
+                    getSession().error(getLocalizer().getString("err.NoSuchEmail", this));
+                    return;
                 } else {
-                    Person person = results.get(0);
                     try {
+                        // TODO: move email text out to resource file
                         StringBuilder msg = new StringBuilder(200);
                         if (((PhoenixApplication) getApplication()).isNewbieTime()) {
                             msg.append("Tisztelt ");
                         } else {
                             msg.append("Kedves ");
                         }
-                        msg.append(person.getFirstName()).append("!\n\n").append("Ehhez az e-mail címhez a következő felhasználói név van regisztrálva a rendszerben: '");
-                        msg.append(person.getUid()).append("'.\n\nÜdv,\nKir-Dev");
+                        msg.append(result.getFirstName()).append("!\n\n").append("Ehhez az e-mail címhez a következő felhasználói név van regisztrálva a rendszerben: '");
+                        msg.append(result.getScreenName()).append("'.\n\nÜdv,\nKir-Dev");
 
                         mailManager.sendEmail(mail, "Felhasználói név emlékeztető", msg.toString());
                     } catch (Exception e) {

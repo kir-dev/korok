@@ -1,6 +1,9 @@
 package hu.sch.web.wicket.components.customlinks;
 
-import hu.sch.domain.profile.Person;
+import hu.sch.domain.user.User;
+import hu.sch.domain.user.UserAttributeName;
+import hu.sch.services.UserManagerLocal;
+import javax.ejb.EJB;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.markup.html.image.Image;
@@ -10,22 +13,27 @@ import org.apache.wicket.request.resource.ResourceReference;
 /**
  *
  * @author aldaris
+ * @author tomi
  */
 public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
 
-    private String privateAttr;
+    private UserAttributeName attr;
     private boolean isPrivateAttr;
     private Image img;
-    private static Person person;
+    private User user;
+
+    @EJB(name = "UserManagerBean")
+    private UserManagerLocal userManager;
 
     public AttributeAjaxFallbackLink(String id) {
         super(id);
     }
 
-    public AttributeAjaxFallbackLink(String linkId, String imgId, final String privateAttr) {
+    public AttributeAjaxFallbackLink(String linkId, String imgId, final UserAttributeName attr) {
         super(linkId);
-        this.privateAttr = privateAttr;
-        isPrivateAttr = person.isPrivateAttribute(privateAttr);
+        this.attr = attr;
+        isPrivateAttr = !user.isAttributeVisible(attr);
+        isPrivateAttr = false;
 
         img = new Image(imgId, getImageResourceReference());
         img.setOutputMarkupId(true);
@@ -35,7 +43,7 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
 
     @Override
     public void onClick(AjaxRequestTarget target) {
-        person.invertPrivateAttribute(privateAttr);
+        invertAttributeVisibility();
         isPrivateAttr = !isPrivateAttr;
 
         img.setImageResourceReference(getImageResourceReference());
@@ -50,7 +58,11 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
         }
     }
 
-    public static void setPerson(Person person2) {
-        person = person2;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void invertAttributeVisibility() {
+        userManager.invertAttributeVisibility(user, attr);
     }
 }

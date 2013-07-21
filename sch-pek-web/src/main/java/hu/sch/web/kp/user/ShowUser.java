@@ -63,7 +63,7 @@ public class ShowUser extends KorokPage {
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        final User user = userManager.findUserWithMembershipsById(id);
+        final User user = userManager.findUserById(id, true);
         if (user == null) {
             info("A felhasználó nem található");
             throw new RestartResponseException(GroupHierarchy.class);
@@ -92,7 +92,7 @@ public class ShowUser extends KorokPage {
                         return;
                     }
                 }
-                userManager.setMemberToOldBoy(ms);
+                membershipManager.inactivateMembership(ms);
                 getSession().info("Az öregtaggá válás sikeresen megtörtént");
             }
         }.getDataTable());
@@ -118,7 +118,7 @@ public class ShowUser extends KorokPage {
             @Override
             protected void onSubmit() {
                 try {
-                    userManager.addUserToGroup(user, addToCsoportSelected, new Date(), null, isUserGroupLeader(addToCsoportSelected));
+                    membershipManager.joinGroup(addToCsoportSelected, user, new Date(), null, isUserGroupLeader(addToCsoportSelected));
                     getSession().info("A felhasználó a <b>" + addToCsoportSelected + "</b> körbe felvéve");
                     setResponsePage(ShowUser.class, new PageParameters().add("id", user.getId()));
                 } catch (MembershipAlreadyExistsException ex) {

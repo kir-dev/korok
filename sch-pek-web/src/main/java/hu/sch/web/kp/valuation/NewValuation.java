@@ -31,7 +31,7 @@ public class NewValuation extends KorokPage {
         } catch (StringValueConversionException ex) {
         }
 
-        if (groupId == null || (group = userManager.findGroupById(groupId)) == null) {
+        if (groupId == null || (group = groupManager.findGroupById(groupId)) == null) {
             getSession().error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
         }

@@ -1,52 +1,61 @@
 package hu.sch.web.profile.confirmation;
 
-import hu.sch.domain.profile.Person;
-import hu.sch.domain.profile.UserStatus;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.domain.user.User;
+import hu.sch.domain.user.UserStatus;
+import hu.sch.services.exceptions.UpdateFailedException;
 import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.show.ShowPersonPage;
-import java.security.NoSuchAlgorithmException;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author konvergal
+ * @author tomi
  */
 public final class ConfirmPage extends ProfilePage {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConfirmPage.class);
 
     public ConfirmPage() {
         super();
     }
 
-    public ConfirmPage(PageParameters params) throws NoSuchAlgorithmException {
+    public ConfirmPage(PageParameters params) {
         String uid = params.get("uid").toString();
-        try {
-            Person person = ldapManager.getPersonByUid(uid);
-
-            boolean success = false;
-            String confirmationCode = params.get("confirmationcode").toString();
-
-            if (confirmationCode.equals(person.getConfirmationCode())) {
-                person.setStatus(UserStatus.ACTIVE);
-                ldapManager.update(person);
-                success = true;
-            }
-
-            Link link = new BookmarkablePageLink("linktoProfile", ShowPersonPage.class);
-            add(link);
-            if (success) {
-                setHeaderLabelText("Megerősítés");
-                info("Sikeres megerősítés. :)");
-            } else {
-                setHeaderLabelText("Hiba!");
-                error("Sikertelen megerősítés.");
-                link.setVisible(false);
-            }
-        } catch (PersonNotFoundException e) {
+        User user = userManager.findUserByScreenName(uid);
+        if (user == null) {
             getSession().error("A felhasználó nem található!");
             setResponsePage(getApplication().getHomePage());
+            return;
+        }
+
+        boolean success = false;
+        String confirmationCode = params.get("confirmationcode").toString();
+
+        if (confirmationCode.equals(user.getConfirmationCode())) {
+            try {
+                userManager.updateUserStatus(user, UserStatus.ACTIVE);
+                success = true;
+            } catch (UpdateFailedException ex) {
+                logger.error("Failed to update the direcotry service.");
+                getSession().error("Hiba az ellenőrzéskor.");
+                setResponsePage(getApplication().getHomePage());
+            }
+        }
+
+        Link link = new BookmarkablePageLink("linktoProfile", ShowPersonPage.class);
+        add(link);
+        if (success) {
+            setHeaderLabelText("Megerősítés");
+            info("Sikeres megerősítés. :)");
+        } else {
+            setHeaderLabelText("Hiba!");
+            error("Sikertelen megerősítés.");
+            link.setVisible(false);
         }
     }
 }

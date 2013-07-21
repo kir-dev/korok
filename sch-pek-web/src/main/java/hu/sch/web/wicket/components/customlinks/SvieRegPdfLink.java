@@ -7,9 +7,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.user.User;
 import hu.sch.domain.config.Configuration;
-import hu.sch.domain.profile.Person;
-import hu.sch.services.LdapManagerLocal;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.services.UserManagerLocal;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.io.ByteArrayOutputStream;
@@ -32,15 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 public class SvieRegPdfLink extends LinkPanel<User> {
 
-    @EJB(name = "LdapManagerBean")
-    LdapManagerLocal ldapManager;
     private static final Logger logger = LoggerFactory.getLogger(SvieRegPdfLink.class);
     private static final long serialVersionUID = 1L;
     private static Image schLogo;
     private static Image signImage;
-    private final User user;
-    private Person person;
-    private String cachedmsType;
     private static BaseFont arialUnicode;
     private static Font font;
     private static Paragraph firstStatement;
@@ -49,6 +42,9 @@ public class SvieRegPdfLink extends LinkPanel<User> {
     private static Paragraph obeyStatement;
     private static Paragraph fourthStatement;
     private static Paragraph permissionStatement;
+
+    private final User user;
+    private String cachedmsType;
 
     static {
         try {
@@ -131,13 +127,6 @@ public class SvieRegPdfLink extends LinkPanel<User> {
 
             @Override
             public void onClick() {
-                try {
-                    person = ldapManager.getPersonByVirId(user.getId().toString());
-                } catch (PersonNotFoundException ex) {
-                    getSession().error("Hiba a PDF generálása közben.");
-                    throw new RestartResponseException(ShowUser.class);
-                }
-
                 //rendes tag és nincs elsődleges kör elmentve
                 if (user.getSvieMembershipType().equals(SvieMembershipType.RENDESTAG)
                         && user.getSviePrimaryMembership() == null) {
@@ -151,7 +140,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
                             ((ByteArrayOutputStream) generatePdf()).toByteArray(),
                             "application/pdf");
                     getRequestCycle().scheduleRequestHandlerAfterCurrent(
-                            new ResourceStreamRequestHandler(resourceStream, "export_" + person.getNeptun() + ".pdf"));
+                            new ResourceStreamRequestHandler(resourceStream, "export_" + user.getNeptunCode()+ ".pdf"));
                 } catch (Exception ex) {
                     getSession().error("Hiba történt a PDF generálása közben!");
                     logger.error("Could not generate svieregpdf", ex);
@@ -228,9 +217,9 @@ public class SvieRegPdfLink extends LinkPanel<User> {
     private String createUserInfo() {
         StringBuilder sb = new StringBuilder(300);
         sb.append("Alulírott ").append(user.getFullName());
-        sb.append(" (lakcím: ").append(person.getHomePostalAddress());
-        sb.append(", anyja neve: ").append(person.getMothersName());
-        sb.append(", e-mail cím: ").append(person.getMail());
+        sb.append(" (lakcím: ").append(user.getHomeAddress());
+        sb.append(", anyja neve: ").append(user.getMothersName());
+        sb.append(", e-mail cím: ").append(user.getEmailAddress());
         sb.append(") jelen nyilatkozat aláírásával kifejezem belépési szándékom ");
         sb.append("a Schönherzes Villamosmérnökök és Informatikusok Egyesületébe ");
         sb.append("(székhely: 1115 Budapest, Bartók Béla út 152/H. Kelen Irodaház, ");

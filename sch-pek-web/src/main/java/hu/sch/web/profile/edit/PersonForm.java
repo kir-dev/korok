@@ -2,18 +2,16 @@ package hu.sch.web.profile.edit;
 
 import hu.sch.domain.user.IMAccount;
 import hu.sch.domain.user.IMProtocol;
-import hu.sch.domain.profile.Person;
+import hu.sch.domain.user.User;
 import hu.sch.domain.util.ImageResizer;
 import hu.sch.domain.util.PatternHolder;
-import hu.sch.services.LdapManagerLocal;
+import hu.sch.services.exceptions.NotImplementedException;
 import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.ejb.EJB;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -43,22 +41,20 @@ import org.slf4j.LoggerFactory;
  *
  * @author konvergal
  */
-public class PersonForm extends Form<Person> {
+public class PersonForm extends Form<User> {
 
-    @EJB(name = "LdapManagerBean")
-    private LdapManagerLocal ldapManager;
     private static final Logger logger = LoggerFactory.getLogger(PersonForm.class);
-    private final Person person;
+    private final User user;
     private Date dob;
     private List<FileUpload> upload;
     private final RefreshingView<IMAccount> refreshView;
     private static final int NAMES_MIN_LENGTH = 2;
     private static final int NAMES_MAX_LENGTH = 40;
 
-    public PersonForm(final String componentName, final Person person) {
+    public PersonForm(final String componentName, final User user) {
         super(componentName);
-        this.person = person;
-        setModel(new CompoundPropertyModel<Person>(person));
+        this.user = user;
+        setModel(new CompoundPropertyModel<>(user));
         setMultiPart(true);
 
         createNameFields();
@@ -69,7 +65,7 @@ public class PersonForm extends Form<Person> {
 
         //Ezt muszáj a konstruktorban csinálni a final kulcsszó miatt.
         final WebMarkupContainer rowPanel = new WebMarkupContainer("rowPanel");
-        final IModel<List<IMAccount>> model = new PropertyModel<List<IMAccount>>(person, "IMAccounts");
+        final IModel<List<IMAccount>> model = new PropertyModel<List<IMAccount>>(user, "IMAccounts");
         refreshView = new RefreshingView<IMAccount>("ims", model) {
 
             @Override
@@ -133,7 +129,7 @@ public class PersonForm extends Form<Person> {
 
         createPhotoField();
 
-        add(new Label("neptunLabel", new PropertyModel(person, "neptun")));
+        add(new Label("neptunLabel", new PropertyModel(user, "neptun")));
 
         initAjaxPrivateLinks();
         onInit();
@@ -156,25 +152,26 @@ public class PersonForm extends Form<Person> {
                         return;
                     }
 
-                    try {
-                        ImageResizer imageResizer = new ImageResizer(fu.getBytes(), Person.IMAGE_MAX_SIZE);
-
-                        if (imageResizer != null) {
-                            imageResizer.resizeImage();
-                            person.setPhoto(imageResizer.getByteArray());
-                        }
-                    } catch (IOException ioe) {
-                        logger.error("IO error occured during image processing", ioe);
-                        error("Hiba történt a fotó feldolgozása közben!");
-                    }
+                    throw new NotImplementedException();
+//                    try {
+//                        ImageResizer imageResizer = new ImageResizer(fu.getBytes(), Person.IMAGE_MAX_SIZE);
+//
+//                        if (imageResizer != null) {
+//                            imageResizer.resizeImage();
+//                            user.setPhoto(imageResizer.getByteArray());
+//                        }
+//                    } catch (IOException ioe) {
+//                        logger.error("IO error occured during image processing", ioe);
+//                        error("Hiba történt a fotó feldolgozása közben!");
+//                    }
                 }
 
                 if (!hasError()) {
                     if (dob != null) {
-                        person.setDateOfBirth(dob);
+                        user.setDateOfBirth(dob);
                     }
 
-                    ldapManager.update(person);
+//                    ldapManager.update(user);
                     getSession().info("Sikeres adatmódosítás. :)");
                     setResponsePage(ShowPersonPage.class);
                 }
@@ -227,7 +224,7 @@ public class PersonForm extends Form<Person> {
     }
 
     private void createAdditionalFields() {
-        dob = person.getDateOfBirth();
+        dob = user.getDateOfBirth();
         DateTextField dateTF = new DateTextField("dateOfBirth", new PropertyModel<Date>(this, "dob"), new StyleDateConverter("S-", true)) {
 
             @Override
@@ -326,7 +323,8 @@ public class PersonForm extends Form<Person> {
             @Override
             public ImageResource getObject() {
                 // TODO Auto-generated method stub
-                return new ImageResource(person.getPhoto(), "png");
+//                return new ImageResource(user.getPhoto(), "png");
+                throw new NotImplementedException();
             }
         });
         photo.setOutputMarkupId(true);
@@ -336,35 +334,37 @@ public class PersonForm extends Form<Person> {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                person.setPhoto(null);
-                ldapManager.update(person);
+                throw new NotImplementedException();
+//                user.setPhoto(null);
+//                ldapManager.update(user);
 
-                setVisible(false);
-                photo.setVisible(false);
-                target.add(this);
-                target.add(photo);
+//                setVisible(false);
+//                photo.setVisible(false);
+//                target.add(this);
+//                target.add(photo);
             }
         };
         photoRemoveLink.setOutputMarkupId(true);
         add(photoRemoveLink);
 
-        if (person.getPhoto() == null) {
-            photo.setVisible(false);
-            photoRemoveLink.setVisible(false);
-        }
+//        if (user.getPhoto() == null) {
+//            photo.setVisible(false);
+//            photoRemoveLink.setVisible(false);
+//        }
 
         add(new FileUploadField("fileInput", new PropertyModel<List<FileUpload>>(this, "upload")));
     }
 
     private void initAjaxPrivateLinks() {
-        AttributeAjaxFallbackLink.setPerson(person);
-        add(new AttributeAjaxFallbackLink("mailAttributeLink", "mailAttributeImg", "mail"));
-        add(new AttributeAjaxFallbackLink("mobileAttributeLink", "mobileAttributeImg", "mobile"));
-        add(new AttributeAjaxFallbackLink("homePhoneAttributeLink", "homePhoneAttributeImg", "homePhone"));
-        add(new AttributeAjaxFallbackLink("roomNumberAttributeLink", "roomNumberAttributeImg", "roomNumber"));
-        add(new AttributeAjaxFallbackLink("homePostalAddressAttributeLink", "homePostalAddressAttributeImg", "homePostalAddress"));
-        add(new AttributeAjaxFallbackLink("webpageAttributeLink", "webpageAttributeImg", "labeledURI"));
-        add(new AttributeAjaxFallbackLink("dateOfBirthAttributeLink", "dateOfBirthAttributeImg", "schacDateOfBirth"));
+        throw new NotImplementedException();
+//        AttributeAjaxFallbackLink.setUser(user);
+//        add(new AttributeAjaxFallbackLink("mailAttributeLink", "mailAttributeImg", "mail"));
+//        add(new AttributeAjaxFallbackLink("mobileAttributeLink", "mobileAttributeImg", "mobile"));
+//        add(new AttributeAjaxFallbackLink("homePhoneAttributeLink", "homePhoneAttributeImg", "homePhone"));
+//        add(new AttributeAjaxFallbackLink("roomNumberAttributeLink", "roomNumberAttributeImg", "roomNumber"));
+//        add(new AttributeAjaxFallbackLink("homePostalAddressAttributeLink", "homePostalAddressAttributeImg", "homePostalAddress"));
+//        add(new AttributeAjaxFallbackLink("webpageAttributeLink", "webpageAttributeImg", "labeledURI"));
+//        add(new AttributeAjaxFallbackLink("dateOfBirthAttributeLink", "dateOfBirthAttributeImg", "schacDateOfBirth"));
 //            add(new AttributeAjaxFallbackLink("neptunAttributeLink", "neptunAttributeImg", "schacPersonalUniqueCode"));
     }
 

@@ -2,6 +2,7 @@ package hu.sch.web.kp.search;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
+import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.wicket.components.customlinks.GroupLink;
 import hu.sch.web.wicket.components.customlinks.UserLink;
@@ -21,8 +22,8 @@ import org.apache.wicket.markup.html.panel.Panel;
  */
 public class GroupResultPanel extends Panel {
 
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
+    @EJB(name = "GroupManagerBean")
+    private GroupManagerLocal groupManager;
 
     public GroupResultPanel(String id, List<Group> groups) {
         super(id);
@@ -42,7 +43,7 @@ public class GroupResultPanel extends Panel {
             @Override
             protected Panel getPanel(String componentId, Group g) {
                 // FIXME: ez így nagyon gány, minden egyes sorhoz külön query???
-                User korvezeto = userManager.getGroupLeaderForGroup(g.getId());
+                User korvezeto = groupManager.findLeaderForGroup(g.getId());
                 return new UserLink(componentId, korvezeto);
             }
         });

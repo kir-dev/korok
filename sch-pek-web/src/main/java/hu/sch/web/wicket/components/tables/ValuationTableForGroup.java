@@ -31,7 +31,7 @@ public class ValuationTableForGroup extends ValuationTable {
         provider.setSort(MySortableDataProvider.SORT_BY_POINT, SortOrder.DESCENDING);
     }
 
-    public ValuationTableForGroup(String id, List<ValuationData> items, 
+    public ValuationTableForGroup(String id, List<ValuationData> items,
             final boolean showSvieColumn) {
 
         this(id, items, 20, showSvieColumn);
@@ -52,7 +52,7 @@ public class ValuationTableForGroup extends ValuationTable {
 
                 @Override
                 protected Panel getPanel(final String componentId, final ValuationData vd) {
-                    final Membership ms = userManager.getMembership(vd.getGroup().getId(),
+                    final Membership ms = membershipManager.findMembership(vd.getGroup().getId(),
                             vd.getUser().getId());
 
                     if (ms != null) {

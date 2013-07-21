@@ -33,8 +33,9 @@ public class EditGroupInfo extends KorokPage {
         }
         setHeaderLabelText("Kör adatlap szerkesztése");
 
-        group = userManager.findGroupById(id);
-        User user = userManager.findUserWithMembershipsById(getSession().getUserId());
+        group = groupManager.findGroupById(id);
+        User user = userManager.findUserById(getSession().getUserId(), true);
+
         if (user == null || !isUserGroupLeader(group)) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
             throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", id.toString()));
@@ -46,7 +47,7 @@ public class EditGroupInfo extends KorokPage {
             protected void onSubmit() {
                 super.onSubmit();
                 try {
-                    userManager.groupInfoUpdate(group);
+                    groupManager.updateGroup(group);
                     getSession().info(getLocalizer().getString("info.AdatlapMentve", this));
                 } catch (Exception ex) {
                     getSession().error(getLocalizer().getString("err.AdatlapFailed", this));

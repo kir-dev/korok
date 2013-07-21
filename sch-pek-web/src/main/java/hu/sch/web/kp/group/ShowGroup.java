@@ -61,7 +61,7 @@ public class ShowGroup extends KorokPage {
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        final Group group = userManager.findGroupWithMembershipsById(id);
+        final Group group = groupManager.findGroupById(id, true);
         final User user = getUser();
         //ha a kör nem létezik
         if (group == null) {
@@ -119,7 +119,7 @@ public class ShowGroup extends KorokPage {
             @Override
             public void onClick() {
                 try {
-                    userManager.addUserToGroup(user, group, new Date(), null, false);
+                    membershipManager.joinGroup(group, user, new Date(), null, false);
                     getSession().info("Sikeres jelentkezés");
                     setResponsePage(ShowUser.class);
                 } catch (MembershipAlreadyExistsException ex) {

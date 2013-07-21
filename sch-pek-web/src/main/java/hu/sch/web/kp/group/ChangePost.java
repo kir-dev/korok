@@ -39,7 +39,7 @@ public final class ChangePost extends KorokPage {
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        final Membership ms = userManager.getMembership(memberId);
+        final Membership ms = membershipManager.findMembership(memberId);
         if (ms == null) {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
@@ -49,7 +49,7 @@ public final class ChangePost extends KorokPage {
 
         //kell, hogy a csoporttagságok is betöltődjenek
         Group group = ms.getGroup();
-        userManager.loadMemberships(group);
+        membershipManager.fetchMembershipsFor(group);
         User user = ms.getUser();
 
         if (!isUserGroupLeader(group) && !hasUserDelegatedPostInGroup(group)) {

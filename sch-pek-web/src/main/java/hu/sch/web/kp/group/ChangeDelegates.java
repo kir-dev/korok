@@ -2,6 +2,7 @@ package hu.sch.web.kp.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
+import hu.sch.services.exceptions.UpdateFailedException;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.EditDelegatesForm;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public final class ChangeDelegates extends KorokPage {
             error("Hibás paraméter!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
-        final Group group = userManager.findGroupById(groupId);
+        final Group group = groupManager.findGroupById(groupId);
         if (!isUserGroupLeader(group)) {
             getSession().error("Nincsen jogosultságod a művelet végrehajtásához!");
             throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", group.getId()));
@@ -38,7 +39,7 @@ public final class ChangeDelegates extends KorokPage {
         add(new Label("groupName", group.getName()));
 
 
-        List<User> users = userManager.getUsersWithPrimaryMembership(groupId);
+        List<User> users = groupManager.findMembersWithPrimaryMembership(groupId);
         add(new EditDelegatesForm("form", users) {
 
             @Override
@@ -67,7 +68,15 @@ public final class ChangeDelegates extends KorokPage {
                 }
 
                 for (ExtendedUser extendedUser : modifications) {
-                    userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
+                    final User user = extendedUser.getUser();
+                    user.setDelegated(extendedUser.getSelected());
+                    try {
+                        userManager.updateUser(user);
+                        //userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
+                    } catch (UpdateFailedException ex) {
+                        // TODO: deal with db and ds errors
+                        throw new UnsupportedOperationException("TODO: error handling for db and ds errors");
+                    }
                 }
                 getSession().info("A változások sikeresen mentésre kerültek");
                 setResponsePage(ShowGroup.class, new PageParameters().add("id", group.getId()));

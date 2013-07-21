@@ -1,7 +1,6 @@
 package hu.sch.web.common;
 
 import hu.sch.domain.user.User;
-import hu.sch.services.LdapManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.authz.UserAuthorization;
@@ -18,6 +17,8 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -25,6 +26,8 @@ import org.apache.wicket.model.Model;
  * @since   2.4
  */
 public abstract class PekPage extends WebPage {
+
+    private static final Logger logger = LoggerFactory.getLogger(PekPage.class);
 
     private static final String NAVBAR_SCRIPT =
             "var navbarConf = { "
@@ -43,8 +46,6 @@ public abstract class PekPage extends WebPage {
     private Label titleLabel;
     private Label navbarScript;
     private Label headerLabel;
-    @EJB(name = "LdapManagerBean")
-    protected LdapManagerLocal ldapManager;
     @EJB(name = "UserManagerBean")
     protected UserManagerLocal userManager;
 
@@ -86,14 +87,9 @@ public abstract class PekPage extends WebPage {
             return;
         }
         if (!virId.equals(getSession().getUserId())) {
-            // nem egyezik, de van virId, akkor írjuk felül az eddig ismertet
-            User userAttrs =
-                    getAuthorizationComponent().getUserAttributes(getRequest());
-            if (userAttrs != null) {
-                userAttrs.setId(virId);
-                userManager.updateUserAttributes(userAttrs);
-            }
-            getSession().setUserId(virId);
+            logger.debug("WHAT JUST HAPPENED??? "
+                    + "Different logged in user in session and request!");
+            throw new IllegalStateException("Different logged in user in session and request!");
         }
     }
 
@@ -151,7 +147,7 @@ public abstract class PekPage extends WebPage {
     }
 
     protected final User getUser() {
-        return userManager.findUserWithMembershipsById(getSession().getUserId());
+        return userManager.findUserById(getSession().getUserId(), true);
     }
 
     @Override

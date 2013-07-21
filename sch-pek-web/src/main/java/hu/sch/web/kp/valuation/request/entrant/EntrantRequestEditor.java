@@ -2,6 +2,8 @@ package hu.sch.web.kp.valuation.request.entrant;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
+import hu.sch.services.GroupManagerLocal;
+import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
@@ -36,6 +38,10 @@ public class EntrantRequestEditor extends Panel {
     ValuationManagerLocal valuationManager;
     @EJB(name = "UserManagerBean")
     UserManagerLocal userManager;
+    @EJB(name = "MembershipManagerBean")
+    private MembershipManagerLocal membershipManager;
+    @EJB(name = "GroupManagerBean")
+    private GroupManagerLocal groupManager;
 
     public EntrantRequestEditor(String id, final Valuation ert) {
         super(id);
@@ -75,8 +81,9 @@ public class EntrantRequestEditor extends Panel {
                 item.add(new Label("user.name"));
                 item.add(new Label("user.nickName"));
 
-                Membership ms = userManager.getMembership(ert.getGroupId(),
+                Membership ms = membershipManager.findMembership(ert.getGroupId(),
                         item.getModelObject().getUserId());
+
                 item.add(new SvieMembershipDetailsIcon("user.svie", ms));
 
                 EntrantTypeChooser bt = new EntrantTypeChooser("entrantType");
@@ -88,7 +95,7 @@ public class EntrantRequestEditor extends Panel {
 
     private List<EntrantRequest> igenyeketElokeszit(final Valuation ert) {
         final List<User> csoporttagok =
-                userManager.getCsoporttagokWithoutOregtagok(ert.getGroupId());
+                groupManager.findActiveMembers(ert.getGroupId());
         final List<EntrantRequest> igenyek =
                 valuationManager.findBelepoIgenyekForErtekeles(ert.getId());
 

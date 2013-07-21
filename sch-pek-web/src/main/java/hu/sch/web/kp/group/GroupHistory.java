@@ -44,7 +44,7 @@ public class GroupHistory extends KorokPage {
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        group = userManager.findGroupById(id);
+        group = groupManager.findGroupById(id);
         if (group == null) {
             getSession().error("Hibás paraméter, nincs ilyen kör!");
             throw new RestartResponseException(getApplication().getHomePage());

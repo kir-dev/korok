@@ -1,6 +1,7 @@
 package hu.sch.web.kp.group.admin;
 
 import hu.sch.domain.Membership;
+import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.wicket.components.SelectableMembership;
@@ -27,9 +28,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class AdminOldBoysPanel extends Panel {
 
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
     private static Logger log = LoggerFactory.getLogger(AdminOldBoysPanel.class);
+
+    @EJB(name = "MembershipManagerBean")
+    private MembershipManagerLocal membershipManager;
 
     public AdminOldBoysPanel(String id, final List<Membership> inactiveMembers) {
         super(id);
@@ -49,7 +51,7 @@ public final class AdminOldBoysPanel extends Panel {
                     for (SelectableMembership extendedGroup : lines) {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
-                            userManager.setOldBoyToActive(ms);
+                            membershipManager.activateMembership(ms);
                         }
                     }
                     getSession().info("A változások sikeresen mentésre kerültek");

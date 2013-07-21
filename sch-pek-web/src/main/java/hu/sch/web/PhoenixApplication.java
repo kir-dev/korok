@@ -18,7 +18,6 @@ import hu.sch.web.idm.pages.UserNameReminder;
 import hu.sch.web.kp.admin.CreateGroup;
 import hu.sch.web.kp.admin.CreateNewPerson;
 import hu.sch.web.kp.admin.EditSettings;
-import hu.sch.web.kp.admin.ShowInactive;
 import hu.sch.web.kp.consider.ConsiderPage;
 import hu.sch.web.kp.group.*;
 import hu.sch.web.kp.logout.Logout;
@@ -218,7 +217,6 @@ public class PhoenixApplication extends WebApplication {
         mountPageWithPath("/korok/administration", EditSettings.class);
         mountPageWithPath("/korok/administration/svieusermgmt", SvieUserMgmt.class);
         mountPageWithPath("/korok/administration/sviegroupmgmt", SvieGroupMgmt.class);
-        mountPageWithPath("/korok/showinactive", ShowInactive.class);
         mountPageWithPath("/korok/creategroup", CreateGroup.class);
         mountPageWithPath("/korok/createperson", CreateNewPerson.class);
 

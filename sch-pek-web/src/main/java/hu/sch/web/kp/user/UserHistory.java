@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UserHistory extends KorokPage {
 
-    private static final Logger log = LoggerFactory.getLogger(UserHistory.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserHistory.class);
     private Long id;
     private Long selectedGroupId = null;
     private final String EVERY_GROUP = "Összes kör";
@@ -50,12 +50,18 @@ public class UserHistory extends KorokPage {
             id = parameters.get("id").toLong();
             selectedGroupId = parameters.get("group").toLong(0l);
             if (selectedGroupId != 0l) {
-                selected_text = userManager.findGroupById(selectedGroupId).getName();
+                Group g = groupManager.findGroupById(selectedGroupId);
+                if (g != null) {
+                    selected_text = g.getName();
+                } else {
+                    logger.warn("Group not found with id: {}", id);
+                    selected_text = "NOT FOUND";
+                }
             } else {
                 selectedGroupId = null;
             }
         } catch (Throwable t) {
-            log.warn("Error while loading parameters.", t);
+            logger.warn("Error while loading parameters.", t);
         }
         initComponents();
     }
@@ -65,9 +71,9 @@ public class UserHistory extends KorokPage {
         if (id == null) {
             id = getSession().getUserId();
         }
-        user = userManager.findUserWithMembershipsById(id);
+        user = userManager.findUserById(id, true);
         if (user == null) {
-            log.warn("Not founded user for UserHistory page with id: " + id);
+            logger.warn("Not founded user for UserHistory page with id: " + id);
             error("A megadott felhasználóhoz nem tartozik közösségi történet!");
             throw new RestartResponseException(GroupHierarchy.class);
         }
@@ -109,7 +115,7 @@ public class UserHistory extends KorokPage {
                     // minden kört megjelenítek
                 } else {
                     // csak a kiválasztott kört jelenítem meg
-                    Group group = userManager.findGroupByName(Lselected).get(0);
+                    Group group = groupManager.findGroupByName(Lselected);
                     pp.add("group", group.getId().toString());
                 }
 

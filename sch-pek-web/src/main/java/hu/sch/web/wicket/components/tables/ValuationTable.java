@@ -1,6 +1,7 @@
 package hu.sch.web.wicket.components.tables;
 
 import hu.sch.domain.ValuationData;
+import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import java.io.Serializable;
 import java.util.*;
@@ -26,8 +27,8 @@ public abstract class ValuationTable implements Serializable {
 
     AjaxFallbackDefaultDataTable<ValuationData, String> table;
     MySortableDataProvider provider;
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
+    @EJB(name = "MembershipManagerBean")
+    protected MembershipManagerLocal membershipManager;
     protected boolean isShowSvieColumn = false;
 
     protected ValuationTable() {

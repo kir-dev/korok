@@ -1,14 +1,15 @@
 package hu.sch.web.profile.birthday;
 
-import hu.sch.domain.profile.Person;
+import hu.sch.domain.user.User;
+import hu.sch.services.SearchManagerLocal;
 import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.search.PersonLinkPanel;
 import hu.sch.web.wicket.util.SortablePersonDataProvider;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 
@@ -20,29 +21,32 @@ public class BirthDayPage extends ProfilePage {
 
     SortablePersonDataProvider personDataProvider;
 
+    @EJB(name = "SearchManagerBean")
+    private SearchManagerLocal searchManager;
+
     public BirthDayPage() {
         super();
         setHeaderLabelText("Szülinaposok");
         personDataProvider = new SortablePersonDataProvider(birthDaySearch());
 
-        final DataView<Person> dataView = new DataView<Person>("simple", personDataProvider) {
+        final DataView<User> dataView = new DataView<User>("simple", personDataProvider) {
 
             @Override
-            public void populateItem(final Item<Person> item) {
-                final Person user = item.getModelObject();
+            public void populateItem(final Item<User> item) {
+                final User user = item.getModelObject();
                 item.add(new PersonLinkPanel("id", user));
             }
         };
         add(dataView);
     }
 
-    public final List<Person> birthDaySearch() {
-        List<Person> persons = new ArrayList<Person>();
+    public final List<User> birthDaySearch() {
+        List<User> persons = new ArrayList<>();
         Date date = Calendar.getInstance().getTime();
-        String date2 = new SimpleDateFormat("MMdd").format(date);
-        persons.addAll(ldapManager.getPersonsWhoHasBirthday(date2));
+        persons.addAll(searchManager.searchBirthdayUsers(date));
+
         if (persons.isEmpty()) {
-            info("Ma senki se ünnepel:(");
+            info("Ma senki sem ünnepel:(");
         }
         return persons;
     }

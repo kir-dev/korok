@@ -41,7 +41,7 @@ public class ValuationHistory extends KorokPage {
         Group group = null;
         Semester semester = null;
 
-        if (groupId == null || (group = userManager.findGroupById(groupId)) == null) {
+        if (groupId == null || (group = groupManager.findGroupById(groupId)) == null) {
             error("Nincs ilyen csoport!");
             setResponsePage(Valuations.class);
             return;

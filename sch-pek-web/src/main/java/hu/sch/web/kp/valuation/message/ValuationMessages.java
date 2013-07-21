@@ -51,7 +51,7 @@ public class ValuationMessages extends KorokPage {
         }
         String semesterStr = params.get("sid").toString(null);
 
-        if (groupId == null || (group = userManager.findGroupById(groupId)) == null) {
+        if (groupId == null || (group = groupManager.findGroupById(groupId)) == null) {
             error("Nincs ilyen csoport!");
             setResponsePage(Valuations.class);
             return;

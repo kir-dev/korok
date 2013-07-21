@@ -25,14 +25,11 @@ public class ChangePasswordPage extends ProfilePage {
 
     public ChangePasswordPage() {
         setHeaderLabelText("Jelszóváltoztatás");
-        Form form = new Form("changePasswordForm",
-                new CompoundPropertyModel(this)) {
-
+        Form form = new Form("changePasswordForm", new CompoundPropertyModel(this)) {
             @Override
             protected void onSubmit() {
                 try {
-                    ldapManager.changePassword(getRemoteUser(),
-                            oldPassword, newPassword);
+                    userManager.changePassword(getRemoteUser(), oldPassword, newPassword);
                     getSession().info("Sikeres jelszóváltoztatás");
                 } catch (InvalidPasswordException ex) {
                     getSession().error("Hibás jelszó");

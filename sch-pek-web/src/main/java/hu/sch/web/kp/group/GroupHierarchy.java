@@ -20,7 +20,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  */
 public class GroupHierarchy extends KorokPage {
 
-    private final List<Group> roots = userManager.getGroupHierarchy();
+    private final List<Group> roots = groupManager.getGroupTree();
 
     public GroupHierarchy() {
         setHeaderLabelText("Csoportok listája");

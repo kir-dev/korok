@@ -4,6 +4,8 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
 import hu.sch.domain.user.User;
 import hu.sch.domain.ValuationPeriod;
+import hu.sch.services.GroupManagerLocal;
+import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.services.SystemManagerLocal;
@@ -23,6 +25,11 @@ public abstract class KorokPage extends PekPage {
     protected SystemManagerLocal systemManager;
     @EJB(name = "PostManagerBean")
     protected PostManagerLocal postManager;
+    @EJB(name="GroupManagerBean")
+    protected GroupManagerLocal groupManager;
+    @EJB(name="MemebershipManagerBean")
+    protected MembershipManagerLocal membershipManager;
+
     private static final Logger log = LoggerFactory.getLogger(KorokPage.class);
 
     @Override

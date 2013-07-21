@@ -2,9 +2,8 @@ package hu.sch.web.kp.svie;
 
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.user.User;
-import hu.sch.domain.profile.Person;
+import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.SvieManagerLocal;
-import hu.sch.services.exceptions.PersonNotFoundException;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
@@ -28,14 +27,14 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.PatternValidator;
 
 /**
- *
+ * TODO: testing!
+ * 
  * @author aldaris
  */
 public final class SvieRegistration extends KorokPage {
 
     @EJB(name = "SvieManagerBean")
     SvieManagerLocal svieManager;
-    private Person person = null;
     private User user;
     private SvieMembershipType choosed;
 
@@ -47,26 +46,19 @@ public final class SvieRegistration extends KorokPage {
     public SvieRegistration(final User _user) {
         createNavbarWithSupportId(34);
         this.user = _user;
-        try {
-            person = ldapManager.getPersonByVirId(user.getId().toString());
-        } catch (PersonNotFoundException pnfe) {
-            getSession().error("A felhasználó nem található.");
-            throw new RestartResponseException(ShowUser.class);
-        }
 
         setHeaderLabelText("SVIE Regisztráció");
 
-        Form<Person> form = new Form<Person>("registrationForm", new CompoundPropertyModel<Person>(person)) {
+        Form<User> form = new Form<User>("registrationForm", new CompoundPropertyModel<>(user)) {
 
             @Override
             protected void onSubmit() {
-                ldapManager.update(person);
                 svieManager.applyToSvie(user, choosed);
                 continueToOriginalDestination();
                 setResponsePage(getApplication().getHomePage());
             }
         };
-        form.setModel(new CompoundPropertyModel<Person>(person));
+        form.setModel(new CompoundPropertyModel<User>(user));
 
         RequiredTextField<String> mothersNameTF = new RequiredTextField<String>("mothersName");
         mothersNameTF.add(new PatternValidator(PatternHolder.NAME_PATTERN));
@@ -82,14 +74,15 @@ public final class SvieRegistration extends KorokPage {
         form.add(estGradTF);
         form.add(new ValidationSimpleFormComponentLabel("estGradLabel", estGradTF));
 
-        RequiredTextField<String> homePostalAddressTF = new RequiredTextField<String>("homePostalAddress");
+        RequiredTextField<String> homePostalAddressTF = new RequiredTextField<String>("homeAddress");
         homePostalAddressTF.add(new ValidationStyleBehavior());
         homePostalAddressTF.setLabel(new Model<String>("Cím *"));
         form.add(homePostalAddressTF);
         form.add(new ValidationSimpleFormComponentLabel("homePostalAddressLabel", homePostalAddressTF));
 
-        AttributeAjaxFallbackLink.setPerson(person);
-        form.add(new AttributeAjaxFallbackLink("homePostalAddressAttributeLink", "homePostalAddressAttributeImg", "homePostalAddress"));
+        AttributeAjaxFallbackLink attrLink = new AttributeAjaxFallbackLink("homePostalAddressAttributeLink", "homePostalAddressAttributeImg", UserAttributeName.HOME_ADDRESS);
+        attrLink.setUser(user);
+        form.add(attrLink);
 
         final RadioGroup<SvieMembershipType> radioGroup = new RadioGroup<SvieMembershipType>("choices", new PropertyModel<SvieMembershipType>(this, "choosed"));
         List<SvieMembershipType> msTypes = new ArrayList<SvieMembershipType>();

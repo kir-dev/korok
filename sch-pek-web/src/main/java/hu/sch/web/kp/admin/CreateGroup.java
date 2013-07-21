@@ -40,7 +40,7 @@ public class CreateGroup extends KorokPage {
                 try {
                     group.setStatus(GroupStatus.akt);
                     group.setIsSvie(Boolean.FALSE);
-                    userManager.createNewGroupWithLeader(group, user);
+                    groupManager.createGroup(group, user);
                 } catch (Exception ex) {
                     getSession().error("Hiba a kör létrehozásakor: " + ex.getMessage());
                     setResponsePage(CreateGroup.class);
@@ -63,7 +63,7 @@ public class CreateGroup extends KorokPage {
         createGroupForm.add(groupTypeTF);
         createGroupForm.add(new ValidationSimpleFormComponentLabel("groupTypeLabel", groupTypeTF));
 
-        List<Group> groups = userManager.getAllGroups();
+        List<Group> groups = groupManager.getAllGroups();
 
         ListChoice listChoice = new ListChoice("parent", groups);
         listChoice.setChoiceRenderer(new GroupNameChoices());
@@ -85,7 +85,7 @@ public class CreateGroup extends KorokPage {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if (leaderName != null && leaderName.length() > 4) {
-                    List<User> users = userManager.searchForUserByName(leaderName);
+                    List<User> users = userManager.findUsersByName(leaderName);
                     leaderChoice.setChoices(users);
                 }
                 if (target != null) {

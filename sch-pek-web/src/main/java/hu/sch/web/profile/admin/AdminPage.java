@@ -1,22 +1,18 @@
 package hu.sch.web.profile.admin;
 
-import hu.sch.domain.profile.Person;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.domain.user.User;
 import hu.sch.web.error.NotFound;
-import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.edit.PersonForm;
 import hu.sch.web.profile.edit.PersonForm.KeyValuePairInForm;
 import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
-import hu.sch.web.wicket.components.customlinks.DeletePersonLink;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -28,7 +24,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  */
 public class AdminPage extends ProfilePage {
 
-    public Person person;
+    public User user;
 
     public AdminPage() {
         error();
@@ -43,18 +39,14 @@ public class AdminPage extends ProfilePage {
             error();
         }
 
-        try {
-            person = ldapManager.getPersonByUid(uid);
-        } catch (PersonNotFoundException e) {
+        user = userManager.findUserByScreenName(uid);
+        if (user == null) {
             error();
         }
 
-        setHeaderLabelText(person.getFullName() + " szerkesztése");
+        setHeaderLabelText(user.getFullName() + " szerkesztése");
 
-        Panel deletePersonLink = new DeletePersonLink("deletePersonLink", person, ShowUser.class);
-        add(deletePersonLink);
-
-        add(new PersonForm("personForm", person) {
+        add(new PersonForm("personForm", user) {
 
             @Override
             protected void onInit() {
@@ -129,7 +121,7 @@ public class AdminPage extends ProfilePage {
             protected void onSubmit() {
                 super.onSubmit();
                 info("Isten vagy! :)");
-                setResponsePage(ShowPersonPage.class, new PageParameters().add("uid", person.getUid()));
+                setResponsePage(ShowPersonPage.class, new PageParameters().add("uid", user.getScreenName()));
             }
         });
     }

@@ -4,6 +4,7 @@ import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.user.User;
 import hu.sch.domain.Valuation;
+import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.components.customlinks.UserLink;
@@ -24,8 +25,8 @@ public class EntrantRequestViewer extends Panel {
 
     @EJB(name = "ValuationManagerBean")
     ValuationManagerLocal ertekelesManager;
-    @EJB(name = "UserManagerBean")
-    UserManagerLocal userManager;
+    @EJB(name = "GroupManagerBean")
+    private GroupManagerLocal groupManager;
 
     public EntrantRequestViewer(String id, final Valuation ert) {
         super(id);
@@ -36,7 +37,7 @@ public class EntrantRequestViewer extends Panel {
             protected void populateItem(ListItem<EntrantRequest> item) {
                 final EntrantRequest b = item.getModelObject();
                 item.setModel(new CompoundPropertyModel<EntrantRequest>(b));
-                
+
                 item.add(new UserLink("userLink", b.getUser()));
                 item.add(new Label("user.nickName"));
                 item.add(new Label("entrantType"));
@@ -46,7 +47,7 @@ public class EntrantRequestViewer extends Panel {
     }
 
     private List<EntrantRequest> igenyeketElokeszit(Valuation ert) {
-        List<User> csoporttagok = userManager.getCsoporttagokWithoutOregtagok(ert.getGroup().getId());
+        List<User> csoporttagok = groupManager.findActiveMembers(ert.getGroup().getId());
         List<EntrantRequest> igenyek = ertekelesManager.findBelepoIgenyekForErtekeles(ert.getId());
 
         //tagok és igények összefésülése

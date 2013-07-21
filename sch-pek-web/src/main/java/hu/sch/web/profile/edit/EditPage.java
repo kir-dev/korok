@@ -1,7 +1,6 @@
 package hu.sch.web.profile.edit;
 
-import hu.sch.domain.profile.Person;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.domain.user.User;
 import hu.sch.web.profile.ProfilePage;
 
 /**
@@ -10,20 +9,19 @@ import hu.sch.web.profile.ProfilePage;
  */
 public class EditPage extends ProfilePage {
 
-    public Person person;
+    public User user;
 
     public EditPage() {
         super();
-        try {
-            person = ldapManager.getPersonByUid(getRemoteUser());
-        } catch (PersonNotFoundException e) {
+
+        user = userManager.findUserByScreenName(getRemoteUser());
+        if (user == null) {
             getSession().error("A felhasználó nem található!");
             setResponsePage(getApplication().getHomePage());
             return;
         }
 
-        setHeaderLabelText(person.getUid());
-
-        add(new PersonForm("personForm", person));
+        setHeaderLabelText(user.getScreenName());
+        add(new PersonForm("personForm", user));
     }
 }
