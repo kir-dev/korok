@@ -9,7 +9,7 @@ import hu.sch.domain.user.UserStatus;
 import hu.sch.ejb.ldap.LdapSynchronizer;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.CreateFailedException;
-import hu.sch.services.exceptions.DuplicateUserException;
+import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.UpdateFailedException;
 import java.util.*;
@@ -92,7 +92,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public User findUserByEmail(final String email) throws DuplicateUserException {
+    public User findUserByEmail(final String email) throws DuplicatedUserException {
         try {
             return em.createQuery("SELECT u FROM User u WHERE u.emailAddress = :email", User.class)
                     .setParameter("email", email)
@@ -100,7 +100,7 @@ public class UserManagerBean implements UserManagerLocal {
         } catch (NoResultException ex) {
             logger.info("Could not find user with email: {}", email);
         } catch (NonUniqueResultException ex) {
-            throw new DuplicateUserException(String.format("Duplicate user with %s email", email), ex);
+            throw new DuplicatedUserException(String.format("Duplicate user with %s email", email), ex);
         }
 
         return null;

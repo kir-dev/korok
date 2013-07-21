@@ -2,7 +2,7 @@ package hu.sch.web.idm.pages;
 
 import hu.sch.domain.user.User;
 import hu.sch.services.MailManagerLocal;
-import hu.sch.services.exceptions.DuplicateUserException;
+import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.kp.KorokPage;
 import javax.ejb.EJB;
@@ -35,7 +35,7 @@ public class UserNameReminder extends KorokPage {
                 User result;
                 try {
                     result = userManager.findUserByEmail(mail);
-                } catch (DuplicateUserException ex) {
+                } catch (DuplicatedUserException ex) {
                     getSession().error(getLocalizer().getString("err.DuplicatedUsers", this));
                     return;
                 }

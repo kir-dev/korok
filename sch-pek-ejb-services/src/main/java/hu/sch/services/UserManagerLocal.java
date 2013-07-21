@@ -8,7 +8,7 @@ import hu.sch.domain.PointRequest;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.domain.user.UserStatus;
 import hu.sch.services.exceptions.CreateFailedException;
-import hu.sch.services.exceptions.DuplicateUserException;
+import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.UpdateFailedException;
 import javax.ejb.Local;
@@ -70,10 +70,10 @@ public interface UserManagerLocal {
      *
      * @param email the email to look for
      * @return the user or null if no match was found
-     * @throws DuplicateUserException more than one user has the given email.
+     * @throws DuplicatedUserException more than one user has the given email.
      * Email should be unique.
      */
-    public User findUserByEmail(String email) throws DuplicateUserException;
+    public User findUserByEmail(String email) throws DuplicatedUserException;
 
     /**
      * Get entrant requests for the given user.
