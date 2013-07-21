@@ -80,13 +80,10 @@ public class LdapSynchronizer implements AutoCloseable {
 
         mods.add(buildModification(LdapAttributeNames.FULLNAME, user.getFullName()));
         mods.add(buildModification(LdapAttributeNames.EMAIL, user.getEmailAddress()));
-        mods.add(buildModification(LdapAttributeNames.SCREENNAME, user.getScreenName()));
 
-        ModifyDNRequest reqDN = new ModifyDNRequest(dn, LdapUtil.buildRDN(user.getScreenName()), true);
         ModifyRequest req = new ModifyRequest(dn, mods);
 
         conn.modify(req);
-        conn.modifyDN(reqDN);
     }
 
     public void updateStatus(User user, UserStatus status) throws LDAPException {

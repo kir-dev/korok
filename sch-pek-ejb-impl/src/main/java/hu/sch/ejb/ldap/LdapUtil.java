@@ -15,8 +15,4 @@ public final class LdapUtil {
     public static String buildDN(String uid) {
         return String.format("uid=%s,%s", uid, BASEDN);
     }
-
-    public static String buildRDN(String uid) {
-        return String.format("uid=%s", uid);
-    }
 }
