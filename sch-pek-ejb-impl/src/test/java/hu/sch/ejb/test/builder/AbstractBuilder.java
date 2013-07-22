@@ -22,6 +22,7 @@ public abstract class AbstractBuilder<T> {
     public T create(EntityManager em) {
         T entity = build();
         em.persist(entity);
+        em.flush();
         return entity;
     }
 

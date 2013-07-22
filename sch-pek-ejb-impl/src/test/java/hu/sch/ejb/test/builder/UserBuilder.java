@@ -5,6 +5,7 @@ import hu.sch.domain.SvieStatus;
 import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.User;
+import java.util.Date;
 import javax.persistence.EntityManager;
 
 /**
@@ -13,6 +14,8 @@ import javax.persistence.EntityManager;
  */
 public class UserBuilder extends AbstractBuilder<User> {
 
+    private static int screenNameSuffix = 0;
+
     private String lastName = "Teszt";
     private String firstName = "Elek";
     private SvieMembershipType svieMembership = SvieMembershipType.NEMTAG;
@@ -20,6 +23,7 @@ public class UserBuilder extends AbstractBuilder<User> {
     private String screenName = "teszt.elek";
     private Gender gender = Gender.MALE;
     private StudentStatus studentStatus = StudentStatus.ACTIVE;
+    private Date dateOfBirth = new Date();
 
     public UserBuilder withLastName(String lastName) {
         this.lastName = lastName;
@@ -56,6 +60,11 @@ public class UserBuilder extends AbstractBuilder<User> {
         return this;
     }
 
+    public UserBuilder withDateOfBirth(Date dob) {
+        this.dateOfBirth = dob;
+        return this;
+    }
+
     @Override
     public User build() {
         User user = new User();
@@ -65,7 +74,8 @@ public class UserBuilder extends AbstractBuilder<User> {
         user.setLastName(lastName);
         user.setSvieMembershipType(svieMembership);
         user.setSvieStatus(svieStatus);
-        user.setScreenName(screenName);
+        user.setScreenName(screenName + (screenNameSuffix++));
+        user.setDateOfBirth(dateOfBirth);
 
         return user;
     }
