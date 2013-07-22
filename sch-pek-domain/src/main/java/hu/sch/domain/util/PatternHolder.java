@@ -17,6 +17,7 @@ public class PatternHolder {
     public static final Pattern PHONE_NUMBER_PATTERN;
     public static final Pattern UID_PATTERN;
     public static final Pattern VIRID_PATTERN;
+    public static final Pattern EDUCATION_ID_PATTERN;
 
     static {
         //                                                         jog:csoportnév:csoportid
@@ -29,6 +30,7 @@ public class PatternHolder {
         PHONE_NUMBER_PATTERN = Pattern.compile(".*\\d.*");
         UID_PATTERN = Pattern.compile("^[a-z0-9]*$");
         VIRID_PATTERN = Pattern.compile("^.*:([0-9]+)$");
+        EDUCATION_ID_PATTERN = Pattern.compile("^[0-9]{11}$");
     }
 
     private PatternHolder() {

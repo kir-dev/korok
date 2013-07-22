@@ -25,6 +25,7 @@
         <class>hu.sch.domain.logging.Event</class>
 
         <class>hu.sch.domain.user.User</class>
+        <class>hu.sch.domain.user.RegisteringUser</class>
         <class>hu.sch.domain.user.IMAccount</class>
         <class>hu.sch.domain.user.UserAttribute</class>
 
