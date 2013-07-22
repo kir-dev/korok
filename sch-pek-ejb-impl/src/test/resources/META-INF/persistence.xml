@@ -24,6 +24,7 @@
 
         <class>hu.sch.domain.user.User</class>
         <class>hu.sch.domain.user.IMAccount</class>
+        <class>hu.sch.domain.user.UserAttribute</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
@@ -31,7 +32,7 @@
             <property name="javax.persistence.jdbc.user" value="kir" />
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.format_sql" value="false" />
         </properties>
     </persistence-unit>

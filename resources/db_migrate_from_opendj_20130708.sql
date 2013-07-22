@@ -33,11 +33,12 @@ ALTER TABLE spot_images DROP COLUMN image;
 ALTER TABLE spot_images ADD COLUMN image_path varchar(255) NOT NULL;
 
 -- private attributes for users
+CREATE SEQUENCE usr_private_attrs_id_seq;
 CREATE TABLE usr_private_attrs (
+    id bigint DEFAULT nextval('usr_private_attrs_id_seq') PRIMARY KEY,
     usr_id bigint REFERENCES users(usr_id) NOT NULL, -- id of the user
     attr_name varchar(64) NOT NULL, -- the name of the attribute, java enum
-    visible boolean NOT NULL DEFAULT false, -- attribute visibility
-    PRIMARY KEY(usr_id, attr_name)
+    visible boolean NOT NULL DEFAULT false -- attribute visibility
 );
 
 -- IMAccout -> new entity

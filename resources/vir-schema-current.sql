@@ -506,6 +506,18 @@ CREATE TABLE users (
 );
 
 
+--
+-- Name: usr_private_attrs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE usr_private_attrs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
 SET default_with_oids = false;
 
 --
@@ -513,6 +525,7 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE usr_private_attrs (
+    id bigint DEFAULT nextval('usr_private_attrs_id_seq'::regclass) NOT NULL,
     usr_id bigint NOT NULL,
     attr_name character varying(64) NOT NULL,
     visible boolean DEFAULT false NOT NULL
@@ -668,7 +681,7 @@ ALTER TABLE ONLY users
 --
 
 ALTER TABLE ONLY usr_private_attrs
-    ADD CONSTRAINT usr_private_attrs_pkey PRIMARY KEY (usr_id, attr_name);
+    ADD CONSTRAINT usr_private_attrs_pkey PRIMARY KEY (id);
 
 
 --

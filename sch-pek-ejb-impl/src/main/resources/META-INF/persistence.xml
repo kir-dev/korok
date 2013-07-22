@@ -26,6 +26,7 @@
 
         <class>hu.sch.domain.user.User</class>
         <class>hu.sch.domain.user.IMAccount</class>
+        <class>hu.sch.domain.user.UserAttribute</class>
 
         <properties>
             <property name="hibernate.show_sql" value="false"/>

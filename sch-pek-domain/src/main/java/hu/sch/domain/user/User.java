@@ -151,14 +151,11 @@ public class User implements Serializable, Comparable<User> {
     private boolean showRecommendedPhoto;
     //----------------------------------------------------
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "usr_id")
     private List<IMAccount> imAccounts;
     //----------------------------------------------------
-    @ElementCollection
-    @CollectionTable(name = "usr_private_attrs", joinColumns = {
-        @JoinColumn(name = "usr_id")})
-    @OrderColumn(name = "attr_name")
-    private List<UserAttribute> privateAttributes;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
+    private Set<UserAttribute> privateAttributes;
 
     public User() {
         this.delegated = false;
@@ -555,14 +552,14 @@ public class User implements Serializable, Comparable<User> {
      * Egy attribútum csak akkor látható, ha benne van a kollekcióban és a
      * 'visibile' mezője true értékű.
      */
-    public List<UserAttribute> getPrivateAttributes() {
+    public Set<UserAttribute> getPrivateAttributes() {
         if (privateAttributes == null) {
-            privateAttributes = new ArrayList<>();
+            privateAttributes = new HashSet<>();
         }
         return privateAttributes;
     }
 
-    public void setPrivateAttributes(List<UserAttribute> privateAttributes) {
+    public void setPrivateAttributes(Set<UserAttribute> privateAttributes) {
         this.privateAttributes = privateAttributes;
     }
 
