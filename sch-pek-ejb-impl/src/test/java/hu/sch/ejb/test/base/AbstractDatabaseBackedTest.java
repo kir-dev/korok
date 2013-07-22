@@ -73,6 +73,11 @@ public abstract class AbstractDatabaseBackedTest {
         return em;
     }
 
+    protected void persist(Object entity) {
+        em.persist(entity);
+        em.flush();
+    }
+
     private static EntityManagerFactory getEntityManagerFactory() {
         if (emFactory == null) {
             Map<String, String> additionalConfigs = new HashMap<>();

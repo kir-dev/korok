@@ -12,5 +12,6 @@ public enum UserAttributeName {
     GENDER,
     DATE_OF_BIRTH,
     ROOM_NUMBER,
-    HOME_ADDRESS;
+    HOME_ADDRESS,
+    EMAIL;
 }

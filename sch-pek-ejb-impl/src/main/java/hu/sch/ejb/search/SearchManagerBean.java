@@ -1,9 +1,8 @@
-package hu.sch.ejb;
+package hu.sch.ejb.search;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.SearchManagerLocal;
-import hu.sch.services.exceptions.NotImplementedException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +10,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import org.apache.commons.lang3.time.DateUtils;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -37,7 +36,8 @@ public class SearchManagerBean implements SearchManagerLocal {
 
     @Override
     public List<User> searchUsers(String keyword) {
-        throw new NotImplementedException();
+        TypedQuery<User> q = new SearchQueryBuilder(em, keyword).build();
+        return q.getResultList();
     }
 
     @Override

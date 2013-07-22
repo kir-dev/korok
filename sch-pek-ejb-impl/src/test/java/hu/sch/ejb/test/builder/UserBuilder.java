@@ -24,6 +24,7 @@ public class UserBuilder extends AbstractBuilder<User> {
     private Gender gender = Gender.MALE;
     private StudentStatus studentStatus = StudentStatus.ACTIVE;
     private Date dateOfBirth = new Date();
+    private String email;
 
     public UserBuilder withLastName(String lastName) {
         this.lastName = lastName;
@@ -37,6 +38,11 @@ public class UserBuilder extends AbstractBuilder<User> {
 
     public UserBuilder withScreenName(String screenName) {
         this.screenName = screenName;
+        return this;
+    }
+
+    public UserBuilder withEmail(String email) {
+        this.email = email;
         return this;
     }
 
@@ -76,6 +82,7 @@ public class UserBuilder extends AbstractBuilder<User> {
         user.setSvieStatus(svieStatus);
         user.setScreenName(screenName + (screenNameSuffix++));
         user.setDateOfBirth(dateOfBirth);
+        user.setEmailAddress(email);
 
         return user;
     }

@@ -3,7 +3,7 @@ package hu.sch.ejb.test.search;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;
-import hu.sch.ejb.SearchManagerBean;
+import hu.sch.ejb.search.SearchManagerBean;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
 import hu.sch.services.SearchManagerLocal;
@@ -58,5 +58,35 @@ public class SearchManagerTest extends AbstractDatabaseBackedTest {
 
         List<User> users = searchManager.searchBirthdayUsers(new Date());
         assertTrue(users.isEmpty());
+    }
+
+    @Test
+    public void complexSearchForName() {
+        new UserBuilder().withFirstName("Teszt").withScreenName("hello").create(getEm());
+        List<User> result = searchManager.searchUsers("teszt");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void complexSearchForEmailWhenVisible() {
+        final String email = "a@example.com";
+        User u = new UserBuilder()
+                .withEmail(email)
+                .build();
+        u.getPrivateAttributes().add(new UserAttribute(UserAttributeName.EMAIL, true));
+        persist(u);
+
+        List<User> result = searchManager.searchUsers(email);
+        assertFalse("User with email could not be found.", result.isEmpty());
+    }
+
+    @Test
+    public void complexSearchForEmailWhenNotVisible() {
+        final String email = "a@example.com";
+        new UserBuilder().withEmail(email).create(getEm());
+
+        List<User> result = searchManager.searchUsers(email);
+        assertTrue(result.isEmpty());
     }
 }

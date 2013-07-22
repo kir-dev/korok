@@ -17,7 +17,7 @@ public interface SearchManagerLocal {
      * - full name
      * - email
      * - nick name
-     * - email address
+     * - screen name (username)
      * - room number
      *
      * @param keyword the keyword to search for
@@ -27,7 +27,7 @@ public interface SearchManagerLocal {
 
     /**
      * Lists all the users whose birtday is the given date.
-     * 
+     *
      * @param date
      * @return
      */
