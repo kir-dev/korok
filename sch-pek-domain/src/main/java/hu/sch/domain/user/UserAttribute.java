@@ -26,20 +26,18 @@ import javax.validation.constraints.NotNull;
 public class UserAttribute implements Serializable {
 
     @Id
-    @GeneratedValue(generator =  "usr_attrs_seq")
+    @GeneratedValue(generator = "usr_attrs_seq")
     @Column(name = "id")
     private Long id;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "attr_name")
     @NotNull
     private UserAttributeName attrName;
-
     @Column(name = "visible")
     @NotNull
     private Boolean visible = Boolean.FALSE;
 
-    public UserAttribute() {
+    protected UserAttribute() {
     }
 
     public UserAttribute(UserAttributeName attributeName, boolean visible) {
@@ -49,6 +47,7 @@ public class UserAttribute implements Serializable {
 
     /**
      * Gets the id of the entit.
+     *
      * @return
      */
     public Long getId() {
@@ -79,5 +78,30 @@ public class UserAttribute implements Serializable {
 
     public void setVisible(Boolean isVisible) {
         this.visible = isVisible;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + (id != null ? id.hashCode() : 0);
+        hash = 31 * hash + (attrName != null ? attrName.hashCode() : 0);
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!getClass().isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final UserAttribute other = UserAttribute.class.cast(obj);
+        return id == null ? false : id.equals(other.getId())
+                && attrName == other.getAttributeName();
     }
 }

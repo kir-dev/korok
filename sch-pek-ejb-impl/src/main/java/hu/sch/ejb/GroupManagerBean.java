@@ -160,6 +160,7 @@ public class GroupManagerBean implements GroupManagerLocal {
         return q.getResultList();
     }
 
+    @Override
     public List<User> findActiveMembers(long groupId) {
         Query q = em.createQuery("SELECT ms.user FROM Membership ms JOIN "
                 + "ms.user WHERE ms.group.id = :groupId AND ms.end = NULL "
