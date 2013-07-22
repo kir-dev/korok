@@ -1,7 +1,11 @@
 package hu.sch.web.profile.passwordchange;
 
 import hu.sch.services.exceptions.InvalidPasswordException;
+import hu.sch.services.exceptions.NotImplementedException;
+import hu.sch.services.exceptions.UpdateFailedException;
 import hu.sch.web.profile.ProfilePage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
@@ -33,6 +37,9 @@ public class ChangePasswordPage extends ProfilePage {
                     getSession().info("Sikeres jelszóváltoztatás");
                 } catch (InvalidPasswordException ex) {
                     getSession().error("Hibás jelszó");
+                } catch (UpdateFailedException ex) {
+                    // TODO:
+                    throw new NotImplementedException();
                 }
             }
         };
