@@ -11,8 +11,8 @@
 
     <licenses>
         <license>
-            <name>BSD License (original)</name>
-            <url>http://www.opensource.org/licenses/bsd-license.php</url>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
