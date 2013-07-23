@@ -128,9 +128,9 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public void createUser(User user, String password, UserStatus status) throws CreateFailedException {
-        em.persist(user);
-        try (LdapSynchronizer sync = new LdapSynchronizer()){
+        try (LdapSynchronizer sync = new LdapSynchronizer()) {
             sync.createEntry(user, password, status);
+            em.persist(user);
         } catch (InvalidPasswordException ex) {
             throw new CreateFailedException("Password is not valid. It must be at least 6 chars long.", ex);
         } catch (LDAPException ex) {
@@ -142,10 +142,9 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public void updateUser(User user) throws UpdateFailedException {
-        em.merge(user);
-
         try (LdapSynchronizer sync = new LdapSynchronizer()) {
             sync.syncEntry(user);
+            em.merge(user);
         } catch (Exception ex) {
             throw new UpdateFailedException("Failed updating the DS entry for the user.", ex);
         }
@@ -258,7 +257,7 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public void updateUserStatus(User user, UserStatus userStatus) throws UpdateFailedException {
-        try (LdapSynchronizer sync = new LdapSynchronizer()){
+        try (LdapSynchronizer sync = new LdapSynchronizer()) {
             sync.updateStatus(user, userStatus);
         } catch (LDAPException ex) {
             throw new UpdateFailedException("Could not update the user's status in the directory entry.", ex);
@@ -270,7 +269,7 @@ public class UserManagerBean implements UserManagerLocal {
     @Override
     public void changePassword(String screenName, String oldPwd, String newPwd)
             throws InvalidPasswordException, UpdateFailedException {
-        try(LdapSynchronizer sync = new LdapSynchronizer()) {
+        try (LdapSynchronizer sync = new LdapSynchronizer()) {
             sync.changePassword(screenName, oldPwd, newPwd);
         } catch (Exception ex) {
             throw new UpdateFailedException("Could not update password.", ex);
