@@ -158,7 +158,9 @@ public class RegisterWizard extends Wizard {
                     try {
                         person.setDateOfBirth(dob.getConvertedInput());
                         person.setNeptun(neptun.getConvertedInput().toUpperCase());
-                        registrationManager.canUserRegisterWithNeptun(person);
+                        if (!registrationManager.canUserRegisterWithNeptun(person)) {
+                            error(new StringResourceModel("reg.error.unknown", getForm(), null).getString());
+                        }
                         //
                     } catch (UserNotFoundException | InvalidNewbieStateException ex) {
                         error(new StringResourceModel(ex.getMessage(), getForm(), null).getString());
@@ -205,7 +207,9 @@ public class RegisterWizard extends Wizard {
                     try {
                         person.setDateOfBirth(dob.getConvertedInput());
                         person.setEducationId(educationId.getConvertedInput());
-                        registrationManager.canUserRegisterWithEducationId(person);
+                        if (!registrationManager.canUserRegisterWithEducationId(person)) {
+                            error(new StringResourceModel("reg.error.unknown", getForm(), null).getString());
+                        }
                         //
                     } catch (UserNotFoundException | InvalidNewbieStateException ex) {
                         error(new StringResourceModel(ex.getMessage(), getForm(), null).getString());
