@@ -1,6 +1,7 @@
 package hu.sch.domain.user;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -29,15 +30,15 @@ public class IMAccount implements Serializable {
     @Enumerated(EnumType.STRING)
     private IMProtocol protocol;
     //--------------------------------
-    @Column(name = "screen_name")
-    private String screenName;
+    @Column(name = "account_name")
+    private String accountName;
 
     public IMAccount() {
     }
 
-    public IMAccount(IMProtocol protocol, String presenceID) {
+    public IMAccount(IMProtocol protocol, String accountName) {
         this.protocol = protocol;
-        this.screenName = presenceID;
+        this.accountName = accountName;
     }
 
     public Long getId() {
@@ -56,12 +57,12 @@ public class IMAccount implements Serializable {
         this.protocol = protocol;
     }
 
-    public String getScreenName() {
-        return screenName;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setScreenName(String screenName) {
-        this.screenName = screenName;
+    public void setAccountName(String screenName) {
+        this.accountName = screenName;
     }
 
     /**
@@ -70,25 +71,36 @@ public class IMAccount implements Serializable {
      */
     @Override
     public String toString() {
-        return protocol.toString() + ":" + screenName;
+        return protocol.toString() + ":" + accountName;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
+        if (obj == null) {
+            return false;
         }
-        if (obj instanceof IMAccount) {
-            IMAccount o2 = (IMAccount) obj;
-            return o2.getId().equals(this.id);
+        if (getClass() != obj.getClass()) {
+            return false;
         }
-        return false;
+        final IMAccount other = (IMAccount) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (this.protocol != other.getProtocol()) {
+            return false;
+        }
+        if (!Objects.equals(this.accountName, other.getProtocol())) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 79 * hash + this.id.hashCode();
+        hash = 53 * hash + Objects.hashCode(this.id);
+        hash = 53 * hash + Objects.hashCode(this.protocol);
+        hash = 53 * hash + Objects.hashCode(this.accountName);
         return hash;
     }
 }

@@ -18,14 +18,14 @@ public class DatabaseSchemaIntegrityTest extends AbstractDatabaseBackedTest {
 
     @Test
     public void saveEntity() {
-        getEm().persist(new IMAccount(IMProtocol.icq, "hello world"));
+        getEm().persist(new IMAccount(IMProtocol.gtalk, "hello world"));
         long count = (long) getEm().createQuery("SELECT COUNT(i) from IMAccount i").getSingleResult();
         assertNotEquals(0L, count);
     }
 
     @Test
     public void savedEntityHasId() {
-        getEm().persist(new IMAccount(IMProtocol.icq, "hello world"));
+        getEm().persist(new IMAccount(IMProtocol.gtalk, "hello world"));
         IMAccount acc = getEm().createQuery("SELECT i FROM IMAccount i", IMAccount.class).getSingleResult();
         assertNotNull(acc.getId());
     }

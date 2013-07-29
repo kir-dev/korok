@@ -6,5 +6,5 @@ package hu.sch.domain.user;
  */
 public enum IMProtocol {
 
-    icq, msn, jabber, gtalk, skype
+    jabber, gtalk, skype, irc
 }
