@@ -5,7 +5,6 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.ModificationType;
-import com.unboundid.ldap.sdk.ModifyDNRequest;
 import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.extensions.PasswordModifyExtendedRequest;
@@ -15,8 +14,12 @@ import hu.sch.domain.config.LdapConfig;
 import hu.sch.domain.user.UserStatus;
 import hu.sch.domain.user.User;
 import hu.sch.services.exceptions.InvalidPasswordException;
+import hu.sch.services.exceptions.PekEJBException;
+import hu.sch.services.exceptions.PekErrorCode;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Synchronizes relevant user modifications to directory service (DS) via LDAP.
@@ -24,6 +27,8 @@ import java.util.List;
  * @author tomi
  */
 public class LdapSynchronizer implements AutoCloseable {
+
+    private static final Logger logger = LoggerFactory.getLogger(LdapSynchronizer.class);
 
     // TODO: review and clean up after LDAP schema has been updated
     private static final String[] objectClasses = new String[]{
@@ -35,9 +40,14 @@ public class LdapSynchronizer implements AutoCloseable {
     };
     private LDAPConnection conn;
 
-    public LdapSynchronizer() throws LDAPException {
+    public LdapSynchronizer() throws PekEJBException {
         LdapConfig config = Configuration.getLdapConfig();
-        conn = new LDAPConnection(config.getHost(), config.getPort(), config.getUser(), config.getPassword());
+        try {
+            conn = new LDAPConnection(config.getHost(), config.getPort(), config.getUser(), config.getPassword());
+        } catch (LDAPException ex) {
+            logger.error("Could not connect to DS.", ex);
+            throw new PekEJBException(PekErrorCode.LDAP_CONNECTION_FAILED);
+        }
     }
 
     /**
@@ -74,7 +84,7 @@ public class LdapSynchronizer implements AutoCloseable {
      * @param user
      * @throws LDAPException
      */
-    public void syncEntry(User user) throws LDAPException {
+    public void syncEntry(User user) throws PekEJBException {
         List<Modification> mods = new ArrayList<>();
         final String dn = LdapUtil.buildDN(user.getScreenName());
 
@@ -82,16 +92,24 @@ public class LdapSynchronizer implements AutoCloseable {
         mods.add(buildModification(LdapAttributeNames.EMAIL, user.getEmailAddress()));
 
         ModifyRequest req = new ModifyRequest(dn, mods);
-
-        conn.modify(req);
+        try {
+            conn.modify(req);
+        } catch (LDAPException ex) {
+            logger.error("Could not update DS for dn: {}", dn);
+            throw new PekEJBException(PekErrorCode.LDAP_UPDATE_FAILED, ex);
+        }
     }
 
-    public void updateStatus(User user, UserStatus status) throws LDAPException {
+    public void updateStatus(User user, UserStatus status) throws PekEJBException {
         ModifyRequest req = new ModifyRequest(
                 LdapUtil.buildDN(user.getScreenName()),
                 buildModification(LdapAttributeNames.STATUS, status.getStatus()));
-
-        conn.modify(req);
+        try {
+            conn.modify(req);
+        } catch (LDAPException ex) {
+            logger.error("Could not update status.", ex);
+            throw new PekEJBException(PekErrorCode.LDAP_UPDATE_FAILED, ex);
+        }
     }
 
     /**

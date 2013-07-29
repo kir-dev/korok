@@ -3,15 +3,24 @@ package hu.sch.ejb;
 import com.unboundid.ldap.sdk.LDAPException;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
+import hu.sch.domain.config.Configuration;
+import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.domain.user.UserStatus;
+import hu.sch.ejb.image.ImageProcessor;
+import hu.sch.ejb.image.ImageSaver;
 import hu.sch.ejb.ldap.LdapSynchronizer;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.CreateFailedException;
 import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.services.exceptions.InvalidPasswordException;
+import hu.sch.services.exceptions.PekEJBException;
+import hu.sch.services.exceptions.PekErrorCode;
 import hu.sch.services.exceptions.UpdateFailedException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Level;
 import javax.ejb.EJB;
@@ -141,12 +150,32 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void updateUser(User user) throws UpdateFailedException {
+    public void updateUser(User user) throws PekEJBException {
+        updateUser(user, null);
+    }
+
+    @Override
+    public void updateUser(User user, ProfileImage image) throws PekEJBException {
+        // process image
+        if (image != null) {
+            ImageProcessor proc = new ImageProcessor(user, image, Configuration.getImageUploadConfig());
+            String imagePath = proc.process();
+            user.setPhotoPath(imagePath);
+        }
+
+        // save user
         try (LdapSynchronizer sync = new LdapSynchronizer()) {
             sync.syncEntry(user);
+
+            // for some reason (eg admin panel) it is filled out then sync it
+            if (user.getUserStatus() != null) {
+                sync.updateStatus(user, user.getUserStatus());
+            }
+
             em.merge(user);
         } catch (Exception ex) {
-            throw new UpdateFailedException("Failed updating the DS entry for the user.", ex);
+            // because of sync.close() can throw this
+            throw new PekEJBException(PekErrorCode.LDAP_CONNECTION_FAILED);
         }
     }
 
@@ -220,19 +249,29 @@ public class UserManagerBean implements UserManagerLocal {
         q.setParameter("neptunCode", user.getNeptunCode());
         try {
             SpotImage si = q.getSingleResult();
-            user.setPhotoPath(si.getImagePath());
-            em.remove(si);
+
+            ImageSaver imageSaver = new ImageSaver(user);
+            String imgPath = imageSaver.copy(si.getImageFullPath()).getRelativePath();
+            user.setPhotoPath(imgPath);
+
+            removeSpotImage(si);
+            
             return true;
         } catch (NoResultException ex) {
-            return false;
+            logger.error("No user with {} screen name.", screenName);
+        } catch (PekEJBException ex) {
+            logger.error("Could not copy image. Error code: {}", ex.getErrorCode());
         }
+        return false;
     }
 
     @Override
     public void declineRecommendedPhoto(User user) {
-        Query q = em.createNamedQuery(SpotImage.deleteByNeptun);
+        TypedQuery<SpotImage> q = em.createNamedQuery(SpotImage.findByNeptun, SpotImage.class);
         q.setParameter("neptunCode", user.getNeptunCode());
-        q.executeUpdate();
+        SpotImage img = q.getSingleResult();
+        
+        removeSpotImage(img);
     }
 
     @Override
@@ -256,17 +295,6 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void updateUserStatus(User user, UserStatus userStatus) throws UpdateFailedException {
-        try (LdapSynchronizer sync = new LdapSynchronizer()) {
-            sync.updateStatus(user, userStatus);
-        } catch (LDAPException ex) {
-            throw new UpdateFailedException("Could not update the user's status in the directory entry.", ex);
-        } catch (Exception ex) {
-            throw new UpdateFailedException("Unknown error.", ex);
-        }
-    }
-
-    @Override
     public void changePassword(String screenName, String oldPwd, String newPwd)
             throws InvalidPasswordException, UpdateFailedException {
         try (LdapSynchronizer sync = new LdapSynchronizer()) {
@@ -274,5 +302,23 @@ public class UserManagerBean implements UserManagerLocal {
         } catch (Exception ex) {
             throw new UpdateFailedException("Could not update password.", ex);
         }
+    }
+
+    /**
+     * Deletes the spot image from the file system and db.
+     *
+     * @param img the image to delete
+     */
+    private void removeSpotImage(SpotImage img) {
+        try {
+            Files.deleteIfExists(Paths.get(img.getImageFullPath()));
+        } catch (IOException ex) {
+            logger.warn("IO Error while deleting file.", ex);
+            // nothing to do.
+        }
+
+        // this updates the user record via a trigger.
+        // usr_show_recommended will be false after the update.
+        em.remove(img);
     }
 }

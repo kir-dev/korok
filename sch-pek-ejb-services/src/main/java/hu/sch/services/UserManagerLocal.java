@@ -5,11 +5,13 @@ import hu.sch.domain.Semester;
 import hu.sch.domain.SpotImage;
 import hu.sch.domain.user.User;
 import hu.sch.domain.PointRequest;
+import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.domain.user.UserStatus;
 import hu.sch.services.exceptions.CreateFailedException;
 import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.services.exceptions.InvalidPasswordException;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.UpdateFailedException;
 import javax.ejb.Local;
 import java.util.List;
@@ -107,7 +109,19 @@ public interface UserManagerLocal {
      *
      * @param user
      */
-    void updateUser(User user) throws UpdateFailedException;
+    void updateUser(User user) throws PekEJBException;
+
+    /**
+     * Update user in the database and synchronize the directory service.
+     *
+     * Also update the user's profile image: resize it, store it and delete the
+     * old one.
+     *
+     * @param user the user to update
+     * @param image the new profile image
+     * @throws PekEJBException
+     */
+    public void updateUser(User user, ProfileImage image) throws PekEJBException;
 
     /**
      * Visszaadja az összes olyan szemesztert csökkenő sorrendben, ahol az adott
@@ -165,22 +179,13 @@ public interface UserManagerLocal {
     public void invertAttributeVisibility(User user, UserAttributeName attr);
 
     /**
-     * Updates the user's status for the SSO in the directory service.
-     *
-     * NOTE: at the moment it does not touch the DB.
-     * @param user the user which status is changing
-     * @param userStatus the new status
-     * @throws UpdateFailedException
-     */
-    public void updateUserStatus(User user, UserStatus userStatus) throws UpdateFailedException;
-
-    /**
      * Changes the user's password.
      *
      * @param screenName the user's screen name (username)
      * @param oldPwd
      * @param newPwd
-     * @throws InvalidPasswordException if the old password does not match the stored one.
+     * @throws InvalidPasswordException if the old password does not match the
+     * stored one.
      */
     public void changePassword(String screenName, String oldPwd, String newPwd)
             throws InvalidPasswordException, UpdateFailedException;
