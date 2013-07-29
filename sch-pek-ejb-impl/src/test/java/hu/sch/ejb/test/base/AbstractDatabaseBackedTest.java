@@ -80,9 +80,7 @@ public abstract class AbstractDatabaseBackedTest {
 
     private static EntityManagerFactory getEntityManagerFactory() {
         if (emFactory == null) {
-            Map<String, String> additionalConfigs = new HashMap<>();
-            additionalConfigs.put("javax.persistence.jdbc.password", TestConfiguration.getPassword());
-            emFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, additionalConfigs);
+            emFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         }
         return emFactory;
     }
