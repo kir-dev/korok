@@ -104,6 +104,7 @@
         <module>sch-pek-web</module>
         <module>sch-pek-web-services</module>
         <module>sch-pek-ear</module>
+        <module>sch-pek-util</module>
     </modules>
 
     <dependencyManagement>
@@ -142,6 +143,11 @@
             <dependency>
                 <groupId>hu.sch</groupId>
                 <artifactId>sch-pek-web-services</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.sch</groupId>
+                <artifactId>sch-pek-util</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
