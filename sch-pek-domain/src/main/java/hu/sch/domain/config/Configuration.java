@@ -51,20 +51,25 @@ public class Configuration {
     private static final String LDAP_PORT = "ldap.port";
     private static final String LDAP_USER = "ldap.user";
     private static final String LDAP_PASSWORD = "ldap.password";
+    private static final String IMAGE_UPLOAD_PATH = "image.upload.path";
+    private static final String IMAGE_MAX_SIZE = "image.upload.max";
 
-    private static Properties properties = new Properties();
-    private static String baseDir;
+    private static final Properties properties = new Properties();
+    private static final String baseDir;
     private static Environment environment = null;
 
     static {
-        baseDir = System.getProperty(PROPERTY_NAME);
-        if (baseDir == null) {
+        String dir = System.getProperty(PROPERTY_NAME);
+
+        if (dir == null) {
             throw new IllegalArgumentException(
                     "System property '" + PROPERTY_NAME + "' isn't setted! Can't initialize application!");
         }
-        if (!baseDir.endsWith("/")) {
-            baseDir += "/";
+        if (!dir.endsWith("/")) {
+            dir += "/";
         }
+        baseDir = dir;
+
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE));
@@ -113,5 +118,12 @@ public class Configuration {
         int port = Integer.parseInt(properties.getProperty(LDAP_PORT));
 
         return new LdapConfig(host, port, user, password);
+    }
+
+    public static ImageUploadConfig getImageUploadConfig() {
+        String path = properties.getProperty(IMAGE_UPLOAD_PATH);
+        int size = Integer.parseInt(properties.getProperty(IMAGE_MAX_SIZE, "400"));
+
+        return new ImageUploadConfig(path, size);
     }
 }

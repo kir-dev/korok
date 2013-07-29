@@ -4,7 +4,9 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.SvieMembershipType;
 import hu.sch.domain.SvieStatus;
+import hu.sch.domain.config.Configuration;
 import java.io.Serializable;
+import java.nio.file.Paths;
 import java.text.Collator;
 import java.util.*;
 import javax.persistence.*;
@@ -150,12 +152,16 @@ public class User implements Serializable, Comparable<User> {
     @Column(name = "usr_show_recommended_photo", nullable = false, columnDefinition = "boolean default false")
     private boolean showRecommendedPhoto;
     //----------------------------------------------------
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<IMAccount> imAccounts;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
+    private Set<IMAccount> imAccounts;
     //----------------------------------------------------
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
     private Set<UserAttribute> privateAttributes;
+    //----------------------------------------------------
+    @Transient
+    private UserStatus userStatus = null;
 
     public User() {
         this.delegated = false;
@@ -357,14 +363,14 @@ public class User implements Serializable, Comparable<User> {
     /**
      * IM elérhetőségek.
      */
-    public List<IMAccount> getImAccounts() {
+    public Set<IMAccount> getImAccounts() {
         if (imAccounts == null) {
-            imAccounts = new ArrayList<>();
+            imAccounts = new HashSet<>();
         }
         return imAccounts;
     }
 
-    public void setImAccounts(List<IMAccount> imAccounts) {
+    public void setImAccounts(Set<IMAccount> imAccounts) {
         this.imAccounts = imAccounts;
     }
 
@@ -446,6 +452,8 @@ public class User implements Serializable, Comparable<User> {
 
     /**
      * A profilkép elérési útja.
+     *
+     * Relatív a felöltött képeket tároló mappához. pl. pistike/profile.jpg
      */
     public String getPhotoPath() {
         return photoPath;
@@ -453,6 +461,25 @@ public class User implements Serializable, Comparable<User> {
 
     public void setPhotoPath(String photoPath) {
         this.photoPath = photoPath;
+    }
+
+    /**
+     * A profilkép teljes elérési útja.
+     *
+     * @return
+     */
+    public String getPhotoFullPath() {
+        return Paths.get(Configuration.getImageUploadConfig().getBasePath(),
+                getPhotoPath()).toString();
+    }
+
+    /**
+     * Azt jelzi, hogy van-e profilképe a usernek.
+     *
+     * @return
+     */
+    public boolean hasPhoto() {
+        return getPhotoPath() != null;
     }
 
     /**
@@ -529,6 +556,7 @@ public class User implements Serializable, Comparable<User> {
      * Gets the combined dormitory and room number.
      *
      * Fromat [Dormitory] [Room]
+     *
      * @return
      */
     public String getFullRoomNumber() {
@@ -593,6 +621,24 @@ public class User implements Serializable, Comparable<User> {
         }
 
         return "";
+    }
+
+    /**
+     * A felhasználó SSO státusza.
+     *
+     * Erre a mezőre főleg az admin részleg miatt van szükség.
+     *
+     * TODO: lehet hogy jó lenne eltávolítani és másképp megoldani az
+     * adminformot.
+     *
+     * @return az felhasználó sso statusa vagy null, ha nincs kitöltve
+     */
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     @Override

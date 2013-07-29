@@ -1,6 +1,8 @@
 package hu.sch.domain;
 
+import hu.sch.domain.config.Configuration;
 import java.io.Serializable;
+import java.nio.file.Paths;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,7 +10,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Type;
 
 /**
  *
@@ -17,13 +18,11 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "spot_images")
 @NamedQueries({
-    @NamedQuery(name = SpotImage.findByNeptun, query = "SELECT si FROM SpotImage si WHERE si.neptunCode = :neptunCode"),
-    @NamedQuery(name = SpotImage.deleteByNeptun, query = "DELETE FROM SpotImage si WHERE si.neptunCode = :neptunCode")
+    @NamedQuery(name = SpotImage.findByNeptun, query = "SELECT si FROM SpotImage si WHERE si.neptunCode = :neptunCode")
 })
 public class SpotImage implements Serializable {
 
     public static final String findByNeptun = "findSpotImageByNeptun";
-    public static final String deleteByNeptun = "deleteSpotImageByNeptun";
     @Id
     @Column(name = "usr_neptun", nullable = false)
     private String neptunCode;
@@ -48,5 +47,10 @@ public class SpotImage implements Serializable {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public String getImageFullPath() {
+        return Paths.get(Configuration.getImageUploadConfig().getBasePath(),
+                getImagePath()).toString();
     }
 }
