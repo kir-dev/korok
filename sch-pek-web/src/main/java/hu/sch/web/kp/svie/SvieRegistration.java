@@ -9,7 +9,7 @@ import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.kp.KorokPage;
-import hu.sch.domain.util.PatternHolder;
+import hu.sch.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -80,7 +80,7 @@ public final class SvieRegistration extends KorokPage {
         form.add(homePostalAddressTF);
         form.add(new ValidationSimpleFormComponentLabel("homePostalAddressLabel", homePostalAddressTF));
 
-        AttributeAjaxFallbackLink attrLink = new AttributeAjaxFallbackLink("homePostalAddressAttributeLink", "homePostalAddressAttributeImg", UserAttributeName.HOME_ADDRESS);
+        AttributeAjaxFallbackLink attrLink = new AttributeAjaxFallbackLink("homePostalAddressAttributeLink", "homePostalAddressAttributeImg", UserAttributeName.HOME_ADDRESS, user);
         attrLink.setUser(user);
         form.add(attrLink);
 

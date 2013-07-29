@@ -22,13 +22,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author  messo
- * @since   2.4
+ * @author messo
+ * @since 2.4
  */
 public abstract class PekPage extends WebPage {
 
     private static final Logger logger = LoggerFactory.getLogger(PekPage.class);
-
     private static final String NAVBAR_SCRIPT =
             "var navbarConf = { "
             + "logoutLink: '/logout', "
@@ -85,11 +84,9 @@ public abstract class PekPage extends WebPage {
             // nincs virId, ilyenkor userId := 0?
             getSession().setUserId(0L);
             return;
-        }
-        if (!virId.equals(getSession().getUserId())) {
-            logger.debug("WHAT JUST HAPPENED??? "
-                    + "Different logged in user in session and request!");
-            throw new IllegalStateException("Different logged in user in session and request!");
+        } else if (!virId.equals(getSession().getUserId())) {
+            // TODO: ilyenkor mi van? egyelőre beállítjuk a session ben is
+            getSession().setUserId(virId);
         }
     }
 

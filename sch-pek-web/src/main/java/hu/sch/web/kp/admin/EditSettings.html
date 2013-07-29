@@ -47,16 +47,11 @@
     </wicket:fragment>
     <wicket:fragment wicket:id="kirdevpanel">
         <h2>Admin</h2>
-        <a wicket:id ="showinactive"><wicket:message key="admin.show.inactive" /></a><br />
         <a wicket:id ="createGroup"><wicket:message key="admin.create.group" /></a><br />
         <a wicket:id ="createPerson"><wicket:message key="admin.create.person" /></a><br />
         <a wicket:id="csvExport">KFB export letöltése</a>
         <form wicket:id="kirdevForm">
             <table>
-                <tr>
-                    <td>Spot képek:</td>
-                    <td><input type="text" wicket:id="spotDir"></td>
-                </tr>
                 <tr>
                     <td>
                         <input type="checkbox" id="newbieTime" wicket:id="newbieTime" />

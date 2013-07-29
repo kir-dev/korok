@@ -22,6 +22,6 @@ public class EditPage extends ProfilePage {
         }
 
         setHeaderLabelText(user.getScreenName());
-        add(new PersonForm("personForm", user));
+        add(new PersonFormPanel("personFormPanel", user));
     }
 }

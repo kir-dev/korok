@@ -3,7 +3,7 @@ package hu.sch.web.kp.group;
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
 import hu.sch.services.exceptions.NotImplementedException;
-import hu.sch.services.exceptions.UpdateFailedException;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.components.EditDelegatesForm;
 import java.util.ArrayList;
@@ -74,7 +74,7 @@ public final class ChangeDelegates extends KorokPage {
                     try {
                         userManager.updateUser(user);
                         //userManager.setUserDelegateStatus(extendedUser.getUser(), extendedUser.getSelected());
-                    } catch (UpdateFailedException ex) {
+                    } catch (PekEJBException ex) {
                         // TODO: deal with db and ds errors
                         throw new NotImplementedException("TODO: error handling for db and ds errors");
                     }

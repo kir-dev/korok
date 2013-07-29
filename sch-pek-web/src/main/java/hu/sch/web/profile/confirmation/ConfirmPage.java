@@ -2,6 +2,7 @@ package hu.sch.web.profile.confirmation;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.UpdateFailedException;
 import hu.sch.web.profile.ProfilePage;
 import hu.sch.web.profile.show.ShowPersonPage;
@@ -38,10 +39,11 @@ public final class ConfirmPage extends ProfilePage {
 
         if (confirmationCode.equals(user.getConfirmationCode())) {
             try {
-                userManager.updateUserStatus(user, UserStatus.ACTIVE);
+                user.setUserStatus(UserStatus.ACTIVE);
+                userManager.updateUser(user);
                 success = true;
-            } catch (UpdateFailedException ex) {
-                logger.error("Failed to update the direcotry service.");
+            } catch (PekEJBException ex) {
+                // TODO: proper error reporting to user
                 getSession().error("Hiba az ellenőrzéskor.");
                 setResponsePage(getApplication().getHomePage());
             }

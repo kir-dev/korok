@@ -3,7 +3,6 @@ package hu.sch.web.kp.admin;
 import hu.sch.domain.EntrantType;
 import hu.sch.domain.Semester;
 import hu.sch.domain.ValuationPeriod;
-import hu.sch.services.ImageManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.PhoenixApplication;
@@ -237,10 +236,7 @@ public class EditSettings extends KorokPage {
 
     private class KirDevFragment extends Fragment {
 
-        @EJB(name = "ImageManagerBean")
-        private ImageManagerLocal imageManager;
         private boolean newbieTime = systemManager.getNewbieTime();
-        private String spotDir;
 
         public KirDevFragment(String id, String markupId) {
             super(id, markupId, null, null);
@@ -252,23 +248,13 @@ public class EditSettings extends KorokPage {
 
                 @Override
                 protected void onSubmit() {
-                    if (spotDir != null && !spotDir.isEmpty()) {
-                        try {
-                            imageManager.loadImages(spotDir);
-                        } catch (Exception ex) {
-                            getSession().error(ex.getMessage());
-                            logger.error("Unable to load spot images from directory: " + spotDir, ex);
-                            return;
-                        }
-                    }
                     systemManager.setNewbieTime(newbieTime);
                     ((PhoenixApplication) getApplication()).setNewbieTime(newbieTime);
                     getSession().info(getLocalizer().getString("info.BeallitasokMentve", this));
                 }
             };
-            TextField<String> spotDirTF = new TextField<String>("spotDir");
             CheckBox newbieTimeCB = new CheckBox("newbieTime");
-            form.add(spotDirTF, newbieTimeCB);
+            form.add(newbieTimeCB);
             add(form);
         }
     }

@@ -1,0 +1,27 @@
+<wicket:extend>
+    <table style="margin-bottom: 30px;">
+        <tr>
+            <td><label wicket:id="neptunInputLabel">Neptun *</label></td>
+            <td><input class="textinput" wicket:id="neptunCode"/></td>
+        </tr>
+        <tr>
+            <td><label wicket:id="statusLabel">Státusz *</label></td>
+            <td>
+                <select wicket:id="userStatus"></select>
+                <span>Hagyd üresen és akkor nem fog változni az értéke!</span>
+            </td>
+        </tr>
+        <tr>
+            <td><label wicket:id="studentStatusLabel">Hallgatói státusz *</label></td>
+            <td><select wicket:id="studentStatus"></select></td>
+        </tr>
+        <tr>
+            <td><label wicket:id="mothersNameLabel">Anyja neve</label></td>
+            <td><input class="textinput" wicket:id="mothersName" /></td>
+        </tr>
+        <tr>
+            <td><label wicket:id="estGradLabel">Egyetem befejezési ideje</label></td>
+            <td><input class="textinput" wicket:id="estimatedGraduationYear" /></td>
+        </tr>
+    </table>
+</wicket:extend>

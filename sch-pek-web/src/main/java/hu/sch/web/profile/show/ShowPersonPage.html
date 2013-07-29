@@ -8,54 +8,63 @@
     </div>
 
     <h2>Teljes profil</h2>
-    
+
     <div class="photo">
         <img wicket:id="photo"/>
     </div>
 
     <div style="margin-top: 20px; margin-left: 52px; width: 440px;">
-        <a wicket:id="createCommunityProfile">Közösségi profil létrehozása</a>
         <a wicket:id="adminLink">Felhasználó adatainak szerkesztése</a>
     </div>
     <div style="width: 430px;">
 
         <table id="list">
-            <tr wicket:id="nickNameWMC">
-                <td class="listtitle">Becenév</td>
-                <td><span wicket:id="nickName"/></td>
-            </tr>
-            <tr wicket:id="mailWMC">
-                <td class="listtitle">E-Mail</td>
-                <td><span wicket:id="mail"/></td>
-            </tr>
+            <wicket:enclosure>
+                <tr>
+                    <td class="listtitle">Becenév</td>
+                    <td><span wicket:id="nickName"/></td>
+                </tr>
+            </wicket:enclosure>
+            <wicket:enclosure>
+                <tr>
+                    <td class="listtitle">E-Mail</td>
+                    <td><span wicket:id="emailAddress"/></td>
+                </tr>
+            </wicket:enclosure>
             <tr wicket:id="ims">
                 <td class="listtitle">IM (<span wicket:id="imProtocol" />)</td>
-                <td><span wicket:id="imPresenceID"/></td>
+                <td><span wicket:id="imAccountName"/></td>
             </tr>
-            <tr wicket:id="mobileWMC">
-                <td class="listtitle">Mobil</td>
-                <td><span wicket:id="mobile"/></td>
-            </tr>
-            <tr wicket:id="homePhoneWMC">
-                <td class="listtitle">Vezetékes</td>
-                <td><span wicket:id="homePhone"/></td>
-            </tr>
-            <tr wicket:id="webpageWMC">
-                <td class="listtitle">Weboldal</td>
-                <td><span wicket:id="webpage"/></td>
-            </tr>
-            <tr wicket:id="roomNumberWMC">
-                <td class="listtitle">Szoba</td>
-                <td><span wicket:id="roomNumber"/></td>
-            </tr>
-            <tr wicket:id="homePostalAddressWMC">
-                <td class="listtitle">Cím</td>
-                <td><span wicket:id="homePostalAddress"/></td>
-            </tr>
-            <tr wicket:id="dateOfBirthWMC">
-                <td class="listtitle">Születési dátum</td>
-                <td><span wicket:id="dateOfBirth"/></td>
-            </tr>
+            <wicket:enclosure>
+                <tr>
+                    <td class="listtitle">Mobil</td>
+                    <td><span wicket:id="cellPhone"/></td>
+                </tr>
+            </wicket:enclosure>
+            <wicket:enclosure>
+                <tr>
+                    <td class="listtitle">Weboldal</td>
+                    <td><span wicket:id="webpage"/></td>
+                </tr>
+            </wicket:enclosure>
+            <wicket:enclosure>
+                <tr>
+                    <td class="listtitle">Szoba</td>
+                    <td><span wicket:id="fullRoomNumber"/></td>
+                </tr>
+            </wicket:enclosure>
+            <wicket:enclosure>
+                <tr>
+                    <td class="listtitle">Cím</td>
+                    <td><span wicket:id="homeAddress"/></td>
+                </tr>
+            </wicket:enclosure>
+            <wicket:enclosure>
+                <tr>
+                    <td class="listtitle">Születési dátum</td>
+                    <td><span wicket:id="dateOfBirth"/></td>
+                </tr>
+            </wicket:enclosure>
         </table>
         <div style="clear: both;"></div>
     </div>

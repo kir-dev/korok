@@ -1,7 +1,7 @@
 package hu.sch.web.idm.pages.wizard;
 
 import hu.sch.domain.user.RegisteringUser;
-import hu.sch.domain.util.PatternHolder;
+import hu.sch.util.PatternHolder;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.exceptions.CreateFailedException;
 import hu.sch.services.exceptions.InvalidNewbieStateException;

@@ -53,6 +53,10 @@
     <dependencies>
         <dependency>
             <groupId>hu.sch</groupId>
+            <artifactId>sch-pek-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.sch</groupId>
             <artifactId>sch-pek-domain</artifactId>
         </dependency>
         <dependency>

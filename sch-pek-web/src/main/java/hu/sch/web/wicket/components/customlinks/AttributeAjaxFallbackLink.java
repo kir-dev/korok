@@ -25,13 +25,10 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
     @EJB(name = "UserManagerBean")
     private UserManagerLocal userManager;
 
-    public AttributeAjaxFallbackLink(String id) {
-        super(id);
-    }
-
-    public AttributeAjaxFallbackLink(String linkId, String imgId, final UserAttributeName attr) {
+    public AttributeAjaxFallbackLink(String linkId, String imgId, final UserAttributeName attr, User user) {
         super(linkId);
         this.attr = attr;
+        this.user = user;
         isPrivateAttr = !user.isAttributeVisible(attr);
         isPrivateAttr = false;
 
