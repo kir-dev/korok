@@ -26,44 +26,29 @@ public class MailManagerBean implements MailManagerLocal {
     private Session mailSession;
 
     @Override
-    public boolean sendEmail(String to, String subject, String message) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("E-mail küldése ");
-        sb.append(to);
-        sb.append("-nak.");
-        log.info(sb.toString());
+    public boolean sendEmail(String to, final String subject, final String message) {
+        log.info("E-mail küldés, címzett={}", to);
 
         if (log.isDebugEnabled() || Configuration.getEnvironment() == Environment.TESTING) {
-            StringBuilder sbd = new StringBuilder();
-
-            sbd.append("E-mail küldése\n");
-            sbd.append("Címzett: ");
-            sbd.append(to);
-            sbd.append("\nTárgy: ");
-            sbd.append(subject);
-            sbd.append("\nÜzenet: ");
-            sbd.append(message);
-
-            log.debug(sbd.toString());
+            log.debug("Tárgy={}\nÜzenet={}", subject, message);
         }
 
-        Message msg = new MimeMessage(mailSession);
+        final Message mail = new MimeMessage(mailSession);
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Eredeti cím: " + to);
-            }
             if (Configuration.getEnvironment() != Environment.PRODUCTION) {
                 to = Configuration.getDevEmail();
+                log.debug("[dev mód] új címzett={}", to);
             }
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
 
-            msg.setSubject("[VIR Körök] " + subject);
-            msg.setText(message);
-            msg.setSentDate(new Date());
+            mail.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
 
-            if( Configuration.getEnvironment() != Environment.TESTING ) {
+            mail.setSubject("[VIR Körök] " + subject);
+            mail.setText(message);
+            mail.setSentDate(new Date());
+
+            if (Configuration.getEnvironment() != Environment.TESTING) {
                 // TESTING esetén ne küldjünk levelet!
-                Transport.send(msg);
+                Transport.send(mail);
                 log.info("Levél sikeresen elküldve.");
             }
         } catch (Exception ex) {
