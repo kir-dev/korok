@@ -1,7 +1,7 @@
 package hu.sch.web.kp.valuation.request.entrant;
 
 import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.EntrantType;
+import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.user.User;
 import hu.sch.domain.Valuation;
 import hu.sch.services.GroupManagerLocal;

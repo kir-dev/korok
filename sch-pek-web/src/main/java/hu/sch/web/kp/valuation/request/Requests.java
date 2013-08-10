@@ -3,7 +3,7 @@ package hu.sch.web.kp.valuation.request;
 import hu.sch.domain.AbstractValuationRequest;
 import hu.sch.domain.user.User;
 import hu.sch.domain.Valuation;
-import hu.sch.domain.ValuationPeriod;
+import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.valuation.Valuations;

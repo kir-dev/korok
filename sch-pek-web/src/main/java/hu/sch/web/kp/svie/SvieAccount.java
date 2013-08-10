@@ -1,8 +1,8 @@
 package hu.sch.web.kp.svie;
 
 import hu.sch.domain.Membership;
-import hu.sch.domain.SvieMembershipType;
-import hu.sch.domain.SvieStatus;
+import hu.sch.domain.enums.SvieMembershipType;
+import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.User;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.behaviors.ConfirmationBehavior;

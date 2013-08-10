@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.components.choosers;
 
-import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.user.User;
 import java.util.Arrays;
 import org.apache.wicket.markup.html.form.DropDownChoice;

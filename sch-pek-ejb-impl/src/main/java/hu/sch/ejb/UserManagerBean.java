@@ -1,5 +1,6 @@
 package hu.sch.ejb;
 
+import hu.sch.domain.enums.ValuationStatus;
 import com.unboundid.ldap.sdk.LDAPException;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;

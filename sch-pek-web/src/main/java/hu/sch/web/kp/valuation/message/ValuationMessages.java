@@ -1,5 +1,6 @@
 package hu.sch.web.kp.valuation.message;
 
+import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.domain.*;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;

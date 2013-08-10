@@ -1,8 +1,8 @@
 package hu.sch.web.kp.admin;
 
-import hu.sch.domain.EntrantType;
+import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.Semester;
-import hu.sch.domain.ValuationPeriod;
+import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.PhoenixApplication;

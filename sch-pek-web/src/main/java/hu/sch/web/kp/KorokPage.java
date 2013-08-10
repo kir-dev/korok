@@ -3,7 +3,7 @@ package hu.sch.web.kp;
 import hu.sch.domain.Group;
 import hu.sch.domain.Semester;
 import hu.sch.domain.user.User;
-import hu.sch.domain.ValuationPeriod;
+import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.PostManagerLocal;

@@ -1,7 +1,7 @@
 package hu.sch.web.wicket.components;
 
 import hu.sch.domain.Membership;
-import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.user.User;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.image.Image;

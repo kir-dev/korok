@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.components.choosers;
 
-import hu.sch.domain.ValuationStatus;
+import hu.sch.domain.enums.ValuationStatus;
 import java.util.Arrays;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.form.DropDownChoice;

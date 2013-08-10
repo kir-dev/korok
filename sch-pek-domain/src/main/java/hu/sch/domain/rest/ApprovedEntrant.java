@@ -1,6 +1,6 @@
 package hu.sch.domain.rest;
 
-import hu.sch.domain.EntrantType;
+import hu.sch.domain.enums.EntrantType;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

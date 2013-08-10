@@ -1,6 +1,6 @@
 package hu.sch.services;
 
-import hu.sch.domain.ValuationPeriod;
+import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.domain.Semester;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import javax.ejb.Local;

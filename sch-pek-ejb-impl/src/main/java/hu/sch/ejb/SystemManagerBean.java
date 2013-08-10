@@ -1,6 +1,6 @@
 package hu.sch.ejb;
 
-import hu.sch.domain.ValuationPeriod;
+import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Semester;
 import hu.sch.domain.logging.Log;

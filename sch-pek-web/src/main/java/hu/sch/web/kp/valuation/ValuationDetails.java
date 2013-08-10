@@ -1,5 +1,7 @@
 package hu.sch.web.kp.valuation;
 
+import hu.sch.domain.enums.ValuationPeriod;
+import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.*;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;

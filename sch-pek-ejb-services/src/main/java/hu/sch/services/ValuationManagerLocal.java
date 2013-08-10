@@ -2,7 +2,7 @@ package hu.sch.services;
 
 import hu.sch.domain.ConsideredValuation;
 import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.EntrantType;
+import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.GivenPoint;
 import hu.sch.domain.Group;
 import hu.sch.domain.PointRequest;

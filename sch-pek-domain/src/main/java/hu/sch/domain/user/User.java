@@ -2,8 +2,8 @@ package hu.sch.domain.user;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.SvieMembershipType;
-import hu.sch.domain.SvieStatus;
+import hu.sch.domain.enums.SvieMembershipType;
+import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.config.Configuration;
 import java.io.Serializable;
 import java.nio.file.Paths;

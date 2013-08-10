@@ -2,7 +2,7 @@ package hu.sch.services;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.user.User;
 import java.util.List;
 import javax.ejb.Local;

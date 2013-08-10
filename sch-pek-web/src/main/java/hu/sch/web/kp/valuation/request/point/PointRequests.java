@@ -1,6 +1,6 @@
 package hu.sch.web.kp.valuation.request.point;
 
-import hu.sch.domain.ValuationPeriod;
+import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.web.kp.valuation.request.Requests;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 

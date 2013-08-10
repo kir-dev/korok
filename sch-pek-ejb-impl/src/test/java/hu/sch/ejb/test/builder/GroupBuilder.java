@@ -6,7 +6,7 @@
 package hu.sch.ejb.test.builder;
 
 import hu.sch.domain.Group;
-import hu.sch.domain.GroupStatus;
+import hu.sch.domain.enums.GroupStatus;
 
 /**
  *

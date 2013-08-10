@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.components.choosers;
 
-import hu.sch.domain.EntrantType;
+import hu.sch.domain.enums.EntrantType;
 import java.util.Arrays;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;

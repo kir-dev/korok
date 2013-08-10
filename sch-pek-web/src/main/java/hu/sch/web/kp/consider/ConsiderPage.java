@@ -1,5 +1,7 @@
 package hu.sch.web.kp.consider;
 
+import hu.sch.domain.enums.ValuationPeriod;
+import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.services.ValuationManagerLocal;

@@ -1,6 +1,6 @@
 package hu.sch.web.kp.svie;
 
-import hu.sch.domain.SvieMembershipType;
+import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.SvieManagerLocal;

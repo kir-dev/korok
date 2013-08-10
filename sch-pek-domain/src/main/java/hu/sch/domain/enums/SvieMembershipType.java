@@ -1,4 +1,4 @@
-package hu.sch.domain;
+package hu.sch.domain.enums;
 
 /**
  *

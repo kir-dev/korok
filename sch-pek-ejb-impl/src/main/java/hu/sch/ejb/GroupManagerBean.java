@@ -4,7 +4,7 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
-import hu.sch.domain.SvieStatus;
+import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.User;
 import hu.sch.services.GroupManagerLocal;
 import java.util.ArrayList;

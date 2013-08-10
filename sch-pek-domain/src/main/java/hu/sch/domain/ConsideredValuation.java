@@ -1,5 +1,6 @@
 package hu.sch.domain;
 
+import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.user.User;
 import java.io.Serializable;
 

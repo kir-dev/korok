@@ -1,7 +1,7 @@
 package hu.sch.ejb.test.builder;
 
-import hu.sch.domain.SvieMembershipType;
-import hu.sch.domain.SvieStatus;
+import hu.sch.domain.enums.SvieMembershipType;
+import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.User;

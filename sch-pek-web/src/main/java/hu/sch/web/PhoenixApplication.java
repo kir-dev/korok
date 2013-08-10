@@ -1,8 +1,8 @@
 package hu.sch.web;
 
-import hu.sch.domain.EntrantType;
+import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.Membership;
-import hu.sch.domain.ValuationStatus;
+import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.config.Configuration.Environment;
 import hu.sch.services.SystemManagerLocal;

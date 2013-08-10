@@ -2,8 +2,8 @@ package hu.sch.ejb;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
-import hu.sch.domain.SvieMembershipType;
-import hu.sch.domain.SvieStatus;
+import hu.sch.domain.enums.SvieMembershipType;
+import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;

@@ -1,6 +1,6 @@
 package hu.sch.web.wicket.util;
 
-import hu.sch.domain.ValuationStatus;
+import hu.sch.domain.enums.ValuationStatus;
 import java.util.Locale;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
