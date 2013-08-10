@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.*;
@@ -47,6 +46,8 @@ public class UserManagerBean implements UserManagerLocal {
     MailManagerLocal mailManager;
     @EJB(name = "PostManagerBean")
     PostManagerLocal postManager;
+    @EJB(name = "SystemManagerBean")
+    private SystemManagerLocal systemManager;
 
     @Override
     public User findUserById(Long userId) {
@@ -320,5 +321,44 @@ public class UserManagerBean implements UserManagerLocal {
         // this updates the user record via a trigger.
         // usr_show_recommended will be false after the update.
         em.remove(img);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean sendUserNameReminder(final String email) throws PekEJBException {
+
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("email argument can't be null when sending user name reminder");
+        }
+
+        try {
+            final User result = findUserByEmail(email);
+
+            if (result == null) {
+                throw new PekEJBException(PekErrorCode.USER_NOTFOUND);
+            } else {
+                final String subject =
+                        MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_SUBJECT);
+
+                final String messageBody;
+                if (systemManager.getNewbieTime()) {
+                    messageBody = String.format(
+                            MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_BODY_NEWBIE),
+                            result.getFirstName(), result.getScreenName());
+                } else {
+                    messageBody = String.format(
+                            MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_BODY),
+                            result.getFirstName(), result.getScreenName());
+                }
+
+                return mailManager.sendEmail(email, subject, messageBody);
+            }
+        } catch (DuplicatedUserException ex) {
+            logger.error("sendUserNameReminder: Duplicated user with email={}", email);
+        }
+
+        return false;
     }
 }

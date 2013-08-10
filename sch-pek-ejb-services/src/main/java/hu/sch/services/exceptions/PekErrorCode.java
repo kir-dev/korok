@@ -28,7 +28,10 @@ public enum PekErrorCode {
     FILE_OPEN_FAILED(301),
     // LDAP ERRORS 4xx
     LDAP_CONNECTION_FAILED(400),
-    LDAP_UPDATE_FAILED(401);
+    LDAP_UPDATE_FAILED(401),
+    // USER ERRORS 5xx
+    USER_NOTFOUND(500)
+    ;
     //------------------------------------------
     private static final String MESSAGE_KEY_PREFIX = "ejb.error.";
     private int code;

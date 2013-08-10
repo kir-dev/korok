@@ -189,4 +189,16 @@ public interface UserManagerLocal {
      */
     public void changePassword(String screenName, String oldPwd, String newPwd)
             throws InvalidPasswordException, UpdateFailedException;
+
+    /**
+     * Searches the user in the datastore by email and sends an email with the screen
+     * name.
+     * It sends different messages depends on {@link SystemManagerLocal#getNewbieTime()}.
+     *
+     * @param email
+     * @return true if we found the user and the email sent successfully.
+     * @throws PekEJBException when user not found.
+     * @throws IllegalArgumentException when the argument is null or empty.
+     */
+    boolean sendUserNameReminder(final String email) throws PekEJBException;
 }
