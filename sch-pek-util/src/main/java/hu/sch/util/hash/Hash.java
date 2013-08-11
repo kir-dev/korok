@@ -1,6 +1,6 @@
 package hu.sch.util.hash;
 
-import hu.sch.util.Strings;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  *
@@ -21,7 +21,7 @@ public abstract class Hash {
 
     public String toHex() {
         hashedValue = compute();
-        return Strings.hex(hashedValue);
+        return Hex.encodeHexString(hashedValue);
     }
     protected abstract byte[] compute();
 }
