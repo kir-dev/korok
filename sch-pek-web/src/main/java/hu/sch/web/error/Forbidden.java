@@ -19,4 +19,14 @@ public class Forbidden extends WebPage {
         add(new WebComponent("favicon").add(
                 new AttributeModifier("href", Model.of("/images/favicon-korok.ico"))));
     }
+
+    @Override
+    public boolean isVersioned() {
+        return false;
+    }
+
+    @Override
+    public boolean isErrorPage() {
+        return true;
+    }
 }

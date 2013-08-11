@@ -30,7 +30,7 @@
 
     <error-page>
         <error-code>404</error-code>
-        <location>/error/NotFound</location>
+        <location>/NotFound</location>
     </error-page>
 
     <session-config>

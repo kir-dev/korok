@@ -27,10 +27,14 @@ public class MailManagerBean implements MailManagerLocal {
     private static final Logger log = LoggerFactory.getLogger(MailManagerBean.class);
     private static final String STRINGS_FILE = "/META-INF/mail_messages.properties";
     private static final Properties mailStrings = new Properties();
-    //keys in mail_messages.properties
-    public static final String MAIL_USERNAME_REMINDER_SUBJECT = "username.reminder.subject";
-    public static final String MAIL_USERNAME_REMINDER_BODY = "username.reminder.body";
-    public static final String MAIL_USERNAME_REMINDER_BODY_NEWBIE = "username.reminder.body.newbie";
+    //keys in mail_messages.properties, package protected fields
+    //system exception report
+    static final String MAIL_SYSTEM_EXCEPTIONREPORT_SUBJECT = "system.exceptionreport.subject";
+    static final String MAIL_SYSTEM_EXCEPTIONREPORT_BODY = "system.exceptionreport.body";
+    //username reminder
+    static final String MAIL_USERNAME_REMINDER_SUBJECT = "username.reminder.subject";
+    static final String MAIL_USERNAME_REMINDER_BODY = "username.reminder.body";
+    static final String MAIL_USERNAME_REMINDER_BODY_NEWBIE = "username.reminder.body.newbie";
     @Resource(name = "mail/korokMail")
     private Session mailSession;
 

@@ -4,12 +4,15 @@ import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Semester;
 import hu.sch.domain.logging.Log;
+import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -26,9 +29,11 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class SystemManagerBean implements SystemManagerLocal {
 
+    private static final Logger logger = LoggerFactory.getLogger(SystemManagerBean.class);
     @PersistenceContext
     EntityManager em;
-    private static final Logger logger = LoggerFactory.getLogger(SystemManagerBean.class);
+    @EJB(name = "MailManagerBean")
+    MailManagerLocal mailManager;
 
     @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {
@@ -143,5 +148,30 @@ public class SystemManagerBean implements SystemManagerLocal {
     @Override
     public void setNewbieTime(boolean newbieTime) {
         setAttributeValue(SystemAttribute.NEWBIE_TIME, Boolean.toString(newbieTime));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendExceptionReportMail(final Map<SystemManagerLocal.EXC_REPORT_KEYS, String> params) {
+        final String subject =
+                MailManagerBean.getMailString(MailManagerBean.MAIL_SYSTEM_EXCEPTIONREPORT_SUBJECT);
+
+        final String body =
+                MailManagerBean.getMailString(MailManagerBean.MAIL_SYSTEM_EXCEPTIONREPORT_BODY);
+
+        final Object[] args = new Object[]{
+            params.get(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_NAME),
+            params.get(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_PATH),
+            params.get(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_PARAMS),
+            params.get(SystemManagerLocal.EXC_REPORT_KEYS.REMOTE_USER),
+            params.get(SystemManagerLocal.EXC_REPORT_KEYS.REMOTE_ADDRESS),
+            params.get(SystemManagerLocal.EXC_REPORT_KEYS.EMAIL),
+            params.get(SystemManagerLocal.EXC_REPORT_KEYS.VIRID),
+            params.get(SystemManagerLocal.EXC_REPORT_KEYS.EXCEPTION)
+        };
+
+        mailManager.sendEmail("jee-dev@sch.bme.hu", subject, String.format(body, args));
     }
 }

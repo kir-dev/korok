@@ -11,6 +11,7 @@ import hu.sch.web.authz.DummyAuthorization;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.error.Forbidden;
 import hu.sch.web.error.InternalServerError;
+import hu.sch.web.error.NotFound;
 import hu.sch.web.error.PageExpiredError;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
 import hu.sch.web.idm.pages.RegistrationPage;
@@ -48,13 +49,19 @@ import hu.sch.web.wicket.util.ValuationStatusConverter;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.wicket.*;
+import org.apache.wicket.core.request.handler.IPageRequestHandler;
+import org.apache.wicket.core.request.handler.PageProvider;
+import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.core.request.mapper.MountedMapper;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.cycle.PageRequestHandlerTracker;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.cycle.RequestCycleContext;
 import org.apache.wicket.request.mapper.parameter.UrlPathPageParametersEncoder;
@@ -141,14 +148,11 @@ public class PhoenixApplication extends WebApplication {
 
         getMarkupSettings().setStripWicketTags(true);
 
-        mountPackage("/error", InternalServerError.class);
+        setErrorHandling();
+
+        //
         mountPage("/loggedout", Logout.class);
         mountPages();
-
-        //alkalmazás beállítások
-        getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
-        getApplicationSettings().setAccessDeniedPage(Forbidden.class);
-        //getPageSettings().setAutomaticMultiWindowSupport(false);
 
         //Ha dev módban vagyunk, akkor hozzáteszünk egy új filtert, ami mutatja
         //a render időket a log fájlban.
@@ -254,5 +258,27 @@ public class PhoenixApplication extends WebApplication {
         locator.set(Membership.class, new PostTypeConverter());
 
         return locator;
+    }
+
+    private void setErrorHandling() {
+
+        mountPage("/error/Internal", InternalServerError.class);
+        mountPage("/error/Forbidden", Forbidden.class);
+        mountPage("/error/Expired", PageExpiredError.class);
+        mountPage("/NotFound", NotFound.class);
+
+        getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
+        getApplicationSettings().setAccessDeniedPage(Forbidden.class);
+
+        //these need to get information about the requested page and the exception
+        getRequestCycleListeners().add(new PageRequestHandlerTracker());
+        getRequestCycleListeners().add(new AbstractRequestCycleListener() {
+
+            @Override
+            public IRequestHandler onException(final RequestCycle cycle, final Exception e) {
+                final IPageRequestHandler handler = PageRequestHandlerTracker.getLastHandler(cycle);
+                return new RenderPageRequestHandler(new PageProvider(new InternalServerError(cycle, handler, e)));
+            }
+        });
     }
 }

@@ -1,14 +1,20 @@
 package hu.sch.web.error;
 
-import hu.sch.services.MailManagerLocal;
+import hu.sch.domain.user.User;
+import hu.sch.services.SystemManagerLocal;
+import hu.sch.web.PhoenixApplication;
+import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.kp.KorokPage;
-import javax.ejb.EJB;
+import java.util.EnumMap;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.wicket.Page;
+import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.extensions.markup.html.basic.SmartLinkLabel;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -16,37 +22,69 @@ import org.slf4j.LoggerFactory;
  */
 public final class InternalServerError extends KorokPage {
 
-    private static Logger logger = LoggerFactory.getLogger(InternalServerError.class);
-    @EJB(name = "MailManagerBean")
-    MailManagerLocal mailManager;
+    @Override
+    protected void onInitialize() {
+        super.onInitialize();
 
-    public InternalServerError(Page page, Exception ex) {
         setHeaderLabelText("Hiba!");
-        SmartLinkLabel mailtoLink = new SmartLinkLabel("support", "https://support.sch.bme.hu");
+        final SmartLinkLabel mailtoLink = new SmartLinkLabel("support", "https://support.sch.bme.hu");
         add(mailtoLink);
+    }
 
-        StringBuilder sb = new StringBuilder(500);
-        sb.append("Helló!\n\nA Körök alkalmazás futása közben exception keletkezett, pedig nem kellett volna.");
-        if (page != null) {
-            sb.append("\nA hibáért a következő osztály volt a felelős: ").append(page.getClass().getName());
-            sb.append(", ami a következő URL-en volt elérhető: ").append(page.getPageRelativePath());
+    public InternalServerError(final RequestCycle cycle, final IPageRequestHandler handler,
+            final Exception ex) {
+
+        final Class<? extends IRequestablePage> pageClass = handler.getPageClass();
+        final PageParameters pageParameters = handler.getPageParameters();
+        final Request request = cycle.getRequest();
+
+        final HttpServletRequest servletRequest =
+                (HttpServletRequest) request.getContainerRequest();
+
+        final UserAuthorization authComponent =
+                ((PhoenixApplication) getApplication()).getAuthorizationComponent();
+
+        final User userAttributes = authComponent.getUserAttributes(request);
+
+        final Map<SystemManagerLocal.EXC_REPORT_KEYS, String> exceptionParams =
+                new EnumMap(SystemManagerLocal.EXC_REPORT_KEYS.class);
+
+        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_NAME,
+                pageClass.getName());
+
+        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_PATH,
+                request.getClientUrl().toString());
+
+        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_PARAMS,
+                pageParameters.toString());
+
+        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.REMOTE_USER,
+                authComponent.getRemoteUser(request));
+
+        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.REMOTE_ADDRESS,
+                servletRequest.getRemoteAddr());
+
+        if (userAttributes != null) { //null with dummyauth
+            exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.EMAIL,
+                    userAttributes.getEmailAddress());
         }
-        HttpServletRequest request = (HttpServletRequest) getRequest().getContainerRequest();
 
-        sb.append("\nA hibát előidézte: ").append(request.getRemoteUser());
-        sb.append("\n\t").append(request.getRemoteAddr());
-        sb.append("\n\t").append(request.getAttribute("mail"));
-        sb.append("\n\t").append(request.getAttribute("virid"));
+        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.VIRID,
+                authComponent.getUserid(request).toString());
 
-        sb.append("\nA hibához tartozó stacktrace:\n\n");
-        sb.append(Strings.toString(ex));
+        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.EXCEPTION,
+                Strings.toString(ex));
 
-        sb.append("\n\nJó debugolást! :)\nKörök");
-        try {
-            mailManager.sendEmail("jee-dev@sch.bme.hu", "Programhiba", sb.toString());
-        } catch (Exception e) {
-            e.initCause(ex);
-            logger.error("Error while sending the error e-mail!", e);
-        }
+        systemManager.sendExceptionReportMail(exceptionParams);
+    }
+
+    @Override
+    public boolean isVersioned() {
+        return false;
+    }
+
+    @Override
+    public boolean isErrorPage() {
+        return true;
     }
 }

@@ -25,4 +25,14 @@ public final class PageExpiredError extends KorokPage {
         refreshMeta.append("\">");
         response.render(StringHeaderItem.forString(refreshMeta.toString()));
     }
+
+    @Override
+    public boolean isVersioned() {
+        return false;
+    }
+
+    @Override
+    public boolean isErrorPage() {
+        return true;
+    }
 }
