@@ -43,7 +43,6 @@ public class SvieManagerBean implements SvieManagerLocal {
     @PersistenceContext
     private EntityManager em;
     private static Logger log = LoggerFactory.getLogger(SvieManagerBean.class);
-    private static final String mailSubject = "Elsődleges kört váltottak";
     private static Event ADVOCATE_EVENT;
     private static Event ORDINAL_EVENT;
     private static Event APPLY_EVENT;
@@ -133,19 +132,22 @@ public class SvieManagerBean implements SvieManagerLocal {
         temp.setSviePrimaryMembership(user.getSviePrimaryMembership());
     }
 
-    private void sendPrimaryMembershipChangedMail(User user) {
-        StringBuilder sb = new StringBuilder(200);
-        sb.append("Kedves Körvezető!\n\nAz egyik körtagod, ");
-        sb.append(user.getFullName());
-        sb.append(" az előbb változtatta meg elsődleges körét.\n");
-        sb.append("Link a felhasználó profiljára:\n");
-        sb.append("https://korok.sch.bme.hu/korok/showuser/id/").append(user.getId());
-        sb.append("\n\nÜdvözlettel:\nKir-Dev");
-        log.info("Erről a csoportról van szó: " + user.getSviePrimaryMembership().getGroup().getName());
-        mailManager.sendEmail(
-                // TODO: null check és miegymás
-                groupManager.findLeaderForGroup(user.getSviePrimaryMembership().getGroup().getId()).getEmailAddress(),
-                mailSubject, sb.toString());
+    private void sendPrimaryMembershipChangedMail(final User user) {
+        final String profileLink =
+                "https://korok.sch.bme.hu/korok/showuser/id/" + user.getId();
+        final String subject =
+                MailManagerBean.getMailString(MailManagerBean.MAIL_PRIMARYMEMBERSHIP_CHANGED_SUBJECT);
+
+        final String msgTemplate =
+                MailManagerBean.getMailString(MailManagerBean.MAIL_PRIMARYMEMBERSHIP_CHANGED_BODY);
+
+        final User groupLeader =
+                groupManager.findLeaderForGroup(user.getSviePrimaryMembership().getGroup().getId());
+
+        if (groupLeader != null) {
+            mailManager.sendEmail(groupLeader.getEmailAddress(), subject,
+                    String.format(msgTemplate, user.getFullName(), profileLink));
+        }
     }
 
     @Override

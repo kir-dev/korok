@@ -31,6 +31,9 @@ public class MailManagerBean {
     //system exception report
     static final String MAIL_SYSTEM_EXCEPTIONREPORT_SUBJECT = "system.exceptionreport.subject";
     static final String MAIL_SYSTEM_EXCEPTIONREPORT_BODY = "system.exceptionreport.body";
+    //primary membership changed
+    static final String MAIL_PRIMARYMEMBERSHIP_CHANGED_SUBJECT = "primarymembership.changed.subject";
+    static final String MAIL_PRIMARYMEMBERSHIP_CHANGED_BODY = "primarymembership.changed.body";
     //username reminder
     static final String MAIL_USERNAME_REMINDER_SUBJECT = "username.reminder.subject";
     static final String MAIL_USERNAME_REMINDER_BODY = "username.reminder.body";
