@@ -27,7 +27,7 @@ public abstract class KorokPage extends PekPage {
     protected PostManagerLocal postManager;
     @EJB(name="GroupManagerBean")
     protected GroupManagerLocal groupManager;
-    @EJB(name="MemebershipManagerBean")
+    @EJB(name="MembershipManagerBean")
     protected MembershipManagerLocal membershipManager;
 
     private static final Logger log = LoggerFactory.getLogger(KorokPage.class);
