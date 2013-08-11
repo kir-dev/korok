@@ -26,20 +26,17 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unchecked")
 public class TimerServiceBean {
 
+    private static Logger logger = LoggerFactory.getLogger(TimerServiceBean.class);
     @EJB
     private MailManagerBean mailManager;
     @EJB(name = "SystemManagerBean")
     private SystemManagerLocal systemManager;
-    @EJB(name = "UserManagerBean")
-    private UserManagerLocal userManager;
     @EJB
     private GroupManagerLocal groupManager;
     @PersistenceContext
     EntityManager em;
-    private static Logger logger = LoggerFactory.getLogger(TimerServiceBean.class);
     private static String welcome = "Kedves %s!\n\nAz elmúlt időszakban a következő módosítások "
             + "történtek a körtagságok terén:\n\n";
-    private static final String showUserLink = "https://korok.sch.bme.hu/korok/showuser/id/";
 
     @Schedule(hour = "1")
     protected void dailyEvent() {
@@ -84,12 +81,11 @@ public class TimerServiceBean {
 
                 if (!logs.isEmpty()) {
                     sb.append(evtType.toString());
-                }
-                for (Log log : logs) {
-                    sb.append(log.getUser().getFullName()).append(" -> ");
-                    sb.append(showUserLink).append(log.getUser().getId()).append("\n");
-                }
-                if (!logs.isEmpty()) {
+
+                    for (Log log : logs) {
+                        sb.append(log.getUser().getFullName()).append(" -> ");
+                        sb.append(SystemManagerBean.showUserLink).append(log.getUser().getId()).append("\n");
+                    }
                     sb.append("\n\n");
                 }
             }
@@ -115,12 +111,10 @@ public class TimerServiceBean {
             if (!logs.isEmpty()) {
                 wasRecord = true;
                 sb.append(eventType.toString());
-            }
-            for (Log log : logs) {
-                sb.append(log.getUser().getFullName()).append(" -> ");
-                sb.append(showUserLink).append(log.getUser().getId()).append("\n");
-            }
-            if (!logs.isEmpty()) {
+                for (Log log : logs) {
+                    sb.append(log.getUser().getFullName()).append(" -> ");
+                    sb.append(SystemManagerBean.showUserLink).append(log.getUser().getId()).append("\n");
+                }
                 sb.append("\n\n");
             }
         }
@@ -145,12 +139,10 @@ public class TimerServiceBean {
         List<Log> logs = q.getResultList();
         if (!logs.isEmpty()) {
             sb.append(EventType.ELFOGADASALATT.toString());
-        }
-        for (Log log : logs) {
-            sb.append(log.getUser().getFullName()).append(" -> ");
-            sb.append(showUserLink).append(log.getUser().getId()).append("\n");
-        }
-        if (!logs.isEmpty()) {
+            for (Log log : logs) {
+                sb.append(log.getUser().getFullName()).append(" -> ");
+                sb.append(SystemManagerBean.showUserLink).append(log.getUser().getId()).append("\n");
+            }
             sb.append("\n\n");
             sendEmail(groupManager.findLeaderForGroup(Group.VALASZTMANY).getEmailAddress(), sb);
         }

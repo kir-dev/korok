@@ -33,6 +33,7 @@ public class SystemManagerBean implements SystemManagerLocal {
     EntityManager em;
     @EJB
     MailManagerBean mailManager;
+    public static final String showUserLink = "https://korok.sch.bme.hu/korok/showuser/id/";
 
     @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {

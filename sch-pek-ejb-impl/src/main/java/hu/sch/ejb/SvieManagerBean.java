@@ -30,19 +30,17 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unchecked")
 public class SvieManagerBean implements SvieManagerLocal {
 
+    private static Logger logger = LoggerFactory.getLogger(SvieManagerBean.class);
     @EJB
     private GroupManagerLocal groupManager;
     @EJB
     private MembershipManagerLocal membershipManager;
     @EJB
     private MailManagerBean mailManager;
-    @EJB(name = "UserManagerBean")
-    private UserManagerLocal userManager;
     @EJB(name = "LogManagerBean")
     private LogManagerLocal logManager;
     @PersistenceContext
     private EntityManager em;
-    private static Logger log = LoggerFactory.getLogger(SvieManagerBean.class);
     private static Event ADVOCATE_EVENT;
     private static Event ORDINAL_EVENT;
     private static Event APPLY_EVENT;
@@ -133,8 +131,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     }
 
     private void sendPrimaryMembershipChangedMail(final User user) {
-        final String profileLink =
-                "https://korok.sch.bme.hu/korok/showuser/id/" + user.getId();
+        final String profileLink = SystemManagerBean.showUserLink + user.getId();
         final String subject =
                 MailManagerBean.getMailString(MailManagerBean.MAIL_PRIMARYMEMBERSHIP_CHANGED_SUBJECT);
 
