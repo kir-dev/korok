@@ -428,46 +428,53 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public void addNewMessage(ValuationMessage msg) {
+    public void addNewMessage(final ValuationMessage msg) {
         em.persist(msg);
 
         // e-mail küldés a jetinek vagy az adott kör vezetőjének
-        String emailTo = null;
-        String emailText = null;
-
-        try {
-            if (isJETi(msg.getSender()) && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS) {
-                // a JETI a feladó
-                System.out.println("JETI a feladó");
-                // az értékelt group körvezetőjének a mail címének kikeresése
-                User groupLeader = groupManager.findLeaderForGroup(msg.getGroupId());
-                if (groupLeader != null) {
-                    emailTo = groupLeader.getEmailAddress();
-                }
-                emailText = "Kedves Körvezető!\n\nA SVIE Választmány a következő üzenetet küldte Neked a(z) "
-                        + msg.getGroup().getName() + " köröd értékeléséhez:\n" + msg.getMessage() + "\n\n\n"
-                        + "Az értékeléseidet megtekintheted a https://korok.sch.bme.hu/korok/valuation link alatt.\n"
-                        + "Ez egy automatikusan generált e-mail.";
-            } else {
-                // nem a JETI a feladó
-                // jeti körvezetőjének a mail címének kikeresése
-                User leader = groupManager.findLeaderForGroup(Group.JET);
-                if (leader != null) {
-                    emailTo = leader.getEmailAddress();
-                }
-                emailText = "Kedves SVIE Választmány Elnök!\n\nA(z) \"" + msg.getGroup().getName() + "\" körvezetője a következő üzenetet küldte az értékelés kapcsán:\n" + msg.getMessage() + "\n\n\n"
-                        + "A kör értékelését megtekintheted a https://korok.sch.bme.hu/korok/consider link alatt.\n"
-                        + "Ez egy automatikusan generált e-mail.";
-            }
-        } catch (Exception ex) {
-            logger.error("Hiba történt miközben a címzettet kerestük az üzenet-értesítőhöz.", ex);
+        if (isJETi(msg.getSender())
+                && systemManager.getErtekelesIdoszak() == ValuationPeriod.ERTEKELESELBIRALAS) {
+            // a JETI a feladó
+            sendValuationMessageToGroupLeader(msg);
+        } else {
+            // nem a JETI a feladó
+            sendValuationMessageToJeti(msg);
         }
-        if (emailTo != null) {
-            try {
-                mailManager.sendEmail(emailTo, "Új üzeneted érkezett", emailText); // emailTo
-            } catch (Exception ex) {
-                logger.error("Nem sikerült elküldeni a levelet a következőnek: " + emailTo, ex);
-            }
+    }
+
+    private void sendValuationMessageToGroupLeader(final ValuationMessage msg) {
+        final String subject =
+                MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_SUBJECT);
+
+        // az értékelt group körvezetőjének a mail címének kikeresése
+        final User groupLeader = groupManager.findLeaderForGroup(msg.getGroupId());
+        if (groupLeader != null) {
+            final String recipient = groupLeader.getEmailAddress();
+
+            final String emailTemplate =
+                    MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_TO_GROUPLEADER_BODY);
+            final String emailText = String.format(emailTemplate,
+                    msg.getGroup().getName(), msg.getMessage(), SystemManagerBean.valuationLink);
+
+            mailManager.sendEmail(recipient, subject, emailText);
+        }
+    }
+
+    private void sendValuationMessageToJeti(final ValuationMessage msg) {
+        final String subject =
+                MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_SUBJECT);
+
+        // jeti körvezetőjének a mail címének kikeresése
+        final User leader = groupManager.findLeaderForGroup(Group.JET);
+        if (leader != null) {
+            final String recipient = leader.getEmailAddress();
+            final String emailTemplate =
+                    MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_TO_JETI_BODY);
+
+            final String emailText = String.format(emailTemplate,
+                    msg.getGroup().getName(), msg.getMessage(), SystemManagerBean.considerLink);
+
+            mailManager.sendEmail(recipient, subject, emailText);
         }
     }
 

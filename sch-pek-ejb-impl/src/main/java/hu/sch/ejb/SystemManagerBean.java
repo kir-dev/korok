@@ -29,11 +29,16 @@ import org.slf4j.LoggerFactory;
 public class SystemManagerBean implements SystemManagerLocal {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemManagerBean.class);
+    //
+    static final String baseLink = "https://korok.sch.bme.hu/korok/";
+    static final String showUserLink = baseLink + "showuser/id/";
+    static final String valuationLink = baseLink + "valuation";
+    static final String considerLink = baseLink + "consider";
+    //
     @PersistenceContext
     EntityManager em;
     @EJB
     MailManagerBean mailManager;
-    public static final String showUserLink = "https://korok.sch.bme.hu/korok/showuser/id/";
 
     @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {
@@ -42,7 +47,7 @@ public class SystemManagerBean implements SystemManagerLocal {
 
             return attr.getAttributeValue();
         } catch (NoResultException nre) {
-            throw new NoSuchAttributeException();
+            throw new NoSuchAttributeException(attributeName);
         }
     }
 

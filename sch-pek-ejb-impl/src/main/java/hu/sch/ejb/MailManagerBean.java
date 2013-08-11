@@ -31,6 +31,10 @@ public class MailManagerBean {
     //system exception report
     static final String MAIL_SYSTEM_EXCEPTIONREPORT_SUBJECT = "system.exceptionreport.subject";
     static final String MAIL_SYSTEM_EXCEPTIONREPORT_BODY = "system.exceptionreport.body";
+    //valuation messages
+    static final String MAIL_VALUATIONMESSAGE_SUBJECT = "valuationmessage.subject";
+    static final String MAIL_VALUATIONMESSAGE_TO_GROUPLEADER_BODY = "valuationmessage.to.groupleader.body";
+    static final String MAIL_VALUATIONMESSAGE_TO_JETI_BODY = "valuationmessage.to.jeti.body";
     //primary membership changed
     static final String MAIL_PRIMARYMEMBERSHIP_CHANGED_SUBJECT = "primarymembership.changed.subject";
     static final String MAIL_PRIMARYMEMBERSHIP_CHANGED_BODY = "primarymembership.changed.body";
