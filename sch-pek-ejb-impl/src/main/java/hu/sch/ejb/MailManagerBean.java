@@ -35,6 +35,7 @@ public class MailManagerBean {
     static final String MAIL_VALUATIONMESSAGE_SUBJECT = "valuationmessage.subject";
     static final String MAIL_VALUATIONMESSAGE_TO_GROUPLEADER_BODY = "valuationmessage.to.groupleader.body";
     static final String MAIL_VALUATIONMESSAGE_TO_JETI_BODY = "valuationmessage.to.jeti.body";
+    static final String MAIL_VALUATIONMESSAGE_SYSTEM_TO_GROUP_LEADER_BODY = "valuationmessage.system.to.groupleader.body";
     //primary membership changed
     static final String MAIL_PRIMARYMEMBERSHIP_CHANGED_SUBJECT = "primarymembership.changed.subject";
     static final String MAIL_PRIMARYMEMBERSHIP_CHANGED_BODY = "primarymembership.changed.body";

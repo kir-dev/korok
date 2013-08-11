@@ -734,33 +734,34 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         }
     }
 
-    private void addNewSystemGeneratedMessage(Valuation v, String msg, boolean sendMailToGL) {
-        ValuationMessage vm = new ValuationMessage();
+    /**
+     * Creates a {@link ValuationMessage} and saves with the given message.
+     * It can send an email notification with the message.
+     *
+     * @param v valuation
+     * @param msg message for valuation
+     * @param sendMailToGL send the message in mail
+     */
+    private void addNewSystemGeneratedMessage(final Valuation v, final String msg,
+            final boolean sendMailToGL) {
+
+        final ValuationMessage vm = new ValuationMessage();
         vm.setFromSystem(true);
         vm.setGroup(v.getGroup());
         vm.setSemester(v.getSemester());
         vm.setMessage(msg);
         em.persist(vm);
 
-        String address = null;
-        String emailText = null;
+        final User groupLeader = groupManager.findLeaderForGroup(vm.getGroupId());
+        if (sendMailToGL && groupLeader != null) {
+            final String emailTemplate =
+                    MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_SYSTEM_TO_GROUP_LEADER_BODY);
+            final String emailText = String.format(emailTemplate,
+                    vm.getGroup().getName(), vm.getMessage(), SystemManagerBean.valuationLink);
 
-        if (sendMailToGL) {
-            User groupLeader = groupManager.findLeaderForGroup(vm.getGroupId());
-            if (groupLeader != null) {
-                address = groupLeader.getEmailAddress();
-            }
-            emailText = "Kedves Körvezető!\n\nAz értékelésedhez az alábbi rendszer által generált üzenet érkezett a(z) "
-                    + vm.getGroup().getName() + " köröd értékeléséhez:\n" + vm.getMessage() + "\n\n\n"
-                    + "Az értékeléseidet megtekintheted a https://korok.sch.bme.hu/korok/valuation link alatt.\n"
-                    + "Ez egy automatikusan generált e-mail.";
-        }
-        if (address != null) {
-            try {
-                mailManager.sendEmail(address, "Új üzeneted érkezett", emailText); // emailTo
-            } catch (Exception ex) {
-                logger.error("Nem sikerült elküldeni a levelet a következőnek: " + address, ex);
-            }
+            mailManager.sendEmail(groupLeader.getEmailAddress(),
+                    MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_SUBJECT),
+                    emailText);
         }
     }
 
