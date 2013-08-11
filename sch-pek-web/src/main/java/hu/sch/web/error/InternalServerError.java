@@ -49,14 +49,18 @@ public final class InternalServerError extends KorokPage {
         final Map<SystemManagerLocal.EXC_REPORT_KEYS, String> exceptionParams =
                 new EnumMap(SystemManagerLocal.EXC_REPORT_KEYS.class);
 
-        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_NAME,
-                pageClass.getName());
+        if (pageClass != null) {
+            exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_NAME,
+                    pageClass.getName());
+        }
 
         exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_PATH,
                 request.getClientUrl().toString());
 
-        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_PARAMS,
-                pageParameters.toString());
+        if (pageParameters != null) {
+            exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.PAGE_PARAMS,
+                    pageParameters.toString());
+        }
 
         exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.REMOTE_USER,
                 authComponent.getRemoteUser(request));
@@ -69,8 +73,11 @@ public final class InternalServerError extends KorokPage {
                     userAttributes.getEmailAddress());
         }
 
-        exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.VIRID,
-                authComponent.getUserid(request).toString());
+        final Long userId = authComponent.getUserid(request);
+        if (userId != null) {
+            exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.VIRID,
+                    userId.toString());
+        }
 
         exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.EXCEPTION,
                 Strings.toString(ex));
