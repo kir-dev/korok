@@ -102,8 +102,8 @@ public class PhoenixApplication extends WebApplication {
 
     /**
      * Mivel nem elég a jelenleg támogatott kétféle configurationType
-     * (DEPLOYMENT és DEVELOPMENT), ezért felüldefiniáljuk ezt a metódust és az {@link Environment}-től
-     * függően térünk vissza az előbbiek valamelyikével.
+     * (DEPLOYMENT és DEVELOPMENT), ezért felüldefiniáljuk ezt a metódust és az
+     * {@link Environment}-től függően térünk vissza az előbbiek valamelyikével.
      *
      * @return DEPLOYMENT vagy DEVELOPMENT
      */
@@ -270,15 +270,17 @@ public class PhoenixApplication extends WebApplication {
         getApplicationSettings().setPageExpiredErrorPage(PageExpiredError.class);
         getApplicationSettings().setAccessDeniedPage(Forbidden.class);
 
-        //these need to get information about the requested page and the exception
-        getRequestCycleListeners().add(new PageRequestHandlerTracker());
-        getRequestCycleListeners().add(new AbstractRequestCycleListener() {
-
-            @Override
-            public IRequestHandler onException(final RequestCycle cycle, final Exception e) {
-                final IPageRequestHandler handler = PageRequestHandlerTracker.getLastHandler(cycle);
-                return new RenderPageRequestHandler(new PageProvider(new InternalServerError(cycle, handler, e)));
-            }
-        });
+        //custom error page and email report only in prod
+        if (Environment.PRODUCTION.equals(Configuration.getEnvironment())) {
+            //these need to get information about the requested page and the exception
+            getRequestCycleListeners().add(new PageRequestHandlerTracker());
+            getRequestCycleListeners().add(new AbstractRequestCycleListener() {
+                @Override
+                public IRequestHandler onException(final RequestCycle cycle, final Exception e) {
+                    final IPageRequestHandler handler = PageRequestHandlerTracker.getLastHandler(cycle);
+                    return new RenderPageRequestHandler(new PageProvider(new InternalServerError(cycle, handler, e)));
+                }
+            });
+        }
     }
 }

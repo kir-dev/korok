@@ -66,14 +66,15 @@ public final class DummyAuthorization implements UserAuthorization {
      */
     @Override
     public boolean hasAbstractRole(Request wicketRequest, String role) {
-        if (role.equals("ADMIN")) {
-            return true;
-        } else if (role.equals("JETI")) {
-            return true;
-        } else if (role.equals("SVIE")) {
-            return true;
-        } else {
-            return false;
+        switch (role) {
+            case "ADMIN":
+                return true;
+            case "JETI":
+                return true;
+            case "SVIE":
+                return true;
+            default:
+                return false;
         }
     }
 
