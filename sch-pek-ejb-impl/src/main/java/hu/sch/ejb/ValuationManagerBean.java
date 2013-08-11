@@ -19,7 +19,6 @@ import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.domain.util.MapUtils;
 import hu.sch.services.GroupManagerLocal;
-import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
@@ -66,7 +65,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     @EJB
     private SystemManagerLocal systemManager;
     @EJB
-    private MailManagerLocal mailManager;
+    private MailManagerBean mailManager;
     @EJB
     private GroupManagerLocal groupManager;
 

@@ -9,7 +9,6 @@ import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.LogManagerLocal;
-import hu.sch.services.MailManagerLocal;
 import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.services.UserManagerLocal;
@@ -35,8 +34,8 @@ public class SvieManagerBean implements SvieManagerLocal {
     private GroupManagerLocal groupManager;
     @EJB
     private MembershipManagerLocal membershipManager;
-    @EJB(name = "MailManagerBean")
-    private MailManagerLocal mailManager;
+    @EJB
+    private MailManagerBean mailManager;
     @EJB(name = "UserManagerBean")
     private UserManagerLocal userManager;
     @EJB(name = "LogManagerBean")

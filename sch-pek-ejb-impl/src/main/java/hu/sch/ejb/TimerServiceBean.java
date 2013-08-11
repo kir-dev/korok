@@ -5,7 +5,6 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.logging.Log;
 import hu.sch.services.GroupManagerLocal;
-import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import java.util.List;
@@ -27,8 +26,8 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unchecked")
 public class TimerServiceBean {
 
-    @EJB(name = "MailManagerBean")
-    private MailManagerLocal mailManager;
+    @EJB
+    private MailManagerBean mailManager;
     @EJB(name = "SystemManagerBean")
     private SystemManagerLocal systemManager;
     @EJB(name = "UserManagerBean")

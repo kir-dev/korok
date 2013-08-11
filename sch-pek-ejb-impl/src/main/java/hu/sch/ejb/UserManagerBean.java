@@ -43,8 +43,8 @@ public class UserManagerBean implements UserManagerLocal {
     EntityManager em;
     @EJB(name = "LogManagerBean")
     LogManagerLocal logManager;
-    @EJB(name = "MailManagerBean")
-    MailManagerLocal mailManager;
+    @EJB
+    MailManagerBean mailManager;
     @EJB(name = "PostManagerBean")
     PostManagerLocal postManager;
     @EJB(name = "SystemManagerBean")

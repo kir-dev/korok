@@ -2,12 +2,12 @@ package hu.sch.ejb;
 
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.config.Configuration.Environment;
-import hu.sch.services.MailManagerLocal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
 import javax.annotation.Resource;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.Session;
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author aldaris
  */
 @Stateless
-public class MailManagerBean implements MailManagerLocal {
+public class MailManagerBean {
 
     private static final Logger log = LoggerFactory.getLogger(MailManagerBean.class);
     private static final String STRINGS_FILE = "/META-INF/mail_messages.properties";
@@ -47,7 +47,15 @@ public class MailManagerBean implements MailManagerLocal {
         }
     }
 
-    @Override
+    /**
+     * Sends email through JDBC mail resource with the given attributes.
+     * <br/>NOTE: if {@link Environment#TESTING} is active, it doesn't send email.
+     *
+     * @param to recipient of the message.
+     * @param subject part after "[VIR Körök]"
+     * @param message
+     * @return true if sending was successful.
+     */
     public boolean sendEmail(String to, final String subject, final String message) {
         log.info("E-mail küldés, címzett={}", to);
 

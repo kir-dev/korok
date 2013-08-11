@@ -4,7 +4,6 @@ import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Semester;
 import hu.sch.domain.logging.Log;
-import hu.sch.services.MailManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import java.text.ParseException;
@@ -32,8 +31,8 @@ public class SystemManagerBean implements SystemManagerLocal {
     private static final Logger logger = LoggerFactory.getLogger(SystemManagerBean.class);
     @PersistenceContext
     EntityManager em;
-    @EJB(name = "MailManagerBean")
-    MailManagerLocal mailManager;
+    @EJB
+    MailManagerBean mailManager;
 
     @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {
