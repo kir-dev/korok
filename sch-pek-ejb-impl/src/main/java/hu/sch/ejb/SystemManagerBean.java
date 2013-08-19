@@ -104,33 +104,8 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     @Override
     public long getLastLogId() {
-        long id;
         final String lastLog = getAttributeValue(SystemAttribute.LAST_LOG);
-        try {
-            id = Long.parseLong(lastLog);
-        } catch (NumberFormatException ex) {
-            // TODO - későbbi releasenél (> 2.4) ezt el lehet távolítani, ha biztos,
-            // hogy már átállt a DB-ben a dátum mező ID-re.
-            // nem szám van ott lehet, hogy egy évszám?
-            try {
-                logger.info("A DB-ben a(z) " + SystemAttribute.LAST_LOG + " rendszerattribútum még dátumot tartalmaz logID helyett.");
-                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(lastLog);
-                Calendar c = Calendar.getInstance();
-                c.setTime(date);
-                c.add(Calendar.DAY_OF_YEAR, -1); // vonjunk ki belőle egyet
-                // lekérdezzük az adott napon a legfrissebb ID-t.
-                Query q = em.createNamedQuery(Log.getLastLogIdByDate);
-                q.setParameter("date", c.getTime());
-                q.setMaxResults(1);
-                // ezzel az előző napi utolsó logID-t kapjuk meg, ami pont jó,
-                // mert akkor feldolgozásra igazából az ezutáni kerül
-                id = (Long) q.getSingleResult();
-            } catch (ParseException ex1) {
-                // se nem szám, se nem évszám, akkor itt gubanc van.
-                throw new RuntimeException("A(z) " + SystemAttribute.LAST_LOG + " rendszerattribútum se nem szám, se nem dátum, hogy lehetett ez?");
-            }
-        }
-        return id;
+        return Long.parseLong(lastLog);
     }
 
     @Override
