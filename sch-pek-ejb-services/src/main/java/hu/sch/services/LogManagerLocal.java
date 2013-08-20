@@ -2,7 +2,7 @@ package hu.sch.services;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
-import hu.sch.domain.logging.Event;
+import hu.sch.domain.logging.EventType;
 import javax.ejb.Local;
 
 /**
@@ -12,5 +12,5 @@ import javax.ejb.Local;
 @Local
 public interface LogManagerLocal {
 
-    void createLogEntry(Group group, User user, Event event);
+    void createLogEntry(Group group, User user, EventType event);
 }

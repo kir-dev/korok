@@ -204,29 +204,7 @@ CREATE TABLE ertekelesek (
 );
 
 
---
--- Name: event_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE event_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
 SET default_with_oids = false;
-
---
--- Name: event; Type: TABLE; Schema: public; Owner: -; Tablespace:
---
-
-CREATE TABLE event (
-    evt_id integer DEFAULT nextval('event_seq'::regclass) NOT NULL,
-    evt_text character varying(30)
-);
-
 
 --
 -- Name: groups_grp_id_seq; Type: SEQUENCE; Schema: public; Owner: -
@@ -346,7 +324,7 @@ CREATE TABLE log (
     id integer DEFAULT nextval('log_seq'::regclass) NOT NULL,
     grp_id integer,
     usr_id integer NOT NULL,
-    evt_id integer NOT NULL,
+    evt_text character varying(30) NOT NULL,
     evt_date date DEFAULT now()
 );
 
@@ -542,14 +520,6 @@ ALTER TABLE ONLY ertekeles_uzenet
 
 ALTER TABLE ONLY ertekelesek
     ADD CONSTRAINT ertekelesek_pkey PRIMARY KEY (id);
-
-
---
--- Name: event_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
---
-
-ALTER TABLE ONLY event
-    ADD CONSTRAINT event_pkey PRIMARY KEY (evt_id);
 
 
 --
@@ -894,14 +864,6 @@ ALTER TABLE ONLY grp_membership
 
 ALTER TABLE ONLY im_accounts
     ADD CONSTRAINT im_accounts_usr_id_fkey FOREIGN KEY (usr_id) REFERENCES users(usr_id);
-
-
---
--- Name: log_event; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY log
-    ADD CONSTRAINT log_event FOREIGN KEY (evt_id) REFERENCES event(evt_id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

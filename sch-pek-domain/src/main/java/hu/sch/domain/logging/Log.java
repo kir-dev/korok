@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -26,17 +28,17 @@ import javax.persistence.TemporalType;
 @SequenceGenerator(name = "log_seq", sequenceName = "log_seq")
 @NamedQueries({
     @NamedQuery(name = Log.getFreshEventsForEventTypeByGroup,
-    query = "SELECT l FROM Log l "
-    + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId AND l.event.eventType = :evtType AND l.group = :group"),
+            query = "SELECT l FROM Log l "
+            + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId AND l.event = :evtType AND l.group = :group"),
     @NamedQuery(name = Log.getFreshEventsForSvie,
-    query = "SELECT l FROM Log l "
-    + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId AND l.event.eventType = :evtType AND l.group IS NULL"),
+            query = "SELECT l FROM Log l "
+            + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId AND l.event = :evtType AND l.group IS NULL"),
     @NamedQuery(name = Log.getGroupsForFreshEntries,
-    query = "SELECT DISTINCT l.group FROM Log l WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId"),
+            query = "SELECT DISTINCT l.group FROM Log l WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId"),
     @NamedQuery(name = Log.getLastId,
-    query = "SELECT l.id FROM Log l ORDER BY l.id DESC"),
+            query = "SELECT l.id FROM Log l ORDER BY l.id DESC"),
     @NamedQuery(name = Log.getLastLogIdByDate,
-    query = "SELECT l.id FROM Log l WHERE l.eventDate <= :date ORDER BY l.id DESC")
+            query = "SELECT l.id FROM Log l WHERE l.eventDate <= :date ORDER BY l.id DESC")
 })
 public class Log implements Serializable {
 
@@ -46,60 +48,65 @@ public class Log implements Serializable {
     public static final String getFreshEventsForSvie = "getFreshEventsForSvie";
     public static final String getLastId = "getLastId";
     public static final String getLastLogIdByDate = "getLastLogIdByDate";
-    private Long id;
-    private Group group;
-    private User user;
-    private Event event;
-    private Date eventDate;
-
+    //
     @Id
     @GeneratedValue(generator = "log_seq")
     @Column(name = "id")
+    private Long id;
+    //
+    @ManyToOne
+    @JoinColumn(name = "grp_id", insertable = true, updatable = false)
+    private Group group;
+    //
+    @ManyToOne
+    @JoinColumn(name = "usr_id", insertable = true, updatable = false)
+    private User user;
+    //
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event", length = 30)
+    private EventType event;
+    //
+    @Temporal(TemporalType.DATE)
+    @Column(name = "evt_date", columnDefinition = "timestamp")
+    private Date eventDate;
+
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "grp_id", insertable = true, updatable = true)
     public Group getGroup() {
         return group;
     }
 
-    public void setGroup(Group group) {
+    public void setGroup(final Group group) {
         this.group = group;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "usr_id", insertable = true, updatable = true)
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "evt_id", insertable = true, updatable = true)
-    public Event getEvent() {
+    public EventType getEvent() {
         return event;
     }
 
-    public void setEvent(Event event) {
+    public void setEvent(final EventType event) {
         this.event = event;
     }
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "evt_date", columnDefinition = "timestamp")
     public Date getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Date timestamp) {
+    public void setEventDate(final Date timestamp) {
         this.eventDate = timestamp;
     }
 }

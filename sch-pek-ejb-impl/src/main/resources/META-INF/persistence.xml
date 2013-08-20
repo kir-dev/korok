@@ -22,7 +22,6 @@
         <class>hu.sch.domain.Post</class>
         <class>hu.sch.domain.PostType</class>
         <class>hu.sch.domain.logging.Log</class>
-        <class>hu.sch.domain.logging.Event</class>
 
         <class>hu.sch.domain.user.User</class>
         <class>hu.sch.domain.user.RegisteringUser</class>

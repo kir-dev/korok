@@ -1,8 +1,8 @@
 package hu.sch.ejb;
 
 import hu.sch.domain.Group;
+import hu.sch.domain.logging.EventType;
 import hu.sch.domain.user.User;
-import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.Log;
 import hu.sch.services.LogManagerLocal;
 import java.util.Date;
@@ -20,7 +20,8 @@ public class LogManagerBean implements LogManagerLocal {
     @PersistenceContext
     EntityManager em;
 
-    public void createLogEntry(Group group, User user, Event event) {
+    @Override
+    public void createLogEntry(final Group group, final User user, final EventType event) {
         Log log = new Log();
         log.setGroup(group);
         log.setUser(user);

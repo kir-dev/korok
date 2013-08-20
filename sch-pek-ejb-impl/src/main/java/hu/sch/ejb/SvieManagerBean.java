@@ -5,15 +5,12 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.User;
-import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.SvieManagerLocal;
-import hu.sch.services.UserManagerLocal;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -41,28 +38,6 @@ public class SvieManagerBean implements SvieManagerLocal {
     private LogManagerLocal logManager;
     @PersistenceContext
     private EntityManager em;
-    private static Event ADVOCATE_EVENT;
-    private static Event ORDINAL_EVENT;
-    private static Event APPLY_EVENT;
-    private static Event RESIGN_EVENT;
-    private static Event INPROGRESS_EVENT;
-
-    @PostConstruct
-    protected void initialize() {
-        if (ADVOCATE_EVENT == null) {
-            Query q = em.createNamedQuery(Event.getEventForEventType);
-            q.setParameter("evt", EventType.PARTOLOVAVALAS);
-            ADVOCATE_EVENT = (Event) q.getSingleResult();
-            q.setParameter("evt", EventType.RENDESTAGGAVALAS);
-            ORDINAL_EVENT = (Event) q.getSingleResult();
-            q.setParameter("evt", EventType.SVIE_JELENTKEZES);
-            APPLY_EVENT = (Event) q.getSingleResult();
-            q.setParameter("evt", EventType.SVIE_TAGSAGTORLES);
-            RESIGN_EVENT = (Event) q.getSingleResult();
-            q.setParameter("evt", EventType.ELFOGADASALATT);
-            INPROGRESS_EVENT = (Event) q.getSingleResult();
-        }
-    }
 
     @Override
     public void updateSvieInfos(List<User> users) {
@@ -70,7 +45,7 @@ public class SvieManagerBean implements SvieManagerLocal {
             User temp = em.find(User.class, user.getId());
             if (!temp.getSvieStatus().equals(SvieStatus.ELFOGADASALATT)
                     && user.getSvieStatus().equals(SvieStatus.ELFOGADASALATT)) {
-                logManager.createLogEntry(null, user, INPROGRESS_EVENT);
+                logManager.createLogEntry(null, user, EventType.ELFOGADASALATT);
             }
             em.merge(user);
         }
@@ -81,7 +56,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSvieMembershipType(msType);
         user.setSvieStatus(SvieStatus.FELDOLGOZASALATT);
         em.merge(user);
-        logManager.createLogEntry(null, user, APPLY_EVENT);
+        logManager.createLogEntry(null, user, EventType.SVIE_JELENTKEZES);
     }
 
     /**
@@ -152,7 +127,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSvieStatus(SvieStatus.FELDOLGOZASALATT);
         user.setSvieMembershipType(SvieMembershipType.RENDESTAG);
         em.merge(user);
-        logManager.createLogEntry(null, user, ORDINAL_EVENT);
+        logManager.createLogEntry(null, user, EventType.RENDESTAGGAVALAS);
     }
 
     @Override
@@ -164,7 +139,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSvieMembershipType(SvieMembershipType.PARTOLOTAG);
         user.setSvieStatus(SvieStatus.ELFOGADVA);
         em.merge(user);
-        logManager.createLogEntry(null, user, ADVOCATE_EVENT);
+        logManager.createLogEntry(null, user, EventType.PARTOLOVAVALAS);
 
     }
 
@@ -177,7 +152,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSvieMembershipType(SvieMembershipType.NEMTAG);
         user.setSvieStatus(SvieStatus.NEMTAG);
         em.merge(user);
-        logManager.createLogEntry(null, user, RESIGN_EVENT);
+        logManager.createLogEntry(null, user, EventType.SVIE_TAGSAGTORLES);
     }
 
     public List<User> getDelegatedUsersForGroup(Long groupId) {

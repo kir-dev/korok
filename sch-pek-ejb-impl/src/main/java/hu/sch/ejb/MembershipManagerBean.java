@@ -6,7 +6,6 @@ import hu.sch.domain.Post;
 import hu.sch.domain.PostType;
 import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.enums.SvieStatus;
-import hu.sch.domain.logging.Event;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.user.User;
 import hu.sch.services.LogManagerLocal;
@@ -15,7 +14,6 @@ import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -36,8 +34,6 @@ import org.slf4j.LoggerFactory;
 public class MembershipManagerBean implements MembershipManagerLocal {
 
     private static Logger logger = LoggerFactory.getLogger(MembershipManagerBean.class);
-    private static Event DELETEMEMBERSHIP_EVENT;
-    private static Event CREATEMEMBERSHIP_EVENT;
 
     @PersistenceContext
     private EntityManager em;
@@ -88,7 +84,7 @@ public class MembershipManagerBean implements MembershipManagerLocal {
                 throw ex;
             }
         }
-        logManager.createLogEntry(group, user, CREATEMEMBERSHIP_EVENT);
+        logManager.createLogEntry(group, user, EventType.JELENTKEZES);
     }
 
     @Override
@@ -119,7 +115,7 @@ public class MembershipManagerBean implements MembershipManagerLocal {
         if (userChanged) {
             em.merge(user);
         }
-        logManager.createLogEntry(membership.getGroup(), membership.getUser(), DELETEMEMBERSHIP_EVENT);
+        logManager.createLogEntry(membership.getGroup(), membership.getUser(), EventType.TAGSAGTORLES);
     }
 
     @Override
@@ -163,20 +159,5 @@ public class MembershipManagerBean implements MembershipManagerLocal {
         group.setMemberships(q.getResultList());
 
         return group;
-    }
-
-    @PostConstruct
-    protected void initialize() {
-
-        // TODO: test if query really works, toString is overridden in enum...
-        Query q = em.createNamedQuery(Event.getEventForEventType);
-        if (DELETEMEMBERSHIP_EVENT == null) {
-            q.setParameter("evt", EventType.TAGSAGTORLES);
-            DELETEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
-        }
-        if (CREATEMEMBERSHIP_EVENT == null) {
-            q.setParameter("evt", EventType.JELENTKEZES);
-            CREATEMEMBERSHIP_EVENT = (Event) q.getSingleResult();
-        }
     }
 }
