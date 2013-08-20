@@ -1,4 +1,4 @@
-n--
+--
 -- PostgreSQL database dump
 --
 
@@ -324,7 +324,7 @@ CREATE TABLE log (
     id integer DEFAULT nextval('log_seq'::regclass) NOT NULL,
     grp_id integer,
     usr_id integer NOT NULL,
-    evt_text character varying(30) NOT NULL,
+    event character varying(30) NOT NULL,
     evt_date date DEFAULT now()
 );
 
