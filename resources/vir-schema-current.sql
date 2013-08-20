@@ -38,17 +38,6 @@ CREATE TYPE exported_entrant_request AS (
 	indokok text
 );
 
-
---
--- Name: user_points; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE user_points AS (
-	neptun character(6),
-	points numeric
-);
-
-
 --
 -- Name: export_entrant_requests(text, text, integer); Type: FUNCTION; Schema: public; Owner: -
 --
@@ -75,48 +64,6 @@ SELECT
   HAVING COUNT(*) >= $3
   ORDER BY nev;
 $_$;
-
-
---
--- Name: getpointsforsemester(text, text); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION getpointsforsemester(text, text) RETURNS SETOF user_points
-    LANGUAGE sql
-    AS $_$
-SELECT UPPER(users.usr_neptun) AS neptun,
-LEAST(vegso.atlag,100) FROM
-(SELECT p.user_id AS usr_id, TRUNC(SQRT(SUM(p.sum * p.sum))) AS atlag FROM
-(SELECT pontigenyles.usr_id AS user_id, v.grp_id, SUM(pontigenyles.pont) AS sum FROM ertekelesek v
-RIGHT JOIN pontigenyles ON pontigenyles.ertekeles_id = v.id
-WHERE
-  v.next_version IS NULL -- az elfogadottak közül csak a legfrisebbet nézzük
-  AND v.pontigeny_statusz = 'ELFOGADVA' -- legyen elfogadva
-  AND (v.semester = $1 OR v.semester = $2) -- jelenlegi és az előző félév
-GROUP BY v.grp_id, pontigenyles.usr_id) AS p
-GROUP BY p.user_id) AS vegso
-INNER JOIN users ON users.usr_id = vegso.usr_id AND users.usr_neptun IS NOT NULL
-ORDER BY neptun ASC
-$_$;
-
-
---
--- Name: kirauth(text, text); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION kirauth(text, text) RETURNS text
-    LANGUAGE sql
-    AS $_$SELECT usr_id || '/0/0' FROM users WHERE (lower($1) IN (lower(usr_email), lower(usr_neptun)) OR (lower($1) || '@sch.bme.hu' IN (lower(usr_email )))) AND usr_passwd = $2;$_$;
-
-
---
--- Name: rndchar(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION rndchar() RETURNS text
-    LANGUAGE sql
-    AS $$SELECT chr(96+ceil(random()*26)::integer)$$;
-
 
 --
 -- Name: update_user_recommended_photo_after_insert(); Type: FUNCTION; Schema: public; Owner: -
