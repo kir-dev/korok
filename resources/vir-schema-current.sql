@@ -670,13 +670,6 @@ CREATE UNIQUE INDEX unique_idx ON ertekelesek USING btree (grp_id, semester, nex
 
 
 --
--- Name: users_neptun; Type: INDEX; Schema: public; Owner: -; Tablespace:
---
-
-CREATE INDEX users_neptun ON users USING btree (usr_neptun);
-
-
---
 -- Name: users_usr_id_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
@@ -687,7 +680,7 @@ CREATE UNIQUE INDEX users_usr_id_idx ON users USING btree (usr_id);
 -- Name: users_usr_neptun_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
-CREATE UNIQUE INDEX users_usr_neptun_idx ON users USING btree (usr_neptun);
+CREATE UNIQUE INDEX users_usr_neptun_idx ON users(upper(usr_neptun));
 
 
 --
