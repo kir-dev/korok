@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = User.findWithMemberships,
             query = "SELECT u FROM User u LEFT OUTER JOIN FETCH u.memberships WHERE u.id = :id"),
     @NamedQuery(name = User.findUserByNeptunCode,
-            query = "SELECT u FROM User u WHERE u.neptunCode = :neptun"),
+            query = "SELECT u FROM User u WHERE UPPER(u.neptunCode) = UPPER(:neptun)"),
     @NamedQuery(name = User.findByScreenName,
             query = "SELECT u FROM User u WHERE u.screenName = :screenName"),
     @NamedQuery(name = User.findUser, query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
@@ -199,8 +199,12 @@ public class User implements Serializable, Comparable<User> {
         return neptunCode;
     }
 
-    public void setNeptunCode(String neptunCode) {
-        this.neptunCode = neptunCode;
+    public void setNeptunCode(final String neptunCode) {
+        if (neptunCode != null) {
+            this.neptunCode = neptunCode.toUpperCase();
+        } else {
+            this.neptunCode = null;
+        }
     }
 
     /**

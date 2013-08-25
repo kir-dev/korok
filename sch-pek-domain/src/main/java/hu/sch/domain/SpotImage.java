@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "spot_images")
 @NamedQueries({
-    @NamedQuery(name = SpotImage.findByNeptun, query = "SELECT si FROM SpotImage si WHERE si.neptunCode = :neptunCode")
+    @NamedQuery(name = SpotImage.findByNeptun, query = "SELECT si FROM SpotImage si WHERE UPPER(si.neptunCode) = UPPER(:neptunCode)")
 })
 public class SpotImage implements Serializable {
 
@@ -38,7 +38,12 @@ public class SpotImage implements Serializable {
     }
 
     public void setNeptunCode(String neptunCode) {
-        this.neptunCode = neptunCode;
+        if (neptunCode != null) {
+            this.neptunCode = neptunCode.toUpperCase();
+        }
+        else {
+            this.neptunCode = null;
+        }
     }
 
     public String getImagePath() {

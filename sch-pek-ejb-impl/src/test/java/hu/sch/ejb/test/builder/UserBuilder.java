@@ -5,6 +5,7 @@ import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.User;
+import hu.sch.domain.user.UserStatus;
 import java.util.Date;
 import javax.persistence.EntityManager;
 
@@ -25,6 +26,12 @@ public class UserBuilder extends AbstractBuilder<User> {
     private StudentStatus studentStatus = StudentStatus.ACTIVE;
     private Date dateOfBirth = new Date();
     private String email;
+    private String neptun;
+
+    public UserBuilder withNeptun(String neptun) {
+        this.neptun = neptun;
+        return this;
+    }
 
     public UserBuilder withLastName(String lastName) {
         this.lastName = lastName;
@@ -83,7 +90,9 @@ public class UserBuilder extends AbstractBuilder<User> {
         user.setScreenName(screenName + (screenNameSuffix++));
         user.setDateOfBirth(dateOfBirth);
         user.setEmailAddress(email);
-
+        user.setUserStatus(UserStatus.ACTIVE);
+        user.setNeptunCode(neptun);
+        
         return user;
     }
 }

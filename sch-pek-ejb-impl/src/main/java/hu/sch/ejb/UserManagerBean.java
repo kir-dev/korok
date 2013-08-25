@@ -93,7 +93,7 @@ public class UserManagerBean implements UserManagerLocal {
     @Override
     public User findUserByNeptun(final String neptun) {
         try {
-            return em.createQuery("SELECT u FROM User u WHERE u.neptunCode = :neptun", User.class)
+            return em.createNamedQuery(User.findUserByNeptunCode, User.class)
                     .setParameter("neptun", neptun)
                     .getSingleResult();
         } catch (NoResultException ex) {

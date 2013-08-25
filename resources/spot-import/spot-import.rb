@@ -169,7 +169,7 @@ source_images.each do |f|
   path = File.join RECOMMENDED_FOLDER, images[f]
 
   # insert
-  spot_images.insert :usr_neptun => neptun, :image_path => path
+  spot_images.insert :usr_neptun => neptun.upcase, :image_path => path
 end
 
 puts "Done. Total number of files: #{total_number}. Processed: #{processed}."
