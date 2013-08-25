@@ -410,12 +410,15 @@ CREATE TABLE users (
     usr_mother_name character varying(100),
     usr_photo_path character varying(255),
     usr_webpage character varying(255),
-    usr_cell_phone character varying(15),
+    usr_cell_phone character varying(50),
     usr_home_address character varying(255),
-    usr_est_grad character(9),
+    usr_est_grad character(10),
     usr_dormitory character varying(50),
     usr_room character varying(10),
-    usr_confirm character(64)
+    usr_confirm character(64),
+    usr_status varchar(8) DEFAULT 'INACTIVE' NOT NULL,
+    usr_password char(28),
+    usr_salt char(12)
 );
 
 

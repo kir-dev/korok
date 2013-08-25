@@ -16,16 +16,19 @@ CREATE SEQUENCE screen_name_seq;
 ALTER TABLE users ADD COLUMN usr_screen_name varchar(50) UNIQUE NOT NULL DEFAULT 'user' || nextval('screen_name_seq')::text; -- username, LDAP attr was 'uid'
 ALTER TABLE users ADD COLUMN usr_date_of_birth date;
 ALTER TABLE users ADD COLUMN usr_gender varchar(50) NOT NULL DEFAULT 'NOTSPECIFIED';
-ALTER TABLE users ADD COLUMN usr_student_status varchar(50) NOT NULL DEFAULT 'ACTIVE';
+ALTER TABLE users ADD COLUMN usr_student_status varchar(50) NOT NULL DEFAULT 'UNKNOWN';
 ALTER TABLE users ADD COLUMN usr_mother_name varchar(100);
 ALTER TABLE users ADD COLUMN usr_photo_path varchar(255);
 ALTER TABLE users ADD COLUMN usr_webpage varchar(255);
-ALTER TABLE users ADD COLUMN usr_cell_phone varchar(15);
+ALTER TABLE users ADD COLUMN usr_cell_phone varchar(50);
 ALTER TABLE users ADD COLUMN usr_home_address varchar(255);
-ALTER TABLE users ADD COLUMN usr_est_grad char(9); -- format: YYYYYYYY[12]
+ALTER TABLE users ADD COLUMN usr_est_grad char(10); -- format: YYYYYYYY/[12]
 ALTER TABLE users ADD COLUMN usr_dormitory varchar(50);
 ALTER TABLE users ADD COLUMN usr_room varchar(10);
 ALTER TABLE users ADD COLUMN usr_confirm char(64); -- confirmation code for registration
+ALTER TABLE users ADD COLUMN usr_status varchar(8) NOT NULL DEFAULT 'INACTIVE'; -- ACTIVE or INACTIVE, was inetUserStatus in DS
+ALTER TABLE users ADD COLUMN usr_password char(28); -- password hash base64 encoded
+ALTER TABLE users ADD COLUMN usr_salt char(12); -- password salt base64 encoded
 
 -- change users id type to bigint
 ALTER TABLE users ALTER COLUMN usr_id TYPE bigint;
