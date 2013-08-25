@@ -7,12 +7,9 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttributeName;
-import hu.sch.domain.user.UserStatus;
-import hu.sch.services.exceptions.CreateFailedException;
 import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.PekEJBException;
-import hu.sch.services.exceptions.UpdateFailedException;
 import javax.ejb.Local;
 import java.util.List;
 
@@ -100,9 +97,9 @@ public interface UserManagerLocal {
      *
      * @param user the user to be created
      * @param password
-     * @param status the initial status of the user in SSO
      */
-    public void createUser(User user, String password, UserStatus status) throws CreateFailedException;
+    public void createUser(User user, String password) 
+            throws PekEJBException;
 
     /**
      * Update user in the database and synchronize the directory service.
@@ -188,7 +185,7 @@ public interface UserManagerLocal {
      * stored one.
      */
     public void changePassword(String screenName, String oldPwd, String newPwd)
-            throws InvalidPasswordException, UpdateFailedException;
+            throws PekEJBException;
 
     /**
      * Searches the user in the datastore by email and sends an email with the screen

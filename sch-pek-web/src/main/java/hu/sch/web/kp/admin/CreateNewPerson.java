@@ -3,7 +3,7 @@ package hu.sch.web.kp.admin;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
-import hu.sch.services.exceptions.CreateFailedException;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.profile.admin.AdminPage;
@@ -40,10 +40,11 @@ public class CreateNewPerson extends KorokPage {
         Form<User> form = new Form<User>("form", new CompoundPropertyModel<>(user)) {
             @Override
             protected void onSubmit() {
-                user.setStudentStatus(StudentStatus.OTHER);
+                user.setStudentStatus(StudentStatus.UNKNOWN);
+                user.setUserStatus(UserStatus.ACTIVE);
                 try {
-                    userManager.createUser(user, RandomStringUtils.randomAlphanumeric(10), UserStatus.ACTIVE);
-                } catch (CreateFailedException ex) {
+                    userManager.createUser(user, RandomStringUtils.randomAlphanumeric(10));
+                } catch (PekEJBException ex) {
                     logger.error("Could not save user", ex);
                     throw new RestartResponseException(CreateNewPerson.class);
                 }

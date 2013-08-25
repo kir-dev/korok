@@ -7,8 +7,8 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.services.exceptions.CreateFailedException;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import java.util.Date;
@@ -87,7 +87,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
      */
     @Override
     public void doRegistration(final RegisteringUser regUser, final String password)
-            throws UserNotFoundException, CreateFailedException {
+            throws UserNotFoundException, PekEJBException {
 
         final User user = new User();
         user.setScreenName(regUser.getScreenName());
@@ -97,6 +97,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
         user.setDateOfBirth(new Date(regUser.getDateOfBirth().getTime()));
         user.setStudentStatus(regUser.isNewbie() ? StudentStatus.NEWBIE : StudentStatus.ACTIVE);
         user.setGender(Gender.NOTSPECIFIED);
+        user.setUserStatus(UserStatus.INACTIVE);
 
         //if we don't have the neptun code, we have to search user by educationId
         if (regUser.getNeptun() == null || regUser.getNeptun().isEmpty()) {
@@ -106,7 +107,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
 
         user.setNeptunCode(regUser.getNeptun());
 
-        userManager.createUser(user, password, UserStatus.INACTIVE);
+        userManager.createUser(user, password);
     }
 
     private RegisteringUser findRegUserByEducationId(final RegisteringUser regUser)

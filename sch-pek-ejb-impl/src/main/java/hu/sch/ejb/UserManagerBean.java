@@ -1,31 +1,29 @@
 package hu.sch.ejb;
 
 import hu.sch.domain.enums.ValuationStatus;
-import com.unboundid.ldap.sdk.LDAPException;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;
-import hu.sch.domain.user.UserStatus;
 import hu.sch.ejb.image.ImageProcessor;
 import hu.sch.ejb.image.ImageSaver;
-import hu.sch.ejb.ldap.LdapSynchronizer;
 import hu.sch.services.*;
-import hu.sch.services.exceptions.CreateFailedException;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.PekErrorCode;
-import hu.sch.services.exceptions.UpdateFailedException;
+import hu.sch.util.hash.Hashing;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.*;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.*;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +36,7 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class UserManagerBean implements UserManagerLocal {
 
+    private static int PASSWORD_SALT_LENGTH = 8;
     private static Logger logger = LoggerFactory.getLogger(UserManagerBean.class);
     @PersistenceContext
     EntityManager em;
@@ -49,6 +48,14 @@ public class UserManagerBean implements UserManagerLocal {
     PostManagerLocal postManager;
     @EJB(name = "SystemManagerBean")
     private SystemManagerLocal systemManager;
+
+    public UserManagerBean() {
+    }
+
+    // for testing
+    public UserManagerBean(EntityManager em) {
+        this.em = em;
+    }
 
     @Override
     public User findUserById(Long userId) {
@@ -138,17 +145,14 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void createUser(User user, String password, UserStatus status) throws CreateFailedException {
-        try (LdapSynchronizer sync = new LdapSynchronizer()) {
-            sync.createEntry(user, password, status);
-            em.persist(user);
-        } catch (InvalidPasswordException ex) {
-            throw new CreateFailedException("Password is not valid. It must be at least 6 chars long.", ex);
-        } catch (LDAPException ex) {
-            throw new CreateFailedException("Could not create entry in DS", ex);
-        } catch (Exception ex) {
-            throw new CreateFailedException("Unknown error.", ex);
-        }
+    public void createUser(User user, String password) throws PekEJBException {
+        byte[] salt = generateSalt();
+        String passwordDigest = hashPassword(password, salt);
+
+        user.setSalt(Base64.encodeBase64String(salt));
+        user.setPasswordDigest(passwordDigest);
+
+        em.persist(user);
     }
 
     @Override
@@ -166,19 +170,7 @@ public class UserManagerBean implements UserManagerLocal {
         }
 
         // save user
-        try (LdapSynchronizer sync = new LdapSynchronizer()) {
-            sync.syncEntry(user);
-
-            // for some reason (eg admin panel) it is filled out then sync it
-            if (user.getUserStatus() != null) {
-                sync.updateStatus(user, user.getUserStatus());
-            }
-
-            em.merge(user);
-        } catch (Exception ex) {
-            // because of sync.close() can throw this
-            throw new PekEJBException(PekErrorCode.LDAP_CONNECTION_FAILED);
-        }
+        em.merge(user);
     }
 
     @Override
@@ -257,7 +249,7 @@ public class UserManagerBean implements UserManagerLocal {
             user.setPhotoPath(imgPath);
 
             removeSpotImage(si);
-            
+
             return true;
         } catch (NoResultException ex) {
             logger.error("No user with {} screen name.", screenName);
@@ -272,7 +264,7 @@ public class UserManagerBean implements UserManagerLocal {
         TypedQuery<SpotImage> q = em.createNamedQuery(SpotImage.findByNeptun, SpotImage.class);
         q.setParameter("neptunCode", user.getNeptunCode());
         SpotImage img = q.getSingleResult();
-        
+
         removeSpotImage(img);
     }
 
@@ -297,13 +289,18 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void changePassword(String screenName, String oldPwd, String newPwd)
-            throws InvalidPasswordException, UpdateFailedException {
-        try (LdapSynchronizer sync = new LdapSynchronizer()) {
-            sync.changePassword(screenName, oldPwd, newPwd);
-        } catch (Exception ex) {
-            throw new UpdateFailedException("Could not update password.", ex);
+    public void changePassword(String screenName, String oldPwd, String newPwd) throws PekEJBException {
+        User user = findUserByScreenName(screenName);
+        byte[] salt = Base64.decodeBase64(user.getSalt());
+        String passwordHash = hashPassword(oldPwd, salt);
+
+        if (!passwordHash.equals(user.getPasswordDigest())) {
+            logger.info("Password change requested with invalid password for user {}", user.getId());
+            throw new PekEJBException(PekErrorCode.USER_PASSWORD_INVALID);
         }
+
+        user.setPasswordDigest(hashPassword(newPwd, salt));
+        em.merge(user);
     }
 
     /**
@@ -362,4 +359,29 @@ public class UserManagerBean implements UserManagerLocal {
 
         return false;
     }
+
+    private String hashPassword(String password, byte[] salt) throws PekEJBException {
+        byte[] passwordBytes;
+        try {
+            passwordBytes = password.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            logger.error("UTF-8 is not supported.", ex);
+            throw new PekEJBException(PekErrorCode.SYSTEM_ENCODING_NOTSUPPORTED);
+        }
+
+        byte[] hashInput = new byte[passwordBytes.length + salt.length];
+        System.arraycopy(passwordBytes, 0, hashInput, 0, passwordBytes.length);
+        System.arraycopy(salt, 0, hashInput, passwordBytes.length, salt.length);
+
+        return Hashing.sha1(hashInput).toBase64();
+    }
+
+    private byte[] generateSalt() {
+        byte[] salt = new byte[PASSWORD_SALT_LENGTH];
+        new SecureRandom().nextBytes(salt);
+
+        return salt;
+    }
+
+    // TODO: password policy
 }

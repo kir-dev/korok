@@ -1,8 +1,8 @@
 package hu.sch.services;
 
 import hu.sch.domain.user.RegisteringUser;
-import hu.sch.services.exceptions.CreateFailedException;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import javax.ejb.Local;
@@ -55,7 +55,7 @@ public interface RegistrationManagerLocal {
      * @param registeringUser
      */
     void doRegistration(final RegisteringUser registeringUser, final String password)
-            throws UserNotFoundException, CreateFailedException;
+            throws UserNotFoundException, PekEJBException;
 
     /**
      * Checks if the given uid already registered.

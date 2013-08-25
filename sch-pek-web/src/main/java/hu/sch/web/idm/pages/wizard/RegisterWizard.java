@@ -3,8 +3,8 @@ package hu.sch.web.idm.pages.wizard;
 import hu.sch.domain.user.RegisteringUser;
 import hu.sch.util.PatternHolder;
 import hu.sch.services.RegistrationManagerLocal;
-import hu.sch.services.exceptions.CreateFailedException;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
@@ -85,7 +85,7 @@ public class RegisterWizard extends Wizard {
         super.onFinish();
         try {
             registrationManager.doRegistration(person, newPass);
-        } catch (UserNotFoundException | CreateFailedException ex) {
+        } catch (UserNotFoundException | PekEJBException ex) {
             getSession().error("A regisztráció közben hiba lépett fel!");
             logger.warn("Exception on finishing registration, RegisteringPerson=" + person.toString(), ex);
             throw new RestartResponseException(RegistrationFinishedPage.class);
