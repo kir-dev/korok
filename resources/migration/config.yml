@@ -1,0 +1,13 @@
+# DO NOT COMMIT THE MODIFICATIONS TO THIS FILE!
+
+database:
+    user: kir
+    password: <password>
+    host: localhost
+    port: 5432
+    database: vir
+ldap:
+    host: localhost
+    port: 5389
+    user: "cn=Directory Manager"
+    password: <password>

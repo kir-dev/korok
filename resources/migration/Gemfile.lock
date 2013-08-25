@@ -1,0 +1,24 @@
+GIT
+  remote: git://github.com/ruby-ldap/ruby-net-ldap.git
+  revision: bbef82f22494864f5c0e53d4dffb21cead3fc274
+  branch: master
+  specs:
+    net-ldap (0.5.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    pg (0.16.0)
+    sequel (4.1.1)
+    sequel_pg (1.6.8)
+      pg (>= 0.8.0)
+      sequel (>= 3.39.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  net-ldap!
+  pg
+  sequel
+  sequel_pg
