@@ -12,13 +12,6 @@ public enum StudentStatus {
      */
     NEWBIE,
     GRADUATED,
-    OTHER;
-
-    public String getStatus() {
-        return name().toLowerCase();
-    }
-
-    public static StudentStatus fromString(String value) {
-        return StudentStatus.valueOf(value.toUpperCase());
-    }
+    OTHER,
+    UNKNOWN;
 }

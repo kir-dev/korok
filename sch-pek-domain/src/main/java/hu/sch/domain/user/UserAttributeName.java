@@ -7,7 +7,6 @@ package hu.sch.domain.user;
  */
 public enum UserAttributeName {
 
-    // TODO: copy user attributes here
     SCREEN_NAME,
     GENDER,
     DATE_OF_BIRTH,
@@ -15,6 +14,5 @@ public enum UserAttributeName {
     HOME_ADDRESS,
     EMAIL,
     CELL_PHONE,
-    HOME_PHONE,
     WEBPAGE;
 }

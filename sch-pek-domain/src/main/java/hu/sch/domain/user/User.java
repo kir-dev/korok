@@ -104,14 +104,14 @@ public class User implements Serializable, Comparable<User> {
     @Column(name = "usr_webpage")
     private String webpage;
     //----------------------------------------------------
-    @Size(max = 15)
+    @Size(max = 50)
     @Column(name = "usr_cell_phone")
     private String cellPhone;
     //----------------------------------------------------
     @Column(name = "usr_home_address")
     private String homeAddress;
     //----------------------------------------------------
-    @Size(max = 9, min = 9)
+    @Size(max = 10, min = 10)
     @Column(name = "usr_est_grad")
     private String estimatedGraduationYear;
     //----------------------------------------------------
@@ -160,8 +160,16 @@ public class User implements Serializable, Comparable<User> {
     @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
     private Set<UserAttribute> privateAttributes;
     //----------------------------------------------------
-    @Transient
-    private UserStatus userStatus = null;
+    @Column(name = "usr_status")
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private UserStatus userStatus;
+
+    @Column(name = "usr_password")
+    private String passwordDigest;
+
+    @Column(name = "usr_salt")
+    private String salt;
 
     public User() {
         this.delegated = false;
@@ -630,11 +638,6 @@ public class User implements Serializable, Comparable<User> {
     /**
      * A felhasználó SSO státusza.
      *
-     * Erre a mezőre főleg az admin részleg miatt van szükség.
-     *
-     * TODO: lehet hogy jó lenne eltávolítani és másképp megoldani az
-     * adminformot.
-     *
      * @return az felhasználó sso statusa vagy null, ha nincs kitöltve
      */
     public UserStatus getUserStatus() {
@@ -643,6 +646,32 @@ public class User implements Serializable, Comparable<User> {
 
     public void setUserStatus(UserStatus userStatus) {
         this.userStatus = userStatus;
+    }
+
+    /**
+     * A felhasználó jelszó hash-e.
+     *
+     * @return
+     */
+    public String getPasswordDigest() {
+        return passwordDigest;
+    }
+
+    public void setPasswordDigest(String passwordDigest) {
+        this.passwordDigest = passwordDigest;
+    }
+
+    /**
+     * A jelszó hash generáláshoz használt salt.
+     *
+     * @return
+     */
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     @Override
