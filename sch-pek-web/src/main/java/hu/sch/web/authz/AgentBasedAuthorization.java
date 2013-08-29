@@ -237,7 +237,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
                 getSingleValuedStringAttribute(servletRequest, NEPTUN_ATTRNAME);
 
         if (neptunUrn != null) {
-            Matcher m = PatternHolder.NEPTUN_PATTERN.matcher(neptunUrn);
+            Matcher m = PatternHolder.NEPTUN_URN_PATTERN.matcher(neptunUrn);
             if (m.matches()) {
                 user.setNeptunCode(m.group(1));
             }
