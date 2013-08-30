@@ -2,15 +2,12 @@ package hu.sch.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import hu.sch.domain.Membership;
-import hu.sch.domain.User;
-import hu.sch.domain.profile.Person;
-import hu.sch.domain.util.PatternHolder;
-import hu.sch.services.LdapManagerLocal;
+import hu.sch.domain.user.User;
+import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.services.exceptions.PersonNotFoundException;
+import hu.sch.util.PatternHolder;
 import hu.sch.web.rest.dto.MembershipResult;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -21,7 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,11 +29,11 @@ import org.apache.log4j.Logger;
 @ManagedBean(value = "MembershipsRestBean")
 public class Memberships extends PekWebservice {
 
-    private static final Logger LOGGER = Logger.getLogger(Memberships.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Memberships.class);
     @EJB
     private UserManagerLocal userManager;
     @EJB
-    private LdapManagerLocal ldapManager;
+    private GroupManagerLocal groupManager;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,32 +51,27 @@ public class Memberships extends PekWebservice {
         String resultJson = "";
 
         try {
-            final Person person = ldapManager.getPersonByNeptun(neptun);
-            final Long virId = person.getVirId();
-            if (virId == null || virId <= 0) { //she doesn't have a community profile
-                throw new PersonNotFoundException();
+            final User user = userManager.findUserByNeptun(neptun, true);
+
+            if (user == null) {
+                LOGGER.info("Memberships not found with neptun code=" + neptun);
+                triggerErrorResponse(Response.Status.NOT_FOUND);
             }
 
-            final User virUser = userManager.findUserWithMembershipsById(virId);
-            final List<Membership> memberships = virUser.getMemberships();
-
-            final Set<MembershipResult> result = new HashSet<MembershipResult>();
-            for (Membership ms : memberships) {
+            final Set<MembershipResult> result = new HashSet<>();
+            for (Membership ms : user.getMemberships()) {
                 //we need only active memberships
                 if (ms.getEnd() == null) {
-                    final User groupLeader = userManager.getGroupLeaderForGroup(ms.getGroupId());
+                    final User groupLeader = groupManager.findLeaderForGroup(ms.getGroupId());
 
                     result.add(new MembershipResult(ms.getGroupId(),
                             ms.getGroup().getName(),
-                            virId.equals(groupLeader.getId())));
+                            user.getId().equals(groupLeader.getId())));
                 }
             }
 
             resultJson = mapper.writeValueAsString(result);
 
-        } catch (PersonNotFoundException ex) {
-            LOGGER.info("Memberships not found with neptun code=" + neptun, ex);
-            triggerErrorResponse(Response.Status.NOT_FOUND);
         } catch (JsonProcessingException ex) {
             LOGGER.error("Couldn't process list to json; given values: neptun=" + neptun, ex);
             triggerErrorResponse(Response.Status.INTERNAL_SERVER_ERROR);

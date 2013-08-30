@@ -65,6 +65,16 @@ public interface UserManagerLocal {
     public User findUserByNeptun(String neptun);
 
     /**
+     * Gets the user with the specified neptun code.
+     *
+     * @param neptun neptun code of the user to lookup
+     * @param includeMemberships set it to true and it prefetches the
+     * memberships
+     * @return user or null if the user cannot be found.
+     */
+    public User findUserByNeptun(String neptun, boolean includeMemberships);
+
+    /**
      * Gets the user with specified email.
      *
      * @param email the email to look for

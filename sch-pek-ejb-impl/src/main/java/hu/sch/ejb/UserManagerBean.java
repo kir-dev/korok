@@ -24,6 +24,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.*;
 import org.apache.commons.codec.binary.Base64;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,10 +100,21 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public User findUserByNeptun(final String neptun) {
+        return findUserByNeptun(neptun, false);
+    }
+
+    @Override
+    public User findUserByNeptun(final String neptun, boolean includeMemberships) {
         try {
-            return em.createNamedQuery(User.findUserByNeptunCode, User.class)
+            final User user = em.createNamedQuery(User.findUserByNeptunCode, User.class)
                     .setParameter("neptun", neptun)
                     .getSingleResult();
+
+            if (includeMemberships) {
+                Hibernate.initialize(user.getMemberships());
+            }
+
+            return user;
         } catch (NoResultException ex) {
             logger.info("User not found with {} neptun.", neptun);
         }
