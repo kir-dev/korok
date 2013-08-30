@@ -61,7 +61,7 @@ public class PatternHolder {
         IM_PATTERN = Pattern.compile("^([a-zA-Z]+):(.*)");
         NAME_PATTERN = Pattern.compile("^[A-ZÁÉÍÓÖŐÚÜŰ][a-záéíóöőúüű]+([ \\-][A-ZÁÉÍÓÖŐÚÜŰ][a-záéíóöőúüű]+)*$");
         //according to the neptun code spec., neptun codes can be 7 chars length!
-        NEPTUN_PATTERN = Pattern.compile("^[A-Z0-9]{6,7}$");
+        NEPTUN_PATTERN = Pattern.compile("^[A-Za-z0-9]{6,7}$");
         NEPTUN_URN_PATTERN = Pattern.compile("^.*:([A-Za-z0-9]{6,7})$");
         //
         PHONE_NUMBER_PATTERN = Pattern.compile(".*\\d.*");
