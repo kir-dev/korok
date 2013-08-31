@@ -4,15 +4,11 @@ DROP TABLE neptun_list_aktivfelev;
 DROP VIEW  users_full_dormitory;
 DROP TABLE user_attrs;
 DROP TABLE users_svie_temp;
-DROP INDEX users_usr_neptun_idx;
 
 -- remove unused attributes
 ALTER TABLE users DROP COLUMN usr_passwd;
 ALTER TABLE users DROP COLUMN usr_sss_token;
 ALTER TABLE users DROP COLUMN usr_sss_token_logintime ;
-
--- create new expression index to guarantee case insensitive unique on users.usr_neptun
-CREATE UNIQUE INDEX users_usr_neptun_idx ON users(upper(usr_neptun));
 
 CREATE SEQUENCE screen_name_seq;
 
@@ -70,4 +66,3 @@ CREATE TABLE im_accounts (
 -- cleanup
 ALTER TABLE users ALTER usr_screen_name DROP DEFAULT;
 DROP SEQUENCE screen_name_seq CASCADE;
-DROP INDEX users_neptun;
