@@ -11,6 +11,7 @@ import hu.sch.ejb.image.ImageProcessor;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
+import hu.sch.services.exceptions.NotImplementedException;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.PekErrorCode;
 import hu.sch.util.hash.Hashing;
@@ -20,7 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.*;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.*;
 import org.apache.commons.codec.binary.Base64;
@@ -49,6 +52,8 @@ public class UserManagerBean implements UserManagerLocal {
     PostManagerLocal postManager;
     @EJB(name = "SystemManagerBean")
     private SystemManagerLocal systemManager;
+    @Resource
+    private SessionContext sessionContext;
 
     public UserManagerBean() {
     }
@@ -161,8 +166,15 @@ public class UserManagerBean implements UserManagerLocal {
         byte[] salt = generateSalt();
         String passwordDigest = hashPassword(password, salt);
 
-        user.setSalt(Base64.encodeBase64String(salt));
-        user.setPasswordDigest(passwordDigest);
+        boolean isAdmin = sessionContext.isCallerInRole(Roles.ADMIN);
+
+        if (!isAdmin) {
+            user.setSalt(Base64.encodeBase64String(salt));
+            user.setPasswordDigest(passwordDigest);
+        }
+
+        user.setConfirmationCode(generateConfirmationCode());
+        sendConfirmationEmail(user, isAdmin);
 
         em.persist(user);
     }
@@ -395,5 +407,49 @@ public class UserManagerBean implements UserManagerLocal {
         return salt;
     }
 
+    /**
+     * Generates and sets a random confirmation code for the user.
+     */
+    private String generateConfirmationCode() {
+        Random rnd = new SecureRandom();
+        byte[] bytes = new byte[48];
+        String confirm = null;
+
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.confirmationCode = :confirm", Long.class);
+
+        // check for uniqueness!
+        do {
+            rnd.nextBytes(bytes);
+            confirm = Base64.encodeBase64URLSafeString(bytes);
+            q.setParameter("confirm", confirm);
+        } while (!q.getSingleResult().equals(0L));
+
+        // 48 byte of randomness encoded into 64 characters
+        return confirm;
+    }
+
+    private boolean sendConfirmationEmail(User user, boolean isCreatedByAdmin) {
+        String subject, body;
+
+        subject = MailManagerBean.getMailString(MailManagerBean.MAIL_CONFIRMATION_SUBJECT);
+
+        if (isCreatedByAdmin) {
+            body = String.format(
+                    MailManagerBean.getMailString(MailManagerBean.MAIL_CONFIRMATION_ADMIN_BODY),
+                    user.getFullName(),
+                    generateConfirmationLink(user));
+        } else {
+            body = String.format(
+                    MailManagerBean.getMailString(MailManagerBean.MAIL_CONFIRMATION_BODY),
+                    user.getFullName(),
+                    generateConfirmationLink(user));
+        }
+
+        return mailManager.sendEmail(user.getEmailAddress(), subject, body);
+    }
+
+    private String generateConfirmationLink(User user) {
+        throw new NotImplementedException();
+    }
     // TODO: password policy
 }

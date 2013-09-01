@@ -122,6 +122,7 @@ public class User implements Serializable, Comparable<User> {
     private String room;
     //----------------------------------------------------
     @Column(name = "usr_confirm")
+    @Size(max = 64)
     private String confirmationCode;
     //----------------------------------------------------
     @NotNull

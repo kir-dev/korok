@@ -43,6 +43,11 @@ public class MailManagerBean {
     static final String MAIL_USERNAME_REMINDER_SUBJECT = "username.reminder.subject";
     static final String MAIL_USERNAME_REMINDER_BODY = "username.reminder.body";
     static final String MAIL_USERNAME_REMINDER_BODY_NEWBIE = "username.reminder.body.newbie";
+    // confirmation code
+    static final String MAIL_CONFIRMATION_SUBJECT = "confirmation.subject";
+    static final String MAIL_CONFIRMATION_BODY = "confirmation.body";
+    static final String MAIL_CONFIRMATION_ADMIN_BODY = "confirmation.admin.body";
+
     @Resource(name = "mail/korokMail")
     private Session mailSession;
 
