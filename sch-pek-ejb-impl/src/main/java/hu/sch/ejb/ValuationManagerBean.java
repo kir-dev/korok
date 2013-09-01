@@ -735,8 +735,8 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     /**
-     * Creates a {@link ValuationMessage} and saves with the given message.
-     * It can send an email notification with the message.
+     * Creates a {@link ValuationMessage} and saves with the given message. It
+     * can send an email notification with the message.
      *
      * @param v valuation
      * @param msg message for valuation
@@ -779,13 +779,15 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     // TODO: review specs for KBME
     @Override
     public List<PointInfo> getPointInfoForUid(String uid, Semester semester) {
-        User person = null;
-        person = userManager.findUserByScreenName(uid);
+        User user = userManager.findUserByScreenName(uid);
         Query q = em.createQuery("SELECT new hu.sch.domain.rest.PointInfo (p.valuation.groupId, p.point) "
                 + "FROM PointRequest p "
-                + "WHERE p.valuation.semester =:semester AND p.userId =:userid");
+                + "WHERE p.valuation.semester = :semester AND p.userId = :userid AND "
+                + "p.valuation.pointStatus = :status AND "
+                + "p.valuation.nextVersion IS NULL");
         q.setParameter("semester", semester);
-        q.setParameter("userid", person.getId());
+        q.setParameter("userid", user.getId());
+        q.setParameter("status", ValuationStatus.ELFOGADVA);
         return q.getResultList();
     }
 
