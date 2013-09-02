@@ -49,6 +49,8 @@ public class Configuration {
     private static final String CONFIG_FILE = "config.properties";
     private static final String IMAGE_UPLOAD_PATH = "image.upload.path";
     private static final String IMAGE_MAX_SIZE = "image.upload.max";
+    private static final String DOMAIN_PROFILE = "domain.profile";
+    private static final String DOMAIN_KOROK = "domain.korok";
 
     private static final Properties properties = new Properties();
     private static final String baseDir;
@@ -98,6 +100,14 @@ public class Configuration {
 
     public static String getDevEmail() {
         return properties.getProperty("devMail");
+    }
+
+    public static String getProfileDomain() {
+        return properties.getProperty(DOMAIN_PROFILE);
+    }
+
+    public static String getKorokDomain() {
+        return properties.getProperty(DOMAIN_KOROK);
     }
 
     private Configuration() {

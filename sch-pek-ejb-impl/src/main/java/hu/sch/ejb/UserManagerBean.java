@@ -449,7 +449,8 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     private String generateConfirmationLink(User user) {
-        throw new NotImplementedException();
+        String domain = Configuration.getProfileDomain();
+        return String.format("https://%s/profile/confirm/code/%s", domain, user.getConfirmationCode());
     }
     // TODO: password policy
 }
