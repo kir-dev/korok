@@ -47,10 +47,6 @@ public class Configuration {
     private static final String TIMES_FONT_FILE = "times.font.file";
     private static final String APPLICATION_FOLDER = "korok";
     private static final String CONFIG_FILE = "config.properties";
-    private static final String LDAP_HOST = "ldap.host";
-    private static final String LDAP_PORT = "ldap.port";
-    private static final String LDAP_USER = "ldap.user";
-    private static final String LDAP_PASSWORD = "ldap.password";
     private static final String IMAGE_UPLOAD_PATH = "image.upload.path";
     private static final String IMAGE_MAX_SIZE = "image.upload.max";
 
@@ -109,15 +105,6 @@ public class Configuration {
 
     public static String getFontPath() {
         return baseDir + APPLICATION_FOLDER + "/" + properties.getProperty(TIMES_FONT_FILE);
-    }
-
-    public static LdapConfig getLdapConfig() {
-        String user = properties.getProperty(LDAP_USER);
-        String password = properties.getProperty(LDAP_PASSWORD);
-        String host = properties.getProperty(LDAP_HOST);
-        int port = Integer.parseInt(properties.getProperty(LDAP_PORT));
-
-        return new LdapConfig(host, port, user, password);
     }
 
     public static ImageUploadConfig getImageUploadConfig() {
