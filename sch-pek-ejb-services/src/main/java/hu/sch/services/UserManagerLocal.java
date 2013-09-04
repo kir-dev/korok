@@ -85,6 +85,20 @@ public interface UserManagerLocal {
     public User findUserByEmail(String email) throws DuplicatedUserException;
 
     /**
+     * Gets the user with specified confirmation code.
+     *
+     * @param code the confirmation code to look for
+     * @return 
+     */
+    public User findUserByConfirmationCode(String code);
+
+    /**
+     * Confirms a user's registration.
+     * @param user 
+     */
+    public void confirm(User user, String password) throws PekEJBException;
+
+    /**
      * Get entrant requests for the given user.
      *
      * @param user
@@ -108,7 +122,7 @@ public interface UserManagerLocal {
      * @param user the user to be created
      * @param password
      */
-    public void createUser(User user, String password) 
+    public void createUser(User user, String password)
             throws PekEJBException;
 
     /**
@@ -198,9 +212,9 @@ public interface UserManagerLocal {
             throws PekEJBException;
 
     /**
-     * Searches the user in the datastore by email and sends an email with the screen
-     * name.
-     * It sends different messages depends on {@link SystemManagerLocal#getNewbieTime()}.
+     * Searches the user in the datastore by email and sends an email with the
+     * screen name. It sends different messages depends on
+     * {@link SystemManagerLocal#getNewbieTime()}.
      *
      * @param email
      * @return true if we found the user and the email sent successfully.

@@ -1,5 +1,17 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
     <div id="admincont">
-        <a href="" wicket:id="linktoProfile">Bejelentkezés</a>
+        <form wicket:id="passwordForm">
+            <table>
+                <tr>
+                    <td><label wicket:id="passwordLabel">Jelszó</label></td>
+                    <td><input type="password" wicket:id="password" class="textinput" /></td>
+                </tr>
+                <tr>
+                    <td><label wicket:id="passwordConfirmLabel">Jelszó még egyszer</label></td>
+                    <td><input type="password" wicket:id="passwordConfirm" class="textinput" /></td>
+                </tr>
+            </table>
+            <span id="btns"><input class="btn" type="submit" value="Mentés"/></span>
+        </form>
     </div>
 </wicket:extend>

@@ -198,7 +198,6 @@ public class PhoenixApplication extends WebApplication {
         mountPageWithPath("/korok/showuser", ShowUser.class);
         mountPageWithPath("/korok/userhistory", UserHistory.class);
         mountPageWithPath("/korok/search", SearchResultsPage.class);
-        mountPageWithPath("/korok/confirm", ConfirmPage.class);
 
         mountPageWithPath("/korok/showgroup", ShowGroup.class);
         mountPageWithPath("/korok/grouphierarchy", GroupHierarchy.class);
@@ -236,6 +235,7 @@ public class PhoenixApplication extends WebApplication {
         mountPageWithPath("/profile/changepassword", ChangePasswordPage.class);
         mountPageWithPath("/profile/birthdays", BirthDayPage.class);
         mountPageWithPath("/profile/admin", AdminPage.class);
+        mountPageWithPath("/profile/confirm", ConfirmPage.class);
     }
 
     /**
