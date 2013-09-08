@@ -6,14 +6,14 @@
         <!-- ez fontos, mert a kulon .jar csomag miatt nem talalja meg magatol -->
         <class>hu.sch.domain.EntrantExportRecord</class>
         <class>hu.sch.domain.EntrantRequest</class>
-        <class>hu.sch.domain.EntrantType</class>
+        <class>hu.sch.domain.enums.EntrantType</class>
         <class>hu.sch.domain.GivenPoint</class>
         <class>hu.sch.domain.Group</class>
-        <class>hu.sch.domain.GroupStatus</class>
+        <class>hu.sch.domain.enums.GroupStatus</class>
         <class>hu.sch.domain.Membership</class>
         <class>hu.sch.domain.Valuation</class>
         <class>hu.sch.domain.ValuationStatistic</class>
-        <class>hu.sch.domain.ValuationStatus</class>
+        <class>hu.sch.domain.enums.ValuationStatus</class>
         <class>hu.sch.domain.ValuationMessage</class>
         <class>hu.sch.domain.PointRequest</class>
         <class>hu.sch.domain.SystemAttribute</class>
