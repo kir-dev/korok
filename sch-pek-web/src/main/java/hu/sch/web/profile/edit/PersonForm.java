@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
 class PersonForm extends Form<User> {
 
     private final User user;
-    private Date dob;
     private List<FileUpload> upload;
     private final RefreshingView<IMAccount> refreshView;
     private static final int NAMES_MIN_LENGTH = 2;
@@ -153,10 +152,6 @@ class PersonForm extends Form<User> {
                 if (upload != null && !upload.isEmpty()) {
                     FileUpload fu = upload.get(0);
                     image = new ProfileImage(fu.getContentType(), fu.getBytes(), fu.getSize());
-
-                    if (dob != null) {
-                        user.setDateOfBirth(dob);
-                    }
                 }
                 try {
                     userManager.updateUser(user, image);
@@ -207,8 +202,7 @@ class PersonForm extends Form<User> {
     }
 
     private void createAdditionalFields() {
-        dob = user.getDateOfBirth();
-        DateTextField dateTF = new DateTextField("dateOfBirth", new PropertyModel<Date>(this, "dob"), new StyleDateConverter("S-", true)) {
+        DateTextField dateTF = new DateTextField("dateOfBirth", new StyleDateConverter("S-", true)) {
             @Override
             public Locale getLocale() {
                 return new Locale("hu");

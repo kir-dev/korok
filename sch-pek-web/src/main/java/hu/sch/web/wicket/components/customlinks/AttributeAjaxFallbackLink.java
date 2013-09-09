@@ -4,9 +4,12 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.UserManagerLocal;
 import javax.ejb.EJB;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 
@@ -21,7 +24,6 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
     private boolean isPrivateAttr;
     private Image img;
     private User user;
-
     @EJB(name = "UserManagerBean")
     private UserManagerLocal userManager;
 
@@ -30,10 +32,10 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
         this.attr = attr;
         this.user = user;
         isPrivateAttr = !user.isAttributeVisible(attr);
-        isPrivateAttr = false;
 
         img = new Image(imgId, getImageResourceReference());
         img.setOutputMarkupId(true);
+        img.add(getImageTitleAttribute());
 
         this.add(img);
     }
@@ -44,6 +46,7 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
         isPrivateAttr = !isPrivateAttr;
 
         img.setImageResourceReference(getImageResourceReference());
+        img.add(getImageTitleAttributeMod());
         target.add(img);
     }
 
@@ -51,8 +54,25 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
         if (isPrivateAttr) {
             return new PackageResourceReference(AttributeAjaxFallbackLink.class, "resources/private.gif");
         } else {
-            return new PackageResourceReference(AttributeAjaxFallbackLink.class, "resources/private.gif");
+            return new PackageResourceReference(AttributeAjaxFallbackLink.class, "resources/public.gif");
         }
+    }
+
+    private AttributeAppender getImageTitleAttribute() {
+        if (isPrivateAttr) {
+            return new AttributeAppender("title", Model.of("Mutat"));
+        } else {
+            return new AttributeAppender("title", Model.of("Elrejt"));
+        }
+    }
+
+    private AttributeModifier getImageTitleAttributeMod() {
+        if (isPrivateAttr) {
+            return new AttributeModifier("title", Model.of("Mutat"));
+        } else {
+            return new AttributeModifier("title", Model.of("Elrejt"));
+        }
+
     }
 
     public void setUser(User user) {
