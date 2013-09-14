@@ -93,8 +93,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate.version>4.3.0.Beta3</hibernate.version>
-        <wicket.version>6.9.1</wicket.version>
-        <wicketstuff.version>6.9.0</wicketstuff.version>
+        <wicket.version>6.10.0</wicket.version>
+        <wicketstuff.version>6.10.0</wicketstuff.version>
     </properties>
 
     <modules>
