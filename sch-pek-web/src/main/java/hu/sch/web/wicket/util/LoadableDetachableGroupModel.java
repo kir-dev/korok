@@ -2,9 +2,7 @@ package hu.sch.web.wicket.util;
 
 import hu.sch.domain.Group;
 import hu.sch.services.GroupManagerLocal;
-import hu.sch.services.UserManagerLocal;
-import javax.ejb.EJB;
-import org.apache.wicket.injection.Injector;
+import javax.inject.Inject;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 /**
@@ -14,23 +12,17 @@ import org.apache.wicket.model.LoadableDetachableModel;
 public class LoadableDetachableGroupModel extends LoadableDetachableModel<Group> {
 
     private static final long serialVersionUID = 1L;
-    @EJB(name = "GroupManagerBean")
+    @Inject
     private GroupManagerLocal groupManager;
     private Long groupId;
     private transient Group group;
 
     public LoadableDetachableGroupModel(Long groupId) {
         this.groupId = groupId;
-        init();
     }
 
     public LoadableDetachableGroupModel(Group group) {
         this.group = group;
-        init();
-    }
-
-    private void init() {
-        Injector.get().inject(this);
     }
 
     @Override

@@ -11,7 +11,7 @@ import hu.sch.web.kp.valuation.ValuationDetails;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -27,7 +27,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  */
 public class EntrantRequestExplanation extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal valuationManager;
 
     public EntrantRequestExplanation(final Valuation ert, final List<EntrantRequest> igenyek) {

@@ -8,7 +8,7 @@ import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.valuation.ValuationDetailPanel;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -25,7 +25,7 @@ import org.apache.wicket.util.string.StringValueConversionException;
  */
 public class GroupHistory extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     private ValuationManagerLocal valuationManager;
     private final Long id;
     private final Group group;

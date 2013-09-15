@@ -5,11 +5,9 @@ import hu.sch.domain.Semester;
 import hu.sch.domain.user.User;
 import hu.sch.domain.rest.PointInfo;
 import hu.sch.services.GroupManagerLocal;
-import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import java.util.List;
-import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -25,13 +23,12 @@ import org.slf4j.LoggerFactory;
  * @author aldaris
  */
 @Path("/kbme")
-@ManagedBean
-public class Kbme {
+public class Kbme extends PekWebservice {
 
-    private static final Logger logger = LoggerFactory.getLogger(Kbme.class);
-    @EJB
+    private static final Logger log = LoggerFactory.getLogger(Kbme.class);
+    @Inject
     GroupManagerLocal groupManager;
-    @EJB
+    @Inject
     ValuationManagerLocal valuationManager;
     @Context
     private UriInfo context;
@@ -67,17 +64,5 @@ public class Kbme {
     public List<PointInfo> getPointsForUser(@QueryParam("uid") String uid, @QueryParam("sid") String sid) {
         doAudit();
         return valuationManager.getPointInfoForUid(uid, new Semester(sid));
-    }
-
-    private void doAudit() {
-        StringBuilder auditMessage = new StringBuilder("AUDIT LOG for GET method. ");
-        auditMessage.append(" URL: ");
-        if (context != null && context.getRequestUri() != null) {
-            auditMessage.append(context.getRequestUri().toString());
-        } else {
-            logger.info("URIContext or RequestUri was null.");
-            auditMessage.append("UNKNOWN");
-        }
-        logger.info(auditMessage.toString());
     }
 }

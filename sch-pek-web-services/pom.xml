@@ -24,6 +24,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
+                    <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
                     <webResources>
                         <resource>
                             <directory>src/main/webapp</directory>
@@ -33,6 +34,14 @@
                             </includes>
                         </resource>
                     </webResources>
+                </configuration>
+            </plugin>
+            <!-- Skip JBoss AS plugin - only applicable for the EAR package. -->
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
@@ -54,10 +63,6 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
         </dependency>
     </dependencies>
 </project>

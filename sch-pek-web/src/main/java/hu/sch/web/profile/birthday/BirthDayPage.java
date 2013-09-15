@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 
@@ -21,7 +21,7 @@ public class BirthDayPage extends ProfilePage {
 
     SortablePersonDataProvider personDataProvider;
 
-    @EJB(name = "SearchManagerBean")
+    @Inject
     private SearchManagerLocal searchManager;
 
     public BirthDayPage() {

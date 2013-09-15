@@ -10,7 +10,7 @@ import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.request.point.PointRequests;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -27,7 +27,7 @@ import org.apache.wicket.util.string.StringValueConversionException;
  */
 public class ValuationHistory extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     private ValuationManagerLocal valuationManager;
     private int version = 0;
 

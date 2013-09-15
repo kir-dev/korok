@@ -8,7 +8,7 @@ import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.wizard.IWizardModel;
@@ -51,7 +51,7 @@ public class RegisterWizard extends Wizard {
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterWizard.class);
     //
-    @EJB(name = "RegistrationManager")
+    @Inject
     RegistrationManagerLocal registrationManager;
     //
     private RegisteringUser person = new RegisteringUser();

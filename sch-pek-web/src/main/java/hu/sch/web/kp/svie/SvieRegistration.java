@@ -7,13 +7,11 @@ import hu.sch.services.SvieManagerLocal;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
-import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.util.PatternHolder;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
-import org.apache.wicket.RestartResponseException;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.Radio;
@@ -33,7 +31,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
  */
 public final class SvieRegistration extends KorokPage {
 
-    @EJB(name = "SvieManagerBean")
+    @Inject
     SvieManagerLocal svieManager;
     private User user;
     private SvieMembershipType choosed;

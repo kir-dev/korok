@@ -10,7 +10,7 @@ import hu.sch.services.PostManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.web.common.PekPage;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +21,13 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class KorokPage extends PekPage {
 
-    @EJB(name = "SystemManagerBean")
+    @Inject
     protected SystemManagerLocal systemManager;
-    @EJB(name = "PostManagerBean")
+    @Inject
     protected PostManagerLocal postManager;
-    @EJB(name="GroupManagerBean")
+    @Inject
     protected GroupManagerLocal groupManager;
-    @EJB(name="MembershipManagerBean")
+    @Inject
     protected MembershipManagerLocal membershipManager;
 
     private static final Logger log = LoggerFactory.getLogger(KorokPage.class);

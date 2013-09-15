@@ -9,7 +9,7 @@ import hu.sch.web.wicket.behaviors.ConfirmationBehavior;
 import hu.sch.web.wicket.components.customlinks.SvieRegPdfLink;
 import hu.sch.web.kp.KorokPage;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class SvieAccount extends KorokPage {
 
-    @EJB(name = "SvieManagerBean")
+    @Inject
     SvieManagerLocal svieManager;
     private static Logger log = LoggerFactory.getLogger(SvieAccount.class);
     private final User user = getUser();

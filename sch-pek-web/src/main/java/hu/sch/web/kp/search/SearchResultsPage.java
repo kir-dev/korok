@@ -2,7 +2,7 @@ package hu.sch.web.kp.search;
 
 import hu.sch.services.SearchManagerLocal;
 import hu.sch.web.kp.KorokPage;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
@@ -12,7 +12,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  */
 public class SearchResultsPage extends KorokPage {
 
-    @EJB(name = "SearchManagerBean")
+    @Inject
     private SearchManagerLocal searchManager;
 
     public SearchResultsPage() {

@@ -5,11 +5,10 @@ import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.user.User;
 import hu.sch.domain.Valuation;
 import hu.sch.services.GroupManagerLocal;
-import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -23,9 +22,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public class EntrantRequestViewer extends Panel {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal ertekelesManager;
-    @EJB(name = "GroupManagerBean")
+    @Inject
     private GroupManagerLocal groupManager;
 
     public EntrantRequestViewer(String id, final Valuation ert) {

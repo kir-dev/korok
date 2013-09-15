@@ -4,7 +4,7 @@ import hu.sch.domain.Valuation;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.wicket.components.tables.ValuationTable;
 import hu.sch.web.wicket.components.tables.ValuationTableForGroup;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -18,7 +18,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public class ValuationDetailPanel extends Panel {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     private ValuationManagerLocal valuationManager;
     private final ValuationTable valuationTable;
 

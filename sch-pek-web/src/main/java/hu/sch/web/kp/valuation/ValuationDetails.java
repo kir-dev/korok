@@ -17,7 +17,7 @@ import hu.sch.web.wicket.components.TinyMCEContainer;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import hu.sch.web.wicket.components.tables.ValuationTableForGroup;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
@@ -48,7 +48,7 @@ import wicket.contrib.tinymce.settings.TinyMCESettings;
  */
 public class ValuationDetails extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     private ValuationManagerLocal valuationManager;
     private AjaxFallbackLink<Void> ajaxLinkForValuationText;
 

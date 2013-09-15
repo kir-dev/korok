@@ -5,7 +5,7 @@ import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import hu.sch.web.wicket.components.TinyMCEContainer;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.PropertyModel;
@@ -18,7 +18,7 @@ import org.apache.wicket.util.string.StringValueConversionException;
  */
 public class NewValuation extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal valuationManager;
     private String valuationText;
     private String principle;

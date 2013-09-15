@@ -48,10 +48,6 @@
 
     <contributors>
         <contributor>
-            <name>Balazs Varga</name>
-            <timezone>+1</timezone>
-        </contributor>
-        <contributor>
             <name>Gabor Halasz</name>
             <timezone>+1</timezone>
         </contributor>
@@ -92,9 +88,18 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>4.3.0.Beta3</hibernate.version>
         <wicket.version>6.10.0</wicket.version>
         <wicketstuff.version>6.10.0</wicketstuff.version>
+        <wicket.cdi.version>6.0</wicket.cdi.version>
+        <jboss.maven.plugin.version>7.3.Final</jboss.maven.plugin.version>
+        <jboss.maven.plugin.mgmt.host>korok.sch.bme.hu</jboss.maven.plugin.mgmt.host>
+        <jboss.maven.plugin.mgmt.port>9998</jboss.maven.plugin.mgmt.port>
+
+        <!-- these dependencies provided by jboss AS, to update them
+        check jboss modules! -->
+        <hibernate.version>4.1.6.Final</hibernate.version>
+        <hibernate.validator.version>4.2.0.Final</hibernate.validator.version>
+        <validation.api.version>1.0.0.GA</validation.api.version>
     </properties>
 
     <modules>
@@ -123,6 +128,7 @@
                 <groupId>hu.sch</groupId>
                 <artifactId>sch-pek-ejb-impl</artifactId>
                 <version>${project.version}</version>
+                <type>ejb</type>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
@@ -139,11 +145,13 @@
                 <groupId>hu.sch</groupId>
                 <artifactId>sch-pek-web</artifactId>
                 <version>${project.version}</version>
+                <type>war</type>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
                 <artifactId>sch-pek-web-services</artifactId>
                 <version>${project.version}</version>
+                <type>war</type>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
@@ -169,27 +177,25 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>${hibernate.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-jpamodelgen</artifactId>
                 <version>1.2.0.Final</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
                 <version>6.0</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>2.2.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -204,12 +210,14 @@
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>1.1.0.Final</version>
+                <version>${validation.api.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.0.1.Final</version>
+                <version>${hibernate.validator.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>postgresql</groupId>
@@ -240,20 +248,26 @@
                 <version>${wicket.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-ioc</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wicketstuff</groupId>
-                <artifactId>wicketstuff-javaee-inject</artifactId>
-                <version>${wicketstuff.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wicketstuff</groupId>
                 <artifactId>wicketstuff-tinymce</artifactId>
                 <version>${wicketstuff.version}</version>
             </dependency>
+
+            <!-- Wicket Java EE integration. -->
+            <!-- Wicket-CDI depends on seam-conversation module to activate and
+            deactivate conversational contexts, so you will need a seam-conversation module
+            specific to your CDI container. For JBoss Weld: -->
+            <dependency>
+                <groupId>org.jboss.seam.conversation</groupId>
+                <artifactId>seam-conversation-weld</artifactId>
+                <version>3.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>net.ftlines.wicket-cdi</groupId>
+                <artifactId>wicket-cdi</artifactId>
+                <version>${wicket.cdi.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.itextpdf</groupId>
                 <artifactId>itextpdf</artifactId>
@@ -315,6 +329,17 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jboss.as.plugins</groupId>
+                    <artifactId>jboss-as-maven-plugin</artifactId>
+                    <version>${jboss.maven.plugin.version}</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <skip>true</skip>
+                        <hostname>${jboss.maven.plugin.mgmt.host}</hostname>
+                        <port>${jboss.maven.plugin.mgmt.port}</port>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

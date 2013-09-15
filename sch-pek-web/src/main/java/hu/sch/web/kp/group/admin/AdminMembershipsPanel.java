@@ -2,7 +2,6 @@ package hu.sch.web.kp.group.admin;
 
 import hu.sch.domain.Membership;
 import hu.sch.services.MembershipManagerLocal;
-import hu.sch.services.UserManagerLocal;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.SelectableMembership;
@@ -12,7 +11,7 @@ import hu.sch.web.wicket.components.tables.MembershipTable;
 import hu.sch.web.wicket.components.tables.PanelColumn;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -33,7 +32,7 @@ public final class AdminMembershipsPanel extends Panel {
 
     private static Logger log = LoggerFactory.getLogger(AdminMembershipsPanel.class);
 
-    @EJB(name = "MembershipManagerBean")
+    @Inject
     private MembershipManagerLocal membershipManager;
 
     public AdminMembershipsPanel(String id, final List<Membership> activeMembers) {

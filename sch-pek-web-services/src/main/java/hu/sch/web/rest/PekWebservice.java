@@ -1,6 +1,6 @@
 package hu.sch.web.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -14,10 +14,11 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class PekWebservice {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PekWebservice.class);
+    private static final Logger log = LoggerFactory.getLogger(PekWebservice.class);
+    @Context
+    HttpServletRequest requestContext;
     @Context
     private UriInfo context;
-    protected ObjectMapper mapper = new ObjectMapper();
 
     protected void doAudit() {
         final StringBuilder auditMessage = new StringBuilder("AUDIT LOG for GET method. ");
@@ -25,17 +26,15 @@ public abstract class PekWebservice {
         if (context != null && context.getRequestUri() != null) {
             auditMessage.append(context.getRequestUri().toString());
         } else {
-            LOGGER.info("URIContext or RequestUri was null.");
+            log.info("URIContext or RequestUri was null.");
             auditMessage.append("UNKNOWN");
         }
-        LOGGER.info(auditMessage.toString());
+
+        auditMessage.append(" ; client IP: ").append(requestContext.getRemoteAddr());
+        log.info(auditMessage.toString());
     }
 
     protected void triggerErrorResponse(final Response.Status status) {
-//        final StringBuilder errorMsg = new StringBuilder("{'error': '").append(msg).append("'}");
-        final Response.ResponseBuilder resp = Response.status(status);
-//        .entity(errorMsg.toString());
-
-        throw new WebApplicationException(resp.build());
+        throw new WebApplicationException(Response.status(status).build());
     }
 }

@@ -28,11 +28,6 @@
                     <version>6</version>
                     <defaultLibBundleDir>lib/</defaultLibBundleDir>
                     <skinnyWars>true</skinnyWars>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
                     <modules>
                         <webModule>
                             <groupId>hu.sch</groupId>
@@ -51,30 +46,40 @@
                     </modules>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <configuration>
+                    <filename>${project.artifactId}-${project.version}.ear</filename>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
             <groupId>hu.sch</groupId>
+            <artifactId>sch-pek-ejb-services</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.sch</groupId>
+            <artifactId>sch-pek-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.sch</groupId>
             <artifactId>sch-pek-ejb-impl</artifactId>
-            <scope>compile</scope>
             <type>ejb</type>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-web</artifactId>
-            <scope>compile</scope>
             <type>war</type>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-web-services</artifactId>
-            <scope>compile</scope>
             <type>war</type>
-            <version>${project.version}</version>
         </dependency>
         <!-- shared dependencies, put all libraries to the ear's lib/ directory -->
         <dependency>
@@ -88,10 +93,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -114,16 +115,16 @@
             <artifactId>wicket-extensions</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.wicket</groupId>
-            <artifactId>wicket-ioc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wicketstuff</groupId>
-            <artifactId>wicketstuff-javaee-inject</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wicketstuff</groupId>
             <artifactId>wicketstuff-tinymce</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.seam.conversation</groupId>
+            <artifactId>seam-conversation-weld</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.ftlines.wicket-cdi</groupId>
+            <artifactId>wicket-cdi</artifactId>
         </dependency>
     </dependencies>
 </project>

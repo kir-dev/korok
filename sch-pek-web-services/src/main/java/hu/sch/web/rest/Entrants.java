@@ -1,6 +1,5 @@
 package hu.sch.web.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import hu.sch.domain.Semester;
 import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.services.ValuationManagerLocal;
@@ -8,15 +7,16 @@ import hu.sch.services.exceptions.UserNotFoundException;
 import hu.sch.util.PatternHolder;
 import java.util.LinkedList;
 import java.util.List;
-import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,30 +25,30 @@ import org.slf4j.LoggerFactory;
  * @author balo
  */
 @Path("/entrants")
-@ManagedBean(value = "EntrantsRestBean")
 public class Entrants extends PekWebservice {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Entrants.class);
-    @EJB
+    private static final Logger log = LoggerFactory.getLogger(Entrants.class);
+    @Inject
     private ValuationManagerLocal valuationManager;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RequestScoped
     @Path("/get/{semester}/{neptun}")
-    public String getEntrants(
+    public List<ApprovedEntrant> getEntrants(
             @PathParam("neptun") final String neptun,
-            @PathParam("semester") final String semesterId) {
+            @PathParam("semester") final String semesterId,
+            @Context UriInfo context) {
 
         doAudit();
 
         if (!PatternHolder.SEMESTER_PATTERN.matcher(semesterId).matches()) {
-            LOGGER.error("Webservice called with invalid semesterid=" + semesterId);
+            log.error("Webservice called with invalid semesterid=" + semesterId);
             triggerErrorResponse(Response.Status.BAD_REQUEST);
         }
 
         if (!PatternHolder.NEPTUN_PATTERN.matcher(neptun).matches()) {
-            LOGGER.error("Webservice called with invalid neptun=" + neptun);
+            log.error("Webservice called with invalid neptun=" + neptun);
             triggerErrorResponse(Response.Status.BAD_REQUEST);
         }
 
@@ -56,21 +56,10 @@ public class Entrants extends PekWebservice {
         try {
             entrants.addAll(valuationManager.getApprovedEntrants(neptun, new Semester(semesterId)));
         } catch (UserNotFoundException ex) {
-            LOGGER.info("User not found with neptun code=" + neptun);
+            log.info("User not found with neptun code=" + neptun);
             triggerErrorResponse(Response.Status.NOT_FOUND);
         }
 
-        String resultInJson = "";
-        try {
-            resultInJson = mapper.writeValueAsString(entrants);
-        } catch (JsonProcessingException ex) {
-            final String errorMsg = "Couldn't process list to json; given values: neptun="
-                    + neptun + ";semester=" + semesterId;
-
-            LOGGER.error(errorMsg, ex);
-            triggerErrorResponse(Response.Status.INTERNAL_SERVER_ERROR);
-        }
-
-        return resultInJson;
+        return entrants;
     }
 }

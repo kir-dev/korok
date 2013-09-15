@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
@@ -39,7 +39,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 //TODO
 public class ConsiderPage extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     private ValuationManagerLocal valuationManager;
     Map<Long, ConsideredValuation> underConsidering = new HashMap<Long, ConsideredValuation>();
 

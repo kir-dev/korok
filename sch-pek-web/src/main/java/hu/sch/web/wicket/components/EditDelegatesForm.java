@@ -6,7 +6,7 @@ import hu.sch.services.UserManagerLocal;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -22,7 +22,7 @@ import org.apache.wicket.model.PropertyModel;
  */
 public abstract class EditDelegatesForm extends Form {
 
-    @EJB(name = "UserManagerBean")
+    @Inject
     UserManagerLocal userManager;
     private List<ExtendedUser> lines = new ArrayList<ExtendedUser>();
 

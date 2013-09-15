@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public final class CsvReportLink extends Link<Void> {
 
     private static Logger logger = LoggerFactory.getLogger(CsvReportLink.class);
-    @EJB(name = "SvieManagerBean")
+    @Inject
     SvieManagerLocal svieManager;
 
     public CsvReportLink(String id) {

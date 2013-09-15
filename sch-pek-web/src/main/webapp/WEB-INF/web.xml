@@ -13,6 +13,14 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
+    <!-- this dummy section needs only to activate the security in jboss -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>DUMMY</web-resource-name>
+            <url-pattern>*.dummy</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
     <filter>
         <filter-name>Wicket</filter-name>
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>

@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -22,9 +22,9 @@ import org.apache.wicket.util.resource.IResourceStream;
  */
 public class CsvExportForKfbLink extends Link<Void> {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal valuationManager;
-    @EJB(name = "SystemManagerBean")
+    @Inject
     SystemManagerLocal systemManager;
 
     public CsvExportForKfbLink(String id) {

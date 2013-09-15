@@ -4,7 +4,6 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.MembershipManagerLocal;
-import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.web.kp.valuation.ValuationDetails;
@@ -16,7 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -39,11 +38,11 @@ import org.apache.wicket.validation.validator.RangeValidator;
  */
 public class PointRequestEditor extends Panel {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal valuationManager;
-    @EJB(name = "MembershipManagerBean")
+    @Inject
     private MembershipManagerLocal membershipManager;
-    @EJB(name = "GroupManagerBean")
+    @Inject
     private GroupManagerLocal groupManager;
 
     public PointRequestEditor(String id, final Valuation val) {

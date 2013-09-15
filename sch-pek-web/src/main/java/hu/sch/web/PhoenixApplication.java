@@ -46,14 +46,18 @@ import hu.sch.web.wicket.util.EntrantTypeConverter;
 import hu.sch.web.wicket.util.PostTypeConverter;
 import hu.sch.web.wicket.util.ServerTimerFilter;
 import hu.sch.web.wicket.util.ValuationStatusConverter;
-import javax.ejb.EJB;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
+import net.ftlines.wicket.cdi.CdiConfiguration;
+import net.ftlines.wicket.cdi.ConversationPropagation;
 import org.apache.wicket.*;
 import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.core.request.mapper.MountedMapper;
-import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.IRequestHandler;
@@ -67,9 +71,6 @@ import org.apache.wicket.request.cycle.RequestCycleContext;
 import org.apache.wicket.request.mapper.parameter.UrlPathPageParametersEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
-import org.wicketstuff.javaee.naming.global.AppJndiNamingStrategy;
-import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
 
 /**
  * PhoenixApplication, amelyben a Phoenix arra utal, hogy ez az alkalmazás a VIR
@@ -82,9 +83,8 @@ import org.wicketstuff.javaee.naming.global.GlobalJndiNamingStrategy;
  */
 public class PhoenixApplication extends WebApplication {
 
-    private static final String EJB_MODULE_NAME = "korok-ejb";
     private static Logger log = LoggerFactory.getLogger(PhoenixApplication.class);
-    @EJB(name = "SystemManagerBean")
+    @Inject
     private SystemManagerLocal systemManager;
     private UserAuthorization authorizationComponent;
     private boolean isNewbieTime;
@@ -121,19 +121,15 @@ public class PhoenixApplication extends WebApplication {
 
     @Override
     protected void init() {
+        initEjbInjects();
+
         //A környezetfüggő beállítások elvégzése
         Environment env = Configuration.getEnvironment();
-        if (env == Environment.TESTING) {
-            getComponentInstantiationListeners().add(new JavaEEComponentInjector(this, new GlobalJndiNamingStrategy(EJB_MODULE_NAME)));
+        if (env == Environment.DEVELOPMENT || env == Environment.TESTING) {
+            //Ha DEVELOPMENT környezetben vagyunk, akkor Dummyt használunk
             authorizationComponent = new DummyAuthorization();
-        } else {
-            getComponentInstantiationListeners().add(new JavaEEComponentInjector(this, new AppJndiNamingStrategy(EJB_MODULE_NAME)));
-            if (env == Environment.DEVELOPMENT) {
-                //Ha DEVELOPMENT környezetben vagyunk, akkor Dummyt használunk
-                authorizationComponent = new DummyAuthorization();
-            } else { // ha STAGING vagy PRODUCTION, akkor az AgentBased kell nekünk
-                authorizationComponent = new AgentBasedAuthorization();
-            }
+        } else { // ha STAGING vagy PRODUCTION, akkor az AgentBased kell nekünk
+            authorizationComponent = new AgentBasedAuthorization();
         }
 
         if (Configuration.getEnvironment().equals(Environment.PRODUCTION)) {
@@ -161,7 +157,6 @@ public class PhoenixApplication extends WebApplication {
             log.info("Successfully enabled ServerTimerFilter");
         }
 
-        Injector.get().inject(this);
         isNewbieTime = systemManager.getNewbieTime();
 
         //tinymce workaround. see: https://github.com/wicketstuff/core/issues/113
@@ -170,6 +165,24 @@ public class PhoenixApplication extends WebApplication {
         guard.addPattern("+*.htm");
 
         log.warn("Application has been successfully initiated");
+    }
+
+    /**
+     * This does the magic so we can inject EJBs with
+     *
+     * @Inject annotation. We are using wicket-cdi to integrate the dependency
+     * injection to Wicket.
+     */
+    private void initEjbInjects() {
+        BeanManager bm;
+        try {
+            bm = (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
+        } catch (NamingException e) {
+            throw new IllegalStateException("Unable to obtain CDI BeanManager", e);
+        }
+
+        // Configure CDI, disabling Conversations as we aren't using them
+        new CdiConfiguration(bm).setPropagation(ConversationPropagation.NONE).configure(this);
     }
 
     public boolean isNewbieTime() {

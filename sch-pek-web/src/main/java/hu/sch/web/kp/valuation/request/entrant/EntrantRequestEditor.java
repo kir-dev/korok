@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -35,13 +35,13 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  */
 public class EntrantRequestEditor extends Panel {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal valuationManager;
-    @EJB(name = "UserManagerBean")
+    @Inject
     UserManagerLocal userManager;
-    @EJB(name = "MembershipManagerBean")
+    @Inject
     private MembershipManagerLocal membershipManager;
-    @EJB(name = "GroupManagerBean")
+    @Inject
     private GroupManagerLocal groupManager;
 
     public EntrantRequestEditor(String id, final Valuation ert) {

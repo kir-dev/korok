@@ -3,8 +3,8 @@ package hu.sch.web.wicket.components.customlinks;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.UserManagerLocal;
-import javax.ejb.EJB;
 import org.apache.wicket.AttributeModifier;
+import javax.inject.Inject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -24,7 +24,7 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
     private boolean isPrivateAttr;
     private Image img;
     private User user;
-    @EJB(name = "UserManagerBean")
+    @Inject
     private UserManagerLocal userManager;
 
     public AttributeAjaxFallbackLink(String linkId, String imgId, final UserAttributeName attr, User user) {

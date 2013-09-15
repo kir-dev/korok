@@ -5,7 +5,7 @@ import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.NotImplementedException;
 import hu.sch.web.wicket.components.ImageResource;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -22,7 +22,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
  */
 class RecommendedPhotoPanel extends Panel {
 
-    @EJB(name = "UserManagerBean")
+    @Inject
     UserManagerLocal userManager;
 
     public RecommendedPhotoPanel(String contentId, final String userUid, final User user) {

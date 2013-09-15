@@ -13,14 +13,11 @@ import hu.sch.services.exceptions.NotImplementedException;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.wicket.behaviors.ValidationStyleBehavior;
-import hu.sch.web.wicket.components.ImageResource;
 import hu.sch.web.wicket.components.ProfileImageResource;
 import hu.sch.web.wicket.components.ValidationSimpleFormComponentLabel;
 import hu.sch.web.wicket.components.customlinks.AttributeAjaxFallbackLink;
-import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
@@ -41,8 +38,6 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.apache.wicket.validation.validator.UrlValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -55,7 +50,7 @@ class PersonForm extends Form<User> {
     private final RefreshingView<IMAccount> refreshView;
     private static final int NAMES_MIN_LENGTH = 2;
     private static final int NAMES_MAX_LENGTH = 40;
-    @EJB(name = "UserManagerBean")
+    @Inject
     private UserManagerLocal userManager;
 
     public PersonForm(final String componentName, final User user) {

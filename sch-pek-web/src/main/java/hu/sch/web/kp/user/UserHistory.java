@@ -10,7 +10,7 @@ import hu.sch.web.wicket.components.tables.ValuationTableForUser;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -37,7 +37,7 @@ public class UserHistory extends KorokPage {
     // DropDownChoiceban használjuk
     protected String selected_text = EVERY_GROUP;
     private boolean own_profile = false;
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     private ValuationManagerLocal valuationManager;
 
     public UserHistory() {

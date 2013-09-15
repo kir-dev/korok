@@ -5,7 +5,7 @@ import hu.sch.domain.Semester;
 import hu.sch.domain.ValuationMessage;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.web.kp.KorokPage;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -20,7 +20,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  */
 class NewMessage extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal valuationManager;
     private String message = "";
 

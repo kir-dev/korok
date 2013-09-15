@@ -8,7 +8,7 @@ import hu.sch.services.exceptions.valuation.NoExplanationException;
 import hu.sch.services.exceptions.valuation.NothingChangedException;
 import hu.sch.web.wicket.behaviors.KeepAliveBehavior;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -23,7 +23,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  */
 public class ConsiderExplainPage extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal valuationManager;
 
     public ConsiderExplainPage(final List<ConsideredValuation> underConsider) {

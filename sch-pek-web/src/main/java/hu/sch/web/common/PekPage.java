@@ -6,7 +6,7 @@ import hu.sch.web.PhoenixApplication;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.choosers.GoogleAnalyticsScript;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
@@ -45,7 +45,7 @@ public abstract class PekPage extends WebPage {
     private Label titleLabel;
     private Label navbarScript;
     private Label headerLabel;
-    @EJB(name = "UserManagerBean")
+    @Inject
     protected UserManagerLocal userManager;
 
     public PekPage() {

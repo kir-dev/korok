@@ -9,7 +9,7 @@ import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.valuation.Valuations;
 import java.util.Iterator;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -21,7 +21,7 @@ import org.apache.wicket.util.string.StringValueConversionException;
  */
 public class Requests extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     protected ValuationManagerLocal valuationManager;
     protected Valuation valuation = null;
     protected ValuationPeriod valPeriod = null;

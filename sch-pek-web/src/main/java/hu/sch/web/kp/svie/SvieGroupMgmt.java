@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class SvieGroupMgmt extends KorokPage {
 
-    @EJB(name = "SvieManagerBean")
+    @Inject
     private SvieManagerLocal svieManager;
     private static Logger log = LoggerFactory.getLogger(SvieUserMgmt.class);
     private List<Group> groups;

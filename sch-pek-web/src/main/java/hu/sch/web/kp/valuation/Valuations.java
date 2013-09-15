@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Valuations extends KorokPage {
 
-    @EJB(name = "ValuationManagerBean")
+    @Inject
     ValuationManagerLocal valuationManager;
     private static Logger log = LoggerFactory.getLogger(Valuations.class);
     private static final String HEADER_TEXT = "Értékelések";
