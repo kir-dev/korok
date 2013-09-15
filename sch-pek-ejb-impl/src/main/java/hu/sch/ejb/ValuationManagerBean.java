@@ -810,7 +810,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 + "FROM EntrantRequest entrantReq "
                 + "WHERE entrantReq.userId = :virId AND "
                 + "entrantReq.valuation.semester = :semester AND "
-                + "entrantReq.valuation.entrantStatus = hu.sch.domain.ValuationStatus.ELFOGADVA AND "
+                + "entrantReq.valuation.entrantStatus = hu.sch.domain.enums.ValuationStatus.ELFOGADVA AND "
                 + "entrantReq.valuation.nextVersion = null");
         query.setParameter("semester", semester);
         query.setParameter("virId", user.getId());
