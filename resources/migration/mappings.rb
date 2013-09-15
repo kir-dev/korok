@@ -40,7 +40,11 @@ module Mappings
     EMPTY = ""
 
     def copy(attr_value, record)
-      record[:usr_student_status] = strip_value(prepare_attr_value(attr_value)).upcase
+       value_in_ds = strip_value(prepare_attr_value(attr_value)).upcase
+       if (value_in_ds == 'AKT') # fix: some people have invalid student_status
+	 value_in_ds = 'ACTIVE'
+       end
+       record[:usr_student_status] = value_in_ds
     end
 
   private
