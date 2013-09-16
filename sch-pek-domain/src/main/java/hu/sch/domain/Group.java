@@ -42,8 +42,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = Group.groupHierarchy, query =
             "SELECT g FROM Group g LEFT JOIN FETCH g.parent "
             + "WHERE g.status='akt' ORDER BY g.name"),
-    @NamedQuery(name = Group.findWithMemberships, query = "SELECT g FROM "
-            + "Group g LEFT JOIN FETCH g.memberships WHERE g.id = :id"),
     @NamedQuery(name = Group.findByName, query = "SELECT g FROM Group g WHERE g.name = :name"),
     @NamedQuery(name = Group.findMembersByGroupAndPost,
             query = "SELECT u FROM User u "
@@ -67,7 +65,6 @@ public class Group implements Serializable, Comparable<Group> {
     public static final long KIRDEV = 106L;
     private static final long serialVersionUID = 1L;
     public static final String findAll = "findAllGroup";
-    public static final String findWithMemberships = "findGroupWithMemberships";
     public static final String groupHierarchy = "groupHierarchy";
     public static final String findByName = "findByName";
     public static final String findMembersByGroupAndPost = "findMembersByGroupAndPost";

@@ -17,6 +17,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,22 +97,12 @@ public class GroupManagerBean implements GroupManagerLocal {
 
     @Override
     public Group findGroupById(Long id, boolean fetchMemberships) {
-        if (!fetchMemberships) {
-            return em.find(Group.class, id);
+        final Group group = em.find(Group.class, id);
+        if (fetchMemberships && group != null) {
+            Hibernate.initialize(group.getMemberships());
         }
 
-        TypedQuery<Group> q = em.createNamedQuery(Group.findWithMemberships, Group.class);
-        q.setParameter("id", id);
-
-        try {
-            return q.getSingleResult();
-        } catch (NoResultException ex) {
-            logger.warn("Can't find group with memberships.", ex);
-        } catch (NonUniqueResultException ex) {
-            logger.error(String.format("More than one entry with %d id", id), ex);
-        }
-
-        return null;
+        return group;
     }
 
     @Override
