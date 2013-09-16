@@ -573,6 +573,15 @@ public class User implements Serializable, Comparable<User> {
      * @return
      */
     public String getFullRoomNumber() {
+        if (dormitory == null && room == null) {
+            return "";
+        }
+        if (dormitory == null) {
+            return  room;
+        }
+        if (room == null) {
+            return dormitory;
+        }
         return String.format("%s %s", dormitory, room);
     }
 
