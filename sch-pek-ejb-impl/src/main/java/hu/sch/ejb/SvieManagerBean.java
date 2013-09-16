@@ -151,6 +151,7 @@ public class SvieManagerBean implements SvieManagerLocal {
         user.setSviePrimaryMembership(null);
         user.setSvieMembershipType(SvieMembershipType.NEMTAG);
         user.setSvieStatus(SvieStatus.NEMTAG);
+        user.setDelegated(false);
         em.merge(user);
         logManager.createLogEntry(null, user, EventType.SVIE_TAGSAGTORLES);
     }
