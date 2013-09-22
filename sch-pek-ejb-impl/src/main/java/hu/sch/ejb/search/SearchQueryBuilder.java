@@ -57,6 +57,7 @@ public class SearchQueryBuilder {
         }
 
         q.where(andFilters.toArray(new Predicate[andFilters.size()]));
+        q.distinct(true);
         return em.createQuery(q);
     }
 
