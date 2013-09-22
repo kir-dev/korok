@@ -153,11 +153,11 @@ public class User implements Serializable, Comparable<User> {
     @Column(name = "usr_show_recommended_photo", nullable = false, columnDefinition = "boolean default false")
     private boolean showRecommendedPhoto;
     //----------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
     private Set<IMAccount> imAccounts;
     //----------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
     private Set<UserAttribute> privateAttributes;
     //----------------------------------------------------
@@ -165,10 +165,10 @@ public class User implements Serializable, Comparable<User> {
     @Enumerated(EnumType.STRING)
     @NotNull
     private UserStatus userStatus;
-
+    //----------------------------------------------------
     @Column(name = "usr_password")
     private String passwordDigest;
-
+    //----------------------------------------------------
     @Column(name = "usr_salt")
     private String salt;
 
@@ -577,7 +577,7 @@ public class User implements Serializable, Comparable<User> {
             return "";
         }
         if (dormitory == null) {
-            return  room;
+            return room;
         }
         if (room == null) {
             return dormitory;

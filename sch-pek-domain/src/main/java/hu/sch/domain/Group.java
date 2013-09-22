@@ -50,7 +50,8 @@ import javax.xml.bind.annotation.XmlTransient;
             + "LEFT JOIN p.postType pt "
             + "WHERE ms.groupId = :groupId AND pt.postName = :post")
 })
-@SequenceGenerator(name = "groups_seq", sequenceName = "groups_grp_id_seq")
+@SequenceGenerator(name = "groups_seq", sequenceName = "groups_grp_id_seq",
+        allocationSize = 1)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Group implements Serializable, Comparable<Group> {

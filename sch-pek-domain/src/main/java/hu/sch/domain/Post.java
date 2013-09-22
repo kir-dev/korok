@@ -30,7 +30,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "getPostTypeByName", query = "SELECT p FROM PostType p "
     + "WHERE p.postName = :pn")
 })
-@SequenceGenerator(name = "poszt_seq", sequenceName = "poszt_seq")
+@SequenceGenerator(name = "poszt_seq", sequenceName = "poszt_seq", allocationSize = 1)
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1l;

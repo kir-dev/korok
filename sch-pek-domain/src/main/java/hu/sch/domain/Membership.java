@@ -44,7 +44,8 @@ import javax.persistence.Transient;
     @NamedQuery(name = Membership.findMembershipForUserAndGroup, query =
     "SELECT ms FROM Membership ms WHERE ms.groupId = :groupId AND ms.userId = :userId")
 })
-@SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq")
+@SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq",
+        allocationSize = 1)
 public class Membership implements MembershipTableEntry {
 
     public static final String SORT_BY_GROUP = "group";

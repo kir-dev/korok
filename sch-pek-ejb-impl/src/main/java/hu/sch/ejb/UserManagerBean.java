@@ -12,7 +12,6 @@ import hu.sch.ejb.image.ImageProcessor;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.services.exceptions.NotImplementedException;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.PekErrorCode;
 import hu.sch.util.hash.Hashing;

@@ -2,17 +2,13 @@ package hu.sch.domain.user;
 
 import java.io.Serializable;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,17 +18,20 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "usr_private_attrs")
-@SequenceGenerator(name = "usr_attrs_seq", sequenceName = "usr_private_attrs_id_seq")
+@SequenceGenerator(name = "usr_attrs_seq", sequenceName = "usr_private_attrs_id_seq",
+        allocationSize = 1)
 public class UserAttribute implements Serializable {
 
     @Id
     @GeneratedValue(generator = "usr_attrs_seq")
     @Column(name = "id")
     private Long id;
+    //----------------------------------------------------
     @Enumerated(EnumType.STRING)
     @Column(name = "attr_name")
     @NotNull
     private UserAttributeName attrName;
+    //----------------------------------------------------
     @Column(name = "visible")
     @NotNull
     private Boolean visible = Boolean.FALSE;

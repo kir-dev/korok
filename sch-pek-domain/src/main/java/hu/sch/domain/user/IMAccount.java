@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "im_accounts")
-@SequenceGenerator(name = "im_accounts_seq", sequenceName = "im_accounts_seq")
+@SequenceGenerator(name = "im_accounts_seq", sequenceName = "im_accounts_seq", allocationSize = 1)
 public class IMAccount implements Serializable {
 
     @Id

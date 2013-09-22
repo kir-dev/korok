@@ -28,7 +28,7 @@ import javax.persistence.Table;
     + "WHERE (p.postName = :pn AND p.group IS NULL) OR "
     + "p.postName = :pn AND p.group = :group")
 })
-@SequenceGenerator(name = "poszttipus_seq", sequenceName = "poszttipus_seq")
+@SequenceGenerator(name = "poszttipus_seq", sequenceName = "poszttipus_seq", allocationSize = 1)
 public class PostType implements Serializable {
 
     private static final long serialVersionUID = 1l;
