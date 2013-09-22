@@ -1,5 +1,7 @@
 package hu.sch.ejb;
 
+import hu.sch.domain.enums.SvieMembershipType;
+import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.RegisteringUser;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.Gender;
@@ -96,6 +98,8 @@ public class RegistrationManager implements RegistrationManagerLocal {
         user.setLastName(regUser.getLastName());
         user.setDateOfBirth(new Date(regUser.getDateOfBirth().getTime()));
         user.setStudentStatus(regUser.isNewbie() ? StudentStatus.NEWBIE : StudentStatus.ACTIVE);
+        user.setSvieStatus(SvieStatus.NEMTAG);
+        user.setSvieMembershipType(SvieMembershipType.NEMTAG);
         user.setGender(Gender.NOTSPECIFIED);
         user.setUserStatus(UserStatus.INACTIVE);
 
