@@ -327,10 +327,8 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public void invertAttributeVisibility(User user, UserAttributeName attr) {
-        User managedUser = em.merge(user);
-
         boolean done = false;
-        for (UserAttribute a : managedUser.getPrivateAttributes()) {
+        for (UserAttribute a : user.getPrivateAttributes()) {
             if (a.getAttributeName() == attr) {
                 a.setVisible(!a.isVisible());
                 done = true;
@@ -341,7 +339,7 @@ public class UserManagerBean implements UserManagerLocal {
         // user's attribute list does not contian the given attribute
         // which means it is NOT visible, so we'll make it visible
         if (!done) {
-            managedUser.getPrivateAttributes().add(new UserAttribute(attr, true));
+            user.getPrivateAttributes().add(new UserAttribute(attr, true));
         }
     }
 
