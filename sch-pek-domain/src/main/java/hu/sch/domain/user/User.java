@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
             + "upper(u.emailAddress) = upper(:emailcim)"),
     @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
 })
-@SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq")
+@SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq",
+        allocationSize = 1)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class User implements Serializable, Comparable<User> {

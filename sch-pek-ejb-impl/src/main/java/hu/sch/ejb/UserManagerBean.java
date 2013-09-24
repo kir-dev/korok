@@ -4,6 +4,9 @@ import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.domain.config.Configuration;
+import hu.sch.domain.enums.SvieMembershipType;
+import hu.sch.domain.enums.SvieStatus;
+import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;
@@ -206,6 +209,9 @@ public class UserManagerBean implements UserManagerLocal {
             user.setPasswordDigest(passwordDigest);
         }
 
+        user.setSvieMembershipType(SvieMembershipType.NEMTAG);
+        user.setSvieStatus(SvieStatus.NEMTAG);
+        user.setGender(Gender.NOTSPECIFIED);
         user.setConfirmationCode(generateConfirmationCode());
         sendConfirmationEmail(user, isAdmin);
 
