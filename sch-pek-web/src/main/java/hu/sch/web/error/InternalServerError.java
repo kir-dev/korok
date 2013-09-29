@@ -31,6 +31,9 @@ public final class InternalServerError extends KorokPage {
         add(mailtoLink);
     }
 
+    public InternalServerError() {
+    }
+
     public InternalServerError(final RequestCycle cycle, final IPageRequestHandler handler,
             final Exception ex) {
 
