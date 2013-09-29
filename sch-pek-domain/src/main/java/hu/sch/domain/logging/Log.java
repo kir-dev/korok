@@ -25,7 +25,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "log")
-@SequenceGenerator(name = "log_seq", sequenceName = "log_seq")
 @NamedQueries({
     @NamedQuery(name = Log.getFreshEventsForEventTypeByGroup,
             query = "SELECT l FROM Log l "
@@ -40,6 +39,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = Log.getLastLogIdByDate,
             query = "SELECT l.id FROM Log l WHERE l.eventDate <= :date ORDER BY l.id DESC")
 })
+@SequenceGenerator(name = "log_seq", sequenceName = "log_seq", allocationSize = 1)
 public class Log implements Serializable {
 
     private static final long serialVersionUID = 1l;
