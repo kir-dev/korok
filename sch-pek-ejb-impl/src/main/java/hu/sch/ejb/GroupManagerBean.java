@@ -125,8 +125,7 @@ public class GroupManagerBean implements GroupManagerLocal {
                 em.createQuery("SELECT g FROM Group g "
                 + "WHERE UPPER(g.name) LIKE UPPER(:groupName) "
                 + "ORDER BY g.name");
-        q.setParameter("groupName", nameFragment);
-
+        q.setParameter("groupName", "%" + nameFragment + "%");
         return q.getResultList();
     }
 
