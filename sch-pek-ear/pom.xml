@@ -123,7 +123,7 @@
             <artifactId>seam-conversation-weld</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.ftlines.wicket-cdi</groupId>
+            <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-cdi</artifactId>
         </dependency>
     </dependencies>

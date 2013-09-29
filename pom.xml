@@ -90,7 +90,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wicket.version>6.10.0</wicket.version>
         <wicketstuff.version>6.10.0</wicketstuff.version>
-        <wicket.cdi.version>6.0</wicket.cdi.version>
         <jboss.maven.plugin.version>7.3.Final</jboss.maven.plugin.version>
         <jboss.maven.plugin.mgmt.host>localhost</jboss.maven.plugin.mgmt.host>
         <jboss.maven.plugin.mgmt.port>9999</jboss.maven.plugin.mgmt.port>
@@ -263,9 +262,9 @@
                 <version>3.0.0.Final</version>
             </dependency>
             <dependency>
-                <groupId>net.ftlines.wicket-cdi</groupId>
+                <groupId>org.apache.wicket</groupId>
                 <artifactId>wicket-cdi</artifactId>
-                <version>${wicket.cdi.version}</version>
+                <version>${wicket.version}</version>
             </dependency>
 
             <dependency>

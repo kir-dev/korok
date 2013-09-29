@@ -51,9 +51,8 @@ import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
-import net.ftlines.wicket.cdi.CdiConfiguration;
-import net.ftlines.wicket.cdi.ConversationPropagation;
 import org.apache.wicket.*;
+import org.apache.wicket.cdi.CdiConfiguration;
 import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
@@ -181,8 +180,8 @@ public class PhoenixApplication extends WebApplication {
             throw new IllegalStateException("Unable to obtain CDI BeanManager", e);
         }
 
-        // Configure CDI, disabling Conversations as we aren't using them
-        new CdiConfiguration(bm).setPropagation(ConversationPropagation.NONE).configure(this);
+        // configure wicket/cdi
+        new CdiConfiguration(bm).configure(this);
     }
 
     public boolean isNewbieTime() {
