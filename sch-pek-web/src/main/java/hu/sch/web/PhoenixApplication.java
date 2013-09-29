@@ -15,7 +15,7 @@ import hu.sch.web.error.NotFound;
 import hu.sch.web.error.PageExpiredError;
 import hu.sch.web.idm.pages.RegistrationFinishedPage;
 import hu.sch.web.idm.pages.RegistrationPage;
-import hu.sch.web.idm.pages.UserNameReminder;
+import hu.sch.web.idm.pages.CredentialsReminder;
 import hu.sch.web.kp.admin.CreateGroup;
 import hu.sch.web.kp.admin.CreateNewPerson;
 import hu.sch.web.kp.admin.EditSettings;
@@ -236,7 +236,7 @@ public class PhoenixApplication extends WebApplication {
         mountPageWithPath("/korok/createperson", CreateNewPerson.class);
 
         //IDM linkek
-        mountPageWithPath("/korok/reminder", UserNameReminder.class);
+        mountPageWithPath("/korok/reminder", CredentialsReminder.class);
         mountPageWithPath("/korok/register", RegistrationPage.class);
         mountPageWithPath("/korok/registerfinished", RegistrationFinishedPage.class);
         mountPageWithPath("/korok/logout", Logout.class);
