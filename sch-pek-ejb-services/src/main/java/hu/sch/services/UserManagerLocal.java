@@ -88,13 +88,14 @@ public interface UserManagerLocal {
      * Gets the user with specified confirmation code.
      *
      * @param code the confirmation code to look for
-     * @return 
+     * @return
      */
     public User findUserByConfirmationCode(String code);
 
     /**
      * Confirms a user's registration.
-     * @param user 
+     *
+     * @param user
      */
     public void confirm(User user, String password) throws PekEJBException;
 
@@ -222,4 +223,16 @@ public interface UserManagerLocal {
      * @throws IllegalArgumentException when the argument is null or empty.
      */
     boolean sendUserNameReminder(final String email) throws PekEJBException;
+
+    /**
+     * Searches the user in the datastore by email and sends an email with a
+     * password change link and the screen name. It sends different messages
+     * depends on {@link SystemManagerLocal#getNewbieTime()}.
+     *
+     * @param email
+     * @return true if we found the user and the email sent successfully.
+     * @throws PekEJBException when user not found.
+     * @throws IllegalArgumentException when the argument is null or empty.
+     */
+    boolean sendLostPasswordChangeLink(final String email) throws PekEJBException;
 }

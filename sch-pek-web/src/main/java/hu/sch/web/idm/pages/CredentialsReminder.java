@@ -88,7 +88,7 @@ public class CredentialsReminder extends KorokPage {
     private boolean sendReminder(final Page currentPage) throws PekEJBException {
         switch (currentPage) {
             case PASSWORD:
-                //TODO #45
+                return userManager.sendLostPasswordChangeLink(mail);
             default:
                 return userManager.sendUserNameReminder(mail);
         }

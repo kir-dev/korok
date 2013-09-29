@@ -427,6 +427,44 @@ public class UserManagerBean implements UserManagerLocal {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean sendLostPasswordChangeLink(final String email) throws PekEJBException {
+
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("email argument can't be null when sending password change link");
+        }
+
+        try {
+            final User result = findUserByEmail(email);
+
+            if (result == null) {
+                throw new PekEJBException(PekErrorCode.USER_NOTFOUND);
+            } else {
+                final String subject =
+                        MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_SUBJECT);
+
+                final String body;
+                if (systemManager.getNewbieTime()) {
+                    body = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_BODY_NEWBIE);
+                } else {
+                    body = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_BODY);
+                }
+
+                final String message = String.format(body, result.getFirstName(),
+                        result.getScreenName(), "<link>"); //TODO #45
+
+                return mailManager.sendEmail(email, subject, message);
+            }
+        } catch (DuplicatedUserException ex) {
+            logger.error("sendLostPasswordChangeLink: Duplicated user with email={}", email);
+        }
+
+        return false;
+    }
+
     private String hashPassword(String password, byte[] salt) throws PekEJBException {
         byte[] passwordBytes;
         try {
