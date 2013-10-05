@@ -82,7 +82,12 @@ public final class ImageSaver {
      * @return
      */
     private Path buildImagePath(String filename) {
-        Path dir = Paths.get(config.getBasePath(), user.getScreenName().substring(0, 1), user.getScreenName());
+        // NOTE: file path (relative to base path) needs to be all downcase
+        Path dir = Paths.get(
+                config.getBasePath(),
+                user.getScreenName().substring(0, 1).toLowerCase(),
+                user.getScreenName().toLowerCase());
+        
         dir.toFile().mkdirs();
 
         return Paths.get(dir.toString(), filename);
