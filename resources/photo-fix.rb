@@ -69,7 +69,8 @@ puts # needs this to have an extra CRLF after password input
 DB = Sequel.postgres :host => options.host,
                      :user => options.user,
                      :password => options.password,
-                     :database => options.database
+                     :database => options.database,
+                     :port => options.port
 
 begin
   # checking for db password correctness
