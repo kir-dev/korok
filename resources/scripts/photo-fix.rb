@@ -12,7 +12,7 @@ module OptParser
     options = OpenStruct.new
 
     options.host = "localhost"
-    options.port = 5423
+    options.port = 5432
     options.user = "kir"
     options.database = "vir"
     options.password = ""
