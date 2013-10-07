@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = User.findUserByNeptunCode,
             query = "SELECT u FROM User u WHERE UPPER(u.neptunCode) = UPPER(:neptun)"),
     @NamedQuery(name = User.findByScreenName,
-            query = "SELECT u FROM User u WHERE u.screenName = :screenName"),
+            query = "SELECT u FROM User u WHERE UPPER(u.screenName) = UPPER(:screenName)"),
     @NamedQuery(name = User.findUser, query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
             + "upper(u.emailAddress) = upper(:emailcim)"),
     @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
