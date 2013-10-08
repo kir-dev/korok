@@ -64,8 +64,7 @@ public class User implements Serializable, Comparable<User> {
     private String emailAddress;
     //----------------------------------------------------
     @Size(max = 6, min = 6)
-    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6,
-            nullable = true, updatable = false)
+    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6, nullable = true)
     private String neptunCode;
     //----------------------------------------------------
     @XmlElement
