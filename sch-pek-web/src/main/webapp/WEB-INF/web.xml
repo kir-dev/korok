@@ -42,9 +42,13 @@
     </error-page>
 
     <session-config>
-        <session-timeout>
-            120
-        </session-timeout>
+        <session-timeout>120</session-timeout>
+        <cookie-config>
+            <name>PEKSESSION</name>
+            <http-only>true</http-only>
+            <secure>true</secure>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
     </session-config>
 
     <security-role>
