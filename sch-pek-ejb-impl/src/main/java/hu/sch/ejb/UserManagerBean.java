@@ -149,6 +149,8 @@ public class UserManagerBean implements UserManagerLocal {
         TypedQuery<User> q = em.createQuery("SELECT u FROM User u WHERE u.confirmationCode = :code", User.class);
         q.setParameter("code", code);
 
+        logger.debug("Find user with confirmation code=" + code);
+
         User result = null;
         try {
             result = q.getSingleResult();
@@ -164,6 +166,8 @@ public class UserManagerBean implements UserManagerLocal {
     @Override
     public void confirm(final User user, final String password) throws PekEJBException {
         if (password != null) {
+            logger.debug("confirm user=" + user.getScreenName() + " with given password");
+
             byte[] salt = generateSalt();
             String passwordDigest = hashPassword(password, salt);
 
@@ -173,6 +177,8 @@ public class UserManagerBean implements UserManagerLocal {
 
         user.setConfirmationCode(null);
         user.setUserStatus(UserStatus.ACTIVE);
+
+        logger.info("Confirm user=" + user.getScreenName());
 
         em.merge(user);
     }
