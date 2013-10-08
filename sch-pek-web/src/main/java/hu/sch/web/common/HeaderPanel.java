@@ -7,6 +7,7 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -38,7 +39,7 @@ public abstract class HeaderPanel extends Panel {
     }
 
     private void createSearchBar() {
-        Form<Void> searchForm = new Form<Void>("searchForm") {
+        final Form<Void> searchForm = new StatelessForm<Void>("searchForm") {
 
             @Override
             protected void onSubmit() {
