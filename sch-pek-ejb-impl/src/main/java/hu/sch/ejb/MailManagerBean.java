@@ -43,6 +43,10 @@ public class MailManagerBean {
     static final String MAIL_USERNAME_REMINDER_SUBJECT = "username.reminder.subject";
     static final String MAIL_USERNAME_REMINDER_BODY = "username.reminder.body";
     static final String MAIL_USERNAME_REMINDER_BODY_NEWBIE = "username.reminder.body.newbie";
+    //lost password change link
+    static final String MAIL_LOST_PASSWORD_SUBJECT = "username.lostpw.subject";
+    static final String MAIL_LOST_PASSWORD_BODY = "username.lostpw.body";
+    static final String MAIL_LOST_PASSWORD_BODY_NEWBIE = "username.lostpw.body.newbie";
     // confirmation code
     static final String MAIL_CONFIRMATION_SUBJECT = "confirmation.subject";
     static final String MAIL_CONFIRMATION_BODY = "confirmation.body";
