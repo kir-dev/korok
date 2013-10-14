@@ -9,37 +9,36 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
-SET search_path = public, pg_catalog;
-
---
--- Name: exported_entrant_request; Type: TYPE; Schema: public; Owner: -
+-- Name: exported_entrant_request; Type: TYPE; Schema: public; Owner: kir
 --
 
 CREATE TYPE exported_entrant_request AS (
-	uid integer,
+	uid bigint,
 	nev text,
-	neptun character(6),
+	neptun character varying,
 	email text,
 	primary_group text,
 	entrant_num bigint,
 	indokok text
 );
 
+
+ALTER TYPE public.exported_entrant_request OWNER TO kir;
+
 --
--- Name: export_entrant_requests(text, text, integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: user_points; Type: TYPE; Schema: public; Owner: kir
+--
+
+CREATE TYPE user_points AS (
+	neptun character(6),
+	points numeric
+);
+
+
+ALTER TYPE public.user_points OWNER TO kir;
+
+--
+-- Name: export_entrant_requests(text, text, integer); Type: FUNCTION; Schema: public; Owner: kir
 --
 
 CREATE FUNCTION export_entrant_requests(text, text, integer) RETURNS SETOF exported_entrant_request
@@ -65,8 +64,36 @@ SELECT
   ORDER BY nev;
 $_$;
 
+
+ALTER FUNCTION public.export_entrant_requests(text, text, integer) OWNER TO kir;
+
 --
--- Name: update_user_recommended_photo_after_insert(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: getpointsforsemester(text, text); Type: FUNCTION; Schema: public; Owner: kir
+--
+
+CREATE FUNCTION getpointsforsemester(text, text) RETURNS SETOF user_points
+    LANGUAGE sql
+    AS $_$
+SELECT UPPER(users.usr_neptun) AS neptun,
+LEAST(vegso.atlag,100) FROM
+(SELECT p.user_id AS usr_id, TRUNC(SQRT(SUM(p.sum * p.sum))) AS atlag FROM
+(SELECT pontigenyles.usr_id AS user_id, v.grp_id, SUM(pontigenyles.pont) AS sum FROM ertekelesek v
+RIGHT JOIN pontigenyles ON pontigenyles.ertekeles_id = v.id
+WHERE
+  v.next_version IS NULL -- az elfogadottak közül csak a legfrisebbet nézzük
+  AND v.pontigeny_statusz = 'ELFOGADVA' -- legyen elfogadva
+  AND (v.semester = $1 OR v.semester = $2) -- jelenlegi és az előző félév
+GROUP BY v.grp_id, pontigenyles.usr_id) AS p
+GROUP BY p.user_id) AS vegso
+INNER JOIN users ON users.usr_id = vegso.usr_id AND users.usr_neptun IS NOT NULL
+ORDER BY neptun ASC
+$_$;
+
+
+ALTER FUNCTION public.getpointsforsemester(text, text) OWNER TO kir;
+
+--
+-- Name: update_user_recommended_photo_after_insert(); Type: FUNCTION; Schema: public; Owner: kir
 --
 
 CREATE FUNCTION update_user_recommended_photo_after_insert() RETURNS trigger
@@ -80,8 +107,10 @@ END;
 $$;
 
 
+ALTER FUNCTION public.update_user_recommended_photo_after_insert() OWNER TO kir;
+
 --
--- Name: update_user_recommended_photo_before_delete(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: update_user_recommended_photo_before_delete(); Type: FUNCTION; Schema: public; Owner: kir
 --
 
 CREATE FUNCTION update_user_recommended_photo_before_delete() RETURNS trigger
@@ -95,12 +124,14 @@ END;
 $$;
 
 
+ALTER FUNCTION public.update_user_recommended_photo_before_delete() OWNER TO kir;
+
 SET default_tablespace = '';
 
 SET default_with_oids = true;
 
 --
--- Name: belepoigenyles; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: belepoigenyles; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE belepoigenyles (
@@ -112,8 +143,10 @@ CREATE TABLE belepoigenyles (
 );
 
 
+ALTER TABLE public.belepoigenyles OWNER TO kir;
+
 --
--- Name: ertekeles_uzenet; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: ertekeles_uzenet; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE ertekeles_uzenet (
@@ -121,14 +154,16 @@ CREATE TABLE ertekeles_uzenet (
     feladas_ido timestamp without time zone,
     uzenet text,
     felado_usr_id bigint,
-    group_id integer,
-    semester character(9) DEFAULT ''::bpchar NOT NULL,
+    group_id bigint,
+    semester character varying(9) NOT NULL,
     from_system boolean DEFAULT false
 );
 
 
+ALTER TABLE public.ertekeles_uzenet OWNER TO kir;
+
 --
--- Name: ertekelesek; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: ertekelesek; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE ertekelesek (
@@ -136,7 +171,7 @@ CREATE TABLE ertekelesek (
     belepoigeny_statusz character varying(255),
     feladas timestamp without time zone,
     pontigeny_statusz character varying(255),
-    semester character(9) NOT NULL,
+    semester character varying(9) NOT NULL,
     szoveges_ertekeles text NOT NULL,
     utolso_elbiralas timestamp without time zone,
     utolso_modositas timestamp without time zone,
@@ -151,10 +186,24 @@ CREATE TABLE ertekelesek (
 );
 
 
-SET default_with_oids = false;
+ALTER TABLE public.ertekelesek OWNER TO kir;
 
 --
--- Name: groups_grp_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: event_seq; Type: SEQUENCE; Schema: public; Owner: kir
+--
+
+CREATE SEQUENCE event_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.event_seq OWNER TO kir;
+
+--
+-- Name: groups_grp_id_seq; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE groups_grp_id_seq
@@ -165,18 +214,18 @@ CREATE SEQUENCE groups_grp_id_seq
     CACHE 1;
 
 
-SET default_with_oids = true;
+ALTER TABLE public.groups_grp_id_seq OWNER TO kir;
 
 --
--- Name: groups; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: groups; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE groups (
-    grp_id integer DEFAULT nextval('groups_grp_id_seq'::regclass) NOT NULL,
+    grp_id bigint DEFAULT nextval('groups_grp_id_seq'::regclass) NOT NULL,
     grp_name text NOT NULL,
     grp_type character varying(20) NOT NULL,
-    grp_parent integer,
-    grp_state character(3) DEFAULT 'akt'::bpchar,
+    grp_parent bigint,
+    grp_state character varying DEFAULT 'akt'::bpchar,
     grp_description text,
     grp_webpage character varying(64),
     grp_maillist character varying(64),
@@ -188,8 +237,10 @@ CREATE TABLE groups (
 );
 
 
+ALTER TABLE public.groups OWNER TO kir;
+
 --
--- Name: grp_members_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: grp_members_seq; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE grp_members_seq
@@ -200,23 +251,27 @@ CREATE SEQUENCE grp_members_seq
     CACHE 1;
 
 
+ALTER TABLE public.grp_members_seq OWNER TO kir;
+
 SET default_with_oids = false;
 
 --
--- Name: grp_membership; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: grp_membership; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE grp_membership (
-    id integer DEFAULT nextval('grp_members_seq'::regclass) NOT NULL,
-    grp_id integer,
-    usr_id integer,
+    id bigint DEFAULT nextval('grp_members_seq'::regclass) NOT NULL,
+    grp_id bigint,
+    usr_id bigint,
     membership_start date DEFAULT now(),
     membership_end date
 );
 
 
+ALTER TABLE public.grp_membership OWNER TO kir;
+
 --
--- Name: hibernate_sequence; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: hibernate_sequence; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE hibernate_sequence
@@ -227,8 +282,10 @@ CREATE SEQUENCE hibernate_sequence
     CACHE 1;
 
 
+ALTER TABLE public.hibernate_sequence OWNER TO kir;
+
 --
--- Name: im_accounts_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: im_accounts_seq; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE im_accounts_seq
@@ -239,20 +296,24 @@ CREATE SEQUENCE im_accounts_seq
     CACHE 1;
 
 
+ALTER TABLE public.im_accounts_seq OWNER TO kir;
+
 --
--- Name: im_accounts; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: im_accounts; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE im_accounts (
     id bigint DEFAULT nextval('im_accounts_seq'::regclass) NOT NULL,
     protocol character varying(50) NOT NULL,
     account_name character varying(255) NOT NULL,
-    usr_id integer
+    usr_id bigint
 );
 
 
+ALTER TABLE public.im_accounts OWNER TO kir;
+
 --
--- Name: log_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: log_seq; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE log_seq
@@ -263,36 +324,41 @@ CREATE SEQUENCE log_seq
     CACHE 1;
 
 
+ALTER TABLE public.log_seq OWNER TO kir;
+
 --
--- Name: log; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: log; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE log (
-    id integer DEFAULT nextval('log_seq'::regclass) NOT NULL,
-    grp_id integer,
-    usr_id integer NOT NULL,
-    event character varying(30) NOT NULL,
-    evt_date date DEFAULT now()
+    id bigint DEFAULT nextval('log_seq'::regclass) NOT NULL,
+    grp_id bigint,
+    usr_id bigint NOT NULL,
+    evt_date date DEFAULT now(),
+    event character varying(30) NOT NULL
 );
 
 
+ALTER TABLE public.log OWNER TO kir;
 --
--- Name: neptun_list; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: neptun_list; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE neptun_list (
     nev character varying(128) NOT NULL,
     neptun character varying(6) NOT NULL,
     szuldat date NOT NULL,
-    education_id character varying(11) DEFAULT NULL,
-    newbie BOOLEAN DEFAULT FALSE
+    education_id character varying(11) DEFAULT NULL::character varying,
+    newbie boolean DEFAULT false
 );
 
+
+ALTER TABLE public.neptun_list OWNER TO kir;
 
 SET default_with_oids = true;
 
 --
--- Name: pontigenyles; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: pontigenyles; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE pontigenyles (
@@ -303,8 +369,10 @@ CREATE TABLE pontigenyles (
 );
 
 
+ALTER TABLE public.pontigenyles OWNER TO kir;
+
 --
--- Name: poszt_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: poszt_seq; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE poszt_seq
@@ -315,21 +383,25 @@ CREATE SEQUENCE poszt_seq
     CACHE 1;
 
 
+ALTER TABLE public.poszt_seq OWNER TO kir;
+
 SET default_with_oids = false;
 
 --
--- Name: poszt; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: poszt; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE poszt (
-    id integer DEFAULT nextval('poszt_seq'::regclass) NOT NULL,
-    grp_member_id integer,
-    pttip_id integer
+    id bigint DEFAULT nextval('poszt_seq'::regclass) NOT NULL,
+    grp_member_id bigint,
+    pttip_id bigint
 );
 
 
+ALTER TABLE public.poszt OWNER TO kir;
+
 --
--- Name: poszttipus_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: poszttipus_seq; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE poszttipus_seq
@@ -340,32 +412,38 @@ CREATE SEQUENCE poszttipus_seq
     CACHE 1;
 
 
+ALTER TABLE public.poszttipus_seq OWNER TO kir;
+
 --
--- Name: poszttipus; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: poszttipus; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE poszttipus (
-    pttip_id integer DEFAULT nextval('poszttipus_seq'::regclass) NOT NULL,
-    grp_id integer,
+    pttip_id bigint DEFAULT nextval('poszttipus_seq'::regclass) NOT NULL,
+    grp_id bigint,
     pttip_name character varying(30) NOT NULL,
     delegated_post boolean DEFAULT false
 );
 
 
+ALTER TABLE public.poszttipus OWNER TO kir;
+
 --
--- Name: spot_images; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: spot_images; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE spot_images (
-    usr_neptun character(6) NOT NULL,
+    usr_neptun character varying NOT NULL,
     image_path character varying(255) NOT NULL
 );
 
 
+ALTER TABLE public.spot_images OWNER TO kir;
+
 SET default_with_oids = true;
 
 --
--- Name: system_attrs; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: system_attrs; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE system_attrs (
@@ -375,8 +453,10 @@ CREATE TABLE system_attrs (
 );
 
 
+ALTER TABLE public.system_attrs OWNER TO kir;
+
 --
--- Name: users_usr_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: users_usr_id_seq; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE users_usr_id_seq
@@ -387,43 +467,47 @@ CREATE SEQUENCE users_usr_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.users_usr_id_seq OWNER TO kir;
+
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: users; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE users (
     usr_id bigint DEFAULT nextval('users_usr_id_seq'::regclass) NOT NULL,
     usr_email character varying(64),
-    usr_neptun character(6),
+    usr_neptun character varying,
     usr_firstname text NOT NULL,
     usr_lastname text NOT NULL,
     usr_nickname text,
     usr_svie_state character varying(255) DEFAULT 'NEMTAG'::character varying NOT NULL,
     usr_svie_member_type character varying(255) DEFAULT 'NEMTAG'::character varying NOT NULL,
-    usr_svie_primary_membership integer,
+    usr_svie_primary_membership bigint,
     usr_delegated boolean DEFAULT false NOT NULL,
     usr_show_recommended_photo boolean DEFAULT false NOT NULL,
     usr_screen_name character varying(50) NOT NULL,
     usr_date_of_birth date,
-    usr_gender character varying(50) NOT NULL,
-    usr_student_status character varying(50) NOT NULL,
+    usr_gender character varying(50) DEFAULT 'NOTSPECIFIED'::character varying NOT NULL,
+    usr_student_status character varying(50) DEFAULT 'UNKNOWN'::character varying NOT NULL,
     usr_mother_name character varying(100),
     usr_photo_path character varying(255),
     usr_webpage character varying(255),
     usr_cell_phone character varying(50),
     usr_home_address character varying(255),
-    usr_est_grad character(10),
+    usr_est_grad character varying(10),
     usr_dormitory character varying(50),
     usr_room character varying(10),
-    usr_confirm character(64),
-    usr_status varchar(8) DEFAULT 'INACTIVE' NOT NULL,
-    usr_password char(28),
-    usr_salt char(12)
+    usr_confirm character varying(64),
+    usr_status character varying(8) DEFAULT 'INACTIVE'::character varying NOT NULL,
+    usr_password character varying(28),
+    usr_salt character varying(12)
 );
 
 
+ALTER TABLE public.users OWNER TO kir;
+
 --
--- Name: usr_private_attrs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: usr_private_attrs_id_seq; Type: SEQUENCE; Schema: public; Owner: kir
 --
 
 CREATE SEQUENCE usr_private_attrs_id_seq
@@ -434,10 +518,12 @@ CREATE SEQUENCE usr_private_attrs_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.usr_private_attrs_id_seq OWNER TO kir;
+
 SET default_with_oids = false;
 
 --
--- Name: usr_private_attrs; Type: TABLE; Schema: public; Owner: -; Tablespace:
+-- Name: usr_private_attrs; Type: TABLE; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE TABLE usr_private_attrs (
@@ -448,8 +534,10 @@ CREATE TABLE usr_private_attrs (
 );
 
 
+ALTER TABLE public.usr_private_attrs OWNER TO kir;
+
 --
--- Name: belepoigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: belepoigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY belepoigenyles
@@ -457,7 +545,7 @@ ALTER TABLE ONLY belepoigenyles
 
 
 --
--- Name: ertekeles_uzenet_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: ertekeles_uzenet_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY ertekeles_uzenet
@@ -465,7 +553,7 @@ ALTER TABLE ONLY ertekeles_uzenet
 
 
 --
--- Name: ertekelesek_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: ertekelesek_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY ertekelesek
@@ -473,7 +561,7 @@ ALTER TABLE ONLY ertekelesek
 
 
 --
--- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY groups
@@ -481,7 +569,7 @@ ALTER TABLE ONLY groups
 
 
 --
--- Name: grp_membership_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: grp_membership_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY grp_membership
@@ -489,7 +577,7 @@ ALTER TABLE ONLY grp_membership
 
 
 --
--- Name: im_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: im_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY im_accounts
@@ -497,7 +585,7 @@ ALTER TABLE ONLY im_accounts
 
 
 --
--- Name: log_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: log_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY log
@@ -505,7 +593,7 @@ ALTER TABLE ONLY log
 
 
 --
--- Name: pl; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: pl; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY neptun_list
@@ -513,7 +601,7 @@ ALTER TABLE ONLY neptun_list
 
 
 --
--- Name: pontigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: pontigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY pontigenyles
@@ -521,7 +609,7 @@ ALTER TABLE ONLY pontigenyles
 
 
 --
--- Name: poszt_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: poszt_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY poszt
@@ -529,7 +617,7 @@ ALTER TABLE ONLY poszt
 
 
 --
--- Name: poszttipus_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: poszttipus_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY poszttipus
@@ -537,7 +625,7 @@ ALTER TABLE ONLY poszttipus
 
 
 --
--- Name: spot_images_usr_neptun_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: spot_images_usr_neptun_key; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY spot_images
@@ -545,7 +633,7 @@ ALTER TABLE ONLY spot_images
 
 
 --
--- Name: system_attrs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: system_attrs_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY system_attrs
@@ -553,7 +641,7 @@ ALTER TABLE ONLY system_attrs
 
 
 --
--- Name: unique_memberships; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: unique_memberships; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY grp_membership
@@ -561,7 +649,7 @@ ALTER TABLE ONLY grp_membership
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -569,7 +657,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: users_usr_neptun_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: users_usr_neptun_key; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -577,7 +665,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: users_usr_screen_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: users_usr_screen_name_key; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -585,7 +673,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: usr_private_attrs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+-- Name: usr_private_attrs_pkey; Type: CONSTRAINT; Schema: public; Owner: kir; Tablespace: 
 --
 
 ALTER TABLE ONLY usr_private_attrs
@@ -593,112 +681,112 @@ ALTER TABLE ONLY usr_private_attrs
 
 
 --
--- Name: bel_tipus_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: bel_tipus_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX bel_tipus_idx ON belepoigenyles USING btree (belepo_tipus);
 
 
 --
--- Name: ert_semester_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: ert_semester_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX ert_semester_idx ON ertekelesek USING btree (semester);
 
 
 --
--- Name: fki_felado_usr_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: fki_felado_usr_id; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX fki_felado_usr_id ON ertekeles_uzenet USING btree (felado_usr_id);
 
 
 --
--- Name: fki_group_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: fki_group_id; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX fki_group_id ON ertekeles_uzenet USING btree (group_id);
 
 
 --
--- Name: groups_grp_id_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: groups_grp_id_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE UNIQUE INDEX groups_grp_id_idx ON groups USING btree (grp_id);
 
 
 --
--- Name: idx_groups_grp_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: idx_groups_grp_name; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX idx_groups_grp_name ON groups USING btree (grp_name);
 
 
 --
--- Name: idx_groups_grp_type; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: idx_groups_grp_type; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX idx_groups_grp_type ON groups USING btree (grp_type);
 
 
 --
--- Name: membership_usr_fk_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: membership_usr_fk_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX membership_usr_fk_idx ON grp_membership USING btree (usr_id);
 
 
 --
--- Name: next_version_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: next_version_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX next_version_idx ON ertekelesek USING btree (next_version NULLS FIRST);
 
 
 --
--- Name: poszt_fk_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: poszt_fk_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE INDEX poszt_fk_idx ON poszt USING btree (grp_member_id);
 
 
 --
--- Name: unique_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: unique_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE UNIQUE INDEX unique_idx ON ertekelesek USING btree (grp_id, semester, next_version NULLS FIRST);
 
 
 --
--- Name: users_usr_id_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: users_usr_id_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
 CREATE UNIQUE INDEX users_usr_id_idx ON users USING btree (usr_id);
 
 
 --
--- Name: users_usr_neptun_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
+-- Name: users_usr_neptun_idx; Type: INDEX; Schema: public; Owner: kir; Tablespace: 
 --
 
-CREATE UNIQUE INDEX users_usr_neptun_idx ON users(upper(usr_neptun));
+CREATE UNIQUE INDEX users_usr_neptun_idx ON users USING btree (upper((usr_neptun)::text));
 
 
 --
--- Name: after_insert; Type: TRIGGER; Schema: public; Owner: -
+-- Name: after_insert; Type: TRIGGER; Schema: public; Owner: kir
 --
 
 CREATE TRIGGER after_insert AFTER INSERT ON spot_images FOR EACH ROW EXECUTE PROCEDURE update_user_recommended_photo_after_insert();
 
 
 --
--- Name: before_delete; Type: TRIGGER; Schema: public; Owner: -
+-- Name: before_delete; Type: TRIGGER; Schema: public; Owner: kir
 --
 
 CREATE TRIGGER before_delete BEFORE DELETE ON spot_images FOR EACH ROW EXECUTE PROCEDURE update_user_recommended_photo_before_delete();
 
 
 --
--- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY groups
@@ -706,7 +794,7 @@ ALTER TABLE ONLY groups
 
 
 --
--- Name: fk4e301ac36958e716; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk4e301ac36958e716; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY belepoigenyles
@@ -714,7 +802,7 @@ ALTER TABLE ONLY belepoigenyles
 
 
 --
--- Name: fk807db18871c0d156; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk807db18871c0d156; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY ertekelesek
@@ -722,7 +810,7 @@ ALTER TABLE ONLY ertekelesek
 
 
 --
--- Name: fk807db18879696582; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk807db18879696582; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY ertekelesek
@@ -730,7 +818,7 @@ ALTER TABLE ONLY ertekelesek
 
 
 --
--- Name: fk807db188b31cf015; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk807db188b31cf015; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY ertekelesek
@@ -738,7 +826,7 @@ ALTER TABLE ONLY ertekelesek
 
 
 --
--- Name: fk_ertekeles_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_ertekeles_id; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY belepoigenyles
@@ -746,7 +834,7 @@ ALTER TABLE ONLY belepoigenyles
 
 
 --
--- Name: fk_ertekeles_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_ertekeles_id; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY pontigenyles
@@ -754,7 +842,7 @@ ALTER TABLE ONLY pontigenyles
 
 
 --
--- Name: fk_felado_usr_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_felado_usr_id; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY ertekeles_uzenet
@@ -762,7 +850,7 @@ ALTER TABLE ONLY ertekeles_uzenet
 
 
 --
--- Name: fk_group_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_group_id; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY ertekeles_uzenet
@@ -770,7 +858,7 @@ ALTER TABLE ONLY ertekeles_uzenet
 
 
 --
--- Name: fk_next_version; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_next_version; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY ertekelesek
@@ -778,7 +866,7 @@ ALTER TABLE ONLY ertekelesek
 
 
 --
--- Name: fkaa1034cd6958e716; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fkaa1034cd6958e716; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY pontigenyles
@@ -786,7 +874,7 @@ ALTER TABLE ONLY pontigenyles
 
 
 --
--- Name: grp_membership_grp_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: grp_membership_grp_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY grp_membership
@@ -794,7 +882,7 @@ ALTER TABLE ONLY grp_membership
 
 
 --
--- Name: grp_membership_usr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: grp_membership_usr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY grp_membership
@@ -802,7 +890,7 @@ ALTER TABLE ONLY grp_membership
 
 
 --
--- Name: im_accounts_usr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: im_accounts_usr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY im_accounts
@@ -810,7 +898,7 @@ ALTER TABLE ONLY im_accounts
 
 
 --
--- Name: log_group; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: log_group; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY log
@@ -818,7 +906,7 @@ ALTER TABLE ONLY log
 
 
 --
--- Name: log_user; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: log_user; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY log
@@ -826,7 +914,7 @@ ALTER TABLE ONLY log
 
 
 --
--- Name: poszt_grp_member_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: poszt_grp_member_fk; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY poszt
@@ -834,7 +922,7 @@ ALTER TABLE ONLY poszt
 
 
 --
--- Name: poszt_pttip_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: poszt_pttip_fk; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY poszt
@@ -842,7 +930,7 @@ ALTER TABLE ONLY poszt
 
 
 --
--- Name: poszttipus_opc_csoport; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: poszttipus_opc_csoport; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY poszttipus
@@ -850,7 +938,7 @@ ALTER TABLE ONLY poszttipus
 
 
 --
--- Name: users_main_group_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: users_main_group_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY users
@@ -858,11 +946,48 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: usr_private_attrs_usr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: usr_private_attrs_usr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kir
 --
 
 ALTER TABLE ONLY usr_private_attrs
     ADD CONSTRAINT usr_private_attrs_usr_id_fkey FOREIGN KEY (usr_id) REFERENCES users(usr_id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: groups; Type: ACL; Schema: public; Owner: kir
+--
+
+REVOKE ALL ON TABLE groups FROM PUBLIC;
+REVOKE ALL ON TABLE groups FROM kir;
+GRANT ALL ON TABLE groups TO kir;
+
+
+--
+-- Name: neptun_list; Type: ACL; Schema: public; Owner: kir
+--
+
+REVOKE ALL ON TABLE neptun_list FROM PUBLIC;
+REVOKE ALL ON TABLE neptun_list FROM kir;
+GRANT ALL ON TABLE neptun_list TO kir;
+
+
+--
+-- Name: users; Type: ACL; Schema: public; Owner: kir
+--
+
+REVOKE ALL ON TABLE users FROM PUBLIC;
+REVOKE ALL ON TABLE users FROM kir;
+GRANT ALL ON TABLE users TO kir;
 
 
 --
