@@ -2,9 +2,11 @@ package hu.sch.web.profile.confirmation;
 
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.user.User;
+import hu.sch.services.AccountManager;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.profile.ProfilePage;
+import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
@@ -32,6 +34,9 @@ import org.slf4j.LoggerFactory;
 public final class ConfirmPage extends ProfilePage {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfirmPage.class);
+    //
+    @Inject
+    protected AccountManager accountManager;
     private String password;
     private String passwordConfirm;
     private User user = null;
@@ -105,7 +110,7 @@ public final class ConfirmPage extends ProfilePage {
 
     private boolean confirm(final String password) {
         try {
-            userManager.confirm(user, password);
+            accountManager.confirm(user, password);
             info(String.format(getString("confirm.success"),
                     Configuration.getProfileDomain()));
 

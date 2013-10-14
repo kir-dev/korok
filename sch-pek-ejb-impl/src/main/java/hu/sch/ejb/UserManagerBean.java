@@ -4,32 +4,21 @@ import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.domain.config.Configuration;
-import hu.sch.domain.enums.SvieMembershipType;
-import hu.sch.domain.enums.SvieStatus;
-import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;
-import hu.sch.domain.user.UserStatus;
 import hu.sch.ejb.image.ImageProcessor;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.services.exceptions.PekEJBException;
-import hu.sch.services.exceptions.PekErrorCode;
-import hu.sch.util.hash.Hashing;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.SecureRandom;
 import java.util.*;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.*;
-import org.apache.commons.codec.binary.Base64;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +32,6 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class UserManagerBean implements UserManagerLocal {
 
-    private static int PASSWORD_SALT_LENGTH = 8;
     private static Logger logger = LoggerFactory.getLogger(UserManagerBean.class);
     @PersistenceContext
     EntityManager em;
@@ -51,12 +39,10 @@ public class UserManagerBean implements UserManagerLocal {
     LogManagerLocal logManager;
     @EJB
     MailManagerBean mailManager;
+    @EJB
+    AccountManager accountManager;
     @EJB(name = "PostManagerBean")
     PostManagerLocal postManager;
-    @EJB(name = "SystemManagerBean")
-    private SystemManagerLocal systemManager;
-    @Resource
-    private SessionContext sessionContext;
 
     public UserManagerBean() {
     }
@@ -164,26 +150,6 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void confirm(final User user, final String password) throws PekEJBException {
-        if (password != null) {
-            logger.debug("confirm user=" + user.getScreenName() + " with given password");
-
-            byte[] salt = generateSalt();
-            String passwordDigest = hashPassword(password, salt);
-
-            user.setSalt(Base64.encodeBase64String(salt));
-            user.setPasswordDigest(passwordDigest);
-        }
-
-        user.setConfirmationCode(null);
-        user.setUserStatus(UserStatus.ACTIVE);
-
-        logger.info("Confirm user=" + user.getScreenName());
-
-        em.merge(user);
-    }
-
-    @Override
     public List<EntrantRequest> getEntrantRequestsForUser(User felhasznalo) {
         Query q = em.createQuery("SELECT e FROM EntrantRequest e "
                 + "WHERE e.user=:user "
@@ -201,27 +167,6 @@ public class UserManagerBean implements UserManagerLocal {
         q.setParameter("user", felhasznalo);
 
         return q.getResultList();
-    }
-
-    @Override
-    public void createUser(User user, String password) throws PekEJBException {
-        byte[] salt = generateSalt();
-        String passwordDigest = hashPassword(password, salt);
-
-        boolean isAdmin = sessionContext.isCallerInRole(Roles.ADMIN);
-
-        if (!isAdmin) {
-            user.setSalt(Base64.encodeBase64String(salt));
-            user.setPasswordDigest(passwordDigest);
-        }
-
-        user.setSvieMembershipType(SvieMembershipType.NEMTAG);
-        user.setSvieStatus(SvieStatus.NEMTAG);
-        user.setGender(Gender.NOTSPECIFIED);
-        user.setConfirmationCode(generateConfirmationCode());
-        sendConfirmationEmail(user, isAdmin);
-
-        em.persist(user);
     }
 
     @Override
@@ -355,21 +300,6 @@ public class UserManagerBean implements UserManagerLocal {
         }
     }
 
-    @Override
-    public void changePassword(String screenName, String oldPwd, String newPwd) throws PekEJBException {
-        User user = findUserByScreenName(screenName);
-        byte[] salt = Base64.decodeBase64(user.getSalt());
-        String passwordHash = hashPassword(oldPwd, salt);
-
-        if (!passwordHash.equals(user.getPasswordDigest())) {
-            logger.info("Password change requested with invalid password for user {}", user.getId());
-            throw new PekEJBException(PekErrorCode.USER_PASSWORD_INVALID);
-        }
-
-        user.setPasswordDigest(hashPassword(newPwd, salt));
-        em.merge(user);
-    }
-
     /**
      * Deletes the spot image from the file system and db.
      *
@@ -387,151 +317,4 @@ public class UserManagerBean implements UserManagerLocal {
         // usr_show_recommended will be false after the update.
         em.remove(img);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean sendUserNameReminder(final String email) throws PekEJBException {
-
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("email argument can't be null when sending user name reminder");
-        }
-
-        try {
-            final User result = findUserByEmail(email);
-
-            if (result == null) {
-                throw new PekEJBException(PekErrorCode.USER_NOTFOUND);
-            } else {
-                final String subject =
-                        MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_SUBJECT);
-
-                final String messageBody;
-                if (systemManager.getNewbieTime()) {
-                    messageBody = String.format(
-                            MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_BODY_NEWBIE),
-                            result.getFirstName(), result.getScreenName());
-                } else {
-                    messageBody = String.format(
-                            MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_BODY),
-                            result.getFirstName(), result.getScreenName());
-                }
-
-                return mailManager.sendEmail(email, subject, messageBody);
-            }
-        } catch (DuplicatedUserException ex) {
-            logger.error("sendUserNameReminder: Duplicated user with email={}", email);
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean sendLostPasswordChangeLink(final String email) throws PekEJBException {
-
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("email argument can't be null when sending password change link");
-        }
-
-        try {
-            final User result = findUserByEmail(email);
-
-            if (result == null) {
-                throw new PekEJBException(PekErrorCode.USER_NOTFOUND);
-            } else {
-                final String subject =
-                        MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_SUBJECT);
-
-                final String body;
-                if (systemManager.getNewbieTime()) {
-                    body = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_BODY_NEWBIE);
-                } else {
-                    body = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_BODY);
-                }
-
-                final String message = String.format(body, result.getFirstName(),
-                        result.getScreenName(), "<link>"); //TODO #45
-
-                return mailManager.sendEmail(email, subject, message);
-            }
-        } catch (DuplicatedUserException ex) {
-            logger.error("sendLostPasswordChangeLink: Duplicated user with email={}", email);
-        }
-
-        return false;
-    }
-
-    private String hashPassword(String password, byte[] salt) throws PekEJBException {
-        byte[] passwordBytes;
-        try {
-            passwordBytes = password.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            logger.error("UTF-8 is not supported.", ex);
-            throw new PekEJBException(PekErrorCode.SYSTEM_ENCODING_NOTSUPPORTED);
-        }
-
-        byte[] hashInput = new byte[passwordBytes.length + salt.length];
-        System.arraycopy(passwordBytes, 0, hashInput, 0, passwordBytes.length);
-        System.arraycopy(salt, 0, hashInput, passwordBytes.length, salt.length);
-
-        return Hashing.sha1(hashInput).toBase64();
-    }
-
-    private byte[] generateSalt() {
-        byte[] salt = new byte[PASSWORD_SALT_LENGTH];
-        new SecureRandom().nextBytes(salt);
-
-        return salt;
-    }
-
-    /**
-     * Generates and sets a random confirmation code for the user.
-     */
-    private String generateConfirmationCode() {
-        Random rnd = new SecureRandom();
-        byte[] bytes = new byte[48];
-        String confirm = null;
-
-        TypedQuery<Long> q = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.confirmationCode = :confirm", Long.class);
-
-        // check for uniqueness!
-        do {
-            rnd.nextBytes(bytes);
-            confirm = Base64.encodeBase64URLSafeString(bytes);
-            q.setParameter("confirm", confirm);
-        } while (!q.getSingleResult().equals(0L));
-
-        // 48 byte of randomness encoded into 64 characters
-        return confirm;
-    }
-
-    private boolean sendConfirmationEmail(User user, boolean isCreatedByAdmin) {
-        String subject, body;
-
-        subject = MailManagerBean.getMailString(MailManagerBean.MAIL_CONFIRMATION_SUBJECT);
-
-        if (isCreatedByAdmin) {
-            body = String.format(
-                    MailManagerBean.getMailString(MailManagerBean.MAIL_CONFIRMATION_ADMIN_BODY),
-                    user.getFullName(),
-                    generateConfirmationLink(user));
-        } else {
-            body = String.format(
-                    MailManagerBean.getMailString(MailManagerBean.MAIL_CONFIRMATION_BODY),
-                    user.getFullName(),
-                    generateConfirmationLink(user));
-        }
-
-        return mailManager.sendEmail(user.getEmailAddress(), subject, body);
-    }
-
-    private String generateConfirmationLink(User user) {
-        String domain = Configuration.getProfileDomain();
-        return String.format("https://%s/profile/confirm/code/%s", domain, user.getConfirmationCode());
-    }
-    // TODO: password policy
 }

@@ -8,7 +8,6 @@ import hu.sch.domain.PointRequest;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.services.exceptions.InvalidPasswordException;
 import hu.sch.services.exceptions.PekEJBException;
 import javax.ejb.Local;
 import java.util.List;
@@ -93,13 +92,6 @@ public interface UserManagerLocal {
     public User findUserByConfirmationCode(String code);
 
     /**
-     * Confirms a user's registration.
-     *
-     * @param user
-     */
-    public void confirm(User user, String password) throws PekEJBException;
-
-    /**
      * Get entrant requests for the given user.
      *
      * @param user
@@ -114,17 +106,6 @@ public interface UserManagerLocal {
      * @return
      */
     List<PointRequest> getPointRequestsForUser(User user);
-
-    /**
-     * Create a new user.
-     *
-     * Add the user to the directory service as well.
-     *
-     * @param user the user to be created
-     * @param password
-     */
-    public void createUser(User user, String password)
-            throws PekEJBException;
 
     /**
      * Update user in the database and synchronize the directory service.
@@ -200,39 +181,4 @@ public interface UserManagerLocal {
      */
     public void invertAttributeVisibility(User user, UserAttributeName attr);
 
-    /**
-     * Changes the user's password.
-     *
-     * @param screenName the user's screen name (username)
-     * @param oldPwd
-     * @param newPwd
-     * @throws InvalidPasswordException if the old password does not match the
-     * stored one.
-     */
-    public void changePassword(String screenName, String oldPwd, String newPwd)
-            throws PekEJBException;
-
-    /**
-     * Searches the user in the datastore by email and sends an email with the
-     * screen name. It sends different messages depends on
-     * {@link SystemManagerLocal#getNewbieTime()}.
-     *
-     * @param email
-     * @return true if we found the user and the email sent successfully.
-     * @throws PekEJBException when user not found.
-     * @throws IllegalArgumentException when the argument is null or empty.
-     */
-    boolean sendUserNameReminder(final String email) throws PekEJBException;
-
-    /**
-     * Searches the user in the datastore by email and sends an email with a
-     * password change link and the screen name. It sends different messages
-     * depends on {@link SystemManagerLocal#getNewbieTime()}.
-     *
-     * @param email
-     * @return true if we found the user and the email sent successfully.
-     * @throws PekEJBException when user not found.
-     * @throws IllegalArgumentException when the argument is null or empty.
-     */
-    boolean sendLostPasswordChangeLink(final String email) throws PekEJBException;
 }

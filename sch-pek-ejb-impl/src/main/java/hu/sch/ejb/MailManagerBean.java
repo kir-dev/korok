@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
 import javax.annotation.Resource;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.Session;
@@ -51,7 +50,6 @@ public class MailManagerBean {
     static final String MAIL_CONFIRMATION_SUBJECT = "confirmation.subject";
     static final String MAIL_CONFIRMATION_BODY = "confirmation.body";
     static final String MAIL_CONFIRMATION_ADMIN_BODY = "confirmation.admin.body";
-
     @Resource(name = "java:/mail/korokMail")
     private Session mailSession;
 

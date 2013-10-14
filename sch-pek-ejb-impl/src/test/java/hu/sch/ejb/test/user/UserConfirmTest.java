@@ -2,7 +2,7 @@ package hu.sch.ejb.test.user;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
-import hu.sch.ejb.UserManagerBean;
+import hu.sch.ejb.AccountManagerBean;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
 import hu.sch.services.exceptions.PekEJBException;
@@ -15,11 +15,11 @@ import org.junit.Test;
  */
 public class UserConfirmTest extends AbstractDatabaseBackedTest {
 
-    private UserManagerBean bean;
+    private AccountManagerBean bean;
 
     @Override
     protected void before() {
-        bean = new UserManagerBean(getEm());
+        bean = new AccountManagerBean(getEm());
     }
 
     @Test

@@ -3,10 +3,12 @@ package hu.sch.web.kp.admin;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
+import hu.sch.services.AccountManager;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.profile.admin.AdminPage;
+import javax.inject.Inject;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -30,6 +32,9 @@ import org.slf4j.LoggerFactory;
 public class CreateNewPerson extends KorokPage {
 
     private static Logger logger = LoggerFactory.getLogger(CreateNewPerson.class);
+    //
+    @Inject
+    protected AccountManager accountManager;
     private User user = new User();
 
     public CreateNewPerson() {
@@ -43,7 +48,7 @@ public class CreateNewPerson extends KorokPage {
                 user.setStudentStatus(StudentStatus.UNKNOWN);
                 user.setUserStatus(UserStatus.ACTIVE);
                 try {
-                    userManager.createUser(user, RandomStringUtils.randomAlphanumeric(10));
+                    accountManager.createUser(user, RandomStringUtils.randomAlphanumeric(10));
                 } catch (PekEJBException ex) {
                     logger.error("Could not save user", ex);
                     throw new RestartResponseException(CreateNewPerson.class);

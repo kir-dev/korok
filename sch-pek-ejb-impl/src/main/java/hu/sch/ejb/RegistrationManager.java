@@ -7,6 +7,7 @@ import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
+import hu.sch.services.AccountManager;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
@@ -35,6 +36,8 @@ public class RegistrationManager implements RegistrationManagerLocal {
     //
     @EJB(name = "UserManagerBean")
     private UserManagerLocal userManager;
+    @EJB(name = "AccountManagerBean")
+    private AccountManager accountManager;
     //
     private static final Logger logger = LoggerFactory.getLogger(RegistrationManager.class);
 
@@ -111,7 +114,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
 
         user.setNeptunCode(regUser.getNeptun());
 
-        userManager.createUser(user, password);
+        accountManager.createUser(user, password);
     }
 
     private RegisteringUser findRegUserByEducationId(final RegisteringUser regUser)

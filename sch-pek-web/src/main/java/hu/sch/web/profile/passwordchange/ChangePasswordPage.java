@@ -1,8 +1,9 @@
 package hu.sch.web.profile.passwordchange;
 
-import hu.sch.services.exceptions.NotImplementedException;
+import hu.sch.services.AccountManager;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.profile.ProfilePage;
+import javax.inject.Inject;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
@@ -15,14 +16,12 @@ import org.apache.wicket.validation.validator.StringValidator;
  */
 public class ChangePasswordPage extends ProfilePage {
 
+    @Inject
+    protected AccountManager accountManager;
+    //these fields used by the CompoundPropertyModel
     private String oldPassword;
     private String newPassword;
-    //FIXME: currently not used
-    @SuppressWarnings("unused")
     private String newPasswordConfirmation;
-    private PasswordTextField oldPw;
-    private PasswordTextField newPw;
-    private PasswordTextField newPw2;
 
     public ChangePasswordPage() {
         setHeaderLabelText("Jelszóváltoztatás");
@@ -30,23 +29,26 @@ public class ChangePasswordPage extends ProfilePage {
             @Override
             protected void onSubmit() {
                 try {
-                    userManager.changePassword(getRemoteUser(), oldPassword, newPassword);
+                    accountManager.changePassword(getRemoteUser(), oldPassword, newPassword);
                     getSession().info("Sikeres jelszóváltoztatás");
                 } catch (PekEJBException ex) {
                     getSession().error("Hibás jelszó!");
                 }
             }
         };
-        oldPw = new PasswordTextField("oldPassword");
+
+        final PasswordTextField oldPw = new PasswordTextField("oldPassword");
         oldPw.setRequired(true);
         oldPw.setResetPassword(true);
         form.add(oldPw);
-        newPw = new PasswordTextField("newPassword");
+
+        final PasswordTextField newPw = new PasswordTextField("newPassword");
         newPw.setRequired(true);
         newPw.setResetPassword(true);
         newPw.add(StringValidator.minimumLength(6));
         form.add(newPw);
-        newPw2 = new PasswordTextField("newPasswordConfirmation");
+
+        final PasswordTextField newPw2 = new PasswordTextField("newPasswordConfirmation");
         newPw2.setRequired(true);
         newPw2.setResetPassword(true);
         newPw2.add(StringValidator.minimumLength(6));

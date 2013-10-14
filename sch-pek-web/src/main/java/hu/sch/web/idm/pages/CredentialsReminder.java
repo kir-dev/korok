@@ -1,7 +1,9 @@
 package hu.sch.web.idm.pages;
 
+import hu.sch.services.AccountManager;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.kp.KorokPage;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -32,6 +34,8 @@ public class CredentialsReminder extends KorokPage {
     }
     //
     private static final String PAGE_PARAM = "p";
+    @Inject
+    protected AccountManager accountManager;
     private final Page currentPage;
     //
     private String mail;
@@ -88,9 +92,9 @@ public class CredentialsReminder extends KorokPage {
     private boolean sendReminder(final Page currentPage) throws PekEJBException {
         switch (currentPage) {
             case PASSWORD:
-                return userManager.sendLostPasswordChangeLink(mail);
+                return accountManager.sendLostPasswordChangeLink(mail);
             default:
-                return userManager.sendUserNameReminder(mail);
+                return accountManager.sendUserNameReminder(mail);
         }
     }
 }
