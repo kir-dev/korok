@@ -709,12 +709,20 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public List<GivenPoint> getPointsForKfbExport(Semester semester) {
-        Query q = em.createNamedQuery(GivenPoint.getDormitoryPoints);
+    public List<GivenPoint> getPointsForKfbExport(final Semester semester) {
+        final Query q = em.createNativeQuery("SELECT * FROM getPointsForSemester(:semester, :prevSemester)");
         q.setParameter("semester", semester.getId());
         q.setParameter("prevSemester", semester.getPrevious().getId());
+        final List<Object[]> queryResult = q.getResultList();
 
-        return q.getResultList();
+        final List<GivenPoint> points = new LinkedList<>();
+        for (Object[] record : queryResult) {
+            points.add(GivenPoint.createFrom(record));
+        }
+
+        logger.info("Request KFB export: " + semester + "; Records found=" + queryResult.size());
+
+        return points;
     }
 
     @Override

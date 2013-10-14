@@ -3,7 +3,6 @@
     <persistence-unit name="PEK-DOMAIN-TEST-PU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>hu.sch.domain.EntrantRequest</class>
-        <class>hu.sch.domain.GivenPoint</class>
         <class>hu.sch.domain.Group</class>
         <class>hu.sch.domain.Membership</class>
         <class>hu.sch.domain.Valuation</class>
@@ -30,6 +29,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.format_sql" value="false" />
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
         </properties>
     </persistence-unit>
 </persistence>

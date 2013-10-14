@@ -5,7 +5,6 @@
         <jta-data-source>jdbc/sch</jta-data-source>
         <!-- ez fontos, mert a kulon .jar csomag miatt nem talalja meg magatol -->
         <class>hu.sch.domain.EntrantRequest</class>
-        <class>hu.sch.domain.GivenPoint</class>
         <class>hu.sch.domain.Group</class>
         <class>hu.sch.domain.Membership</class>
         <class>hu.sch.domain.Valuation</class>
@@ -33,7 +32,7 @@
             <property name="hibernate.jdbc.use_streams_for_binary" value="false"/>
             <!--property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
             <property name="hibernate.cache.use_query_cache" value="true"/-->
-      <!--property name="hibernate.hbm2ddl.auto" value="validate"/-->
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
         </properties>
     </persistence-unit>
 </persistence>
