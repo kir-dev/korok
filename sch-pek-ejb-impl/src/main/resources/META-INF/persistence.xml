@@ -4,7 +4,6 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/sch</jta-data-source>
         <!-- ez fontos, mert a kulon .jar csomag miatt nem talalja meg magatol -->
-        <class>hu.sch.domain.EntrantExportRecord</class>
         <class>hu.sch.domain.EntrantRequest</class>
         <class>hu.sch.domain.GivenPoint</class>
         <class>hu.sch.domain.Group</class>

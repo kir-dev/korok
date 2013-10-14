@@ -1,38 +1,43 @@
 package hu.sch.domain;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedNativeQuery;
 
 /**
- * Dummy entitás, csak az export_entrant_requests tárolt eljárás eredményeihez használjuk.
+ * Az export_entrant_requests tárolt eljárás eredményeihez használjuk.
  *
  * A tárolt eljárás és a hozzá tartozó típus definíciója a
  * resources/export_entrant_requests.sql-ben található
- * 
+ *
  * @author  messo
+ * @author  balo
  * @since   2.4
  */
-@Entity
-@NamedNativeQuery(name = EntrantExportRecord.exportEntrantRequests,
-query = "SELECT * FROM export_entrant_requests(:semester, :entrantType, :num)",
-resultClass = EntrantExportRecord.class)
 public class EntrantExportRecord implements Serializable {
-
-    public static final String exportEntrantRequests = "exportEntrantRequests";
+    //
     public static final String DELIMITER = ",";
-    @Id
+    //
     private Long uid;
     private String nev;
     private String neptun;
     private String email;
-    @Column(name = "primary_group")
     private String primaryGroup;
-    @Column(name = "entrant_num")
     private int entrantNum;
     private String indokok;
+
+    //fixme #67
+    //temporary factory method; it can be removed after we moved stored procedures into the code (#67)
+    public static EntrantExportRecord createFrom(final Object[] record) {
+        final EntrantExportRecord result = new EntrantExportRecord();
+        result.setUid(Long.valueOf(String.valueOf(record[0])));
+        result.setNev((String) record[1]);
+        result.setNeptun((String) record[2]);
+        result.setEmail((String) record[3]);
+        result.setPrimaryGroup((String) record[4]);
+        result.setEntrantNum(Integer.valueOf(String.valueOf(record[5])));
+        result.setIndokok((String) record[6]);
+
+        return result;
+    }
 
     public Long getUid() {
         return uid;
@@ -41,7 +46,7 @@ public class EntrantExportRecord implements Serializable {
     public void setUid(Long uid) {
         this.uid = uid;
     }
-    
+
     public String getEmail() {
         return email;
     }

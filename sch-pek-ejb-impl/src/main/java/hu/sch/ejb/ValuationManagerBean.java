@@ -674,10 +674,11 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public final String findApprovedEntrantsForExport(
-            final Semester semester, final EntrantType entrantType, final int minEntrantNum) {
+    public final String findApprovedEntrantsForExport(final Semester semester,
+            final EntrantType entrantType, final int minEntrantNum) {
 
-        Query query = em.createNamedQuery(EntrantExportRecord.exportEntrantRequests);
+        final Query query =
+                em.createNativeQuery("SELECT * FROM export_entrant_requests(:semester, :entrantType, :num)");
 
         query.setParameter("semester", semester.getId());
         query.setParameter("entrantType", entrantType.toString());
@@ -685,7 +686,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
         final String DELIMITER = EntrantExportRecord.DELIMITER;
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         sb.append("Név").append(DELIMITER);
         sb.append("Neptun").append(DELIMITER);
@@ -693,12 +694,15 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         sb.append("Elsődleges kör").append(DELIMITER);
         sb.append("Kapott belépők száma").append(DELIMITER);
         sb.append("Indoklások\n");
-        for (EntrantExportRecord record : (List<EntrantExportRecord>) query.getResultList()) {
-            sb.append(record.toCVSformat());
+
+        final List<Object[]> resultList = query.getResultList();
+
+        for (Object[] record : resultList) {
+            sb.append(EntrantExportRecord.createFrom(record).toCVSformat());
             sb.append("\n");
         }
 
-        logger.debug("Request export from entrants: " + semester + ", " + entrantType + ", "
+        logger.info("Request export from entrants: " + semester + ", " + entrantType + ", "
                 + minEntrantNum + "\nRecords found=" + query.getResultList().size());
 
         return sb.toString();
