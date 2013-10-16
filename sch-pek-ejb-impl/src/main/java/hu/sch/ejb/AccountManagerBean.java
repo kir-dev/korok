@@ -4,6 +4,7 @@ import hu.sch.domain.config.Configuration;
 import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.Gender;
+import hu.sch.domain.user.LostPasswordToken;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
 import static hu.sch.ejb.MailManagerBean.getMailString;
@@ -17,6 +18,7 @@ import hu.sch.services.exceptions.PekErrorCode;
 import hu.sch.util.hash.Hashing;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.Random;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -38,7 +40,7 @@ public class AccountManagerBean implements AccountManager {
 
     private static Logger logger = LoggerFactory.getLogger(AccountManagerBean.class);
     //
-    private static int PASSWORD_SALT_LENGTH = 8;
+    private static final int PASSWORD_SALT_LENGTH = 8;
     //
     @PersistenceContext
     private EntityManager em;
@@ -214,8 +216,7 @@ public class AccountManagerBean implements AccountManager {
             if (result == null) {
                 throw new PekEJBException(PekErrorCode.USER_NOTFOUND);
             } else {
-                final String subject =
-                        MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_SUBJECT);
+                final String subject = MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_SUBJECT);
 
                 final String messageBody;
                 if (systemManager.getNewbieTime()) {
@@ -252,30 +253,30 @@ public class AccountManagerBean implements AccountManager {
 
             if (user == null) {
                 throw new PekEJBException(PekErrorCode.USER_NOTFOUND);
-            } else {
-                final String subject =
-                        MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_SUBJECT);
-
-                final String body;
-                if (systemManager.getNewbieTime()) {
-                    body = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_BODY_NEWBIE);
-                } else {
-                    body = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_BODY);
-                }
-
-                String name = user.getFirstName();
-                if (systemManager.getNewbieTime()) {
-                    name = user.getFullName();
-                }
-
-                //TODO (#45): generate password token
-
-
-                final String message = String.format(body,
-                        name, user.getScreenName(), generateLostPasswordLink(user)); //TODO #45
-
-                return mailManager.sendEmail(email, subject, message);
             }
+
+            final String subject = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_SUBJECT);
+
+            final String body;
+            if (systemManager.getNewbieTime()) {
+                body = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_BODY_NEWBIE);
+            } else {
+                body = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_BODY);
+            }
+
+            String name = user.getFirstName();
+            if (systemManager.getNewbieTime()) {
+                name = user.getFullName();
+            }
+
+            logger.debug("sendLostPasswordChangeLink, user found={}", user.toString());
+
+            final LostPasswordToken token = getTokenByUser(user);
+
+            final String message = String.format(body,
+                    name, user.getScreenName(), generateLostPasswordLink(token));
+
+            return mailManager.sendEmail(email, subject, message);
         } catch (DuplicatedUserException ex) {
             logger.error("sendLostPasswordChangeLink: Duplicated user with email={}", email);
         }
@@ -283,9 +284,33 @@ public class AccountManagerBean implements AccountManager {
         return false;
     }
 
-    private String generateLostPasswordLink(final User user) {
-        return String.format("https://%s/profile/confirm/code/%s",
+    private String generateLostPasswordLink(final LostPasswordToken token) {
+        return String.format("https://%s/profile/confirm/pwcode/%s",
                 Configuration.getProfileDomain(),
-                "");
+                token.getToken());
+    }
+
+    private LostPasswordToken getTokenByUser(final User user) {
+        //remove existing token if it exists
+        final LostPasswordToken existingToken = em.find(LostPasswordToken.class, user.getId());
+        if (existingToken != null) {
+            em.remove(existingToken);
+        }
+
+        //create new token
+        final Random rnd = new SecureRandom();
+        final byte[] bytes = new byte[48];
+        rnd.nextBytes(bytes);
+
+        final String newTokenKey = Base64.encodeBase64URLSafeString(bytes);
+
+        logger.debug("create new lostpw token with code={}, length={}",
+                newTokenKey, newTokenKey.length());
+
+        final LostPasswordToken newToken = new LostPasswordToken(user, newTokenKey, new Date());
+        em.persist(newToken);
+        em.flush();
+
+        return newToken;
     }
 }
