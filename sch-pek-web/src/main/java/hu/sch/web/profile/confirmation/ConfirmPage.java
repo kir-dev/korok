@@ -35,6 +35,7 @@ public final class ConfirmPage extends ProfilePage {
 
     public ConfirmPage(final PageParameters params) {
         setStatelessHint(true);
+        setHeaderLabelText(getString("headerLabel"));
 
         final String confirmationCode = params.get(PAGE_PARAM_CODE).toString("");
 
@@ -46,8 +47,6 @@ public final class ConfirmPage extends ProfilePage {
     }
 
     private void prepareConfirmation(final String confirmationCode) {
-        setHeaderLabelText(getString("headerLabel"));
-
         user = userManager.findUserByConfirmationCode(confirmationCode);
         if (user == null) {
             error(getString("error.wrongcode"));

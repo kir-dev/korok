@@ -45,7 +45,6 @@ abstract class NewPasswordFormPanel extends Panel {
                 };
 
         final TextField passwordTF = new PasswordTextField("password");
-        //, new PropertyModel<String>(this, "password"));
         passwordTF
                 .setLabel(new ResourceModel("passwordTF"))
                 .add(StringValidator.minimumLength(6));
@@ -54,7 +53,6 @@ abstract class NewPasswordFormPanel extends Panel {
         form.add(passwordLabel, passwordTF);
 
         final TextField passwordConfirmTF = new PasswordTextField("passwordConfirm");
-        //new PropertyModel<String>(this, "passwordConfirm"));
         passwordConfirmTF.setLabel(new ResourceModel("passwordConfirmTF"));
 
         final FormComponentLabel passwordConfirmLabel = new SimpleFormComponentLabel("passwordConfirmLabel", passwordConfirmTF);
