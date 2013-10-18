@@ -26,7 +26,7 @@ public class LostPasswordToken implements Serializable {
     public static final String getByToken = "getByToken";
     //
     @Id
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usr_id")
     private User subjectUser;
     //--------------------------------
@@ -34,7 +34,7 @@ public class LostPasswordToken implements Serializable {
     @Size(max = 64)
     private String token;
     //--------------------------------
-    @Temporal(javax.persistence.TemporalType.TIME)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date created;
 
     public LostPasswordToken() {
