@@ -1,17 +1,5 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
     <div id="admincont">
-        <form wicket:id="passwordForm">
-            <table>
-                <tr>
-                    <td><label wicket:id="passwordLabel"></label></td>
-                    <td><input type="password" wicket:id="password" class="textinput" /></td>
-                </tr>
-                <tr>
-                    <td><label wicket:id="passwordConfirmLabel"></label></td>
-                    <td><input type="password" wicket:id="passwordConfirm" class="textinput" /></td>
-                </tr>
-            </table>
-            <span id="btns"><input class="btn" type="submit" value="Mentés"/></span>
-        </form>
+        <div wicket:id="pwFormPanel" />
     </div>
 </wicket:extend>
