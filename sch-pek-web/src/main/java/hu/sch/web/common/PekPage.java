@@ -1,5 +1,6 @@
 package hu.sch.web.common;
 
+import hu.sch.domain.config.Configuration;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.PhoenixApplication;
@@ -17,8 +18,6 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -27,7 +26,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class PekPage extends WebPage {
 
-    private static final Logger logger = LoggerFactory.getLogger(PekPage.class);
     private static final String NAVBAR_SCRIPT =
             "var navbarConf = { "
             + "logoutLink: '/logout', "
@@ -42,6 +40,7 @@ public abstract class PekPage extends WebPage {
             + "]"
             + "}; "
             + "printNavbar(navbarConf);";
+    protected static int DEFAULT_SUPPORT_ID = Configuration.getSupportDefaultId();
     private Label titleLabel;
     private Label navbarScript;
     private Label headerLabel;
@@ -56,7 +55,7 @@ public abstract class PekPage extends WebPage {
     private void init() {
         add(titleLabel = new Label("title", getTitle()));
         add(navbarScript = new Label("navbarScript"));
-        createNavbarWithSupportId(32);
+        createNavbarWithSupportId(DEFAULT_SUPPORT_ID);
         navbarScript.setEscapeModelStrings(false); // do not HTML escape JavaScript code
 
         add(new WebComponent("css").add(
@@ -154,5 +153,14 @@ public abstract class PekPage extends WebPage {
         if (getApplication().usesDeploymentConfig()) {
             response.render(JavaScriptHeaderItem.forUrl(getString("navbar.url")));
         }
+    }
+
+    /**
+     * Returns the full basic 'Profil és Körök' support url.
+     *
+     * @return the full url with the protocol and the support target id
+     */
+    protected String getSupportUrl() {
+        return Configuration.getSupportBaseUrl() + DEFAULT_SUPPORT_ID;
     }
 }

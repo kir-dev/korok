@@ -51,6 +51,8 @@ public class Configuration {
     private static final String IMAGE_MAX_SIZE = "image.upload.max";
     private static final String DOMAIN_PROFILE = "domain.profile";
     private static final String DOMAIN_KOROK = "domain.korok";
+    private static final String SUPPORT_BASE_URL = "support.baseUrl";
+    private static final String SUPPORT_DEFAULT_ID = "support.defaultId";
 
     private static final Properties properties = new Properties();
     private static final String baseDir;
@@ -108,6 +110,14 @@ public class Configuration {
 
     public static String getKorokDomain() {
         return properties.getProperty(DOMAIN_KOROK);
+    }
+
+    public static String getSupportBaseUrl() {
+        return properties.getProperty(SUPPORT_BASE_URL);
+    }
+
+    public static int getSupportDefaultId() {
+        return Integer.parseInt(properties.getProperty(SUPPORT_DEFAULT_ID));
     }
 
     private Configuration() {
