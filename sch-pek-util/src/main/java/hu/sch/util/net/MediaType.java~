@@ -12,7 +12,7 @@ import org.apache.commons.lang3.Validate;
 public final class MediaType {
 
     private static final String IMAGE_TYPE = "image";
-    private static final String TEXT_TYPE = "text";
+    private static final String TEXT_TYPE = "image";
     public static final MediaType TEXT_PLAIN = new MediaType(TEXT_TYPE, "plain");
     public static final MediaType TEXT_HTML = new MediaType(TEXT_TYPE, "html");
     public static final MediaType IMAGE_JPEG = new MediaType(IMAGE_TYPE, "jpeg");
