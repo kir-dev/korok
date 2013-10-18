@@ -38,6 +38,7 @@ import hu.sch.web.kp.valuation.request.point.PointRequests;
 import hu.sch.web.profile.admin.AdminPage;
 import hu.sch.web.profile.birthday.BirthDayPage;
 import hu.sch.web.profile.confirmation.ConfirmPage;
+import hu.sch.web.profile.confirmation.ReplaceLostPasswordPage;
 import hu.sch.web.profile.edit.EditPage;
 import hu.sch.web.profile.passwordchange.ChangePasswordPage;
 import hu.sch.web.profile.show.ShowPersonPage;
@@ -248,6 +249,7 @@ public class PhoenixApplication extends WebApplication {
         mountPageWithPath("/profile/birthdays", BirthDayPage.class);
         mountPageWithPath("/profile/admin", AdminPage.class);
         mountPageWithPath("/profile/confirm", ConfirmPage.class);
+        mountPageWithPath("/profile/replacelostpassword", ReplaceLostPasswordPage.class);
     }
 
     /**

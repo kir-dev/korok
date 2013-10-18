@@ -344,7 +344,7 @@ public class AccountManagerBean implements AccountManager {
     }
 
     private String generateLostPasswordLink(final LostPasswordToken token) {
-        return String.format("https://%s/profile/confirm/pwcode/%s",
+        return String.format("https://%s/profile/replacelostpassword/token/%s",
                 Configuration.getProfileDomain(),
                 token.getToken());
     }
