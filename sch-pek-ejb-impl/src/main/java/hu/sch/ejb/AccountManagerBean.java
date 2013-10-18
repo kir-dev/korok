@@ -25,7 +25,10 @@ import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -41,6 +44,7 @@ public class AccountManagerBean implements AccountManager {
     private static Logger logger = LoggerFactory.getLogger(AccountManagerBean.class);
     //
     private static final int PASSWORD_SALT_LENGTH = 8;
+    private static final long LOST_PW_TOKEN_VALID_MS = 24 * 60 * 60 * 1000; //24 hours in ms
     //
     @PersistenceContext
     private EntityManager em;
@@ -284,6 +288,61 @@ public class AccountManagerBean implements AccountManager {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void replaceLostPassword(final String tokenKey, final String password)
+            throws PekEJBException {
+
+        //checks the token again (validity, expiry, etc)
+        final User user = getUserByLostPasswordToken(tokenKey);
+
+        logger.info("Replace lost password for user={}", user.getScreenName());
+
+        byte[] salt = generateSalt();
+        String passwordDigest = hashPassword(password, salt);
+
+        user.setSalt(Base64.encodeBase64String(salt));
+        user.setPasswordDigest(passwordDigest);
+
+        //removes the used token
+        em.remove(em.find(LostPasswordToken.class, user.getId()));
+
+        em.merge(user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getUserByLostPasswordToken(final String tokenKey)
+            throws PekEJBException {
+
+        final TypedQuery<LostPasswordToken> q
+                = em.createNamedQuery(LostPasswordToken.getByToken, LostPasswordToken.class);
+        q.setParameter("token", tokenKey);
+
+        try {
+            final LostPasswordToken token = q.getSingleResult();
+
+            final long currentTimeMillis = System.currentTimeMillis();
+            if (currentTimeMillis > token.getCreated().getTime() + LOST_PW_TOKEN_VALID_MS) {
+                logger.info("Somebody tried to use an expired token={}", tokenKey);
+                throw new PekEJBException(PekErrorCode.VALIDATION_TOKEN_EXPIRED);
+            }
+
+            return token.getSubjectUser();
+
+        } catch (NoResultException | NonUniqueResultException ex) {
+            logger.info("Somebody tried to use an invalid token={}", tokenKey);
+            throw new PekEJBException(PekErrorCode.VALIDATION_TOKEN_NOTFOUND);
+        } catch (PersistenceException ex) {
+            logger.error("Unexpected exception while checking lost password token.", ex);
+            throw new PekEJBException(PekErrorCode.UNKNOWN);
+        }
+    }
+
     private String generateLostPasswordLink(final LostPasswordToken token) {
         return String.format("https://%s/profile/confirm/pwcode/%s",
                 Configuration.getProfileDomain(),
@@ -291,7 +350,7 @@ public class AccountManagerBean implements AccountManager {
     }
 
     private LostPasswordToken getTokenByUser(final User user) {
-        //remove existing token if it exists
+        //remove existing token if it exists because LostPasswordToken is immutable
         final LostPasswordToken existingToken = em.find(LostPasswordToken.class, user.getId());
         if (existingToken != null) {
             em.remove(existingToken);

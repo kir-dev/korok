@@ -1,5 +1,6 @@
 package hu.sch.services;
 
+import hu.sch.domain.user.LostPasswordToken;
 import hu.sch.domain.user.User;
 import hu.sch.services.exceptions.PekEJBException;
 import javax.ejb.Local;
@@ -41,8 +42,8 @@ public interface AccountManager {
      * @param screenName the user's screen name (username)
      * @param oldPwd
      * @param newPwd
-     * @throws hu.sch.services.exceptions.PekEJBException if the old password does not match the
-     * stored one.
+     * @throws hu.sch.services.exceptions.PekEJBException if the old password
+     * does not match the stored one.
      */
     void changePassword(String screenName, String oldPwd, String newPwd)
             throws PekEJBException;
@@ -70,4 +71,23 @@ public interface AccountManager {
      * @throws IllegalArgumentException when the argument is null or empty.
      */
     boolean sendLostPasswordChangeLink(String email) throws PekEJBException;
+
+    /**
+     * Searches the user in the datastore by the {@link LostPasswordToken#token}
+     * and returns it if found.
+     *
+     * @param tokenKey
+     * @return
+     * @throws hu.sch.services.exceptions.PekEJBException if the token is
+     * invalid or expired, or any persistence exception occured
+     */
+    public User getUserByLostPasswordToken(String tokenKey) throws PekEJBException;
+
+    /**
+     *
+     * @param tokenKey
+     * @param password
+     * @throws hu.sch.services.exceptions.PekEJBException
+     */
+    void replaceLostPassword(String tokenKey, String password) throws PekEJBException;
 }
