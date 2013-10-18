@@ -3,11 +3,13 @@ package hu.sch.web.common;
 import hu.sch.domain.config.Configuration;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.choosers.GoogleAnalyticsScript;
 import javax.inject.Inject;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
@@ -153,6 +155,19 @@ public abstract class PekPage extends WebPage {
         if (getApplication().usesDeploymentConfig()) {
             response.render(JavaScriptHeaderItem.forUrl(getString("navbar.url")));
         }
+    }
+
+    /**
+     * Call {@link #error(java.io.Serializable)} method with the messageKey and
+     * parameters of the exception.
+     *
+     * @param ex
+     * @param moreParams you can add more parameters to be replaced
+     */
+    protected void parametrizedErrorMessage(final PekEJBException ex, Object... moreParams) {
+        error(String.format(
+                getString(ex.getErrorCode().getMessageKey()),
+                ArrayUtils.addAll(ex.getParameters(), moreParams)));
     }
 
     /**

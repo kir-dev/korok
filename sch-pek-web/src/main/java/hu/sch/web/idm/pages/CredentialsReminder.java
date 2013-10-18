@@ -11,7 +11,6 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
@@ -77,7 +76,7 @@ public class CredentialsReminder extends KorokPage {
                         error(getString("err.MailError"));
                     }
                 } catch (PekEJBException ex) {
-                    error(new StringResourceModel(ex.getErrorCode().getMessageKey(), null, ex.getParameters()));
+                    parametrizedErrorMessage(ex);
                 }
             }
         };
