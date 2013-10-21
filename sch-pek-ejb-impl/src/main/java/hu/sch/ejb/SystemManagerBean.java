@@ -3,20 +3,15 @@ package hu.sch.ejb;
 import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Semester;
-import hu.sch.domain.logging.Log;
+import hu.sch.domain.config.Configuration;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +25,8 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemManagerBean.class);
     //
-    static final String baseLink = "https://korok.sch.bme.hu/korok/";
-    static final String showUserLink = baseLink + "showuser/id/";
+    static final String showUserLink = "https://" + Configuration.getProfileDomain() + "/profile/show/virid/";
+    static final String baseLink = "https://" + Configuration.getKorokDomain() + "/korok/";
     static final String valuationLink = baseLink + "valuation";
     static final String considerLink = baseLink + "consider";
     //
