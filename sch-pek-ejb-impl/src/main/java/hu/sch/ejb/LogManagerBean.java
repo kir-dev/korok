@@ -22,11 +22,7 @@ public class LogManagerBean implements LogManagerLocal {
 
     @Override
     public void createLogEntry(final Group group, final User user, final EventType event) {
-        Log log = new Log();
-        log.setGroup(group);
-        log.setUser(user);
-        log.setEvent(event);
-        log.setEventDate(new Date());
+        final Log log = new Log(group, user, event, new Date());
         em.persist(log);
     }
 }

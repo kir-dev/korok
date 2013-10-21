@@ -70,43 +70,35 @@ public class Log implements Serializable {
     @Column(name = "evt_date", columnDefinition = "timestamp")
     private Date eventDate;
 
-    public Long getId() {
-        return id;
+    protected Log() {
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Log(final Group group, final User user, final EventType event,
+            final Date eventDate) {
+
+        this.group = group;
+        this.user = user;
+        this.event = event;
+        this.eventDate = eventDate;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Group getGroup() {
         return group;
     }
 
-    public void setGroup(final Group group) {
-        this.group = group;
-    }
-
     public User getUser() {
         return user;
-    }
-
-    public void setUser(final User user) {
-        this.user = user;
     }
 
     public EventType getEvent() {
         return event;
     }
 
-    public void setEvent(final EventType event) {
-        this.event = event;
-    }
-
     public Date getEventDate() {
         return eventDate;
-    }
-
-    public void setEventDate(final Date timestamp) {
-        this.eventDate = timestamp;
     }
 }
