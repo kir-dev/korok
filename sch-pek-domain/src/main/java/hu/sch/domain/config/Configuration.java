@@ -2,10 +2,9 @@ package hu.sch.domain.config;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -42,7 +41,7 @@ public class Configuration {
          */
         TESTING
     };
-    private static final Logger logger = Logger.getLogger(Configuration.class.getSimpleName());
+    private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
     private static final String PROPERTY_NAME = "application.resource.dir";
     private static final String TIMES_FONT_FILE = "times.font.file";
     private static final String APPLICATION_FOLDER = "korok";
@@ -63,26 +62,20 @@ public class Configuration {
 
         if (dir == null) {
             throw new IllegalArgumentException(
-                    "System property '" + PROPERTY_NAME + "' isn't setted! Can't initialize application!");
+                    "System property '" + PROPERTY_NAME + "' isn't set! Can't initialize application!");
         }
         if (!dir.endsWith("/")) {
             dir += "/";
         }
         baseDir = dir;
 
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE));
+        try(FileInputStream fis =
+                new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE))) {
+
             properties.load(fis);
+            logger.debug(properties.toString());
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error while loading properties file!", ex);
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (IOException ex) {
-            }
         }
     }
 
@@ -95,7 +88,7 @@ public class Configuration {
                 System.err.println("Illegal 'wicket.configuration' in the config.properties. Fallbacking to DEVELOPMENT.");
                 environment = Environment.DEVELOPMENT;
             }
-            logger.log(Level.WARNING, "The application is running in {0} mode!", environment.toString());
+            logger.warn("The application is running in {} mode!", environment.toString());
         }
         return environment;
     }
