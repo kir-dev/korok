@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "system_attrs")
-@NamedQuery(name = "findSystemAttributeByAttributeName",
+@NamedQuery(name = SystemAttribute.findByAttributeName,
 query = "SELECT a FROM SystemAttribute a WHERE a.attributeName=:attributeName")
 public class SystemAttribute implements Serializable {
 

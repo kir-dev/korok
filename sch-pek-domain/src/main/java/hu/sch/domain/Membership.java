@@ -28,14 +28,14 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "grp_membership")
 @NamedQueries(value = {
-    @NamedQuery(name = "getMembership",
+    @NamedQuery(name = Membership.getMembership,
     query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
-    @NamedQuery(name = "getMembers",
+    @NamedQuery(name = Membership.getMembers,
     query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
-    @NamedQuery(name = "getDelegatedMemberForGroup",
+    @NamedQuery(name = Membership.getDelegatedMemberForGroup,
     query = "SELECT ms.user FROM Membership ms "
     + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true"),
-    @NamedQuery(name = "getAllDelegated",
+    @NamedQuery(name = Membership.getAllDelegated,
     query = "SELECT u FROM User u WHERE u.delegated = true "
     + "ORDER BY u.lastName, u.firstName"),
     @NamedQuery(name = Membership.findMembershipsForGroup, query =

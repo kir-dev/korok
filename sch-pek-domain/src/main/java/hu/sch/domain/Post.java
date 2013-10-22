@@ -19,15 +19,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "poszt")
 @NamedQueries({
-    @NamedQuery(name = "currentPostsForGroup",
+    @NamedQuery(name = Post.currentPostsForGroup,
     query = "SELECT p FROM Post p WHERE p.membership.id = :id"),
-    @NamedQuery(name = "getUserDelegatedPost",
+    @NamedQuery(name = Post.getUserDelegatedPost,
     query = "SELECT p FROM Post p WHERE p.postType.delegatedPost = true "
     + "AND p.membership.group = :group "
     + "AND p.membership.user = :user"),
-    @NamedQuery(name = "getByTypeAndGroup", query = "SELECT p FROM Post p "
+    @NamedQuery(name = Post.getByTypeAndGroup, query = "SELECT p FROM Post p "
     + "WHERE p.postType = :pt AND p.membership.group = :group"),
-    @NamedQuery(name = "getPostTypeByName", query = "SELECT p FROM PostType p "
+    @NamedQuery(name = Post.getPostTypeByName, query = "SELECT p FROM PostType p "
     + "WHERE p.postName = :pn")
 })
 @SequenceGenerator(name = "poszt_seq", sequenceName = "poszt_seq", allocationSize = 1)

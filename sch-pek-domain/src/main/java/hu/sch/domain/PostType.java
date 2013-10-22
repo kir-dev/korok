@@ -19,11 +19,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "poszttipus")
 @NamedQueries({
-    @NamedQuery(name = "availablePostsForGroup",
+    @NamedQuery(name = PostType.availablePostsQuery,
     query = "SELECT p FROM PostType p WHERE p.group IS NULL OR p.group.id = :id"),
-    @NamedQuery(name = "searchForCertainPostType",
+    @NamedQuery(name = PostType.searchForPostType,
     query = "SELECT p FROM PostType p WHERE p.postName = :pn"),
-    @NamedQuery(name = "getByNameAndGroup",
+    @NamedQuery(name = PostType.getByNameAndGroup,
     query = "SELECT p FROM PostType p "
     + "WHERE (p.postName = :pn AND p.group IS NULL) OR "
     + "p.postName = :pn AND p.group = :group")
