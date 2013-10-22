@@ -84,10 +84,18 @@ public interface AccountManager {
     public User getUserByLostPasswordToken(String tokenKey) throws PekEJBException;
 
     /**
+     * If the given token key is valid then replace the password of
+     * {@link LostPasswordToken#subjectUser} with the given value.
      *
      * @param tokenKey
      * @param password
-     * @throws hu.sch.services.exceptions.PekEJBException
+     * @throws hu.sch.services.exceptions.PekEJBException if the token expired
+     * or invalid
      */
     void replaceLostPassword(String tokenKey, String password) throws PekEJBException;
+
+    /**
+     * Removes expired tokens from the database.
+     */
+    void removeExpiredLostPasswordTokens();
 }

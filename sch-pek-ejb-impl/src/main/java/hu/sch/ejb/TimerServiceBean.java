@@ -64,6 +64,16 @@ public class TimerServiceBean {
         logger.info("end of daily event");
     }
 
+    @Schedule(dayOfWeek = "Mon", hour = "2")
+    public void removeExpiredLostPasswordTokens() {
+        long begin = System.currentTimeMillis();
+        logger.info("Begin to clean up expired lost password tokens");
+
+        accountManager.removeExpiredLostPasswordTokens();
+
+        logger.info("clean up end, spent time={}ms", System.currentTimeMillis() - begin);
+    }
+
     /**
      * Notifies the group leaders about the membership changes. The query
      * returns log entries ordered by group, then event, then the last name of

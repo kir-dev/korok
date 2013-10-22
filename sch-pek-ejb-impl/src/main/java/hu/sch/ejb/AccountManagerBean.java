@@ -29,8 +29,10 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,7 @@ public class AccountManagerBean implements AccountManager {
     private static Logger logger = LoggerFactory.getLogger(AccountManagerBean.class);
     //
     private static final int PASSWORD_SALT_LENGTH = 8;
-    private static final long LOST_PW_TOKEN_VALID_MS = 24 * 60 * 60 * 1000; //24 hours in ms
+    public static final long LOST_PW_TOKEN_VALID_MS = 24 * 60 * 60 * 1000; //24 hours in ms
     //
     @PersistenceContext
     private EntityManager em;
@@ -341,6 +343,21 @@ public class AccountManagerBean implements AccountManager {
             logger.error("Unexpected exception while checking lost password token.", ex);
             throw new PekEJBException(PekErrorCode.UNKNOWN);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeExpiredLostPasswordTokens() {
+        final Date deleteBefore = DateUtils.addMilliseconds(new Date(),
+                (int) -LOST_PW_TOKEN_VALID_MS);
+
+        final Query cleanUpQuery = em.createNamedQuery(LostPasswordToken.removeExpired);
+        cleanUpQuery.setParameter("time_in_past", deleteBefore);
+        final int deleteCount = cleanUpQuery.executeUpdate();
+
+        logger.info("deleted lostpw tokens={}", deleteCount);
     }
 
     private String generateLostPasswordLink(final LostPasswordToken token) {

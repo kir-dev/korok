@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -19,11 +20,19 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "lostpw_tokens")
-@NamedQuery(name = LostPasswordToken.getByToken,
-        query = "SELECT t FROM LostPasswordToken t WHERE t.token = :token")
+@NamedQueries({
+    @NamedQuery(name = LostPasswordToken.getByToken,
+            query = "SELECT t FROM LostPasswordToken t WHERE t.token = :token"
+    ),
+    @NamedQuery(name = LostPasswordToken.removeExpired,
+            query = "DELETE FROM LostPasswordToken t "
+            + "WHERE t.created < :time_in_past"
+    )
+})
 public class LostPasswordToken implements Serializable {
 
     public static final String getByToken = "getByToken";
+    public static final String removeExpired = "removeExpired";
     //
     @Id
     @OneToOne(fetch = FetchType.LAZY)
