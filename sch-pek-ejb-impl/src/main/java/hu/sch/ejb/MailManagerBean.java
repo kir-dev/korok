@@ -50,6 +50,10 @@ public class MailManagerBean {
     static final String MAIL_CONFIRMATION_SUBJECT = "confirmation.subject";
     static final String MAIL_CONFIRMATION_BODY = "confirmation.body";
     static final String MAIL_CONFIRMATION_ADMIN_BODY = "confirmation.admin.body";
+    //admin reports
+    static final String MAIL_ADMIN_REPORT_SUBJECT = "admin.report.subject";
+    static final String MAIL_ADMIN_REPORT_BODY = "admin.report.body";
+
     @Resource(name = "java:/mail/korokMail")
     private Session mailSession;
 
