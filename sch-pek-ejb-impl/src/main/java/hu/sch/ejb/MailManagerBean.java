@@ -70,7 +70,7 @@ public class MailManagerBean {
      * Sends email through JDBC mail resource with the given attributes.
      * <br/>NOTE: if {@link Environment#TESTING} is active, it doesn't send email.
      *
-     * @param to recipient of the message.
+     * @param to recipient(s) of the message (comma seperated address strings)
      * @param subject part after "[VIR Körök]"
      * @param message
      * @return true if sending was successful.

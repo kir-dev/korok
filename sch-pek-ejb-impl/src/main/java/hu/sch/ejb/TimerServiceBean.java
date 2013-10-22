@@ -4,17 +4,22 @@ import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
 import hu.sch.domain.logging.EventType;
 import hu.sch.domain.logging.Log;
+import hu.sch.services.AccountManager;
 import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.SystemManagerLocal;
-import hu.sch.services.UserManagerLocal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,20 +28,21 @@ import org.slf4j.LoggerFactory;
  * @author aldaris
  */
 @Stateless(mappedName = "TimerService")
-@SuppressWarnings("unchecked")
 public class TimerServiceBean {
 
-    private static Logger logger = LoggerFactory.getLogger(TimerServiceBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(TimerServiceBean.class);
     @EJB
     private MailManagerBean mailManager;
     @EJB(name = "SystemManagerBean")
     private SystemManagerLocal systemManager;
     @EJB
     private GroupManagerLocal groupManager;
+    @EJB
+    private AccountManager accountManager;
     @PersistenceContext
-    EntityManager em;
-    private static String welcome = "Kedves %s!\n\nAz elmúlt időszakban a következő módosítások "
-            + "történtek a körtagságok terén:\n\n";
+    private EntityManager em;
+    private static final String MSG_SUBJECT = MailManagerBean.getMailString(MailManagerBean.MAIL_ADMIN_REPORT_SUBJECT);
+    private static final String MSG_BODY_TEMPLATE = MailManagerBean.getMailString(MailManagerBean.MAIL_ADMIN_REPORT_BODY);
 
     @Schedule(hour = "1")
     protected void dailyEvent() {
@@ -59,106 +65,175 @@ public class TimerServiceBean {
     }
 
     /**
-     * A tagságváltoztatásokról értesíti az egyes körök vezetőit. Ha a problémára
-     * tudsz egy szebb megoldást, hát hajrá :)
+     * Notifies the group leaders about the membership changes. The query
+     * returns log entries ordered by group, then event, then the last name of
+     * the user whom membership changed. We iterate through the log entries and
+     * group them by groups and events.
+     *
+     * @param lastUsedLogId
+     * @param lastLogId
      */
-    private void notifyGroupLeaders(long lastUsedLogId, long lastLogId) {
-        Query q = em.createNamedQuery(Log.getGroupsForFreshEntries);
+    private void notifyGroupLeaders(final long lastUsedLogId, final long lastLogId) {
+        final EventType[] events = {EventType.JELENTKEZES, EventType.TAGSAGTORLES};
+
+        final TypedQuery<Log> q = em.createNamedQuery(Log.getFreshEventsForEventTypeByGroup,
+                Log.class);
+
         q.setParameter("lastUsedLogId", lastUsedLogId);
         q.setParameter("lastLogId", lastLogId);
-        List<Group> groups = q.getResultList();
-        EventType[] events = {EventType.JELENTKEZES, EventType.TAGSAGTORLES};
+        q.setParameter("events", Arrays.asList(events));
+        final List<Log> logs = q.getResultList();
 
-        Query q2 = em.createNamedQuery(Log.getFreshEventsForEventTypeByGroup);
-        q2.setParameter("lastUsedLogId", lastUsedLogId);
-        q2.setParameter("lastLogId", lastLogId);
-        for (Group group : groups) {
-            StringBuilder sb = new StringBuilder(welcome.replace("%s", "Körvezető"));
-            q2.setParameter("group", group);
-            for (EventType evtType : events) {
-                q2.setParameter("evtType", evtType);
-                List<Log> logs = q2.getResultList();
+        final Map<Group, List<Log>> logsByGroup = collectLogsByGroup(logs);
+        for (Group group : logsByGroup.keySet()) {
 
-                if (!logs.isEmpty()) {
-                    sb.append(evtType.toString());
+            final List<Log> entries = logsByGroup.get(group);
 
-                    for (Log log : logs) {
-                        sb.append(log.getUser().getFullName()).append(" -> ");
-                        sb.append(SystemManagerBean.showUserLink).append(log.getUser().getId()).append("\n");
-                    }
-                    sb.append("\n\n");
+            logger.debug("group={}, entries size={}", group.getName(), entries.size());
+
+            if (!entries.isEmpty()) {
+                final User leader = groupManager.findLeaderForGroup(group.getId());
+                if (leader != null) {
+                    final String text = String.format(MSG_BODY_TEMPLATE,
+                            String.format("Körvezető (%s)", group.getName()),
+                            getReportForEvents(entries));
+
+                    logger.debug("send mail: {}\n{}", leader.getEmailAddress(), text);
+
+                    sendEmail(leader.getEmailAddress(), text);
                 }
-            }
-            User user = groupManager.findLeaderForGroup(group.getId());
-            if (user != null) {
-                sendEmail(user.getEmailAddress(), sb);
             }
         }
     }
 
-    private void notifySvieAdmin(long lastUsedLogId, long lastLogId) {
-        Query q = em.createNamedQuery(Log.getFreshEventsForSvie);
-        StringBuilder sb = new StringBuilder(welcome.replace("%s", "SVIE Adminisztrátor"));
-        q.setParameter("lastUsedLogId", lastUsedLogId);
-        q.setParameter("lastLogId", lastLogId);
-        boolean wasRecord = false;
-        EventType[] events = {EventType.PARTOLOVAVALAS,
+    /**
+     * Iterates through the log entries and group them by groups.
+     *
+     * @param logs
+     * @return
+     */
+    private Map<Group, List<Log>> collectLogsByGroup(final List<Log> logs) {
+        final Map<Group, List<Log>> logsByGroup = new HashMap<>(logs.size());
+        for (Log log : logs) {
+            final Group group = log.getGroup();
+            if (logsByGroup.get(group) == null) {
+                logsByGroup.put(group, new LinkedList<Log>());
+            }
+
+            logsByGroup.get(group).add(log);
+        }
+
+        return logsByGroup;
+    }
+
+    /**
+     * Generates the body of the mail from the logs. Groups the entries by the
+     * type of the logs and display a profile link to the users.
+     *
+     * @param entries
+     * @return
+     */
+    private String getReportForEvents(final List<Log> entries) {
+        final StringBuilder mailBodyForUser = new StringBuilder();
+        Log prev = null;
+        for (int i = 0; i < entries.size(); i++) {
+            final Log current = entries.get(i);
+
+            if (prev == null || !current.getEvent().equals(prev.getEvent())) {
+                //display the event summary
+                mailBodyForUser.append(current.getEvent().toString());
+                prev = current;
+            }
+
+            mailBodyForUser.append(current.getUser().getFullName()).append(" -> ");
+            mailBodyForUser.append(SystemManagerBean.showUserLink).append(current.getUser().getId()).append("\n");
+        }
+
+        return mailBodyForUser.toString();
+    }
+
+    /**
+     * Notifies the SVIE admins about SVIE state changes of users.
+     *
+     * @param lastUsedLogId
+     * @param lastLogId
+     */
+    private void notifySvieAdmin(final long lastUsedLogId, final long lastLogId) {
+        final EventType[] events = {EventType.PARTOLOVAVALAS,
             EventType.SVIE_JELENTKEZES, EventType.SVIE_TAGSAGTORLES,
             EventType.RENDESTAGGAVALAS};
-        for (EventType eventType : events) {
-            q.setParameter("evtType", eventType);
-            List<Log> logs = q.getResultList();
-            if (!logs.isEmpty()) {
-                wasRecord = true;
-                sb.append(eventType.toString());
-                for (Log log : logs) {
-                    sb.append(log.getUser().getFullName()).append(" -> ");
-                    sb.append(SystemManagerBean.showUserLink).append(log.getUser().getId()).append("\n");
-                }
-                sb.append("\n\n");
-            }
-        }
-        if (wasRecord) {
-            List<User> svieAdmins = groupManager.findMembersByGroupAndPost(Group.SVIE, "adminisztrátor");
-            for (User u : svieAdmins) {
-                // mindig hozzászúródik a végére, hogy Üdvözlettel, ezért le kell másolni
-                // mert különben az utolsó admin jó sok üdvözletet kapna ;)
-                StringBuilder sb2 = new StringBuilder(sb.toString());
-                sendEmail(u.getEmailAddress(), sb2);
-                logger.info("SVIE adminnak (" + u.getFullName() + ") kiment a levél.");
-            }
-        }
-    }
 
-    private void notifySviePresident(long lastUsedLogId, long lastLogId) {
-        Query q = em.createNamedQuery(Log.getFreshEventsForSvie);
-        StringBuilder sb = new StringBuilder(welcome.replace("%s", "Választmányi elnök"));
+        final TypedQuery<Log> q = em.createNamedQuery(Log.getFreshEventsForSvie,
+                Log.class);
+
         q.setParameter("lastUsedLogId", lastUsedLogId);
         q.setParameter("lastLogId", lastLogId);
-        q.setParameter("evtType", EventType.ELFOGADASALATT);
-        List<Log> logs = q.getResultList();
-        if (!logs.isEmpty()) {
-            sb.append(EventType.ELFOGADASALATT.toString());
-            for (Log log : logs) {
-                sb.append(log.getUser().getFullName()).append(" -> ");
-                sb.append(SystemManagerBean.showUserLink).append(log.getUser().getId()).append("\n");
+        q.setParameter("events", Arrays.asList(events));
+        final List<Log> entries = q.getResultList();
+
+        logger.debug("entries size={}", entries.size());
+
+        if (!entries.isEmpty()) {
+            final String text = String.format(MSG_BODY_TEMPLATE,
+                    "SVIE Adminisztrátor",
+                    getReportForEvents(entries));
+
+            logger.debug("send mail with text={}", text);
+
+            final List<User> svieAdmins = groupManager.findMembersByGroupAndPost(Group.SVIE,
+                    "adminisztrátor");
+            final List<String> emailAddresses = new LinkedList<>();
+            final List<String> names = new LinkedList<>();
+
+            for (User u : svieAdmins) {
+                names.add(u.getFullName());
+                emailAddresses.add(u.getEmailAddress());
             }
-            sb.append("\n\n");
-            sendEmail(groupManager.findLeaderForGroup(Group.VALASZTMANY).getEmailAddress(), sb);
+
+            sendEmail(StringUtils.join(emailAddresses, ","), text);
+            logger.info("Mail sent to SVIE administrators ({}).",
+                    StringUtils.join(names, ", "));
         }
     }
 
-    private void sendEmail(String emailTo, StringBuilder sb) {
-        sb.append("Üdvözlettel:\nKir-Dev");
+    /**
+     * Notifies the SVIE president about {@link EventType#ELFOGADASALATT} events
+     *
+     * @param lastUsedLogId
+     * @param lastLogId
+     */
+    private void notifySviePresident(final long lastUsedLogId, final long lastLogId) {
+        final TypedQuery<Log> q = em.createNamedQuery(Log.getFreshEventsForSvie, Log.class);
+        q.setParameter("lastUsedLogId", lastUsedLogId);
+        q.setParameter("lastLogId", lastLogId);
+        q.setParameter("events", Arrays.asList(EventType.ELFOGADASALATT));
+        final List<Log> entries = q.getResultList();
 
-        mailManager.sendEmail(emailTo, "Események", sb.toString());
+        logger.debug("entries size={}", entries.size());
+
+        if (!entries.isEmpty()) {
+            final String text = String.format(MSG_BODY_TEMPLATE,
+                    "Választmányi elnök",
+                    getReportForEvents(entries));
+
+            logger.debug("send mail with text={}", text);
+
+            final User sviePresident = groupManager.findLeaderForGroup(Group.VALASZTMANY);
+            sendEmail(sviePresident.getEmailAddress(), text);
+            logger.info("Mail sent to SVIE president ({}).",
+                    sviePresident.getFullName());
+        }
+    }
+
+    private void sendEmail(String emailTo, String text) {
+        mailManager.sendEmail(emailTo, MSG_SUBJECT, text);
     }
 
     private long getLastLogId() {
-        Query q = em.createNamedQuery(Log.getLastId);
+        final TypedQuery<Long> q = em.createNamedQuery(Log.getLastId, Long.class);
         q.setMaxResults(1);
         try {
-            return (Long) q.getSingleResult();
+            return q.getSingleResult();
         } catch (NoResultException ex) {
             return 0;
         }

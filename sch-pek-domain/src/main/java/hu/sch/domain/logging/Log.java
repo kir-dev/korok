@@ -28,26 +28,29 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = Log.getFreshEventsForEventTypeByGroup,
             query = "SELECT l FROM Log l "
-            + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId AND l.event = :evtType AND l.group = :group"),
+            + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId "
+            + "AND l.event IN :events "
+            + "AND l.group IS NOT NULL "
+            + "ORDER BY l.group.name, l.event, l.user.lastName"
+    ),
     @NamedQuery(name = Log.getFreshEventsForSvie,
             query = "SELECT l FROM Log l "
-            + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId AND l.event = :evtType AND l.group IS NULL"),
-    @NamedQuery(name = Log.getGroupsForFreshEntries,
-            query = "SELECT DISTINCT l.group FROM Log l WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId"),
+            + "WHERE l.id > :lastUsedLogId AND l.id <= :lastLogId "
+            + "AND l.event IN :events "
+            + "AND l.group IS NULL "
+            + "ORDER BY l.event, l.user.lastName"
+    ),
     @NamedQuery(name = Log.getLastId,
-            query = "SELECT l.id FROM Log l ORDER BY l.id DESC"),
-    @NamedQuery(name = Log.getLastLogIdByDate,
-            query = "SELECT l.id FROM Log l WHERE l.eventDate <= :date ORDER BY l.id DESC")
+            query = "SELECT l.id FROM Log l ORDER BY l.id DESC"
+    )
 })
 @SequenceGenerator(name = "log_seq", sequenceName = "log_seq", allocationSize = 1)
 public class Log implements Serializable {
 
     private static final long serialVersionUID = 1l;
     public static final String getFreshEventsForEventTypeByGroup = "getFreshEventsForEventTypeByGroup";
-    public static final String getGroupsForFreshEntries = "getGroupsForFreshEntries";
     public static final String getFreshEventsForSvie = "getFreshEventsForSvie";
     public static final String getLastId = "getLastId";
-    public static final String getLastLogIdByDate = "getLastLogIdByDate";
     //
     @Id
     @GeneratedValue(generator = "log_seq")
