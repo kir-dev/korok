@@ -42,7 +42,7 @@ public abstract class PekPage extends WebPage {
             + "]"
             + "}; "
             + "printNavbar(navbarConf);";
-    protected static int DEFAULT_SUPPORT_ID = Configuration.getSupportDefaultId();
+    protected static final int DEFAULT_SUPPORT_ID = Configuration.getSupportDefaultId();
     private Label titleLabel;
     private Label navbarScript;
     private Label headerLabel;
