@@ -73,16 +73,9 @@
         <url>https://github.com/kir-dev/korok/issues</url>
     </issueManagement>
 
-    <distributionManagement>
-        <site>
-            <id>site</id>
-            <name>${project.name}</name>
-            <url>file:///var/www/stewie.sch.bme.hu/projects/korok</url>
-        </site>
-    </distributionManagement>
-
     <scm>
-        <connection>scm:https://github.com/kir-dev/korok.git</connection>
+        <connection>scm:git:https://github.com/kir-dev/korok.git</connection>
+        <developerConnection>scm:git:git@github.com:kir-dev/korok.git</developerConnection>
         <url>https://github.com/kir-dev/korok</url>
     </scm>
 
@@ -278,6 +271,11 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.4.1</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
