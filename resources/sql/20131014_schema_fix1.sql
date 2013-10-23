@@ -25,7 +25,7 @@ alter table poszt ALTER column pttip_id TYPE bigint;
 alter table poszttipus ALTER column pttip_id TYPE bigint;
 alter table poszttipus ALTER column grp_id TYPE bigint;
 
-alter table spot_images ALTER column user_neptun TYPE varchar;
+alter table spot_images ALTER column usr_neptun TYPE varchar;
 
 alter table users ALTER column usr_password TYPE varchar(28);
 alter table users ALTER column usr_salt TYPE varchar(12);
