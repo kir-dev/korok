@@ -19,6 +19,9 @@ public class LostPasswordTest extends AbstractDatabaseBackedTest {
     private AccountManagerBean bean;
     private int userCtr;
     private User[] users;
+    private final Date now = new Date();
+    private final Date expired1 = DateUtils.addMilliseconds(now, -(int) (AccountManagerBean.LOST_PW_TOKEN_VALID_MS + 1));
+    private final Date expired2 = DateUtils.addDays(now, -2);
 
     public LostPasswordTest() {
     }
@@ -44,12 +47,21 @@ public class LostPasswordTest extends AbstractDatabaseBackedTest {
     }
 
     @Test
-    public void removeExpiredLostPasswordTokens() {
-        final Date now = new Date();
-        final Date expired1 = DateUtils.addMilliseconds(now, -(int) (AccountManagerBean.LOST_PW_TOKEN_VALID_MS + 1));
-        final Date expired2 = DateUtils.addDays(now, -2);
-
+    public void leaveValidLostPasswordToken() {
         getEm().persist(new LostPasswordToken(users[0], "token1", now));
+
+        getEm().flush();
+
+        bean.removeExpiredLostPasswordTokens();
+
+        getEm().clear(); //this needs to refresh the states of the tokens after delete
+
+        Assert.assertNotNull(getEm().find(LostPasswordToken.class, users[0].getId()));
+    }
+
+    @Test
+    public void removeExpiredLostPasswordTokens() {
+
         getEm().persist(new LostPasswordToken(users[1], "token2", expired1));
         getEm().persist(new LostPasswordToken(users[2], "token3", expired2));
         getEm().flush();
@@ -58,7 +70,6 @@ public class LostPasswordTest extends AbstractDatabaseBackedTest {
 
         getEm().clear(); //this needs to refresh the states of the tokens after delete
 
-        Assert.assertNotNull(getEm().find(LostPasswordToken.class, users[0].getId()));
         Assert.assertNull(getEm().find(LostPasswordToken.class, users[1].getId()));
         Assert.assertNull(getEm().find(LostPasswordToken.class, users[2].getId()));
     }
