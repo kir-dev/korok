@@ -108,7 +108,7 @@ public final class SvieAccount extends KorokPage {
 
                 @Override
                 protected List<Membership> load() {
-                    return svieManager.getSvieMembershipsForUser(user);
+                    return svieManager.getActiveSvieMembershipsForUser(user);
                 }
             };
 
@@ -141,7 +141,7 @@ public final class SvieAccount extends KorokPage {
         public AdvocateFragment(String id, String markupId) {
             super(id, markupId, null, null);
 
-            List<Membership> ms = svieManager.getSvieMembershipsForUser(user);
+            List<Membership> ms = svieManager.getActiveSvieMembershipsForUser(user);
             Link<Void> advocateToOrdinal = new Link<Void>("advocateToOrdinal") {
 
                 @Override

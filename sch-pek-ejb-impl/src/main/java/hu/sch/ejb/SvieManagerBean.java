@@ -81,8 +81,8 @@ public class SvieManagerBean implements SvieManagerLocal {
     }
 
     @Override
-    public List<Membership> getSvieMembershipsForUser(User user) {
-        Query q = em.createNamedQuery(Membership.getMembership);
+    public List<Membership> getActiveSvieMembershipsForUser(User user) {
+        Query q = em.createNamedQuery(Membership.getActiveSvieMemberships);
         q.setParameter("user", user);
         return q.getResultList();
     }

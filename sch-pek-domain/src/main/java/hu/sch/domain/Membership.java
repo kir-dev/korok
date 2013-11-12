@@ -30,6 +30,8 @@ import javax.persistence.Transient;
 @NamedQueries(value = {
     @NamedQuery(name = Membership.getMembership,
     query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
+    @NamedQuery(name = Membership.getActiveSvieMemberships,
+    query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true AND ms.end IS null"),
     @NamedQuery(name = Membership.getMembers,
     query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
     @NamedQuery(name = Membership.getDelegatedMemberForGroup,
@@ -53,6 +55,7 @@ public class Membership implements MembershipTableEntry {
     public static final String SORT_BY_INTERVAL = "interval";
     private static final long serialVersionUID = 1L;
     public static final String getMembership = "getMembership";
+    public static final String getActiveSvieMemberships = "getActiveSvieMemberships";
     public static final String getMembers = "getMembers";
     public static final String getDelegatedMemberForGroup = "getDelegatedMemberForGroup";
     public static final String getAllDelegated = "getAllDelegated";

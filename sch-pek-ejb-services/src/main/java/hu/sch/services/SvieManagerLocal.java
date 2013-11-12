@@ -23,7 +23,7 @@ public interface SvieManagerLocal {
      */
     void updateSvieGroupInfos(List<Group> groups);
 
-    List<Membership> getSvieMembershipsForUser(User user);
+    List<Membership> getActiveSvieMembershipsForUser(User user);
 
     List<User> getSvieMembers();
 
