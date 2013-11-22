@@ -58,7 +58,7 @@ public final class AgentBasedAuthorization implements UserAuthorization {
     /**
      * A becenévhez tartozó HTTP header kulcs
      */
-    private static final String NICNKAME_ATTRNAME = "displayName";
+    private static final String NICNKAME_ATTRNAME = "eduPersonNickName";
     /**
      * Az e-mailhez tartozó HTTP header kulcs
      */
