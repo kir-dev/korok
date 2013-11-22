@@ -127,17 +127,7 @@ public class UserHistory extends KorokPage {
         add(ddc);
 
         List<SemesterPoint> semesterPoints = new ArrayList<SemesterPoint>();
-        Semester prev = null;
         for (Semester s : userManager.getAllValuatedSemesterForUser(user)) {
-            //Ha van olyan éve, ami előtt és után már kapott közösségi pontot,
-            //de abban az évben nem, akkor hozzáadja azt az évet is nulla ponttal
-            if(prev != null){
-                while(!prev.getPrevious().equals(s)){
-                    prev = prev.getPrevious();
-                    semesterPoints.add(new SemesterPoint(prev, 0));
-                }
-            }
-            prev = s;
             semesterPoints.add(new SemesterPoint(s, userManager.getSemesterPointForUser(user, s)));
         }
 
