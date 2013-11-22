@@ -78,7 +78,7 @@ public class PointRequestEditor extends Panel {
                 final PointRequest pontIgeny = item.getModelObject();
                 item.setModel(new CompoundPropertyModel<PointRequest>(pontIgeny));
 
-                item.add(new Label("user.name"));
+                item.add(new Label("user.fullName"));
                 item.add(new Label("user.nickName"));
 
                 Membership ms = membershipManager.findMembership(val.getGroupId(),

@@ -79,7 +79,7 @@ public class EntrantRequestEditor extends Panel {
             @Override
             protected void populateItem(ListItem<EntrantRequest> item) {
                 item.setDefaultModel(new CompoundPropertyModel<EntrantRequest>(item.getModelObject()));
-                item.add(new Label("user.name"));
+                item.add(new Label("user.fullName"));
                 item.add(new Label("user.nickName"));
 
                 Membership ms = membershipManager.findMembership(ert.getGroupId(),

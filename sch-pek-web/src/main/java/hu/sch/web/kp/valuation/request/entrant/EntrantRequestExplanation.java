@@ -58,7 +58,7 @@ public class EntrantRequestExplanation extends KorokPage {
             @Override
             protected void populateItem(ListItem<EntrantRequest> item) {
                 item.setModel(new CompoundPropertyModel<EntrantRequest>(item.getModelObject()));
-                item.add(new Label("user.name"));
+                item.add(new Label("user.fullName"));
                 item.add(new Label("user.nickName"));
                 item.add(new Label("entrantType"));
                 item.add(new TextArea<String>("valuationText"));
