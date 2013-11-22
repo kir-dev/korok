@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author hege
  * @author messo
  * @author tomi
+ * @author ksisu
  */
 @Stateless
 public class UserManagerBean implements UserManagerLocal {
@@ -43,13 +44,16 @@ public class UserManagerBean implements UserManagerLocal {
     AccountManager accountManager;
     @EJB(name = "PostManagerBean")
     PostManagerLocal postManager;
+    @EJB
+    private SystemManagerLocal systemManager;
 
     public UserManagerBean() {
     }
 
     // for testing
-    public UserManagerBean(EntityManager em) {
-        this.em = em;
+    public UserManagerBean(EjbConstructorArgument args) {
+        this.em = args.getEm();
+        this.systemManager = args.getSystemManager();
     }
 
     @Override
@@ -160,12 +164,13 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public List<PointRequest> getPointRequestsForUser(User felhasznalo) {
+    public List<PointRequest> getNotObsoleteAcceptedPointRequestsForUser(User user) {
         Query q = em.createQuery("SELECT p FROM PointRequest p "
                 + "WHERE p.user=:user "
-                + "ORDER BY p.valuation.semester DESC, p.valuation.group.name ASC");
-        q.setParameter("user", felhasznalo);
-
+                + "AND p.valuation.pointStatus=:pointStatus "
+                + "AND p.valuation.nextVersion IS null");
+        q.setParameter("user", user);
+        q.setParameter("pointStatus", ValuationStatus.ELFOGADVA);
         return q.getResultList();
     }
 
@@ -201,41 +206,68 @@ public class UserManagerBean implements UserManagerLocal {
      * {@inheritDoc}
      */
     @Override
-    public List<Semester> getAllValuatedSemesterForUser(User user) {
-        return em.createNamedQuery(User.getAllValuatedSemesterForUser).setParameter("user", user).getResultList();
-    }
+    public List<SemesterPoint> getAllValuatedSemesterWithPointForUser(User user) {
+        //Get all acceped not obsolete pointreqest
+        List<PointRequest> pointRequests = getNotObsoleteAcceptedPointRequestsForUser(user);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getSemesterPointForUser(User user, Semester semester) {
-        // Beszerezzük a pontokat
-        List<PointRequest> pontigenyek = getPointRequestsForUser(user);
+        //All point request grouped by semester and group
+        Map<Semester, Map<Group, Integer>> allPoints = new HashMap<>();
 
-        // Ebbe a Map-be lesz tárolva, hogy melyik körtől hány pontot kapott
-        Map<Group, Integer> points = new HashMap<Group, Integer>();
-        for (PointRequest pr : pontigenyek) {
-            Valuation v = pr.getValuation();
-            // Csak ha az adott értékelés a legfrisebb verzió ÉS a pont elfogadott
-            if (!v.isObsolete() && v.getPointStatus().equals(ValuationStatus.ELFOGADVA)) {
-                // Csak akkor, ha a vizsgált vagy az előző félévre vonatkozik
-                if (v.getSemester().equals(semester) || v.getSemester().equals(semester.getPrevious())) {
-                    if (points.containsKey(v.getGroup()) == false) {
-                        points.put(v.getGroup(), 0);
-                    }
-                    points.put(v.getGroup(), points.get(v.getGroup()) + pr.getPoint());
-                }
+        for (PointRequest pr : pointRequests) {
+            //Point request's data
+            Semester s = pr.getValuation().getSemester();
+            Group g = pr.getValuation().getGroup();
+            int p = pr.getPoint();
+
+            //Group point add to point request semester
+            if (!allPoints.containsKey(s)) {
+                allPoints.put(s, new HashMap<Group, Integer>());
             }
-        }
-        // Az összeg
-        int sum = 0;
-        // Négyzetösszeget számolunk
-        for (Integer pointFromGroup : points.values()) {
-            sum += pointFromGroup * pointFromGroup;
+            HashMap<Group, Integer> semesterGroupPoints = (HashMap<Group, Integer>) allPoints.get(s);
+
+            int point = p;
+            if (semesterGroupPoints.containsKey(g)) {
+                point += (int) semesterGroupPoints.get(g);
+            }
+            semesterGroupPoints.put(g, point);
+
+            //Group point add to after point request semester
+            Semester ns = s.getNext();
+            //Not added if the next semester is current or future
+            if (systemManager.getSzemeszter().compareTo(ns) <= 0) {
+                continue;
+            }
+
+            if (!allPoints.containsKey(ns)) {
+                allPoints.put(ns, new HashMap<Group, Integer>());
+            }
+            semesterGroupPoints = (HashMap<Group, Integer>) allPoints.get(ns);
+
+            point = p;
+            if (semesterGroupPoints.containsKey(g)) {
+                point += (int) semesterGroupPoints.get(g);
+            }
+            semesterGroupPoints.put(g, point);
         }
 
-        return (int) Math.min(Math.sqrt(sum), 100);
+        //Calculate semester's point
+        List<SemesterPoint> result = new ArrayList<>();
+        for (Semester s : allPoints.keySet()) {
+            int spoint = 0;
+            for (Group g : allPoints.get(s).keySet()) {
+                int gpoint = (int) allPoints.get(s).get(g);
+                spoint += (gpoint * gpoint);
+            }
+            spoint = (int) Math.floor(Math.sqrt(spoint));
+            spoint = Math.min(spoint, 100);
+            result.add(new SemesterPoint(s, spoint));
+        }
+        
+        //Reverse sort by semester
+        Collections.sort(result);
+        Collections.reverse(result);
+        
+        return result;
     }
 
     @Override

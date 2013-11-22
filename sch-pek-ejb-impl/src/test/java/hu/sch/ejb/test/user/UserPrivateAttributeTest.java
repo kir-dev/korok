@@ -3,6 +3,7 @@ package hu.sch.ejb.test.user;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;
+import hu.sch.ejb.EjbConstructorArgument;
 import hu.sch.ejb.UserManagerBean;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
@@ -49,7 +50,7 @@ public class UserPrivateAttributeTest extends AbstractDatabaseBackedTest {
         Long id = setupUserWithVisibleEmailAttribute();
         User user = getEm().find(User.class, id);
 
-        UserManagerBean bean = new UserManagerBean(getEm());
+        UserManagerBean bean = new UserManagerBean(new EjbConstructorArgument(getEm()));
         bean.invertAttributeVisibility(user, UserAttributeName.EMAIL);
         
         getEm().flush();

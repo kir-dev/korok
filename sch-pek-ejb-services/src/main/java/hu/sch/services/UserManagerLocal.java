@@ -5,6 +5,7 @@ import hu.sch.domain.Semester;
 import hu.sch.domain.SpotImage;
 import hu.sch.domain.user.User;
 import hu.sch.domain.PointRequest;
+import hu.sch.domain.SemesterPoint;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.exceptions.DuplicatedUserException;
@@ -100,12 +101,12 @@ public interface UserManagerLocal {
     List<EntrantRequest> getEntrantRequestsForUser(User user);
 
     /**
-     * Get point requests for the user.
+     * Get not obsolete and accepted point requests for the user.
      *
      * @param user
      * @return
      */
-    List<PointRequest> getPointRequestsForUser(User user);
+    List<PointRequest> getNotObsoleteAcceptedPointRequestsForUser(User user);
 
     /**
      * Update user in the database and synchronize the directory service.
@@ -127,26 +128,17 @@ public interface UserManagerLocal {
     public void updateUser(User user, ProfileImage image) throws PekEJBException;
 
     /**
-     * Visszaadja az összes olyan szemesztert csökkenő sorrendben, ahol az adott
-     * felhasználónak van elfogadott pontkérelme.
+     * Gets all semester with point when point is greater 0. Result order by
+     * semester decreasing.
      *
-     * @param user - A felhasználó, akit vizsgálunk
-     * @return A szemeszterek, amikor van elfogadott pontkérelme
+     * Egy szemeszterhez tartozó pontot így kapunk: az aktuális és az előző
+     * félévben szerzett pontjait körönként összeadjuk, majd ezek négyzetes
+     * közepét vesszük. Legfeljebb 100 lehet, és lefele kerekítjük.
+     *
+     * @param user
+     * @return
      */
-    public List<Semester> getAllValuatedSemesterForUser(User user);
-
-    /**
-     * Visszaadja a felhasználó felvételi pontjait az adott félévre.
-     *
-     * Ezt úgy kapjuk, hogy az aktuális és az előző félévben szerzett pontjait
-     * körönként összeadjuk, majd ezek négyzetes közepét vesszük. Legfeljebb 100
-     * lehet, és egészre csonkolva adjuk vissza.
-     *
-     * @param user - A felhasználó, akinek a pontjait vizsgáljuk
-     * @param semester - Erre a szemeszterre számolunk
-     * @return A felhasználó felvételi pontjai az adott félévre
-     */
-    public int getSemesterPointForUser(User user, Semester semester);
+    public List<SemesterPoint> getAllValuatedSemesterWithPointForUser(User user);
 
     /**
      * Lekérjük egy adott felhasználóhoz tartozó SPOT képet, ha van ilyen
@@ -180,5 +172,4 @@ public interface UserManagerLocal {
      * @param attr the attribute which visibility has to be altered
      */
     public void invertAttributeVisibility(User user, UserAttributeName attr);
-
 }

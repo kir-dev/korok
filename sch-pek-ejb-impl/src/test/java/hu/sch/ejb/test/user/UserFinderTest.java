@@ -4,6 +4,7 @@
  */
 package hu.sch.ejb.test.user;
 
+import hu.sch.ejb.EjbConstructorArgument;
 import hu.sch.ejb.UserManagerBean;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
@@ -21,7 +22,7 @@ public class UserFinderTest extends AbstractDatabaseBackedTest {
     @Override
     protected void before() {
         new UserBuilder().withNeptun("ABCDEF").create(getEm());
-        bean = new UserManagerBean(getEm());
+        bean = new UserManagerBean(new EjbConstructorArgument(getEm()));
     }
 
     @Test

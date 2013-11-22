@@ -94,6 +94,10 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
 
         <!-- Ennek később kell lennie mint a öszes hibernate depnek. -->
         <dependency>

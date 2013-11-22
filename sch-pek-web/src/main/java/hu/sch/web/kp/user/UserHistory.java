@@ -7,7 +7,6 @@ import hu.sch.web.kp.KorokPage;
 import hu.sch.web.kp.group.GroupHierarchy;
 import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.wicket.components.tables.ValuationTableForUser;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -126,10 +125,8 @@ public class UserHistory extends KorokPage {
 
         add(ddc);
 
-        List<SemesterPoint> semesterPoints = new ArrayList<SemesterPoint>();
-        for (Semester s : userManager.getAllValuatedSemesterForUser(user)) {
-            semesterPoints.add(new SemesterPoint(s, userManager.getSemesterPointForUser(user, s)));
-        }
+        //Gets semesters and points
+        List<SemesterPoint> semesterPoints = userManager.getAllValuatedSemesterWithPointForUser(user);
 
         // megjelenítés...
         ListView<SemesterPoint> splv = new ListView<SemesterPoint>("semesterPointList", semesterPoints) {
@@ -146,24 +143,5 @@ public class UserHistory extends KorokPage {
         List<ValuationData> list = valuationManager.findRequestsForUser(user, selectedGroupId);
 
         add(new ValuationTableForUser("table", list).getDataTable());
-    }
-}
-
-class SemesterPoint implements Serializable {
-
-    private Semester semester;
-    private Integer point;
-
-    public SemesterPoint(Semester semester, Integer point) {
-        this.semester = semester;
-        this.point = point;
-    }
-
-    public Semester getSemester() {
-        return semester;
-    }
-
-    public Integer getPoint() {
-        return point;
     }
 }
