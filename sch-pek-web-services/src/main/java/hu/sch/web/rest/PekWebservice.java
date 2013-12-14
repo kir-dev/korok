@@ -51,6 +51,15 @@ public abstract class PekWebservice {
         }
     }
 
+    protected void checkUid(final String uid) {
+        if (uid.length() < 2 || uid.length() > 20
+                || !PatternHolder.UID_PATTERN.matcher(uid).matches()) {
+
+            log.error("Webservice called with invalid uid={}", uid);
+            triggerErrorResponse(Response.Status.BAD_REQUEST);
+        }
+    }
+
     protected User findUserByNeptun(final String neptun) {
         final User user = userManager.findUserByNeptun(neptun, false);
 
@@ -62,4 +71,14 @@ public abstract class PekWebservice {
         return user;
     }
 
+    protected User findUserByUid(final String uid) {
+        final User user = userManager.findUserByScreenName(uid);
+
+        if (user == null) {
+            log.info("User not found with login name={}", uid);
+            triggerErrorResponse(Response.Status.NOT_FOUND);
+        }
+
+        return user;
+    }
 }
