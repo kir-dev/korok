@@ -1,6 +1,9 @@
 package hu.sch.web.rest;
 
+import hu.sch.domain.user.User;
+import hu.sch.services.UserManagerLocal;
 import hu.sch.util.PatternHolder;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -20,6 +23,8 @@ public abstract class PekWebservice {
     HttpServletRequest requestContext;
     @Context
     private UriInfo context;
+    @Inject
+    private UserManagerLocal userManager;
 
     protected void doAudit() {
         final StringBuilder auditMessage = new StringBuilder("AUDIT LOG for GET method. ");
@@ -45,4 +50,16 @@ public abstract class PekWebservice {
             triggerErrorResponse(Response.Status.BAD_REQUEST);
         }
     }
+
+    protected User findUserByNeptun(final String neptun) {
+        final User user = userManager.findUserByNeptun(neptun, false);
+
+        if (user == null) {
+            log.info("User not found with neptun code={}", neptun);
+            triggerErrorResponse(Response.Status.NOT_FOUND);
+        }
+
+        return user;
+    }
+
 }

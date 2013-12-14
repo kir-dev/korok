@@ -28,8 +28,6 @@ public class Memberships extends PekWebservice {
 
     private static final Logger log = LoggerFactory.getLogger(Memberships.class);
     @Inject
-    private UserManagerLocal userManager;
-    @Inject
     private GroupManagerLocal groupManager;
 
     @GET
@@ -42,12 +40,7 @@ public class Memberships extends PekWebservice {
 
         checkNeptun(neptun);
 
-        final User user = userManager.findUserByNeptun(neptun, true);
-
-        if (user == null) {
-            log.info("Memberships not found with neptun code=" + neptun);
-            triggerErrorResponse(Response.Status.NOT_FOUND);
-        }
+        final User user = findUserByNeptun(neptun);
 
         final Set<MembershipResult> result = new HashSet<>();
         for (Membership ms : user.getMemberships()) {
