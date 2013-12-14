@@ -1,5 +1,6 @@
 package hu.sch.web.rest;
 
+import hu.sch.util.PatternHolder;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -36,5 +37,12 @@ public abstract class PekWebservice {
 
     protected void triggerErrorResponse(final Response.Status status) {
         throw new WebApplicationException(Response.status(status).build());
+    }
+
+    protected void checkNeptun(final String neptun) {
+        if (!PatternHolder.NEPTUN_PATTERN.matcher(neptun).matches()) {
+            log.error("Webservice called with invalid neptun=" + neptun);
+            triggerErrorResponse(Response.Status.BAD_REQUEST);
+        }
     }
 }

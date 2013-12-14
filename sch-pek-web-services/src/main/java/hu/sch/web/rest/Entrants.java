@@ -47,10 +47,7 @@ public class Entrants extends PekWebservice {
             triggerErrorResponse(Response.Status.BAD_REQUEST);
         }
 
-        if (!PatternHolder.NEPTUN_PATTERN.matcher(neptun).matches()) {
-            log.error("Webservice called with invalid neptun=" + neptun);
-            triggerErrorResponse(Response.Status.BAD_REQUEST);
-        }
+        checkNeptun(neptun);
 
         final List<ApprovedEntrant> entrants = new LinkedList<>();
         try {

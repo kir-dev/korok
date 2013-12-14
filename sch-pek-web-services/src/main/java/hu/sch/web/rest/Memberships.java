@@ -40,10 +40,7 @@ public class Memberships extends PekWebservice {
 
         doAudit();
 
-        if (!PatternHolder.NEPTUN_PATTERN.matcher(neptun).matches()) {
-            log.error("Webservice called with invalid neptun=" + neptun);
-            triggerErrorResponse(Response.Status.BAD_REQUEST);
-        }
+        checkNeptun(neptun);
 
         final User user = userManager.findUserByNeptun(neptun, true);
 
