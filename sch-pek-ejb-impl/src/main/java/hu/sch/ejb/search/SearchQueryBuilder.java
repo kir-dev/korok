@@ -88,8 +88,8 @@ public class SearchQueryBuilder {
                 builder.isTrue(privAttr.get(UserAttribute_.visible)),
                 // room number consists of [dormitor] [room]
                 builder.or(
-                    builder.like(usr.get(User_.dormitory), buildLikeString(word)),
-                    builder.like(usr.get(User_.room), buildLikeString(word))
+                    buildLikeQueryPart(usr.get(User_.dormitory), buildLikeString(word)),
+                    buildLikeQueryPart(usr.get(User_.room), buildLikeString(word))
                 )
             );
     }
