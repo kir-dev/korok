@@ -47,7 +47,9 @@ public class AttributeAjaxFallbackLink extends AjaxFallbackLink {
 
         img.setImageResourceReference(getImageResourceReference());
         img.add(getImageTitleAttributeMod());
-        target.add(img);
+        if (target != null) {
+            target.add(img);
+        }
     }
 
     private ResourceReference getImageResourceReference() {
