@@ -8,6 +8,7 @@ import hu.sch.ejb.EjbConstructorArgument;
 import hu.sch.ejb.UserManagerBean;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
+import hu.sch.ejb.test.util.Queries;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -37,7 +38,7 @@ public class RecommendedPhotoTest extends AbstractDatabaseBackedTest {
         bean.declineRecommendedPhoto(bean.findUserByNeptun(neptun));
 
         assertFalse(bean.findUserByNeptun(neptun).isShowRecommendedPhoto());
-        assertEquals(0L, getEm().createQuery("SELECT COUNT(i) FROM SpotImage i").getSingleResult());
+        assertEquals(0, (long)Queries.count(getEm(), SpotImage.class));
     }
 
     private void createUser() {
