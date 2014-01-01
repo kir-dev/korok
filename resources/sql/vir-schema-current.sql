@@ -9,21 +9,6 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: exported_entrant_request; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE exported_entrant_request AS (
-	uid bigint,
-	nev text,
-	neptun character varying,
-	email text,
-	primary_group text,
-	entrant_num bigint,
-	indokok text
-);
-
-
---
 -- Name: user_points; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -31,34 +16,6 @@ CREATE TYPE user_points AS (
 	neptun character(6),
 	points numeric
 );
-
-
---
--- Name: export_entrant_requests(text, text, integer); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION export_entrant_requests(text, text, integer) RETURNS SETOF exported_entrant_request
-    LANGUAGE sql
-    AS $_$
-SELECT
-    u.usr_id, u.usr_lastname || ' ' || u.usr_firstname as nev, u.usr_neptun as neptun, u.usr_email as email,
-    primary_g.grp_name as primary_group, COUNT(*) as entrant_num,
-    array_to_string(array_agg('*' || g.grp_name || '*: ' || bi.szoveges_ertekeles), ' || ') as indokok
-  FROM belepoigenyles bi
-  INNER JOIN ertekelesek e ON bi.ertekeles_id = e.id
-  INNER JOIN users u ON bi.usr_id = u.usr_id
-  INNER JOIN groups g ON e.grp_id = g.grp_id
-  LEFT JOIN grp_membership gm ON u.usr_svie_primary_membership = gm.id
-  LEFT JOIN groups primary_g ON gm.grp_id = primary_g.grp_id
-
-  WHERE bi.belepo_tipus = $2 AND
-  e.semester = $1 AND
-  e.belepoigeny_statusz = 'ELFOGADVA' AND
-  e.next_version IS NULL
-  GROUP BY u.usr_id, u.usr_lastname, u.usr_firstname, u.usr_neptun, u.usr_email, primary_g.grp_name
-  HAVING COUNT(*) >= $3
-  ORDER BY nev;
-$_$;
 
 
 --

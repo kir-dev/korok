@@ -3,10 +3,9 @@ package hu.sch.domain;
 import java.io.Serializable;
 
 /**
- * Az export_entrant_requests tárolt eljárás eredményeihez használjuk.
+ * A belépő exportnál egy export egy elemet reprezentál.
  *
- * A tárolt eljárás és a hozzá tartozó típus definíciója a
- * resources/export_entrant_requests.sql-ben található
+ * Egy felhasználóhoz több ilyen is tartozhat.
  *
  * @author  messo
  * @author  balo
