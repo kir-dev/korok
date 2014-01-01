@@ -302,7 +302,7 @@ public class UserManagerBean implements UserManagerLocal {
             String imgPath = imageSaver.copy(si.getImageFullPath()).getRelativePath();
             user.setPhotoPath(imgPath);
 
-            removeSpotImage(si);
+            removeSpotImage(user, si);
 
             return true;
         } catch (NoResultException ex) {
@@ -319,7 +319,7 @@ public class UserManagerBean implements UserManagerLocal {
         q.setParameter("neptunCode", user.getNeptunCode());
         SpotImage img = q.getSingleResult();
 
-        removeSpotImage(img);
+        removeSpotImage(user, img);
     }
 
     @Override
@@ -345,7 +345,7 @@ public class UserManagerBean implements UserManagerLocal {
      *
      * @param img the image to delete
      */
-    private void removeSpotImage(SpotImage img) {
+    private void removeSpotImage(User user, SpotImage img) {
         try {
             Files.deleteIfExists(Paths.get(img.getImageFullPath()));
         } catch (IOException ex) {
@@ -353,8 +353,8 @@ public class UserManagerBean implements UserManagerLocal {
             // nothing to do.
         }
 
-        // this updates the user record via a trigger.
-        // usr_show_recommended will be false after the update.
         em.remove(img);
+        // update user to not show recommended photo
+        user.setShowRecommendedPhoto(false);
     }
 }

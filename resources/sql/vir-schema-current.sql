@@ -9,7 +9,6 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: exported_entrant_request; Type: TYPE; Schema: public; Owner: kir
 -- Name: exported_entrant_request; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -96,21 +95,6 @@ DECLARE
 BEGIN
   UPDATE users SET usr_show_recommended_photo = TRUE WHERE usr_neptun = NEW.usr_neptun;
   RETURN NULL;
-END;
-$$;
-
-
---
--- Name: update_user_recommended_photo_before_delete(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION update_user_recommended_photo_before_delete() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-BEGIN
-  UPDATE users SET usr_show_recommended_photo = FALSE WHERE usr_neptun = OLD.usr_neptun;
-  RETURN OLD;
 END;
 $$;
 
@@ -754,13 +738,6 @@ CREATE TRIGGER after_insert AFTER INSERT ON spot_images FOR EACH ROW EXECUTE PRO
 
 
 --
--- Name: before_delete; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER before_delete BEFORE DELETE ON spot_images FOR EACH ROW EXECUTE PROCEDURE update_user_recommended_photo_before_delete();
-
-
---
 -- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -934,43 +911,6 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY usr_private_attrs
     ADD CONSTRAINT usr_private_attrs_usr_id_fkey FOREIGN KEY (usr_id) REFERENCES users(usr_id);
-
-
---
--- Name: public; Type: ACL; Schema: -; Owner: -
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
--- Name: groups; Type: ACL; Schema: public; Owner: -
---
-
-REVOKE ALL ON TABLE groups FROM PUBLIC;
-REVOKE ALL ON TABLE groups FROM kir;
-GRANT ALL ON TABLE groups TO kir;
-
-
---
--- Name: neptun_list; Type: ACL; Schema: public; Owner: -
---
-
-REVOKE ALL ON TABLE neptun_list FROM PUBLIC;
-REVOKE ALL ON TABLE neptun_list FROM kir;
-GRANT ALL ON TABLE neptun_list TO kir;
-
-
---
--- Name: users; Type: ACL; Schema: public; Owner: -
---
-
-REVOKE ALL ON TABLE users FROM PUBLIC;
-REVOKE ALL ON TABLE users FROM kir;
-GRANT ALL ON TABLE users TO kir;
 
 
 --
