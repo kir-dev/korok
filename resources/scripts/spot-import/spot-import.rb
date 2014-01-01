@@ -164,12 +164,17 @@ puts "\tDeleting existing records from..."
 spot_images.delete
 
 puts "\tInserting entries to database..."
+neptuns = []
 source_images.each do |f|
   neptun = File.basename f, ".*"
+  neptuns << neptun.upcase
   path = File.join RECOMMENDED_FOLDER, images[f]
 
   # insert
   spot_images.insert :usr_neptun => neptun.upcase, :image_path => path
 end
+
+# update user to show recommended photo
+DB[:users].where(:usr_neptun => neptuns).update(:usr_show_recommended_photo => true)
 
 puts "Done. Total number of files: #{total_number}. Processed: #{processed}."

@@ -84,21 +84,6 @@ ORDER BY neptun ASC
 $_$;
 
 
---
--- Name: update_user_recommended_photo_after_insert(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION update_user_recommended_photo_after_insert() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-BEGIN
-  UPDATE users SET usr_show_recommended_photo = TRUE WHERE usr_neptun = NEW.usr_neptun;
-  RETURN NULL;
-END;
-$$;
-
-
 SET default_tablespace = '';
 
 SET default_with_oids = true;
@@ -728,13 +713,6 @@ CREATE UNIQUE INDEX users_usr_neptun_idx ON users USING btree (upper((usr_neptun
 --
 
 CREATE UNIQUE INDEX users_usr_screen_name_idx ON users USING btree (upper((usr_screen_name)::text));
-
-
---
--- Name: after_insert; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER after_insert AFTER INSERT ON spot_images FOR EACH ROW EXECUTE PROCEDURE update_user_recommended_photo_after_insert();
 
 
 --
