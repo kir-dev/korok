@@ -1,7 +1,6 @@
 package hu.sch.ejb;
 
 import hu.sch.domain.ConsideredValuation;
-import hu.sch.domain.EntrantExportRecord;
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.GivenPoint;
@@ -685,36 +684,9 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     @Override
     public final String findApprovedEntrantsForExport(final Semester semester,
             final EntrantType entrantType, final int minEntrantNum) {
+        EntrantExporter exporter = new EntrantExporter(em, semester, entrantType, minEntrantNum);
 
-        final Query query =
-                em.createNativeQuery("SELECT * FROM export_entrant_requests(:semester, :entrantType, :num)");
-
-        query.setParameter("semester", semester.getId());
-        query.setParameter("entrantType", entrantType.toString());
-        query.setParameter("num", minEntrantNum);
-
-        final String DELIMITER = EntrantExportRecord.DELIMITER;
-
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append("Név").append(DELIMITER);
-        sb.append("Neptun").append(DELIMITER);
-        sb.append("E-mail").append(DELIMITER);
-        sb.append("Elsődleges kör").append(DELIMITER);
-        sb.append("Kapott belépők száma").append(DELIMITER);
-        sb.append("Indoklások\n");
-
-        final List<Object[]> resultList = query.getResultList();
-
-        for (Object[] record : resultList) {
-            sb.append(EntrantExportRecord.createFrom(record).toCVSformat());
-            sb.append("\n");
-        }
-
-        logger.info("Request export from entrants: " + semester + ", " + entrantType + ", "
-                + minEntrantNum + "\nRecords found=" + query.getResultList().size());
-
-        return sb.toString();
+        return exporter.toCSV();
     }
 
     @Override
