@@ -11,9 +11,9 @@ import hu.sch.domain.user.User;
 import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -60,7 +60,7 @@ public class MembershipManagerBean implements MembershipManagerLocal {
             PostType postType = (PostType) q.getSingleResult();
 
             post.setPostType(postType);
-            List<Post> posts = new ArrayList<Post>();
+            Set<Post> posts = new HashSet<Post>();
             posts.add(post);
             ms.setPosts(posts);
 

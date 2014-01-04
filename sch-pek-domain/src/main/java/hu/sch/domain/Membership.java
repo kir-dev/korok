@@ -4,7 +4,7 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.util.DateInterval;
 import hu.sch.domain.interfaces.MembershipTableEntry;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -93,7 +93,7 @@ public class Membership implements MembershipTableEntry {
     private DateInterval interval;
     //----------------------------------------------------
     @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER)
-    private List<Post> posts;
+    private Set<Post> posts;
     //----------------------------------------------------
     @Transient
     private String postsAsString;
@@ -179,11 +179,11 @@ public class Membership implements MembershipTableEntry {
     /**
      * A csoportban betöltött posztok
      */
-    public List<Post> getPosts() {
+    public Set<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(Set<Post> posts) {
         this.posts = posts;
     }
 

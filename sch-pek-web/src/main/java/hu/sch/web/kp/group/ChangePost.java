@@ -7,6 +7,7 @@ import hu.sch.web.kp.KorokPage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.*;
@@ -74,7 +75,7 @@ public final class ChangePost extends KorokPage {
                 //Az eltávolítandó posztok
                 List<Post> removedPosts = new ArrayList<Post>();
                 //A körtag eredeti posztjai
-                List<Post> posts = ms.getPosts();
+                Set<Post> posts = ms.getPosts();
                 Iterator<Post> iterator = posts.iterator();
                 while (iterator.hasNext()) {
                     Post temp = iterator.next();
