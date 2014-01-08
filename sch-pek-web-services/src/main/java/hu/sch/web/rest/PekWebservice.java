@@ -61,7 +61,7 @@ public abstract class PekWebservice {
     }
 
     protected User findUserByNeptun(final String neptun) {
-        final User user = userManager.findUserByNeptun(neptun, false);
+        final User user = userManager.findUserByNeptun(neptun, true);
 
         if (user == null) {
             log.info("User not found with neptun code={}", neptun);
