@@ -2,6 +2,7 @@ package hu.sch.domain.user;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -68,4 +69,35 @@ public class LostPasswordToken implements Serializable {
     public Date getCreated() {
         return created;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.subjectUser);
+        hash = 59 * hash + Objects.hashCode(this.token);
+        hash = 59 * hash + Objects.hashCode(this.created);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final LostPasswordToken other = (LostPasswordToken) obj;
+        if (!Objects.equals(this.subjectUser, other.subjectUser)) {
+            return false;
+        }
+        if (!Objects.equals(this.token, other.token)) {
+            return false;
+        }
+        if (!Objects.equals(this.created, other.created)) {
+            return false;
+        }
+        return true;
+    }
+
 }
