@@ -1,8 +1,0 @@
-source 'https://rubygems.org'
-
-gem 'pg'
-gem 'sequel'
-gem 'sequel_pg'
-
-gem "net-ldap",
-	:git => "git://github.com/ruby-ldap/ruby-net-ldap.git", :branch => "master"
