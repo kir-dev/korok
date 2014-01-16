@@ -3,13 +3,12 @@ package hu.sch.domain;
 import hu.sch.domain.enums.GroupStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.logging.Log;
+import hu.sch.util.HungarianStringComparator;
 import java.io.Serializable;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -391,8 +390,7 @@ public class Group implements Serializable, Comparable<Group> {
 
     @Override
     public int compareTo(Group o) {
-        Collator huCollator = Collator.getInstance(new Locale("hu"));
-        return huCollator.compare(getName(), o.getName());
+        return HungarianStringComparator.scompare(getName(), o.getName());
     }
 
     @Override

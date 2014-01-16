@@ -2,11 +2,11 @@ package hu.sch.web.wicket.components.tables;
 
 import hu.sch.domain.Membership;
 import hu.sch.domain.interfaces.MembershipTableEntry;
+import hu.sch.util.HungarianStringComparator;
 import hu.sch.web.wicket.components.CheckBoxHelper;
 import hu.sch.web.wicket.components.CheckBoxHolder;
 import hu.sch.web.wicket.components.customlinks.UserLink;
 import java.io.Serializable;
-import java.text.Collator;
 import java.util.*;
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
@@ -36,7 +36,6 @@ import org.apache.wicket.util.convert.IConverter;
 public abstract class MembershipTable<T extends MembershipTableEntry> implements Serializable {
 
     protected AjaxFallbackDefaultDataTable<T, String> table;
-    public static final Collator huCollator = Collator.getInstance(new Locale("hu"));
     // Ezek azért vannak itt, nem pedig a Provider-ben, hogy kívülről is hozzá lehessen
     // férni, és ehhez ne kelljen az egész Providert kifelé láthatóvá tenni
     public static final String SORT_BY_NAME = "name";
@@ -177,7 +176,7 @@ public abstract class MembershipTable<T extends MembershipTableEntry> implements
                         if (s1 == null) {
                             return r * 1;
                         }
-                        return r * huCollator.compare(s0, s1);
+                        return r * HungarianStringComparator.scompare(s0, s1);
                     }
                 });
             } else if (prop.equals(SORT_BY_MEMBERSHIP)) {

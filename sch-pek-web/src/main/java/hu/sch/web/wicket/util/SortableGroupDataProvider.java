@@ -1,7 +1,7 @@
 package hu.sch.web.wicket.util;
 
 import hu.sch.domain.Group;
-import java.text.Collator;
+import hu.sch.util.HungarianStringComparator;
 import java.util.*;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
@@ -15,7 +15,6 @@ import org.apache.wicket.model.IModel;
 public class SortableGroupDataProvider extends SortableDataProvider<Group, String> {
 
     private List<Group> groups;
-    private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
 
     public SortableGroupDataProvider(List<Group> groups) {
         this.groups = groups;
@@ -43,7 +42,7 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group, Strin
 
                     @Override
                     public int compare(Group o1, Group o2) {
-                        return huCollator.compare(o1.getName(), o2.getName());
+                        return HungarianStringComparator.scompare(o1.getName(), o2.getName());
                     }
                 });
             } else {
@@ -51,7 +50,7 @@ public class SortableGroupDataProvider extends SortableDataProvider<Group, Strin
 
                     @Override
                     public int compare(Group o1, Group o2) {
-                        return huCollator.compare(o2.getName(), o1.getName());
+                        return HungarianStringComparator.scompare(o1.getName(), o2.getName());
                     }
                 });
             }

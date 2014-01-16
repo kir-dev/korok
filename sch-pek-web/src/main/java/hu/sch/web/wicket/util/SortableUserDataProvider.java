@@ -1,7 +1,7 @@
 package hu.sch.web.wicket.util;
 
 import hu.sch.domain.user.User;
-import java.text.Collator;
+import hu.sch.util.HungarianStringComparator;
 import java.util.*;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
@@ -16,7 +16,6 @@ import org.apache.wicket.model.Model;
 public class SortableUserDataProvider extends SortableDataProvider<User, String> {
 
     private List<User> users;
-    private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
 
     public SortableUserDataProvider(List<User> user) {
         users = user;
@@ -41,29 +40,26 @@ public class SortableUserDataProvider extends SortableDataProvider<User, String>
         if (prop.equals("name")) {
             if (asc) {
                 Collections.sort(users, new Comparator<User>() {
-
                     @Override
                     public int compare(User o1, User o2) {
-                        return huCollator.compare(o1.getFullName(), o2.getFullName());
+                        return HungarianStringComparator.scompare(o1.getFullName(), o2.getFullName());
                     }
                 });
             } else {
                 Collections.sort(users, new Comparator<User>() {
-
                     @Override
                     public int compare(User o1, User o2) {
-                        return huCollator.compare(o2.getFullName(), o1.getFullName());
+                        return HungarianStringComparator.scompare(o1.getFullName(), o2.getFullName());
                     }
                 });
             }
         } else if (prop.equals("svieMembershipType")) {
             if (asc) {
                 Collections.sort(users, new Comparator<User>() {
-
                     @Override
                     public int compare(User o1, User o2) {
                         if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
-                            return huCollator.compare(o1.getFullName(), o2.getFullName());
+                            return HungarianStringComparator.scompare(o1.getFullName(), o2.getFullName());
                         } else {
                             return o1.getSvieMembershipType().compareTo(o2.getSvieMembershipType());
                         }
@@ -71,11 +67,10 @@ public class SortableUserDataProvider extends SortableDataProvider<User, String>
                 });
             } else {
                 Collections.sort(users, new Comparator<User>() {
-
                     @Override
                     public int compare(User o1, User o2) {
                         if (o1.getSvieMembershipType().equals(o2.getSvieMembershipType())) {
-                            return huCollator.compare(o2.getFullName(), o1.getFullName());
+                            return HungarianStringComparator.scompare(o1.getFullName(), o2.getFullName());
                         } else {
                             return o2.getSvieMembershipType().compareTo(o1.getSvieMembershipType());
                         }

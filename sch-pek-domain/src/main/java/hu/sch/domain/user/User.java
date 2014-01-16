@@ -5,9 +5,9 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.config.Configuration;
+import hu.sch.util.HungarianStringComparator;
 import java.io.Serializable;
 import java.nio.file.Paths;
-import java.text.Collator;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -41,7 +41,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class User implements Serializable, Comparable<User> {
 
-    private static final Collator huCollator = Collator.getInstance(new Locale("hu"));
     private static final long serialVersionUID = 1L;
     public static final String findWithMemberships = "findUserWithMemberships";
     public static final String findUserByNeptunCode = "findUserByNeptunCode";
@@ -691,11 +690,11 @@ public class User implements Serializable, Comparable<User> {
 
     @Override
     public int compareTo(User o) {
-        return huCollator.compare(getFullName(), o.getFullName());
+        return HungarianStringComparator.scompare(getFullName(), o.getFullName());
     }
 
     public int compareToBySvieMemberText(final User u, final Membership compareToMs) {
-        return huCollator.compare(getSvieMemberText(compareToMs), u.getSvieMemberText(compareToMs));
+        return HungarianStringComparator.scompare(getSvieMemberText(compareToMs), u.getSvieMemberText(compareToMs));
     }
 
     /**

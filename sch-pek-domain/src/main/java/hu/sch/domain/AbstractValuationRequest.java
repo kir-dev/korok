@@ -2,9 +2,8 @@ package hu.sch.domain;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.interfaces.HasUserRelation;
+import hu.sch.util.HungarianStringComparator;
 import java.io.Serializable;
-import java.text.Collator;
-import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -99,7 +98,6 @@ public abstract class AbstractValuationRequest
 
     @Override
     public int compareTo(final AbstractValuationRequest o) {
-        final Collator huCollator = Collator.getInstance(new Locale("hu"));
-        return huCollator.compare(user.getFullName(), o.getUser().getFullName());
+        return HungarianStringComparator.scompare(user.getFullName(), o.getUser().getFullName());
     }
 }
