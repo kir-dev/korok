@@ -40,6 +40,7 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     @PostConstruct
     void init() {
+        config = Configuration.getInstance();
         showUserLink = "https://" + config.getProfileDomain() + "/profile/show/virid/";
         baseLink = "https://" + config.getKorokDomain() + "/korok/";
         valuationLink = baseLink + "valuation";
