@@ -456,7 +456,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             final String emailTemplate =
                     MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_TO_GROUPLEADER_BODY);
             final String emailText = String.format(emailTemplate,
-                    msg.getGroup().getName(), msg.getMessage(), SystemManagerBean.valuationLink);
+                    msg.getGroup().getName(), msg.getMessage(), systemManager.getValuationLink());
 
             mailManager.sendEmail(recipient, subject, emailText);
         }
@@ -474,7 +474,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                     MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_TO_JETI_BODY);
 
             final String emailText = String.format(emailTemplate,
-                    msg.getGroup().getName(), msg.getMessage(), SystemManagerBean.considerLink);
+                    msg.getGroup().getName(), msg.getMessage(), systemManager.getConsiderLink());
 
             mailManager.sendEmail(recipient, subject, emailText);
         }
@@ -778,7 +778,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
             final String emailTemplate =
                     MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_SYSTEM_TO_GROUP_LEADER_BODY);
             final String emailText = String.format(emailTemplate,
-                    vm.getGroup().getName(), vm.getMessage(), SystemManagerBean.valuationLink);
+                    vm.getGroup().getName(), vm.getMessage(), systemManager.getValuationLink());
 
             mailManager.sendEmail(groupLeader.getEmailAddress(),
                     MailManagerBean.getMailString(MailManagerBean.MAIL_VALUATIONMESSAGE_SUBJECT),

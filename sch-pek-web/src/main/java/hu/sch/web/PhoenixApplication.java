@@ -109,7 +109,7 @@ public class PhoenixApplication extends WebApplication {
      */
     @Override
     public RuntimeConfigurationType getConfigurationType() {
-        Environment env = Configuration.getEnvironment();
+        Environment env = Configuration.getInstance().getEnvironment();
 
         if (env == Environment.PRODUCTION) {
             // jelenleg csak akkor kell DEPLOYMENT, ha az environment PRODUCTION
@@ -124,7 +124,7 @@ public class PhoenixApplication extends WebApplication {
         initEjbInjects();
 
         //A környezetfüggő beállítások elvégzése
-        Environment env = Configuration.getEnvironment();
+        Environment env = Configuration.getInstance().getEnvironment();
         if (env == Environment.DEVELOPMENT || env == Environment.TESTING) {
             //Ha DEVELOPMENT környezetben vagyunk, akkor Dummyt használunk
             authorizationComponent = new DummyAuthorization();
@@ -132,7 +132,7 @@ public class PhoenixApplication extends WebApplication {
             authorizationComponent = new AgentBasedAuthorization();
         }
 
-        if (Configuration.getEnvironment().equals(Environment.PRODUCTION)) {
+        if (Configuration.getInstance().getEnvironment().equals(Environment.PRODUCTION)) {
             setRequestCycleProvider(new IRequestCycleProvider() {
                 @Override
                 public RequestCycle get(RequestCycleContext c) {
@@ -285,7 +285,7 @@ public class PhoenixApplication extends WebApplication {
         getApplicationSettings().setAccessDeniedPage(Forbidden.class);
 
         //custom error page and email report only in prod
-        if (Environment.PRODUCTION.equals(Configuration.getEnvironment())) {
+        if (Environment.PRODUCTION.equals(Configuration.getInstance().getEnvironment())) {
             //these need to get information about the requested page and the exception
             getRequestCycleListeners().add(new PageRequestHandlerTracker());
             getRequestCycleListeners().add(new AbstractRequestCycleListener() {

@@ -7,6 +7,7 @@ import hu.sch.domain.config.Configuration;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -25,16 +26,26 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemManagerBean.class);
     //
-    static final String showUserLink = "https://" + Configuration.getProfileDomain() + "/profile/show/virid/";
-    static final String baseLink = "https://" + Configuration.getKorokDomain() + "/korok/";
-    static final String valuationLink = baseLink + "valuation";
-    static final String considerLink = baseLink + "consider";
+    transient private Configuration config;
+    private String showUserLink;
+    private String baseLink;
+    private String valuationLink;
+    private String considerLink;
+
     //
     @PersistenceContext
     EntityManager em;
     @EJB
     MailManagerBean mailManager;
 
+    @PostConstruct
+    void init() {
+        showUserLink = "https://" + config.getProfileDomain() + "/profile/show/virid/";
+        baseLink = "https://" + config.getKorokDomain() + "/korok/";
+        valuationLink = baseLink + "valuation";
+        considerLink = baseLink + "consider";
+    }
+    
     @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {
         try {
@@ -149,4 +160,25 @@ public class SystemManagerBean implements SystemManagerLocal {
 
         mailManager.sendEmail("jee-dev@sch.bme.hu", subject, String.format(body, args));
     }
+
+    @Override
+    public String getShowUserLink() {
+        return showUserLink;
+    }
+
+    @Override
+    public String getBaseLink() {
+        return baseLink;
+    }
+
+    @Override
+    public String getValuationLink() {
+        return valuationLink;
+    }
+
+    @Override
+    public String getConsiderLink() {
+        return considerLink;
+    }
+    
 }

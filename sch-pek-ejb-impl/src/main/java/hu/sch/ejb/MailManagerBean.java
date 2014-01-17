@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.mail.Message;
@@ -54,6 +55,8 @@ public class MailManagerBean {
     static final String MAIL_ADMIN_REPORT_SUBJECT = "admin.report.subject";
     static final String MAIL_ADMIN_REPORT_BODY = "admin.report.body";
 
+    transient private Configuration config;
+    //
     @Resource(name = "java:/mail/korokMail")
     private Session mailSession;
 
@@ -66,6 +69,11 @@ public class MailManagerBean {
         }
     }
 
+    @PostConstruct
+    public void init() {
+        config = Configuration.getInstance();
+    }
+    
     /**
      * Sends email through JDBC mail resource with the given attributes.
      * <br/>NOTE: if {@link Environment#TESTING} is active, it doesn't send email.
@@ -78,14 +86,14 @@ public class MailManagerBean {
     public boolean sendEmail(String to, final String subject, final String message) {
         log.info("E-mail küldés, címzett={}", to);
 
-        if (log.isDebugEnabled() || !Environment.PRODUCTION.equals(Configuration.getEnvironment())) {
+        if (log.isDebugEnabled() || !Environment.PRODUCTION.equals(config.getEnvironment())) {
             log.debug("Tárgy={}\nÜzenet={}", subject, message);
         }
 
         final Message mail = new MimeMessage(mailSession);
         try {
-            if (Configuration.getEnvironment() != Environment.PRODUCTION) {
-                to = Configuration.getDevEmail();
+            if (config.getEnvironment()!= Environment.PRODUCTION) {
+                to = config.getDevEmail();
                 log.debug("[dev mód] új címzett={}", to);
             }
 
@@ -95,7 +103,7 @@ public class MailManagerBean {
             mail.setText(message);
             mail.setSentDate(new Date());
 
-            if (Configuration.getEnvironment() != Environment.TESTING) {
+            if (config.getEnvironment()!= Environment.TESTING) {
                 // TESTING esetén ne küldjünk levelet!
                 Transport.send(mail);
                 log.info("Levél sikeresen elküldve.");

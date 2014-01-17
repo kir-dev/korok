@@ -47,6 +47,8 @@ public class User implements Serializable, Comparable<User> {
     public static final String findUser = "findUser";
     public static final String findByScreenName = "findByScreenName";
     public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
+    //
+    transient private Configuration config;
     //----------------------------------------------------
     @Id
     @GeneratedValue(generator = "users_seq")
@@ -174,6 +176,7 @@ public class User implements Serializable, Comparable<User> {
     public User() {
         this.delegated = false;
         this.showRecommendedPhoto = false;
+        this.config = Configuration.getInstance();
     }
 
     /**
@@ -481,7 +484,7 @@ public class User implements Serializable, Comparable<User> {
      * @return
      */
     public String getPhotoFullPath() {
-        return Paths.get(Configuration.getImageUploadConfig().getBasePath(),
+        return Paths.get(config.getImageUploadConfig().getBasePath(),
                 getPhotoPath()).toString();
     }
 

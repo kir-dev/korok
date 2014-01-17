@@ -42,7 +42,7 @@ public abstract class PekPage extends WebPage {
             + "]"
             + "}; "
             + "printNavbar(navbarConf);";
-    protected static final int DEFAULT_SUPPORT_ID = Configuration.getSupportDefaultId();
+    protected static final int DEFAULT_SUPPORT_ID = Configuration.getInstance().getSupportDefaultId();
     private Label titleLabel;
     private Label navbarScript;
     private Label headerLabel;
@@ -176,6 +176,6 @@ public abstract class PekPage extends WebPage {
      * @return the full url with the protocol and the support target id
      */
     protected String getSupportUrl() {
-        return Configuration.getSupportBaseUrl() + DEFAULT_SUPPORT_ID;
+        return Configuration.getInstance().getSupportBaseUrl()+ DEFAULT_SUPPORT_ID;
     }
 }

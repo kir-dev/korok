@@ -102,4 +102,32 @@ public interface SystemManagerLocal {
      * @param params
      */
     void sendExceptionReportMail(final Map<SystemManagerLocal.EXC_REPORT_KEYS, String> params);
+    
+    /**
+     * Gets the user profile url.
+     * 
+     * @return the url.
+     */
+    public String getShowUserLink();
+
+    /**
+     * Gets the korok base url.
+     * 
+     * @return the url.
+     */
+    public String getBaseLink();
+
+    /**
+     * Gets the valuation url.
+     * 
+     * @return the url.
+     */
+    public String getValuationLink();
+
+    /**
+     * Gets the consider url.
+     * 
+     * @return the url.
+     */
+    public String getConsiderLink();
 }

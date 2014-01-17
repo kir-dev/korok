@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
@@ -48,6 +49,8 @@ public class AccountManagerBean implements AccountManager {
     private static final int PASSWORD_SALT_LENGTH = 8;
     public static final long LOST_PW_TOKEN_VALID_MS = 24 * 60 * 60 * 1000; //24 hours in ms
     //
+    transient private Configuration config;
+    //
     @PersistenceContext
     private EntityManager em;
     //
@@ -65,6 +68,11 @@ public class AccountManagerBean implements AccountManager {
 
     public AccountManagerBean(final EntityManager em) {
         this.em = em;
+    }
+
+    @PostConstruct
+    public void init() {
+        config = Configuration.getInstance();
     }
 
     /**
@@ -161,7 +169,7 @@ public class AccountManagerBean implements AccountManager {
 
     private String generateConfirmationLink(final User user) {
         return String.format("https://%s/profile/confirm/code/%s",
-                Configuration.getProfileDomain(),
+                config.getProfileDomain(),
                 user.getConfirmationCode());
     }
 
@@ -362,7 +370,7 @@ public class AccountManagerBean implements AccountManager {
 
     private String generateLostPasswordLink(final LostPasswordToken token) {
         return String.format("https://%s/profile/replacelostpassword/token/%s",
-                Configuration.getProfileDomain(),
+                config.getProfileDomain(),
                 token.getToken());
     }
 

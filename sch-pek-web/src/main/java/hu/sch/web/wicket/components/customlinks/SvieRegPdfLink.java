@@ -49,7 +49,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
     static {
         try {
             arialUnicode =
-                    BaseFont.createFont(Configuration.getFontPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                    BaseFont.createFont(Configuration.getInstance().getFontPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             font = new Font(arialUnicode, 12);
 
             StringBuilder sb = new StringBuilder(150);

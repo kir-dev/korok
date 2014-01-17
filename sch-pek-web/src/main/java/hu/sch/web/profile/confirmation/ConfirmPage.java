@@ -82,7 +82,7 @@ public final class ConfirmPage extends ProfilePage {
         try {
             accountManager.confirm(user, password);
             info(String.format(getString("confirm.success"),
-                    Configuration.getProfileDomain()));
+                    Configuration.getInstance().getProfileDomain()));
 
             return true;
         } catch (PekEJBException ex) {

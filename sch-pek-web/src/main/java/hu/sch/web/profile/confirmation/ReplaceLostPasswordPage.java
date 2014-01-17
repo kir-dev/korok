@@ -69,7 +69,7 @@ public class ReplaceLostPasswordPage extends ProfilePage {
         try {
             accountManager.replaceLostPassword(lostPasswordCode, password);
             info(String.format(getString("replacepassword.success"),
-                    Configuration.getProfileDomain()));
+                    Configuration.getInstance().getProfileDomain()));
 
             return true;
         } catch (PekEJBException ex) {

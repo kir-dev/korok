@@ -53,11 +53,25 @@ public class Configuration {
     private static final String SUPPORT_BASE_URL = "support.baseUrl";
     private static final String SUPPORT_DEFAULT_ID = "support.defaultId";
 
-    private static final Properties properties = new Properties();
-    private static final String baseDir;
-    private static Environment environment = null;
+    private final Properties properties = new Properties();
+    private final String baseDir;
+    private Environment environment = null;
 
-    static {
+    private static Configuration instance;
+
+    public static Configuration getInstance() {
+        if (instance == null) {
+            instance = new Configuration();
+        }
+
+        return instance;
+    }
+
+    public static void override(Configuration conf) {
+        instance = conf;
+    }
+
+    private Configuration() {
         String dir = System.getProperty(PROPERTY_NAME);
 
         if (dir == null) {
@@ -79,7 +93,7 @@ public class Configuration {
         }
     }
 
-    public static Environment getEnvironment() {
+    public Environment getEnvironment() {
         if (environment == null) {
             String env = properties.getProperty("wicket.configuration", "DEVELOPMENT");
             try {
@@ -93,34 +107,31 @@ public class Configuration {
         return environment;
     }
 
-    public static String getDevEmail() {
+    public String getDevEmail() {
         return properties.getProperty("devMail");
     }
 
-    public static String getProfileDomain() {
+    public String getProfileDomain() {
         return properties.getProperty(DOMAIN_PROFILE);
     }
 
-    public static String getKorokDomain() {
+    public String getKorokDomain() {
         return properties.getProperty(DOMAIN_KOROK);
     }
 
-    public static String getSupportBaseUrl() {
+    public String getSupportBaseUrl() {
         return properties.getProperty(SUPPORT_BASE_URL);
     }
 
-    public static int getSupportDefaultId() {
+    public int getSupportDefaultId() {
         return Integer.parseInt(properties.getProperty(SUPPORT_DEFAULT_ID));
     }
 
-    private Configuration() {
-    }
-
-    public static String getFontPath() {
+    public String getFontPath() {
         return baseDir + APPLICATION_FOLDER + "/" + properties.getProperty(TIMES_FONT_FILE);
     }
 
-    public static ImageUploadConfig getImageUploadConfig() {
+    public ImageUploadConfig getImageUploadConfig() {
         String path = properties.getProperty(IMAGE_UPLOAD_PATH);
         int size = Integer.parseInt(properties.getProperty(IMAGE_MAX_SIZE, "400"));
 

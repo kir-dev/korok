@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.*;
@@ -46,7 +47,9 @@ public class UserManagerBean implements UserManagerLocal {
     PostManagerLocal postManager;
     @EJB
     private SystemManagerLocal systemManager;
-
+    //
+    transient private Configuration config;
+    //
     public UserManagerBean() {
     }
 
@@ -56,6 +59,11 @@ public class UserManagerBean implements UserManagerLocal {
         this.systemManager = args.getSystemManager();
     }
 
+    @PostConstruct
+    public void init() {
+        config = Configuration.getInstance();
+    }
+    
     @Override
     public User findUserById(Long userId) {
         return findUserById(userId, false);
@@ -183,7 +191,7 @@ public class UserManagerBean implements UserManagerLocal {
     public void updateUser(User user, ProfileImage image) throws PekEJBException {
         // process image
         if (image != null) {
-            ImageProcessor proc = new ImageProcessor(user, image, Configuration.getImageUploadConfig());
+            ImageProcessor proc = new ImageProcessor(user, image, config.getImageUploadConfig());
             String imagePath = proc.process();
             user.setPhotoPath(imagePath);
         }

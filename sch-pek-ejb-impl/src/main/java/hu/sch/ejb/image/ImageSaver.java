@@ -6,12 +6,10 @@ import hu.sch.domain.user.User;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.PekErrorCode;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,13 +22,17 @@ import org.slf4j.LoggerFactory;
  */
 public final class ImageSaver {
 
+    transient private Configuration config;
+    //
     private static final Logger logger = LoggerFactory.getLogger(ImageSaver.class);
-    private static final ImageUploadConfig config = Configuration.getImageUploadConfig();
     private final User user;
     private Path lastPath = null;
+    private ImageUploadConfig imageConfig;
 
     public ImageSaver(User user) {
         this.user = user;
+        config = Configuration.getInstance();
+        imageConfig = config.getImageUploadConfig();
     }
 
     public ImageSaver copy(String sourcePath) throws PekEJBException {
@@ -46,7 +48,6 @@ public final class ImageSaver {
         return save(img.getName(), bytes);
     }
 
-
     public ImageSaver save(String filename, byte[] data) throws PekEJBException {
         try {
             lastPath = Files.write(buildImagePath(filename), data);
@@ -60,14 +61,14 @@ public final class ImageSaver {
 
     /**
      * Gets the last processed images' path relative to the uploads base path.
-     * 
+     *
      * @return
      */
     public String getRelativePath() {
         if (lastPath == null) {
             throw new IllegalStateException("There is no last saved file path. Call save() first.");
         }
-        Path base = Paths.get(config.getBasePath());
+        Path base = Paths.get(imageConfig.getBasePath());
         Path relative = base.relativize(lastPath);
         return relative.toString();
     }
@@ -84,10 +85,10 @@ public final class ImageSaver {
     private Path buildImagePath(String filename) {
         // NOTE: file path (relative to base path) needs to be all downcase
         Path dir = Paths.get(
-                config.getBasePath(),
+                imageConfig.getBasePath(),
                 user.getScreenName().substring(0, 1).toLowerCase(),
                 user.getScreenName().toLowerCase());
-        
+
         dir.toFile().mkdirs();
 
         return Paths.get(dir.toString(), filename);

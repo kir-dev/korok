@@ -23,6 +23,12 @@ import javax.validation.constraints.NotNull;
 public class SpotImage implements Serializable {
 
     public static final String findByNeptun = "findSpotImageByNeptun";
+
+    transient private Configuration config;
+    public SpotImage() {
+        config = Configuration.getInstance();
+    }
+    
     @Id
     @Column(name = "usr_neptun", nullable = false)
     private String neptunCode;
@@ -55,7 +61,7 @@ public class SpotImage implements Serializable {
     }
 
     public String getImageFullPath() {
-        return Paths.get(Configuration.getImageUploadConfig().getBasePath(),
+        return Paths.get(config.getImageUploadConfig().getBasePath(),
                 getImagePath()).toString();
     }
 }

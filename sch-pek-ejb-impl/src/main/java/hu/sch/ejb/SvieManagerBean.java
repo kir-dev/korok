@@ -10,6 +10,7 @@ import hu.sch.services.GroupManagerLocal;
 import hu.sch.services.LogManagerLocal;
 import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.SvieManagerLocal;
+import hu.sch.services.SystemManagerLocal;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -36,6 +37,8 @@ public class SvieManagerBean implements SvieManagerLocal {
     private MailManagerBean mailManager;
     @EJB(name = "LogManagerBean")
     private LogManagerLocal logManager;
+    @EJB
+    private SystemManagerLocal systemManager;
     @PersistenceContext
     private EntityManager em;
 
@@ -106,7 +109,7 @@ public class SvieManagerBean implements SvieManagerLocal {
     }
 
     private void sendPrimaryMembershipChangedMail(final User user) {
-        final String profileLink = SystemManagerBean.showUserLink + user.getId();
+        final String profileLink = systemManager.getShowUserLink() + user.getId();
         final String subject =
                 MailManagerBean.getMailString(MailManagerBean.MAIL_PRIMARYMEMBERSHIP_CHANGED_SUBJECT);
 

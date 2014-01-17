@@ -156,7 +156,7 @@ public class TimerServiceBean {
             }
 
             mailBodyForUser.append(current.getUser().getFullName()).append(" -> ");
-            mailBodyForUser.append(SystemManagerBean.showUserLink).append(current.getUser().getId()).append("\n");
+            mailBodyForUser.append(systemManager.getShowUserLink()).append(current.getUser().getId()).append("\n");
         }
 
         return mailBodyForUser.toString();
