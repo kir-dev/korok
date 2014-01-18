@@ -91,6 +91,9 @@ public class GroupHistory extends KorokPage {
 
             @Override
             protected void onSelectionChanged(final Valuation selected) {
+                if(selected == null){
+                    return;
+                }
                 PageParameters pp = new PageParameters();
                 pp.add("id", id.toString());
                 pp.add("sid", selected.getSemester().getId());

@@ -126,6 +126,9 @@ public class Valuations extends KorokPage {
 
             @Override
             protected void onSelectionChanged(final Group selected) {
+                if(selected == null){
+                    return;
+                }
                 setResponsePage(Valuations.class, new PageParameters().add("id", selected.getId()));
             }
         });
