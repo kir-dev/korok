@@ -299,7 +299,7 @@ public class UserManagerBean implements UserManagerLocal {
             SpotImage si = q.getSingleResult();
 
             ImageSaver imageSaver = new ImageSaver(user);
-            String imgPath = imageSaver.copy(si.getImageFullPath()).getRelativePath();
+            String imgPath = imageSaver.copy(si.getImageFullPath(config.getImageUploadConfig().getBasePath())).getRelativePath();
             user.setPhotoPath(imgPath);
 
             removeSpotImage(user, si);
@@ -347,7 +347,7 @@ public class UserManagerBean implements UserManagerLocal {
      */
     private void removeSpotImage(User user, SpotImage img) {
         try {
-            Files.deleteIfExists(Paths.get(img.getImageFullPath()));
+            Files.deleteIfExists(Paths.get(img.getImageFullPath(config.getImageUploadConfig().getBasePath())));
         } catch (IOException ex) {
             logger.warn("IO Error while deleting file.", ex);
             // nothing to do.

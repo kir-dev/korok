@@ -4,7 +4,6 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.enums.SvieStatus;
-import hu.sch.domain.config.Configuration;
 import hu.sch.util.HungarianStringComparator;
 import java.io.Serializable;
 import java.nio.file.Paths;
@@ -47,8 +46,6 @@ public class User implements Serializable, Comparable<User> {
     public static final String findUser = "findUser";
     public static final String findByScreenName = "findByScreenName";
     public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
-    //
-    transient private Configuration config;
     //----------------------------------------------------
     @Id
     @GeneratedValue(generator = "users_seq")
@@ -176,7 +173,6 @@ public class User implements Serializable, Comparable<User> {
     public User() {
         this.delegated = false;
         this.showRecommendedPhoto = false;
-        this.config = Configuration.getInstance();
     }
 
     /**
@@ -483,9 +479,8 @@ public class User implements Serializable, Comparable<User> {
      *
      * @return
      */
-    public String getPhotoFullPath() {
-        return Paths.get(config.getImageUploadConfig().getBasePath(),
-                getPhotoPath()).toString();
+    public String getPhotoFullPath(String basePath) {
+        return Paths.get(basePath, getPhotoPath()).toString();
     }
 
     /**

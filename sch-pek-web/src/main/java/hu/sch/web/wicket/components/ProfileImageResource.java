@@ -1,5 +1,6 @@
 package hu.sch.web.wicket.components;
 
+import hu.sch.domain.config.Configuration;
 import hu.sch.domain.user.User;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +27,7 @@ public class ProfileImageResource extends DynamicImageResource {
 
     @Override
     protected byte[] getImageData(Attributes atrbts) {
-        Path imagePath = Paths.get(user.getPhotoFullPath());
+        Path imagePath = Paths.get(user.getPhotoFullPath(Configuration.getInstance().getImageUploadConfig().getBasePath()));
         if (imagePath.toFile().exists()) {
             try {
                 return Files.readAllBytes(imagePath);

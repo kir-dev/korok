@@ -1,6 +1,5 @@
 package hu.sch.domain;
 
-import hu.sch.domain.config.Configuration;
 import java.io.Serializable;
 import java.nio.file.Paths;
 import javax.persistence.Column;
@@ -24,11 +23,6 @@ public class SpotImage implements Serializable {
 
     public static final String findByNeptun = "findSpotImageByNeptun";
 
-    transient private Configuration config;
-    public SpotImage() {
-        config = Configuration.getInstance();
-    }
-    
     @Id
     @Column(name = "usr_neptun", nullable = false)
     private String neptunCode;
@@ -60,8 +54,7 @@ public class SpotImage implements Serializable {
         this.imagePath = imagePath;
     }
 
-    public String getImageFullPath() {
-        return Paths.get(config.getImageUploadConfig().getBasePath(),
-                getImagePath()).toString();
+    public String getImageFullPath(String basePath) {
+        return Paths.get(basePath, getImagePath()).toString();
     }
 }
