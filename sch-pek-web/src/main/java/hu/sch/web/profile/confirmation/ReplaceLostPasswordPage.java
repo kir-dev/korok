@@ -1,6 +1,5 @@
 package hu.sch.web.profile.confirmation;
 
-import hu.sch.domain.config.Configuration;
 import hu.sch.domain.user.LostPasswordToken;
 import hu.sch.services.AccountManager;
 import hu.sch.services.exceptions.PekEJBException;
@@ -69,7 +68,7 @@ public class ReplaceLostPasswordPage extends ProfilePage {
         try {
             accountManager.replaceLostPassword(lostPasswordCode, password);
             info(String.format(getString("replacepassword.success"),
-                    Configuration.getInstance().getProfileDomain()));
+                    config.getProfileDomain()));
 
             return true;
         } catch (PekEJBException ex) {

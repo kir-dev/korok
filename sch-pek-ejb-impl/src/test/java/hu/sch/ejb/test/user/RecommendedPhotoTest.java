@@ -1,11 +1,11 @@
 package hu.sch.ejb.test.user;
 
 import hu.sch.domain.SpotImage;
-import hu.sch.domain.config.Configuration;
-import hu.sch.domain.config.ImageUploadConfig;
+import hu.sch.services.config.ImageUploadConfig;
 import hu.sch.domain.user.User;
 import hu.sch.ejb.EjbConstructorArgument;
 import hu.sch.ejb.UserManagerBean;
+import hu.sch.services.config.Configuration;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
 import hu.sch.ejb.test.util.Queries;
@@ -25,11 +25,11 @@ public class RecommendedPhotoTest extends AbstractDatabaseBackedTest {
     @Override
     protected void before() {
         Configuration cfg =  mock(Configuration.class);
-        when(cfg.getImageUploadConfig_instance()).thenReturn(new ImageUploadConfig("/", 200));
+        when(cfg.getImageUploadConfig()).thenReturn(new ImageUploadConfig("/", 200));
 
-        Configuration.override(cfg);
-
-        bean = new UserManagerBean(new EjbConstructorArgument(getEm()));
+        final EjbConstructorArgument args = new EjbConstructorArgument(getEm());
+        args.setConfig(cfg);
+        bean = new UserManagerBean(args);
         createUser();
     }
 

@@ -3,17 +3,19 @@ package hu.sch.ejb;
 import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Semester;
-import hu.sch.domain.config.Configuration;
+import hu.sch.services.config.Configuration;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.hibernate.validator.engine.ConfigurationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,8 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemManagerBean.class);
     //
-    transient private Configuration config;
+    @Inject
+    private Configuration config;
     private String showUserLink;
     private String baseLink;
     private String valuationLink;
@@ -40,7 +43,6 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     @PostConstruct
     void init() {
-        config = Configuration.getInstance();
         showUserLink = "https://" + config.getProfileDomain() + "/profile/show/virid/";
         baseLink = "https://" + config.getKorokDomain() + "/korok/";
         valuationLink = baseLink + "valuation";

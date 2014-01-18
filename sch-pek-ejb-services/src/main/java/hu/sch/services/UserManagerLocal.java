@@ -172,4 +172,10 @@ public interface UserManagerLocal {
      * @param attr the attribute which visibility has to be altered
      */
     public void invertAttributeVisibility(User user, UserAttributeName attr);
+
+    /**
+     * Remove user's profile image.
+     * @param user
+     */
+    public void removeProfileImage(User user) throws PekEJBException;
 }

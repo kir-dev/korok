@@ -3,11 +3,12 @@ package hu.sch.ejb;
 import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
-import hu.sch.domain.config.Configuration;
+import hu.sch.services.config.Configuration;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.ejb.image.ImageProcessor;
+import hu.sch.ejb.image.ImageRemoverService;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
@@ -16,9 +17,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.*;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -48,8 +49,10 @@ public class UserManagerBean implements UserManagerLocal {
     @EJB
     private SystemManagerLocal systemManager;
     //
-    transient private Configuration config;
+    @Inject
+    private Configuration config;
     //
+
     public UserManagerBean() {
     }
 
@@ -57,13 +60,9 @@ public class UserManagerBean implements UserManagerLocal {
     public UserManagerBean(EjbConstructorArgument args) {
         this.em = args.getEm();
         this.systemManager = args.getSystemManager();
+        this.config = args.getConfig();
     }
 
-    @PostConstruct
-    public void init() {
-        config = Configuration.getInstance();
-    }
-    
     @Override
     public User findUserById(Long userId) {
         return findUserById(userId, false);
@@ -270,11 +269,11 @@ public class UserManagerBean implements UserManagerLocal {
             spoint = Math.min(spoint, 100);
             result.add(new SemesterPoint(s, spoint));
         }
-        
+
         //Reverse sort by semester
         Collections.sort(result);
         Collections.reverse(result);
-        
+
         return result;
     }
 
@@ -298,7 +297,7 @@ public class UserManagerBean implements UserManagerLocal {
         try {
             SpotImage si = q.getSingleResult();
 
-            ImageSaver imageSaver = new ImageSaver(user);
+            ImageSaver imageSaver = new ImageSaver(user, config.getImageUploadConfig());
             String imgPath = imageSaver.copy(si.getImageFullPath(config.getImageUploadConfig().getBasePath())).getRelativePath();
             user.setPhotoPath(imgPath);
 
@@ -356,5 +355,12 @@ public class UserManagerBean implements UserManagerLocal {
         em.remove(img);
         // update user to not show recommended photo
         user.setShowRecommendedPhoto(false);
+    }
+
+    @Override
+    public void removeProfileImage(User user) throws PekEJBException {
+        new ImageRemoverService(config).removeProfileImage(user);
+        user.setPhotoPath(null);
+        updateUser(user);
     }
 }

@@ -1,14 +1,14 @@
 package hu.sch.ejb;
 
-import hu.sch.domain.config.Configuration;
-import hu.sch.domain.config.Configuration.Environment;
+import hu.sch.services.config.Configuration;
+import hu.sch.services.config.Configuration.Environment;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -55,7 +55,8 @@ public class MailManagerBean {
     static final String MAIL_ADMIN_REPORT_SUBJECT = "admin.report.subject";
     static final String MAIL_ADMIN_REPORT_BODY = "admin.report.body";
 
-    transient private Configuration config;
+    @Inject
+    private Configuration config;
     //
     @Resource(name = "java:/mail/korokMail")
     private Session mailSession;
@@ -69,11 +70,6 @@ public class MailManagerBean {
         }
     }
 
-    @PostConstruct
-    public void init() {
-        config = Configuration.getInstance();
-    }
-    
     /**
      * Sends email through JDBC mail resource with the given attributes.
      * <br/>NOTE: if {@link Environment#TESTING} is active, it doesn't send email.

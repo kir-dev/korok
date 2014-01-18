@@ -1,6 +1,5 @@
 package hu.sch.ejb;
 
-import hu.sch.domain.config.Configuration;
 import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.enums.SvieStatus;
 import hu.sch.domain.user.Gender;
@@ -8,6 +7,7 @@ import hu.sch.domain.user.LostPasswordToken;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
 import static hu.sch.ejb.MailManagerBean.getMailString;
+import hu.sch.services.config.Configuration;
 import hu.sch.services.AccountManager;
 import hu.sch.services.Roles;
 import hu.sch.services.SystemManagerLocal;
@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -49,7 +50,8 @@ public class AccountManagerBean implements AccountManager {
     private static final int PASSWORD_SALT_LENGTH = 8;
     public static final long LOST_PW_TOKEN_VALID_MS = 24 * 60 * 60 * 1000; //24 hours in ms
     //
-    transient private Configuration config;
+    @Inject
+    private Configuration config;
     //
     @PersistenceContext
     private EntityManager em;
@@ -68,11 +70,6 @@ public class AccountManagerBean implements AccountManager {
 
     public AccountManagerBean(final EntityManager em) {
         this.em = em;
-    }
-
-    @PostConstruct
-    public void init() {
-        config = Configuration.getInstance();
     }
 
     /**

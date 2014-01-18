@@ -1,8 +1,8 @@
 package hu.sch.ejb.image;
 
-import hu.sch.domain.config.Configuration;
-import hu.sch.domain.config.ImageUploadConfig;
+import hu.sch.services.config.ImageUploadConfig;
 import hu.sch.domain.user.User;
+import hu.sch.services.config.Configuration;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.PekErrorCode;
 import java.io.File;
@@ -22,17 +22,14 @@ import org.slf4j.LoggerFactory;
  */
 public final class ImageSaver {
 
-    transient private Configuration config;
-    //
     private static final Logger logger = LoggerFactory.getLogger(ImageSaver.class);
     private final User user;
     private Path lastPath = null;
     private ImageUploadConfig imageConfig;
 
-    public ImageSaver(User user) {
+    public ImageSaver(User user, ImageUploadConfig config) {
         this.user = user;
-        config = Configuration.getInstance();
-        imageConfig = config.getImageUploadConfig();
+        imageConfig = config;
     }
 
     public ImageSaver copy(String sourcePath) throws PekEJBException {

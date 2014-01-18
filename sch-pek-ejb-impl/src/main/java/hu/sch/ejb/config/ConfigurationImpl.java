@@ -1,47 +1,27 @@
-package hu.sch.domain.config;
+package hu.sch.ejb.config;
 
+import hu.sch.services.config.ImageUploadConfig;
+import hu.sch.services.config.Configuration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Basic implementation of Configuration internface.
+ *
+ * This is the one which is used throughout the application.
  *
  * @author  aldaris
  * @author  tomi
  */
-public class Configuration {
+@ApplicationScoped
+public class ConfigurationImpl implements Configuration {
 
-    /**
-     * Környezetet leíró enum a finomhangolásért
-     */
-    public enum Environment {
-
-        /**
-         * Fejlesztői környezet, ilyenkor a Wicket is DEV módban van
-         */
-        DEVELOPMENT,
-        /**
-         * Mielőtt kiraknánk a serverre a kész rendszert, szükség lehet arra, hogy
-         * DEV módban menjen a Wicket, de az autorizáció modul már ne a DummyAuthorization
-         * legyen, hanem a rendes AgentBasedAuthorization.
-         */
-        STAGING,
-        /**
-         * A kész publikus verzió mindenképp ilyen környezettel legyen deploy-olva,
-         * mert ilyenkor a wicket már rendesen a DEPLOYMENT-et látja, mint
-         * configurationType.
-         */
-        PRODUCTION,
-        /**
-         * A funkcionális, illetve egyéb JUnit tesztekhez használatos konfiguráció,
-         * ebben az esetben a DummyAuthorization modul kerül használatra, mivel
-         * nincs ebben a környezetben agent.
-         */
-        TESTING
-    };
-    private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationImpl.class);
     private static final String PROPERTY_NAME = "application.resource.dir";
     private static final String TIMES_FONT_FILE = "times.font.file";
     private static final String APPLICATION_FOLDER = "korok";
@@ -57,21 +37,7 @@ public class Configuration {
     private final String baseDir;
     private Environment environment = null;
 
-    private static Configuration instance;
-
-    public static Configuration getInstance() {
-        if (instance == null) {
-            instance = new Configuration();
-        }
-
-        return instance;
-    }
-
-    public static void override(Configuration conf) {
-        instance = conf;
-    }
-
-    private Configuration() {
+    public ConfigurationImpl() {
         String dir = System.getProperty(PROPERTY_NAME);
 
         if (dir == null) {
@@ -93,6 +59,7 @@ public class Configuration {
         }
     }
 
+    @Override
     public Environment getEnvironment() {
         if (environment == null) {
             String env = properties.getProperty("wicket.configuration", "DEVELOPMENT");
@@ -107,30 +74,37 @@ public class Configuration {
         return environment;
     }
 
+    @Override
     public String getDevEmail() {
         return properties.getProperty("devMail");
     }
 
+    @Override
     public String getProfileDomain() {
         return properties.getProperty(DOMAIN_PROFILE);
     }
 
+    @Override
     public String getKorokDomain() {
         return properties.getProperty(DOMAIN_KOROK);
     }
 
+    @Override
     public String getSupportBaseUrl() {
         return properties.getProperty(SUPPORT_BASE_URL);
     }
 
+    @Override
     public int getSupportDefaultId() {
         return Integer.parseInt(properties.getProperty(SUPPORT_DEFAULT_ID));
     }
 
+    @Override
     public String getFontPath() {
         return baseDir + APPLICATION_FOLDER + "/" + properties.getProperty(TIMES_FONT_FILE);
     }
 
+    @Override
     public ImageUploadConfig getImageUploadConfig() {
         String path = properties.getProperty(IMAGE_UPLOAD_PATH);
         int size = Integer.parseInt(properties.getProperty(IMAGE_MAX_SIZE, "400"));
