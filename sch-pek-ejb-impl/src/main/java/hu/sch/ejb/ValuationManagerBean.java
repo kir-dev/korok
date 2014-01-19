@@ -5,6 +5,7 @@ import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.GivenPoint;
 import hu.sch.domain.Group;
+import hu.sch.domain.PointHistory;
 import hu.sch.domain.PointRequest;
 import hu.sch.domain.Semester;
 import hu.sch.domain.user.User;
@@ -691,19 +692,17 @@ public class ValuationManagerBean implements ValuationManagerLocal {
 
     @Override
     public List<GivenPoint> getPointsForKfbExport(final Semester semester) {
-        final Query q = em.createNativeQuery("SELECT * FROM getPointsForSemester(:semester, :prevSemester)");
-        q.setParameter("semester", semester.getId());
-        q.setParameter("prevSemester", semester.getPrevious().getId());
-        final List<Object[]> queryResult = q.getResultList();
+        logger.info("KFB export initiated for {}", semester);
+        TypedQuery<PointHistory> q = em.createNamedQuery(PointHistory.findBySemester, PointHistory.class);
+        q.setParameter("semester", semester);
 
-        final List<GivenPoint> points = new LinkedList<>();
-        for (Object[] record : queryResult) {
-            points.add(GivenPoint.createFrom(record));
+        List<GivenPoint> result = new LinkedList<>();
+        for (PointHistory ph : q.getResultList()) {
+            result.add(new GivenPoint(ph.getUser().getNeptunCode(), ph.getPoint()));
         }
 
-        logger.info("Request KFB export: " + semester + "; Records found=" + queryResult.size());
-
-        return points;
+        logger.info("KFB export done, generated point for {} users", result.size());
+        return result;
     }
 
     @Override

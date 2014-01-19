@@ -10,6 +10,10 @@ DROP FUNCTION update_user_recommended_photo_after_insert();
 DROP FUNCTION export_entrant_requests(text, text, integer);
 DROP TYPE exported_entrant_request;
 
+-- drop point export function
+DROP FUNCTION getpointsforsemester(text, text);
+DROP TYPE user_points;
+
 -- new table for storing point hitory
 CREATE SEQUENCE point_history_seq;
 CREATE TABLE point_history (

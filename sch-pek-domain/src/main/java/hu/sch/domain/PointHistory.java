@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -26,7 +28,12 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "point_history")
 @SequenceGenerator(name = "point_history_seq", allocationSize = 1, sequenceName = "point_history_seq")
+@NamedQueries({
+    @NamedQuery(name = PointHistory.findBySemester, query = "SELECT ph FROM PointHistory ph JOIN FETCH ph.user WHERE ph.semester = :semester")
+})
 public class PointHistory implements Serializable {
+
+    public static final String findBySemester = "findBySemester";
 
     @Id
     @GeneratedValue(generator = "point_history_seq")
