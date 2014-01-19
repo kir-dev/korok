@@ -137,12 +137,6 @@ public class Valuation implements Serializable {
     @Column(name = "explanation", columnDefinition = "text", nullable = false)
     protected String explanation;
     //----------------------------------------------------
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
-    protected List<EntrantRequest> entrantRequests;
-    //----------------------------------------------------
-    @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
-    protected List<PointRequest> pointRequests;
-    //----------------------------------------------------
     @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     protected Set<EntrantRequest> entrantRequestsAsSet;
     //----------------------------------------------------
@@ -279,44 +273,12 @@ public class Valuation implements Serializable {
         this.pointStatus = pointStatus;
     }
 
-    /**
-     * Get entrant requests as list.
-     * You should use {@link #getEntrantRequestsAsSet() } instead
-     *
-     * @return
-     * @deprecated
-     */
-    @Deprecated
-    public List<EntrantRequest> getEntrantRequests() {
-        return entrantRequests;
-    }
-
-    public void setEntrantRequests(List<EntrantRequest> entrantRequests) {
-        this.entrantRequests = entrantRequests;
-    }
-
     public Set<EntrantRequest> getEntrantRequestsAsSet() {
         return entrantRequestsAsSet;
     }
 
     public void setEntrantRequestsAsSet(Set<EntrantRequest> entrantRequestsAsSet) {
         this.entrantRequestsAsSet = entrantRequestsAsSet;
-    }
-
-    /**
-     * Get point requests as list.
-     * You should use {@link #getPointRequestsAsSet() } instead
-     *
-     * @return
-     * @deprecated
-     */
-    @Deprecated
-    public List<PointRequest> getPointRequests() {
-        return pointRequests;
-    }
-
-    public void setPointRequests(List<PointRequest> pointRequests) {
-        this.pointRequests = pointRequests;
     }
 
     public Set<PointRequest> getPointRequestsAsSet() {
