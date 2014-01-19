@@ -8,45 +8,12 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
---
--- Name: user_points; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE user_points AS (
-	neptun character(6),
-	points numeric
-);
-
-
---
--- Name: getpointsforsemester(text, text); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION getpointsforsemester(text, text) RETURNS SETOF user_points
-    LANGUAGE sql
-    AS $_$
-SELECT UPPER(users.usr_neptun) AS neptun,
-LEAST(vegso.atlag,100) FROM
-(SELECT p.user_id AS usr_id, TRUNC(SQRT(SUM(p.sum * p.sum))) AS atlag FROM
-(SELECT pontigenyles.usr_id AS user_id, v.grp_id, SUM(pontigenyles.pont) AS sum FROM ertekelesek v
-RIGHT JOIN pontigenyles ON pontigenyles.ertekeles_id = v.id
-WHERE
-  v.next_version IS NULL -- az elfogadottak közül csak a legfrisebbet nézzük
-  AND v.pontigeny_statusz = 'ELFOGADVA' -- legyen elfogadva
-  AND (v.semester = $1 OR v.semester = $2) -- jelenlegi és az előző félév
-GROUP BY v.grp_id, pontigenyles.usr_id) AS p
-GROUP BY p.user_id) AS vegso
-INNER JOIN users ON users.usr_id = vegso.usr_id AND users.usr_neptun IS NOT NULL
-ORDER BY neptun ASC
-$_$;
-
-
 SET default_tablespace = '';
 
 SET default_with_oids = true;
 
 --
--- Name: belepoigenyles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: belepoigenyles; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE belepoigenyles (
@@ -59,7 +26,7 @@ CREATE TABLE belepoigenyles (
 
 
 --
--- Name: ertekeles_uzenet; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: ertekeles_uzenet; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE ertekeles_uzenet (
@@ -74,7 +41,7 @@ CREATE TABLE ertekeles_uzenet (
 
 
 --
--- Name: ertekelesek; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: ertekelesek; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE ertekelesek (
@@ -122,7 +89,7 @@ CREATE SEQUENCE groups_grp_id_seq
 
 
 --
--- Name: groups; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: groups; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE groups (
@@ -157,7 +124,7 @@ CREATE SEQUENCE grp_members_seq
 SET default_with_oids = false;
 
 --
--- Name: grp_membership; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: grp_membership; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE grp_membership (
@@ -194,7 +161,7 @@ CREATE SEQUENCE im_accounts_seq
 
 
 --
--- Name: im_accounts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: im_accounts; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE im_accounts (
@@ -218,7 +185,7 @@ CREATE SEQUENCE log_seq
 
 
 --
--- Name: log; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: log; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE log (
@@ -231,7 +198,7 @@ CREATE TABLE log (
 
 
 --
--- Name: lostpw_tokens; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: lostpw_tokens; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE lostpw_tokens (
@@ -242,7 +209,7 @@ CREATE TABLE lostpw_tokens (
 
 
 --
--- Name: neptun_list; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: neptun_list; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE neptun_list (
@@ -257,7 +224,7 @@ CREATE TABLE neptun_list (
 SET default_with_oids = true;
 
 --
--- Name: pontigenyles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: pontigenyles; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE pontigenyles (
@@ -283,7 +250,7 @@ CREATE SEQUENCE poszt_seq
 SET default_with_oids = false;
 
 --
--- Name: poszt; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: poszt; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE poszt (
@@ -306,7 +273,7 @@ CREATE SEQUENCE poszttipus_seq
 
 
 --
--- Name: poszttipus; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: poszttipus; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE poszttipus (
@@ -318,7 +285,7 @@ CREATE TABLE poszttipus (
 
 
 --
--- Name: spot_images; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: spot_images; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE spot_images (
@@ -330,7 +297,7 @@ CREATE TABLE spot_images (
 SET default_with_oids = true;
 
 --
--- Name: system_attrs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: system_attrs; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE system_attrs (
@@ -353,7 +320,7 @@ CREATE SEQUENCE users_usr_id_seq
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE users (
@@ -403,7 +370,7 @@ CREATE SEQUENCE usr_private_attrs_id_seq
 SET default_with_oids = false;
 
 --
--- Name: usr_private_attrs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: usr_private_attrs; Type: TABLE; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE TABLE usr_private_attrs (
@@ -415,7 +382,7 @@ CREATE TABLE usr_private_attrs (
 
 
 --
--- Name: belepoigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: belepoigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY belepoigenyles
@@ -423,7 +390,7 @@ ALTER TABLE ONLY belepoigenyles
 
 
 --
--- Name: ertekeles_uzenet_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: ertekeles_uzenet_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY ertekeles_uzenet
@@ -431,7 +398,7 @@ ALTER TABLE ONLY ertekeles_uzenet
 
 
 --
--- Name: ertekelesek_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: ertekelesek_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY ertekelesek
@@ -439,7 +406,7 @@ ALTER TABLE ONLY ertekelesek
 
 
 --
--- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY groups
@@ -447,7 +414,7 @@ ALTER TABLE ONLY groups
 
 
 --
--- Name: grp_membership_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: grp_membership_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY grp_membership
@@ -455,7 +422,7 @@ ALTER TABLE ONLY grp_membership
 
 
 --
--- Name: im_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: im_accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY im_accounts
@@ -463,7 +430,7 @@ ALTER TABLE ONLY im_accounts
 
 
 --
--- Name: log_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: log_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY log
@@ -471,7 +438,7 @@ ALTER TABLE ONLY log
 
 
 --
--- Name: lostpw_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: lostpw_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY lostpw_tokens
@@ -479,7 +446,7 @@ ALTER TABLE ONLY lostpw_tokens
 
 
 --
--- Name: lostpw_tokens_token_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: lostpw_tokens_token_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY lostpw_tokens
@@ -487,7 +454,7 @@ ALTER TABLE ONLY lostpw_tokens
 
 
 --
--- Name: pl; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: pl; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY neptun_list
@@ -495,7 +462,7 @@ ALTER TABLE ONLY neptun_list
 
 
 --
--- Name: pontigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: pontigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY pontigenyles
@@ -503,7 +470,7 @@ ALTER TABLE ONLY pontigenyles
 
 
 --
--- Name: poszt_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: poszt_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY poszt
@@ -511,7 +478,7 @@ ALTER TABLE ONLY poszt
 
 
 --
--- Name: poszttipus_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: poszttipus_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY poszttipus
@@ -519,7 +486,7 @@ ALTER TABLE ONLY poszttipus
 
 
 --
--- Name: spot_images_usr_neptun_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: spot_images_usr_neptun_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY spot_images
@@ -527,7 +494,7 @@ ALTER TABLE ONLY spot_images
 
 
 --
--- Name: system_attrs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: system_attrs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY system_attrs
@@ -535,7 +502,7 @@ ALTER TABLE ONLY system_attrs
 
 
 --
--- Name: unique_memberships; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: unique_memberships; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY grp_membership
@@ -543,7 +510,7 @@ ALTER TABLE ONLY grp_membership
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY users
@@ -551,7 +518,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: users_usr_neptun_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users_usr_neptun_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY users
@@ -559,7 +526,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: users_usr_screen_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users_usr_screen_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY users
@@ -567,7 +534,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: usr_private_attrs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: usr_private_attrs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY usr_private_attrs
@@ -575,98 +542,98 @@ ALTER TABLE ONLY usr_private_attrs
 
 
 --
--- Name: bel_tipus_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: bel_tipus_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX bel_tipus_idx ON belepoigenyles USING btree (belepo_tipus);
 
 
 --
--- Name: ert_semester_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: ert_semester_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX ert_semester_idx ON ertekelesek USING btree (semester);
 
 
 --
--- Name: fki_felado_usr_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: fki_felado_usr_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX fki_felado_usr_id ON ertekeles_uzenet USING btree (felado_usr_id);
 
 
 --
--- Name: fki_group_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: fki_group_id; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX fki_group_id ON ertekeles_uzenet USING btree (group_id);
 
 
 --
--- Name: groups_grp_id_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: groups_grp_id_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX groups_grp_id_idx ON groups USING btree (grp_id);
 
 
 --
--- Name: idx_groups_grp_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: idx_groups_grp_name; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX idx_groups_grp_name ON groups USING btree (grp_name);
 
 
 --
--- Name: idx_groups_grp_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: idx_groups_grp_type; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX idx_groups_grp_type ON groups USING btree (grp_type);
 
 
 --
--- Name: membership_usr_fk_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: membership_usr_fk_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX membership_usr_fk_idx ON grp_membership USING btree (usr_id);
 
 
 --
--- Name: next_version_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: next_version_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX next_version_idx ON ertekelesek USING btree (next_version NULLS FIRST);
 
 
 --
--- Name: poszt_fk_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: poszt_fk_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE INDEX poszt_fk_idx ON poszt USING btree (grp_member_id);
 
 
 --
--- Name: unique_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: unique_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX unique_idx ON ertekelesek USING btree (grp_id, semester, next_version NULLS FIRST);
 
 
 --
--- Name: users_usr_id_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: users_usr_id_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX users_usr_id_idx ON users USING btree (usr_id);
 
 
 --
--- Name: users_usr_neptun_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: users_usr_neptun_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX users_usr_neptun_idx ON users USING btree (upper((usr_neptun)::text));
 
 
 --
--- Name: users_usr_screen_name_idx; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: users_usr_screen_name_idx; Type: INDEX; Schema: public; Owner: -; Tablespace:
 --
 
 CREATE UNIQUE INDEX users_usr_screen_name_idx ON users USING btree (upper((usr_screen_name)::text));
