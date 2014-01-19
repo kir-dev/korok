@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
@@ -126,16 +127,17 @@ public class UserHistory extends KorokPage {
         add(ddc);
 
         //Gets semesters and points
-        List<SemesterPoint> semesterPoints = userManager.getAllValuatedSemesterWithPointForUser(user);
+        List<PointHistory> semesterPoints = userManager.getCommunityPointsForUser(user);
 
         // megjelenítés...
-        ListView<SemesterPoint> splv = new ListView<SemesterPoint>("semesterPointList", semesterPoints) {
+        ListView<PointHistory> splv = new ListView<PointHistory>("semesterPointList", semesterPoints) {
 
             @Override
-            protected void populateItem(ListItem<SemesterPoint> item) {
-                SemesterPoint p = item.getModelObject();
-                item.add(new Label("semesterPoint.semester", p.getSemester().toString()));
-                item.add(new Label("semesterPoint.point", String.valueOf(p.getPoint())));
+            protected void populateItem(ListItem<PointHistory> item) {
+                PointHistory p = item.getModelObject();
+
+                item.add(new Label("semesterPoint.semester", Model.of(p.getSemester())));
+                item.add(new Label("semesterPoint.point", Model.of(p.getPoint())));
             }
         };
         add(splv);

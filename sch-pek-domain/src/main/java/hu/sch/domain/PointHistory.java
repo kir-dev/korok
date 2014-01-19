@@ -29,11 +29,13 @@ import javax.validation.constraints.NotNull;
 @Table(name = "point_history")
 @SequenceGenerator(name = "point_history_seq", allocationSize = 1, sequenceName = "point_history_seq")
 @NamedQueries({
-    @NamedQuery(name = PointHistory.findBySemester, query = "SELECT ph FROM PointHistory ph JOIN FETCH ph.user WHERE ph.semester = :semester")
+    @NamedQuery(name = PointHistory.findBySemester, query = "SELECT ph FROM PointHistory ph JOIN FETCH ph.user WHERE ph.semester = :semester"),
+    @NamedQuery(name = PointHistory.findByUser, query = "SELECT ph FROM PointHistory ph WHERE ph.user = :user ORDER BY ph.semester DESC"),
 })
 public class PointHistory implements Serializable {
 
     public static final String findBySemester = "findBySemester";
+    public static final String findByUser = "findByUser";
 
     @Id
     @GeneratedValue(generator = "point_history_seq")
@@ -50,7 +52,7 @@ public class PointHistory implements Serializable {
 
     @Embedded
     @NotNull
-    private Semester semster;
+    private Semester semester;
 
     public Long getId() {
         return id;
@@ -76,11 +78,11 @@ public class PointHistory implements Serializable {
         this.point = point;
     }
 
-    public Semester getSemster() {
-        return semster;
+    public Semester getSemester() {
+        return semester;
     }
 
-    public void setSemster(Semester semster) {
-        this.semster = semster;
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 }
