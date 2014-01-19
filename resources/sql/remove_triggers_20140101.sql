@@ -9,3 +9,12 @@ DROP FUNCTION update_user_recommended_photo_after_insert();
 -- drop entrant export function
 DROP FUNCTION export_entrant_requests(text, text, integer);
 DROP TYPE exported_entrant_request;
+
+-- new table for storing point hitory
+CREATE SEQUENCE point_history_seq;
+CREATE TABLE point_history (
+    id bigint DEFAULT nextval('point_history_seq') PRIMARY KEY,
+    usr_id bigint REFERENCES users NOT NULL, -- user
+    point integer NOT NULL, -- point for the semester
+    semester varchar(9) NOT NULL -- semester
+);
