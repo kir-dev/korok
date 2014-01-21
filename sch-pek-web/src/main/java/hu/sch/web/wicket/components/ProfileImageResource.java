@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.inject.Inject;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.wicket.cdi.CdiContainer;
 import org.apache.wicket.request.resource.DynamicImageResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class ProfileImageResource extends DynamicImageResource {
     private Configuration config;
 
     public ProfileImageResource(User user) {
+        CdiContainer.get().getNonContextualManager().inject(this);
         this.user = user;
         setFormat(extractImageFormat());
     }
