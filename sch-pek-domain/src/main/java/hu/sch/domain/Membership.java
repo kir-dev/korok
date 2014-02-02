@@ -4,6 +4,7 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.util.DateInterval;
 import hu.sch.domain.interfaces.MembershipTableEntry;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -93,7 +94,7 @@ public class Membership implements MembershipTableEntry {
     private DateInterval interval;
     //----------------------------------------------------
     @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER)
-    private Set<Post> posts;
+    private Set<Post> posts = new HashSet<>();
     //----------------------------------------------------
     @Transient
     private String postsAsString;
