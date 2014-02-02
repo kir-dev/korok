@@ -13,6 +13,7 @@ import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -22,6 +23,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,5 +161,19 @@ public class MembershipManagerBean implements MembershipManagerLocal {
         group.setMemberships(q.getResultList());
 
         return group;
+    }
+
+    @Override
+    public List<Membership> findMembershipsForUser(User user) {
+        TypedQuery<Membership> q = em.createQuery(
+                "SELECT ms FROM Membership ms "
+                + "JOIN FETCH ms.group "
+                + "LEFT JOIN FETCH ms.posts p "
+                + "LEFT JOIN FETCH p.postType "
+                + "WHERE ms.user = :user "
+                + "AND ms.end IS NULL", Membership.class);
+        q.setParameter("user", user);
+
+        return q.getResultList();
     }
 }
