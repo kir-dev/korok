@@ -166,12 +166,13 @@ public class MembershipManagerBean implements MembershipManagerLocal {
     @Override
     public List<Membership> findMembershipsForUser(User user) {
         TypedQuery<Membership> q = em.createQuery(
-                "SELECT ms FROM Membership ms "
+                "SELECT DISTINCT ms FROM Membership ms "
                 + "JOIN FETCH ms.group "
                 + "LEFT JOIN FETCH ms.posts p "
                 + "LEFT JOIN FETCH p.postType "
                 + "WHERE ms.user = :user "
-                + "AND ms.end IS NULL", Membership.class);
+                + "AND ms.end IS NULL "
+                + "ORDER BY ms.group.id", Membership.class);
         q.setParameter("user", user);
 
         return q.getResultList();
