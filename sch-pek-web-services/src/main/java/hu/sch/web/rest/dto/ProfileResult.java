@@ -1,51 +1,85 @@
 package hu.sch.web.rest.dto;
 
 import hu.sch.domain.user.User;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  *
  * @author balo
+ * @author tomi
  */
 public class ProfileResult {
 
-    private final String uid;
-    private final long virid;
-    private final String neptun;
-    private final String fullName;
-    private final String nick;
-    private final String email;
+    private static final String VIRID_PREFIX = "urn:mace:terena.org:schac:personalUniqueID:hu:BME-SCH-VIR:person:";
+    private static final String STUDENT_STATUS_PREFIX = "urn:mace:terena.org:schac:status:sch.hu:student_status:";
 
-    public ProfileResult(User user) {
-        uid = user.getScreenName();
-        virid = user.getId();
-        neptun = user.getNeptunCode();
-        fullName = user.getFullName();
-        nick = user.getNickName();
-        email = user.getEmailAddress();
+    private final User user;
+    private final String entitlement;
+
+    public ProfileResult(User user, String entitlement) {
+        this.user = user;
+        this.entitlement = entitlement;
     }
 
     public String getUid() {
-        return uid;
+        return user.getScreenName();
     }
 
-    public long getVirid() {
-        return virid;
+    @JsonProperty("schacPersonalUniqueId")
+    public String getVirId() {
+        return VIRID_PREFIX + user.getId();
     }
 
     public String getNeptun() {
-        return neptun;
+        return user.getNeptunCode();
     }
 
+    @JsonProperty("cn")
     public String getFullName() {
-        return fullName;
+        return user.getFullName();
     }
 
+    @JsonProperty("givenName")
+    public String getFirstName() {
+        return user.getFirstName();
+    }
+
+    @JsonProperty("sn")
+    public String getLastName() {
+        return user.getLastName();
+    }
+
+    @JsonProperty("eduPersonNickName")
     public String getNick() {
-        return nick;
+        return user.getNickName();
     }
 
+    @JsonProperty("mail")
     public String getEmail() {
-        return email;
+        return user.getEmailAddress();
     }
 
+    @JsonProperty("schacUserStatus")
+    public String getUserStatus() {
+        return STUDENT_STATUS_PREFIX + user.getStudentStatus();
+    }
+
+    @JsonProperty("roomNumber")
+    public String getRoom() {
+        final String room = user.getFullRoomNumber();
+        if (StringUtils.isBlank(room)) {
+            return null;
+        }
+        return room;
+    }
+
+    @JsonProperty("eduPersonEntitlement")
+    public String getEntitlement() {
+        return entitlement;
+    }
+
+    public String getDisplayName() {
+        return user.getFullName();
+    }
 }

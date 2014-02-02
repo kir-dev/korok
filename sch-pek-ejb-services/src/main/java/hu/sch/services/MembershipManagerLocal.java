@@ -5,6 +5,7 @@ import hu.sch.domain.Membership;
 import hu.sch.domain.user.User;
 import hu.sch.services.exceptions.MembershipAlreadyExistsException;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -79,4 +80,16 @@ public interface MembershipManagerLocal {
      * @return the same group with the memberships included
      */
     public Group fetchMembershipsFor(Group group);
+
+    /**
+     * Gets memberships for user.
+     *
+     * It includes groups and posts as well.
+     *
+     * NOTE: probably it is a temporary solution.
+     *
+     * @param user
+     * @return
+     */
+    List<Membership> findMembershipsForUser(User user);
 }
