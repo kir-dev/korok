@@ -6,7 +6,6 @@ import hu.sch.domain.user.User;
 import hu.sch.services.MembershipManagerLocal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 /**
