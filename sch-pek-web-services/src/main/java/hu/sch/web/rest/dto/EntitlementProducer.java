@@ -15,7 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 public class EntitlementProducer {
 
     private static final String URN_SEPARATOR = ":";
-    private static final String ENTITLEMENT_SEPARATOR = "|";
+    // github/#88 - auth.sch needs semicolon as the separator, instead of a pipe
+    private static final String ENTITLEMENT_SEPARATOR = ";";
     private static final String ENTITLEMENT_PREFIX = "urn:geant:niif.hu:sch.bme.hu:entitlement:";
     private static final String MEMBER = "tag";
     // FIXME: #86 remove magic ids

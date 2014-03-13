@@ -62,6 +62,20 @@ public class EntitlementProducerTest {
     }
 
     @Test
+    public void semicolonSpeparatesEntitlements() {
+        Membership ms = createMembership();
+        addPost(ms, "körvezető");
+        addPost(ms, "jani");
+        when(mock.findMembershipsForUser(user)).thenReturn(Arrays.asList(ms));
+
+        EntitlementProducer ep = new EntitlementProducer(user, mock);
+        String entitlement = ep.createEntitlement();
+
+        // entitlements are separated by a semicolon
+        assertEquals(3, entitlement.split(";").length);
+    }
+
+    @Test
     public void membershipUnderReviewDoesNotHaveMemberRights() {
         Membership ms = createMembership();
         PostType pt = new PostType();
