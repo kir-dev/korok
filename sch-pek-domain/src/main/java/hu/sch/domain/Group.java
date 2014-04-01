@@ -74,10 +74,10 @@ public class Group implements Serializable, Comparable<Group> {
     @Column(name = "grp_id")
     private Long id;
     //----------------------------------------------------
-    @Column(name = "grp_name", length = 255, columnDefinition = "text")
+    @Column(name = "grp_name", length = 255, nullable = false, columnDefinition = "text")
     private String name;
     //----------------------------------------------------
-    @Column(name = "grp_type")
+    @Column(name = "grp_type", length = 20, nullable = false)
     private String type;
     //----------------------------------------------------
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
@@ -85,7 +85,7 @@ public class Group implements Serializable, Comparable<Group> {
     private Group parent;
     //----------------------------------------------------
     @Enumerated(EnumType.STRING)
-    @Column(name = "grp_state")
+    @Column(name = "grp_state", columnDefinition = "varchar(255) default 'akt'::bpchar")
     private GroupStatus status = GroupStatus.akt;
     //----------------------------------------------------
     @Column(name = "grp_description", columnDefinition = "text")
@@ -97,7 +97,7 @@ public class Group implements Serializable, Comparable<Group> {
     @Column(name = "grp_maillist", length = 64)
     private String mailingList;
     //----------------------------------------------------
-    @Column(name = "grp_users_can_apply")
+    @Column(name = "grp_users_can_apply", nullable = false, columnDefinition = "boolean default true")
     private boolean usersCanApply;
     //----------------------------------------------------
     @XmlTransient
@@ -108,7 +108,7 @@ public class Group implements Serializable, Comparable<Group> {
     @Column(name = "grp_founded")
     private Integer founded;
     //----------------------------------------------------
-    @Column(name = "grp_issvie")
+    @Column(name = "grp_issvie", nullable = false, columnDefinition = "boolean default false")
     private Boolean isSvie = Boolean.FALSE;
     //----------------------------------------------------
     @XmlTransient

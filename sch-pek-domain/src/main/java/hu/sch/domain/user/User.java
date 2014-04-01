@@ -86,12 +86,12 @@ public class User implements Serializable, Comparable<User> {
     //----------------------------------------------------
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "usr_gender", nullable = false)
+    @Column(name = "usr_gender", nullable = false, columnDefinition = "varchar(50) default 'NOTSPECIFIED'::character varying")
     private Gender gender;
     //----------------------------------------------------
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "usr_student_status", nullable = false)
+    @Column(name = "usr_student_status", nullable = false, columnDefinition = "varchar(50) default 'UNKNOWN'::character varying")
     private StudentStatus studentStatus;
     //----------------------------------------------------
     @Column(name = "usr_mother_name", length = 100)
@@ -103,21 +103,20 @@ public class User implements Serializable, Comparable<User> {
     @Column(name = "usr_webpage")
     private String webpage;
     //----------------------------------------------------
-    @Size(max = 50)
-    @Column(name = "usr_cell_phone")
+    @Column(name = "usr_cell_phone", length = 50)
     private String cellPhone;
     //----------------------------------------------------
     @Column(name = "usr_home_address")
     private String homeAddress;
     //----------------------------------------------------
     @Size(max = 10, min = 10)
-    @Column(name = "usr_est_grad")
+    @Column(name = "usr_est_grad", length = 10)
     private String estimatedGraduationYear;
     //----------------------------------------------------
-    @Column(name = "usr_dormitory")
+    @Column(name = "usr_dormitory", length = 50)
     private String dormitory;
     //----------------------------------------------------
-    @Column(name = "usr_room")
+    @Column(name = "usr_room", length = 10)
     private String room;
     //----------------------------------------------------
     @Column(name = "usr_confirm", length = 64)
@@ -126,12 +125,12 @@ public class User implements Serializable, Comparable<User> {
     //----------------------------------------------------
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "usr_svie_state", nullable = false)
+    @Column(name = "usr_svie_state", nullable = false, columnDefinition = "varchar(255) default 'NEMTAG'::character varying")
     private SvieStatus svieStatus;
     //----------------------------------------------------
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "usr_svie_member_type", nullable = false)
+    @Column(name = "usr_svie_member_type", nullable = false, columnDefinition = "varchar(255) default 'NEMTAG'::character varying")
     private SvieMembershipType svieMembershipType;
     //----------------------------------------------------
     @ManyToOne
@@ -160,7 +159,7 @@ public class User implements Serializable, Comparable<User> {
     @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
     private Set<UserAttribute> privateAttributes;
     //----------------------------------------------------
-    @Column(name = "usr_status")
+    @Column(name = "usr_status", nullable = false, columnDefinition = "varchar(8) default 'INACTIVE'::character varying")
     @Enumerated(EnumType.STRING)
     @NotNull
     private UserStatus userStatus;
@@ -168,8 +167,12 @@ public class User implements Serializable, Comparable<User> {
     @Column(name = "usr_password")
     private String passwordDigest;
     //----------------------------------------------------
-    @Column(name = "usr_salt")
+    @Column(name = "usr_salt", length = 12)
     private String salt;
+    //----------------------------------------------------
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name="usr_lastlogin", columnDefinition = "timestamp without time zone")
+    private Date lastLogin;
 
     public User() {
         this.delegated = false;
@@ -681,6 +684,14 @@ public class User implements Serializable, Comparable<User> {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+    
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     @Override

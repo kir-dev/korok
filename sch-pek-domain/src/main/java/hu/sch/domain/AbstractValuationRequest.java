@@ -39,7 +39,7 @@ public abstract class AbstractValuationRequest
     @Column(name = "usr_id", insertable = false, updatable = false)
     private Long userId;
     //----------------------------------------------------
-    @Column(name = "ertekeles_id", updatable = false, insertable = false)
+    @Column(name = "ertekeles_id", updatable = false, insertable = false, nullable = false)
     private Long valuationId;
 
     public Long getId() {

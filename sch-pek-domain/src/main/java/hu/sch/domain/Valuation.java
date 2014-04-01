@@ -101,14 +101,14 @@ public class Valuation implements Serializable {
     protected User sender;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "feladas")
+    @Column(name = "feladas", columnDefinition = "timestamp without time zone")
     protected Date sended;
     //----------------------------------------------------
     @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096, nullable = false)
     @Basic(fetch = FetchType.LAZY)
     protected String valuationText;
     //----------------------------------------------------
-    @Column(name = "pontozasi_elvek", columnDefinition = "text", nullable = false)
+    @Column(name = "pontozasi_elvek", columnDefinition = "text default ''::text", nullable = false)
     protected String principle;
     //----------------------------------------------------
     @Enumerated(EnumType.STRING)
@@ -123,7 +123,7 @@ public class Valuation implements Serializable {
     protected Semester semester;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "utolso_modositas")
+    @Column(name = "utolso_modositas", columnDefinition = "timestamp without time zone")
     protected Date lastModified;
     //----------------------------------------------------
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
@@ -131,10 +131,10 @@ public class Valuation implements Serializable {
     protected User consideredBy;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "utolso_elbiralas")
+    @Column(name = "utolso_elbiralas", columnDefinition = "timestamp without time zone")
     protected Date lastConsidered;
     //----------------------------------------------------
-    @Column(name = "explanation", columnDefinition = "text", nullable = false)
+    @Column(name = "explanation", columnDefinition = "text", nullable = false) // TODO: nullable? a régibe nem volt az
     protected String explanation;
     //----------------------------------------------------
     @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
@@ -153,10 +153,10 @@ public class Valuation implements Serializable {
     protected Float averagePoint;
     //----------------------------------------------------
     @Version
-    @Column(name = "optlock")
+    @Column(name = "optlock", nullable = false, columnDefinition = "int4 default 0")
     protected int optLock;
     //----------------------------------------------------
-    @Column(name = "is_considered")
+    @Column(name = "is_considered",nullable = false, columnDefinition = "boolean default false")
     protected boolean considered;
 
     @PrePersist

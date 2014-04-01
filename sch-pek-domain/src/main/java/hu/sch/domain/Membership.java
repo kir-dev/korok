@@ -82,7 +82,7 @@ public class Membership implements MembershipTableEntry {
     @Column(name = "usr_id", insertable = false, updatable = false)
     private Long userId;
     //----------------------------------------------------
-    @Column(name = "membership_start", nullable = false, columnDefinition = "date")
+    @Column(name = "membership_start", nullable = false, columnDefinition = "date default now()")
     @Temporal(TemporalType.DATE)
     private Date start;
     //----------------------------------------------------

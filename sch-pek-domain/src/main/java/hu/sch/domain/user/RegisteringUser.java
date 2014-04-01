@@ -37,17 +37,17 @@ public class RegisteringUser implements Serializable {
     @Column(length = 6)
     private String neptun;
     //
-    @Column(name = "nev", nullable = false)
+    @Column(name = "nev", nullable = false, length = 128)
     private String name;
     //
     @Temporal(javax.persistence.TemporalType.DATE)
     @Column(name = "szuldat", nullable = false)
     private Date dateOfBirth;
     //
-    @Column(name = "education_id", length = 11, nullable = true)
+    @Column(name = "education_id", length = 11, nullable = true) //TODO: eredetiben DEFAULT NULL::character varying. kell ez? alapból null lenne nem?
     private String educationId;
     //
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean newbie;
     //
     //----- transient fields, they need in the reg. process to store until they have been saved

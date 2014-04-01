@@ -62,15 +62,15 @@ public class Log implements Serializable {
     private Group group;
     //
     @ManyToOne
-    @JoinColumn(name = "usr_id", insertable = true, updatable = false)
+    @JoinColumn(name = "usr_id", insertable = true, updatable = false, nullable = false)
     private User user;
     //
     @Enumerated(EnumType.STRING)
-    @Column(name = "event", length = 30)
+    @Column(name = "event", length = 30, nullable = false)
     private EventType event;
     //
     @Temporal(TemporalType.DATE)
-    @Column(name = "evt_date", columnDefinition = "timestamp")
+    @Column(name = "evt_date", columnDefinition = "date default now()")
     private Date eventDate;
 
     protected Log() {

@@ -55,13 +55,13 @@ public class ValuationMessage implements Serializable {
     protected User sender;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "feladas_ido")
+    @Column(name = "feladas_ido", columnDefinition = "timestamp without time zone")
     protected Date date;
     //----------------------------------------------------
     @Column(name = "uzenet", columnDefinition = "text", length = 4096)
     protected String message;
     //----------------------------------------------------
-    @Column(name = "from_system")
+    @Column(name = "from_system", columnDefinition = "boolean default false")
     protected boolean fromSystem;
 
     public Date getDate() {

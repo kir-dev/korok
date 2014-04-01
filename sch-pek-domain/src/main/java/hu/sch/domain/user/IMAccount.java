@@ -26,11 +26,11 @@ public class IMAccount implements Serializable {
     @Column(name = "id")
     private Long id;
     //--------------------------------
-    @Column(name = "protocol")
+    @Column(name = "protocol", nullable = false)
     @Enumerated(EnumType.STRING)
     private IMProtocol protocol;
     //--------------------------------
-    @Column(name = "account_name")
+    @Column(name = "account_name", nullable = false)
     private String accountName;
 
     public IMAccount() {

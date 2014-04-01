@@ -45,6 +45,7 @@ public class LostPasswordToken implements Serializable {
     private String token;
     //--------------------------------
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "timestamp without time zone")
     private Date created;
 
     public LostPasswordToken() {

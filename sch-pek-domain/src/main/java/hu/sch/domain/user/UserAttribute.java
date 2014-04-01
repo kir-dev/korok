@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  * Represents the visibility of a user attribute.
@@ -28,12 +27,10 @@ public class UserAttribute implements Serializable {
     private Long id;
     //----------------------------------------------------
     @Enumerated(EnumType.STRING)
-    @Column(name = "attr_name")
-    @NotNull
+    @Column(name = "attr_name", nullable = false, length = 64)
     private UserAttributeName attrName;
     //----------------------------------------------------
-    @Column(name = "visible")
-    @NotNull
+    @Column(name = "visible", nullable = false, columnDefinition = "boolean default false")
     private Boolean visible = Boolean.FALSE;
 
     protected UserAttribute() {
