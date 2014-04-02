@@ -19,6 +19,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.Index;
 
 /**
  * Az egyes értékelésekhez tartozó üzeneteket reprezentáló entitás
@@ -44,6 +45,7 @@ public class ValuationMessage implements Serializable {
     @JoinColumn(name = "group_id")
     protected Group group;
     //----------------------------------------------------
+    @Index(name = "fki_group_id")
     @Column(name = "group_id", insertable = false, updatable = false)
     protected Long groupId;
     //----------------------------------------------------
@@ -52,6 +54,7 @@ public class ValuationMessage implements Serializable {
     //----------------------------------------------------
     @ManyToOne
     @JoinColumn(name = "felado_usr_id")
+    @Index(name = "fki_felado_usr_id")
     protected User sender;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)

@@ -55,7 +55,7 @@ public class User implements Serializable, Comparable<User> {
     //----------------------------------------------------
     @NotNull
     @Size(max = 50)
-    @Column(name = "usr_screen_name", nullable = false, length = 50)
+    @Column(name = "usr_screen_name", nullable = false, length = 50, unique = true)
     private String screenName;
     //----------------------------------------------------
     @XmlElement
@@ -63,7 +63,7 @@ public class User implements Serializable, Comparable<User> {
     private String emailAddress;
     //----------------------------------------------------
     @Size(max = 6, min = 6)
-    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6, nullable = true)
+    @Column(name = "usr_neptun", columnDefinition = "char(6)", length = 6, nullable = true, unique = true)
     private String neptunCode;
     //----------------------------------------------------
     @XmlElement
@@ -685,7 +685,7 @@ public class User implements Serializable, Comparable<User> {
     public void setSalt(String salt) {
         this.salt = salt;
     }
-    
+
     public Date getLastLogin() {
         return lastLogin;
     }

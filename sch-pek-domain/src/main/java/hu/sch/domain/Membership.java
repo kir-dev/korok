@@ -21,13 +21,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import org.hibernate.annotations.Index;
 
 /**
  * Csoporttagságot reprezentáló entity
  * @author hege
  */
 @Entity
-@Table(name = "grp_membership")
+@Table(name = "grp_membership", uniqueConstraints=
+        @UniqueConstraint(columnNames = {"grp_id", "usr_id"}))
 @NamedQueries(value = {
     @NamedQuery(name = Membership.getMembership,
     query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
@@ -76,6 +79,7 @@ public class Membership implements MembershipTableEntry {
     private Long groupId;
     //----------------------------------------------------
     @ManyToOne(optional = false)
+    @Index(name = "membership_usr_fk_idx")
     @JoinColumn(name = "usr_id", insertable = true, updatable = true)
     private User user;
     //----------------------------------------------------

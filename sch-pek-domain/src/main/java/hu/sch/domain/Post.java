@@ -11,6 +11,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import org.hibernate.annotations.Index;
 
 /**
  *
@@ -46,6 +47,7 @@ public class Post implements Serializable {
     //----------------------------------------------------
     @ManyToOne
     @JoinColumn(name = "grp_member_id", insertable = true, updatable = true)
+    @Index(name = "poszt_fk_idx")
     private Membership membership;
     //----------------------------------------------------
     @ManyToOne

@@ -30,6 +30,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+import org.hibernate.annotations.Index;
 
 /**
  *
@@ -120,6 +121,7 @@ public class Valuation implements Serializable {
     protected ValuationStatus entrantStatus;
     //----------------------------------------------------
     @Embedded
+    @Index(name = "ert_semester_idx")
     protected Semester semester;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
@@ -156,7 +158,7 @@ public class Valuation implements Serializable {
     @Column(name = "optlock", nullable = false, columnDefinition = "int4 default 0")
     protected int optLock;
     //----------------------------------------------------
-    @Column(name = "is_considered",nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "is_considered", nullable = false, columnDefinition = "boolean default false")
     protected boolean considered;
 
     @PrePersist

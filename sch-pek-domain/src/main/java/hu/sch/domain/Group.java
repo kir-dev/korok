@@ -15,6 +15,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -28,6 +29,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.annotations.Index;
 
 /**
  *
@@ -49,8 +51,6 @@ import javax.xml.bind.annotation.XmlTransient;
             + "LEFT JOIN p.postType pt "
             + "WHERE ms.groupId = :groupId AND pt.postName = :post")
 })
-@SequenceGenerator(name = "groups_seq", sequenceName = "groups_grp_id_seq",
-        allocationSize = 1)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Group implements Serializable, Comparable<Group> {
@@ -69,14 +69,19 @@ public class Group implements Serializable, Comparable<Group> {
     public static final String findByName = "findByName";
     public static final String findMembersByGroupAndPost = "findMembersByGroupAndPost";
     //----------------------------------------------------
-    @Id
-    @GeneratedValue(generator = "groups_seq")
-    @Column(name = "grp_id")
+    @Id    
+    @SequenceGenerator(name = "groups_seq", sequenceName = "groups_grp_id_seq",
+            allocationSize = 1, initialValue = 1)
+    @GeneratedValue( strategy = GenerationType.SEQUENCE, generator = "groups_seq")
+    @Index(name = "groups_grp_id_idx")
+    @Column(name = "grp_id", unique = true)
     private Long id;
     //----------------------------------------------------
+    @Index(name = "idx_groups_grp_name")
     @Column(name = "grp_name", length = 255, nullable = false, columnDefinition = "text")
     private String name;
     //----------------------------------------------------
+    @Index(name = "idx_groups_grp_type")
     @Column(name = "grp_type", length = 20, nullable = false)
     private String type;
     //----------------------------------------------------

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import org.hibernate.annotations.Index;
 
 /**
  * Egy felhasználóhoz tartozó belépőigény
@@ -23,6 +24,7 @@ public class EntrantRequest extends AbstractValuationRequest {
     //----------------------------------------------------
     @Enumerated(EnumType.STRING)
     @Column(name = "belepo_tipus")
+    @Index(name = "bel_tipus_idx")
     private EntrantType entrantType;
 
     public EntrantRequest() {
