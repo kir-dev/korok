@@ -3,6 +3,7 @@ package hu.sch.web.kp.admin;
 import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.Semester;
 import hu.sch.domain.enums.ValuationPeriod;
+import hu.sch.services.PointHistoryManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import hu.sch.web.PhoenixApplication;
@@ -39,6 +40,9 @@ public class EditSettings extends KorokPage {
 
     private static Logger logger = LoggerFactory.getLogger(EditSettings.class);
 
+    @Inject
+    private PointHistoryManagerLocal pointHistoryManager;
+
     public EditSettings() {
         //Jogosultságellenőrzés
         if (!(isCurrentUserJETI() || isCurrentUserSVIE() || isCurrentUserAdmin())) {
@@ -73,7 +77,8 @@ public class EditSettings extends KorokPage {
         @Inject
         protected ValuationManagerLocal valuationManager;
         private Semester semester;
-        ValuationPeriod valuationPeriod;
+        private ValuationPeriod valuationPeriod;
+        private ValuationPeriod oldValuationPeriod;
 
         public ValuationPeriod getValuationPeriod() {
             return valuationPeriod;
@@ -123,7 +128,8 @@ public class EditSettings extends KorokPage {
                 semester = new Semester();
             }
 
-            setValuationPeriod(systemManager.getErtekelesIdoszak());
+            oldValuationPeriod = systemManager.getErtekelesIdoszak();
+            setValuationPeriod(oldValuationPeriod);
 
             Form<Semester> beallitasForm = new Form<Semester>("settingsForm") {
 
@@ -132,10 +138,17 @@ public class EditSettings extends KorokPage {
                     try {
                         systemManager.setSzemeszter(getSemester());
                         systemManager.setErtekelesIdoszak(getValuationPeriod());
+
+                        if (hasValuationPeriodChanged() && getValuationPeriod() == ValuationPeriod.NINCSERTEKELES) {
+                            pointHistoryManager.generateForSemesterAsync(getSemester());
+                        }
+
                         getSession().info(getLocalizer().getString("info.BeallitasokMentve", this));
                     } catch (Exception e) {
                         getSession().error(getLocalizer().getString("err.BeallitasokFailed", this));
                         logger.error("Error while saving settings.", e);
+                    } finally {
+                        oldValuationPeriod = getValuationPeriod();
                     }
                 }
             };
@@ -221,6 +234,10 @@ public class EditSettings extends KorokPage {
                 logger.error("Error while generating CSV export about "
                         + entrantType.toString() + "s with " + minEntrantNum + " min value", ex);
             }
+        }
+
+        private boolean hasValuationPeriodChanged() {
+            return oldValuationPeriod != getValuationPeriod();
         }
     }
 
