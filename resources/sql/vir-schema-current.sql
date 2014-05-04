@@ -819,3 +819,11 @@ ALTER TABLE ONLY usr_private_attrs
 -- PostgreSQL database dump complete
 --
 
+-- new table for storing point hitory
+CREATE SEQUENCE point_history_seq;
+CREATE TABLE point_history (
+    id bigint DEFAULT nextval('point_history_seq') PRIMARY KEY,
+    usr_id bigint REFERENCES users NOT NULL, -- user
+    point integer NOT NULL, -- point for the semester
+    semester varchar(9) NOT NULL -- semester
+);
