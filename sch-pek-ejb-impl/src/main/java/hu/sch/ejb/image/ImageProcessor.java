@@ -1,6 +1,6 @@
 package hu.sch.ejb.image;
 
-import hu.sch.domain.config.ImageUploadConfig;
+import hu.sch.services.config.ImageUploadConfig;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.User;
 import hu.sch.services.exceptions.PekEJBException;
@@ -35,7 +35,7 @@ public class ImageProcessor {
         this.config = imageConfig;
 
         if (user.getPhotoPath() != null) {
-            oldImagePath = user.getPhotoFullPath();
+            oldImagePath = user.getPhotoFullPath(imageConfig.getBasePath());
         }
     }
 
@@ -102,7 +102,7 @@ public class ImageProcessor {
         }
 
         String newFilename = appendImageExtension(Hashing.sha1(imageAsBytes).toHex());
-        return new ImageSaver(user).save(newFilename, imageAsBytes).getRelativePath();
+        return new ImageSaver(user, config).save(newFilename, imageAsBytes).getRelativePath();
     }
 
     private void validateImage() throws PekEJBException {

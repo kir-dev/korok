@@ -6,7 +6,6 @@ import hu.sch.domain.user.IMProtocol;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserAttributeName;
-import hu.sch.services.ImageRemoverService;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.util.PatternHolder;
 import hu.sch.services.exceptions.NotImplementedException;
@@ -279,9 +278,7 @@ class PersonForm extends Form<User> {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 try {
-                    new ImageRemoverService().removeProfileImage(user);
-                    user.setPhotoPath(null);
-                    userManager.updateUser(user);
+                    userManager.removeProfileImage(user);
                 } catch (PekEJBException ex) {
 //                    error(new StringResourceModel(ex.getErrorCode().getMessageKey(),
 //                            null, ex.getParameters()));

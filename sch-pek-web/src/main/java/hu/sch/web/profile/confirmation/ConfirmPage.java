@@ -1,6 +1,5 @@
 package hu.sch.web.profile.confirmation;
 
-import hu.sch.domain.config.Configuration;
 import hu.sch.domain.user.User;
 import hu.sch.services.AccountManager;
 import hu.sch.services.exceptions.PekEJBException;
@@ -82,7 +81,7 @@ public final class ConfirmPage extends ProfilePage {
         try {
             accountManager.confirm(user, password);
             info(String.format(getString("confirm.success"),
-                    Configuration.getInstance().getProfileDomain()));
+                    config.getProfileDomain()));
 
             return true;
         } catch (PekEJBException ex) {

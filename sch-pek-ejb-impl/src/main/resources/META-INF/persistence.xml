@@ -16,6 +16,7 @@
         <class>hu.sch.domain.SpotImage</class>
         <class>hu.sch.domain.Post</class>
         <class>hu.sch.domain.PostType</class>
+        <class>hu.sch.domain.PointHistory</class>
         <class>hu.sch.domain.logging.Log</class>
 
         <class>hu.sch.domain.user.User</class>

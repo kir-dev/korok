@@ -1,4 +1,4 @@
-package hu.sch.domain.config;
+package hu.sch.services.config;
 
 /**
  *

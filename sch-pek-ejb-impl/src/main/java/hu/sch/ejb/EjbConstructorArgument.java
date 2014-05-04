@@ -1,5 +1,6 @@
 package hu.sch.ejb;
 
+import hu.sch.services.config.Configuration;
 import hu.sch.services.SystemManagerLocal;
 import javax.persistence.EntityManager;
 
@@ -11,6 +12,7 @@ import javax.persistence.EntityManager;
 public class EjbConstructorArgument {
     private EntityManager em;
     private SystemManagerLocal systemManager;
+    private Configuration config;
 
     public EjbConstructorArgument() {
     }
@@ -33,5 +35,13 @@ public class EjbConstructorArgument {
 
     public void setSystemManager(SystemManagerLocal systemManager) {
         this.systemManager = systemManager;
+    }
+
+    public Configuration getConfig() {
+        return config;
+    }
+
+    public void setConfig(Configuration config) {
+        this.config = config;
     }
 }

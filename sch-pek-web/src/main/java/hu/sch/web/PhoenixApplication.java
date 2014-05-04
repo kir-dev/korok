@@ -3,8 +3,8 @@ package hu.sch.web;
 import hu.sch.domain.enums.EntrantType;
 import hu.sch.domain.Membership;
 import hu.sch.domain.enums.ValuationStatus;
-import hu.sch.domain.config.Configuration;
-import hu.sch.domain.config.Configuration.Environment;
+import hu.sch.services.config.Configuration;
+import hu.sch.services.config.Configuration.Environment;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.web.authz.AgentBasedAuthorization;
 import hu.sch.web.authz.DummyAuthorization;
@@ -86,8 +86,12 @@ public class PhoenixApplication extends WebApplication {
     private static Logger log = LoggerFactory.getLogger(PhoenixApplication.class);
     @Inject
     private SystemManagerLocal systemManager;
+    @Inject
+    private Configuration config;
     private UserAuthorization authorizationComponent;
     private boolean isNewbieTime;
+    private boolean cdiInitialized = false;
+    private RuntimeConfigurationType env = null;
 
     @Override
     public Class<? extends Page> getHomePage() {
@@ -109,22 +113,26 @@ public class PhoenixApplication extends WebApplication {
      */
     @Override
     public RuntimeConfigurationType getConfigurationType() {
-        Environment env = Configuration.getInstance().getEnvironment();
+        if (this.env == null) {
+            // must initialize wicket-cdi here, because this metods get called
+            // before init() during application startup
+            initEjbInjects();
 
-        if (env == Environment.PRODUCTION) {
-            // jelenleg csak akkor kell DEPLOYMENT, ha az environment PRODUCTION
-            return RuntimeConfigurationType.DEPLOYMENT;
-        } else {
-            return RuntimeConfigurationType.DEVELOPMENT;
+            Environment env = config.getEnvironment();
+            if (env == Environment.PRODUCTION) {
+                // jelenleg csak akkor kell DEPLOYMENT, ha az environment PRODUCTION
+                this.env = RuntimeConfigurationType.DEPLOYMENT;
+            } else {
+                this.env = RuntimeConfigurationType.DEVELOPMENT;
+            }
         }
+        return this.env;
     }
 
     @Override
     protected void init() {
-        initEjbInjects();
-
         //A környezetfüggő beállítások elvégzése
-        Environment env = Configuration.getInstance().getEnvironment();
+        Environment env = config.getEnvironment();
         if (env == Environment.DEVELOPMENT || env == Environment.TESTING) {
             //Ha DEVELOPMENT környezetben vagyunk, akkor Dummyt használunk
             authorizationComponent = new DummyAuthorization();
@@ -132,7 +140,7 @@ public class PhoenixApplication extends WebApplication {
             authorizationComponent = new AgentBasedAuthorization();
         }
 
-        if (Configuration.getInstance().getEnvironment().equals(Environment.PRODUCTION)) {
+        if (config.getEnvironment().equals(Environment.PRODUCTION)) {
             setRequestCycleProvider(new IRequestCycleProvider() {
                 @Override
                 public RequestCycle get(RequestCycleContext c) {
@@ -174,6 +182,11 @@ public class PhoenixApplication extends WebApplication {
      * injection to Wicket.
      */
     private void initEjbInjects() {
+        if (cdiInitialized) {
+            return;
+        }
+        cdiInitialized = true;
+
         BeanManager bm;
         try {
             bm = (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
@@ -285,7 +298,7 @@ public class PhoenixApplication extends WebApplication {
         getApplicationSettings().setAccessDeniedPage(Forbidden.class);
 
         //custom error page and email report only in prod
-        if (Environment.PRODUCTION.equals(Configuration.getInstance().getEnvironment())) {
+        if (Environment.PRODUCTION.equals(config.getEnvironment())) {
             //these need to get information about the requested page and the exception
             getRequestCycleListeners().add(new PageRequestHandlerTracker());
             getRequestCycleListeners().add(new AbstractRequestCycleListener() {

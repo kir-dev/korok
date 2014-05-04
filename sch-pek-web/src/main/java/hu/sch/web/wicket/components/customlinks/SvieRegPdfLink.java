@@ -6,8 +6,7 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.user.User;
-import hu.sch.domain.config.Configuration;
-import hu.sch.services.UserManagerLocal;
+import hu.sch.services.config.Configuration;
 import hu.sch.web.kp.user.ShowUser;
 import hu.sch.web.wicket.util.ByteArrayResourceStream;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +15,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -42,14 +41,19 @@ public class SvieRegPdfLink extends LinkPanel<User> {
     private static Paragraph obeyStatement;
     private static Paragraph fourthStatement;
     private static Paragraph permissionStatement;
-
+    private static boolean initialized = false;
+    @Inject
+    private Configuration config;
     private final User user;
     private String cachedmsType;
 
-    static {
+    private static void createPDF(Configuration config) {
+        if (initialized) {
+            return;
+        }
         try {
             arialUnicode =
-                    BaseFont.createFont(Configuration.getInstance().getFontPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                    BaseFont.createFont(config.getFontPath(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             font = new Font(arialUnicode, 12);
 
             StringBuilder sb = new StringBuilder(150);
@@ -108,10 +112,12 @@ public class SvieRegPdfLink extends LinkPanel<User> {
         } catch (IOException ex) {
             logger.warn("Error while creating static content for PDF", ex);
         }
+        initialized = true;
     }
 
     public SvieRegPdfLink(String id, User user2) {
         super(id, user2);
+        createPDF(config);
         this.user = user2;
         cachedmsType = user.getSvieMembershipType().toString();
         try {
@@ -124,7 +130,6 @@ public class SvieRegPdfLink extends LinkPanel<User> {
             throw new RestartResponseException(ShowUser.class);
         }
         add(new Link<Void>("pdfLink") {
-
             @Override
             public void onClick() {
                 //rendes tag és nincs elsődleges kör elmentve
@@ -140,7 +145,7 @@ public class SvieRegPdfLink extends LinkPanel<User> {
                             ((ByteArrayOutputStream) generatePdf()).toByteArray(),
                             "application/pdf");
                     getRequestCycle().scheduleRequestHandlerAfterCurrent(
-                            new ResourceStreamRequestHandler(resourceStream, "export_" + user.getNeptunCode()+ ".pdf"));
+                            new ResourceStreamRequestHandler(resourceStream, "export_" + user.getNeptunCode() + ".pdf"));
                 } catch (Exception ex) {
                     getSession().error("Hiba történt a PDF generálása közben!");
                     logger.error("Could not generate svieregpdf", ex);

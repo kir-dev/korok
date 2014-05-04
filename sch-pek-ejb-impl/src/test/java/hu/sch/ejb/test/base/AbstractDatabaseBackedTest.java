@@ -1,8 +1,5 @@
 package hu.sch.ejb.test.base;
 
-import hu.sch.ejb.test.util.TestConfiguration;
-import java.util.HashMap;
-import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;

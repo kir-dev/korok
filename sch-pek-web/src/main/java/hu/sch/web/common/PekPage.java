@@ -1,7 +1,7 @@
 package hu.sch.web.common;
 
-import hu.sch.domain.config.Configuration;
 import hu.sch.domain.user.User;
+import hu.sch.services.config.Configuration;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.PhoenixApplication;
@@ -42,14 +42,17 @@ public abstract class PekPage extends WebPage {
             + "]"
             + "}; "
             + "printNavbar(navbarConf);";
-    protected static final int DEFAULT_SUPPORT_ID = Configuration.getInstance().getSupportDefaultId();
+    protected final int DEFAULT_SUPPORT_ID;
     private Label titleLabel;
     private Label navbarScript;
     private Label headerLabel;
     @Inject
     protected UserManagerLocal userManager;
+    @Inject
+    protected Configuration config;
 
     public PekPage() {
+        DEFAULT_SUPPORT_ID = config.getSupportDefaultId();
         loadUser();
         init();
     }
@@ -176,6 +179,6 @@ public abstract class PekPage extends WebPage {
      * @return the full url with the protocol and the support target id
      */
     protected String getSupportUrl() {
-        return Configuration.getInstance().getSupportBaseUrl()+ DEFAULT_SUPPORT_ID;
+        return config.getSupportBaseUrl()+ DEFAULT_SUPPORT_ID;
     }
 }

@@ -4,7 +4,6 @@ import hu.sch.domain.Group;
 import hu.sch.domain.Membership;
 import hu.sch.domain.enums.SvieMembershipType;
 import hu.sch.domain.enums.SvieStatus;
-import hu.sch.domain.config.Configuration;
 import hu.sch.util.HungarianStringComparator;
 import java.io.Serializable;
 import java.nio.file.Paths;
@@ -480,9 +479,8 @@ public class User implements Serializable, Comparable<User> {
      *
      * @return
      */
-    public String getPhotoFullPath() {
-        return Paths.get(Configuration.getInstance().getImageUploadConfig().getBasePath(),
-                getPhotoPath()).toString();
+    public String getPhotoFullPath(String basePath) {
+        return Paths.get(basePath, getPhotoPath()).toString();
     }
 
     /**

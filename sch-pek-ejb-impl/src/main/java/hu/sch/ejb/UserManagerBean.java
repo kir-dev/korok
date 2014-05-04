@@ -3,11 +3,12 @@ package hu.sch.ejb;
 import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
-import hu.sch.domain.config.Configuration;
+import hu.sch.services.config.Configuration;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.ejb.image.ImageProcessor;
+import hu.sch.ejb.image.ImageRemoverService;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
@@ -16,9 +17,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.*;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -48,8 +49,10 @@ public class UserManagerBean implements UserManagerLocal {
     @EJB
     private SystemManagerLocal systemManager;
     //
-    transient private Configuration config;
+    @Inject
+    private Configuration config;
     //
+
     public UserManagerBean() {
     }
 
@@ -57,13 +60,9 @@ public class UserManagerBean implements UserManagerLocal {
     public UserManagerBean(EjbConstructorArgument args) {
         this.em = args.getEm();
         this.systemManager = args.getSystemManager();
+        this.config = args.getConfig();
     }
 
-    @PostConstruct
-    public void init() {
-        config = Configuration.getInstance();
-    }
-    
     @Override
     public User findUserById(Long userId) {
         return findUserById(userId, false);
@@ -172,17 +171,6 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public List<PointRequest> getNotObsoleteAcceptedPointRequestsForUser(User user) {
-        Query q = em.createQuery("SELECT p FROM PointRequest p "
-                + "WHERE p.user=:user "
-                + "AND p.valuation.pointStatus=:pointStatus "
-                + "AND p.valuation.nextVersion IS null");
-        q.setParameter("user", user);
-        q.setParameter("pointStatus", ValuationStatus.ELFOGADVA);
-        return q.getResultList();
-    }
-
-    @Override
     public void updateUser(User user) throws PekEJBException {
         updateUser(user, null);
     }
@@ -214,68 +202,11 @@ public class UserManagerBean implements UserManagerLocal {
      * {@inheritDoc}
      */
     @Override
-    public List<SemesterPoint> getAllValuatedSemesterWithPointForUser(User user) {
-        //Get all acceped not obsolete pointreqest
-        List<PointRequest> pointRequests = getNotObsoleteAcceptedPointRequestsForUser(user);
+    public List<PointHistory> getCommunityPointsForUser(User user) {
+        TypedQuery<PointHistory> q = em.createNamedQuery(PointHistory.findByUser, PointHistory.class);
+        q.setParameter("user", user);
 
-        //All point request grouped by semester and group
-        Map<Semester, Map<Group, Integer>> allPoints = new HashMap<>();
-
-        for (PointRequest pr : pointRequests) {
-            //Point request's data
-            Semester s = pr.getValuation().getSemester();
-            Group g = pr.getValuation().getGroup();
-            int p = pr.getPoint();
-
-            //Group point add to point request semester
-            if (!allPoints.containsKey(s)) {
-                allPoints.put(s, new HashMap<Group, Integer>());
-            }
-            HashMap<Group, Integer> semesterGroupPoints = (HashMap<Group, Integer>) allPoints.get(s);
-
-            int point = p;
-            if (semesterGroupPoints.containsKey(g)) {
-                point += (int) semesterGroupPoints.get(g);
-            }
-            semesterGroupPoints.put(g, point);
-
-            //Group point add to after point request semester
-            Semester ns = s.getNext();
-            //Not added if the next semester is current or future
-            if (systemManager.getSzemeszter().compareTo(ns) <= 0) {
-                continue;
-            }
-
-            if (!allPoints.containsKey(ns)) {
-                allPoints.put(ns, new HashMap<Group, Integer>());
-            }
-            semesterGroupPoints = (HashMap<Group, Integer>) allPoints.get(ns);
-
-            point = p;
-            if (semesterGroupPoints.containsKey(g)) {
-                point += (int) semesterGroupPoints.get(g);
-            }
-            semesterGroupPoints.put(g, point);
-        }
-
-        //Calculate semester's point
-        List<SemesterPoint> result = new ArrayList<>();
-        for (Semester s : allPoints.keySet()) {
-            int spoint = 0;
-            for (Group g : allPoints.get(s).keySet()) {
-                int gpoint = (int) allPoints.get(s).get(g);
-                spoint += (gpoint * gpoint);
-            }
-            spoint = (int) Math.floor(Math.sqrt(spoint));
-            spoint = Math.min(spoint, 100);
-            result.add(new SemesterPoint(s, spoint));
-        }
-        
-        //Reverse sort by semester
-        Collections.sort(result);
-        Collections.reverse(result);
-        
-        return result;
+        return q.getResultList();
     }
 
     @Override
@@ -298,11 +229,11 @@ public class UserManagerBean implements UserManagerLocal {
         try {
             SpotImage si = q.getSingleResult();
 
-            ImageSaver imageSaver = new ImageSaver(user);
-            String imgPath = imageSaver.copy(si.getImageFullPath()).getRelativePath();
+            ImageSaver imageSaver = new ImageSaver(user, config.getImageUploadConfig());
+            String imgPath = imageSaver.copy(si.getImageFullPath(config.getImageUploadConfig().getBasePath())).getRelativePath();
             user.setPhotoPath(imgPath);
 
-            removeSpotImage(si);
+            removeSpotImage(user, si);
 
             return true;
         } catch (NoResultException ex) {
@@ -319,7 +250,7 @@ public class UserManagerBean implements UserManagerLocal {
         q.setParameter("neptunCode", user.getNeptunCode());
         SpotImage img = q.getSingleResult();
 
-        removeSpotImage(img);
+        removeSpotImage(user, img);
     }
 
     @Override
@@ -345,16 +276,23 @@ public class UserManagerBean implements UserManagerLocal {
      *
      * @param img the image to delete
      */
-    private void removeSpotImage(SpotImage img) {
+    private void removeSpotImage(User user, SpotImage img) {
         try {
-            Files.deleteIfExists(Paths.get(img.getImageFullPath()));
+            Files.deleteIfExists(Paths.get(img.getImageFullPath(config.getImageUploadConfig().getBasePath())));
         } catch (IOException ex) {
             logger.warn("IO Error while deleting file.", ex);
             // nothing to do.
         }
 
-        // this updates the user record via a trigger.
-        // usr_show_recommended will be false after the update.
         em.remove(img);
+        // update user to not show recommended photo
+        user.setShowRecommendedPhoto(false);
+    }
+
+    @Override
+    public void removeProfileImage(User user) throws PekEJBException {
+        new ImageRemoverService(config).removeProfileImage(user);
+        user.setPhotoPath(null);
+        updateUser(user);
     }
 }

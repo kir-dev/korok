@@ -1,11 +1,9 @@
 package hu.sch.services;
 
 import hu.sch.domain.EntrantRequest;
-import hu.sch.domain.Semester;
+import hu.sch.domain.PointHistory;
 import hu.sch.domain.SpotImage;
 import hu.sch.domain.user.User;
-import hu.sch.domain.PointRequest;
-import hu.sch.domain.SemesterPoint;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.exceptions.DuplicatedUserException;
@@ -101,14 +99,6 @@ public interface UserManagerLocal {
     List<EntrantRequest> getEntrantRequestsForUser(User user);
 
     /**
-     * Get not obsolete and accepted point requests for the user.
-     *
-     * @param user
-     * @return
-     */
-    List<PointRequest> getNotObsoleteAcceptedPointRequestsForUser(User user);
-
-    /**
      * Update user in the database and synchronize the directory service.
      *
      * @param user
@@ -138,7 +128,7 @@ public interface UserManagerLocal {
      * @param user
      * @return
      */
-    public List<SemesterPoint> getAllValuatedSemesterWithPointForUser(User user);
+    public List<PointHistory> getCommunityPointsForUser(User user);
 
     /**
      * Lekérjük egy adott felhasználóhoz tartozó SPOT képet, ha van ilyen
@@ -172,4 +162,10 @@ public interface UserManagerLocal {
      * @param attr the attribute which visibility has to be altered
      */
     public void invertAttributeVisibility(User user, UserAttributeName attr);
+
+    /**
+     * Remove user's profile image.
+     * @param user
+     */
+    public void removeProfileImage(User user) throws PekEJBException;
 }
