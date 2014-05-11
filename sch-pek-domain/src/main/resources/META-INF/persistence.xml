@@ -3,27 +3,7 @@
     <persistence-unit name="SCHKP-PU" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/sch</jta-data-source>
-        <!-- ez fontos, mert a kulon .jar csomag miatt nem talalja meg magatol -->
-        <class>hu.sch.domain.EntrantRequest</class>
-        <class>hu.sch.domain.Group</class>
-        <class>hu.sch.domain.Membership</class>
-        <class>hu.sch.domain.Valuation</class>
-        <class>hu.sch.domain.ValuationStatistic</class>
-        <class>hu.sch.domain.ValuationMessage</class>
-        <class>hu.sch.domain.PointRequest</class>
-        <class>hu.sch.domain.SystemAttribute</class>
-        <class>hu.sch.domain.Semester</class>
-        <class>hu.sch.domain.SpotImage</class>
-        <class>hu.sch.domain.Post</class>
-        <class>hu.sch.domain.PostType</class>
-        <class>hu.sch.domain.PointHistory</class>
-        <class>hu.sch.domain.logging.Log</class>
-
-        <class>hu.sch.domain.user.User</class>
-        <class>hu.sch.domain.user.RegisteringUser</class>
-        <class>hu.sch.domain.user.IMAccount</class>
-        <class>hu.sch.domain.user.UserAttribute</class>
-        <class>hu.sch.domain.user.LostPasswordToken</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
             <property name="hibernate.show_sql" value="false"/>
