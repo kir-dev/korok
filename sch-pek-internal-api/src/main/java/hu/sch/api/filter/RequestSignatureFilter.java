@@ -1,13 +1,8 @@
 package hu.sch.api.filter;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
 import hu.sch.services.config.Configuration;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -22,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,8 +97,8 @@ public class RequestSignatureFilter implements Filter {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             res.setCharacterEncoding("UTF-8");
 
-            Gson gson = new Gson();
-            gson.toJson(response, Map.class, new JsonWriter(res.getWriter()));
+            ObjectMapper m = new ObjectMapper();
+            m.writeValue(res.getWriter(), response);
         } catch (IOException ex) {
             logger.warn("Could not send signature error.", ex);
         }
