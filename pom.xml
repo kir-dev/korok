@@ -99,7 +99,6 @@
         <module>sch-pek-domain</module>
         <module>sch-pek-ejb-services</module>
         <module>sch-pek-ejb-impl</module>
-        <module>sch-pek-web</module>
         <module>sch-pek-web-services</module>
         <module>sch-pek-ear</module>
         <module>sch-pek-util</module>
@@ -127,18 +126,6 @@
                 <groupId>hu.sch</groupId>
                 <artifactId>sch-pek-ejb-services</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.sch</groupId>
-                <artifactId>sch-pek-test</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>hu.sch</groupId>
-                <artifactId>sch-pek-web</artifactId>
-                <version>${project.version}</version>
-                <type>war</type>
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
@@ -235,43 +222,6 @@
                 <version>1.9.5</version>
                 <scope>test</scope>
             </dependency>
-                        <!-- web dependencies -->
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-core</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-datetime</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-extensions</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wicketstuff</groupId>
-                <artifactId>wicketstuff-tinymce</artifactId>
-                <version>${wicketstuff.version}</version>
-            </dependency>
-
-            <!-- Wicket Java EE integration. -->
-            <!-- Wicket-CDI depends on seam-conversation module to activate and
-            deactivate conversational contexts, so you will need a seam-conversation module
-            specific to your CDI container. For JBoss Weld: -->
-            <dependency>
-                <groupId>org.jboss.seam.conversation</groupId>
-                <artifactId>seam-conversation-weld</artifactId>
-                <version>3.0.0.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-cdi</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>com.itextpdf</groupId>
                 <artifactId>itextpdf</artifactId>
