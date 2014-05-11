@@ -31,6 +31,11 @@
                     <modules>
                         <webModule>
                             <groupId>hu.sch</groupId>
+                            <artifactId>sch-pek-internal-api</artifactId>
+                            <contextRoot>/internal</contextRoot>
+                        </webModule>
+                        <webModule>
+                            <groupId>hu.sch</groupId>
                             <artifactId>sch-pek-web-services</artifactId>
                             <contextRoot>/services</contextRoot>
                         </webModule>
@@ -69,6 +74,11 @@
         <dependency>
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-web-services</artifactId>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>hu.sch</groupId>
+            <artifactId>sch-pek-internal-api</artifactId>
             <type>war</type>
         </dependency>
         <!-- shared dependencies, put all libraries to the ear's lib/ directory -->

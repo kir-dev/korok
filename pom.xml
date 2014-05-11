@@ -102,6 +102,7 @@
         <module>sch-pek-web-services</module>
         <module>sch-pek-ear</module>
         <module>sch-pek-util</module>
+        <module>sch-pek-internal-api</module>
     </modules>
 
     <dependencyManagement>
@@ -137,6 +138,12 @@
                 <groupId>hu.sch</groupId>
                 <artifactId>sch-pek-util</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.sch</groupId>
+                <artifactId>sch-pek-internal-api</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
