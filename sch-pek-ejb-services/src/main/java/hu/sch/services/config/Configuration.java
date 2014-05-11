@@ -22,6 +22,8 @@ public interface Configuration {
 
     int getSupportDefaultId();
 
+    String getInternalApiSecret();
+
     /**
      * Környezetet leíró enum a finomhangolásért
      */

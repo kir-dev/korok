@@ -5,4 +5,13 @@
         <servlet-name>javax.ws.rs.core.Application</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+
+    <filter>
+        <filter-name>RequestSignatureFilter</filter-name>
+        <filter-class>hu.sch.api.filter.RequestSignatureFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RequestSignatureFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>
