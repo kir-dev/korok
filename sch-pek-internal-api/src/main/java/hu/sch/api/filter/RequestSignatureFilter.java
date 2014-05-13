@@ -1,10 +1,10 @@
 package hu.sch.api.filter;
 
+import hu.sch.api.response.PekError;
+import hu.sch.api.response.PekResponse;
 import hu.sch.services.config.Configuration;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -54,7 +54,8 @@ public class RequestSignatureFilter implements Filter {
             timestamp = Long.parseLong(req.getHeader(SIGNATURE_TIMESTAMP_KEY));
         } catch (NumberFormatException ex) {
             logger.warn("Invalid timestamp format: {} on path: {}", req.getHeader(SIGNATURE_TIMESTAMP_KEY), req.getRequestURI());
-            sendSignatureError(res, "invalid timestamp");
+            // TODO: finalize error codes
+            sendSignatureError(res, new PekError(100, "invalid timestamp"));
             return;
         }
 
@@ -64,7 +65,8 @@ public class RequestSignatureFilter implements Filter {
 
         if (result != RequestSignatureResult.OK) {
             logger.warn("Invalid request signature: {}", result);
-            sendSignatureError(res, "invalid signature");
+            // TODO: finalize error codes
+            sendSignatureError(res, new PekError(101, "invalid signature"));
         } else {
             chain.doFilter(wrappedRequest, response);
         }
@@ -87,10 +89,8 @@ public class RequestSignatureFilter implements Filter {
 
     }
 
-    private void sendSignatureError(HttpServletResponse res, String message) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", HttpServletResponse.SC_BAD_REQUEST);
-        response.put("errorMessage", message);
+    private void sendSignatureError(HttpServletResponse res, PekError error) {
+        PekResponse<Void> response = new PekResponse<>(error);
 
         try {
             res.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
