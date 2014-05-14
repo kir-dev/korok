@@ -41,7 +41,13 @@ public class DefaultExceptionHandler implements ExceptionMapper<Exception>{
     }
 
     private Response handleRestEasyBuiltInException(LoggableFailure failure) {
-        return buildResponse(failure.getErrorCode(), PekError.unspecified(failure.getMessage()));
+        int status;
+        if (failure.getResponse() != null) {
+            status = failure.getResponse().getStatus();
+        } else {
+            status = failure.getErrorCode();
+        }
+        return buildResponse(status, PekError.unspecified(failure.getMessage()));
     }
 
     private Response buildResponse(int status, PekError error) {
