@@ -18,9 +18,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum PekErrorCode {
 
-    // TODO: add proper messages to error
-    // TODO: rename DATABASE to ENTITY
-    // TODO: create an error for all custom exceptions from sch-pek-ejb*
+    // TODO: add proper messages to error (github/#41)
+    // TODO: rename DATABASE to ENTITY (github/#41)
+    // TODO: create an error for all custom exceptions from sch-pek-ejb* (github/#41)
 
     // DATABASE ERRORS 1xx
     DATABASE_CREATE_FAILED(100),
