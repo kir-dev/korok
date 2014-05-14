@@ -1,4 +1,4 @@
-package hu.sch.services.exceptions;
+package hu.sch.util.exceptions;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +18,10 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum PekErrorCode {
 
+    // TODO: add proper messages to error
+    // TODO: rename DATABASE to ENTITY
+    // TODO: create an error for all custom exceptions from sch-pek-ejb*
+
     // DATABASE ERRORS 1xx
     DATABASE_CREATE_FAILED(100),
     DATABASE_UPDATE_FAILED(101),
@@ -34,20 +38,21 @@ public enum PekErrorCode {
     UNKNOWN(401),
     // USER ERRORS 5xx
     USER_NOTFOUND(500),
-    USER_PASSWORD_INVALID(501)
-    ;
+    USER_PASSWORD_INVALID(501),
+    // web layer errors 6xx
+    REQUEST_TIMESTAMP_INVALID(600),
+    REQUEST_SIGNATURE_INVALID(601);
     //------------------------------------------
-    private static final String MESSAGE_KEY_PREFIX = "ejb.error.";
     private int code;
-    private String messageKey;
+    private String shortMessage;
 
     private PekErrorCode(int code) {
         this(code, null);
     }
 
-    private PekErrorCode(int code, String messageKey) {
+    private PekErrorCode(int code, String shortMessage) {
         this.code = code;
-        this.messageKey = messageKey;
+        this.shortMessage = shortMessage;
     }
 
     /**
@@ -57,22 +62,11 @@ public enum PekErrorCode {
         return code;
     }
 
-    /**
-     * Gets the message key for this error code.
-     *
-     * If no message key specified the name of the errorcode is used. There is
-     * always a prefix: ejb.error
-     *
-     * The underscores (_) will be replaced by dots (.) in the name.
-     *
-     * So for the DATABASE_CREATE_FAILED errorcode the message key will be
-     * "ejb.error.database.create.failed".
-     */
-    public String getMessageKey() {
-        String key = messageKey;
-        if (StringUtils.isBlank(key)) {
-            key = this.name().toLowerCase().replace('_', '.');
+    public String getShortMessage() {
+        String msg = shortMessage;
+        if (StringUtils.isBlank(msg)) {
+            msg = this.name().toLowerCase().replace('_', ' ');
         }
-        return MESSAGE_KEY_PREFIX.concat(key);
+        return msg;
     }
 }

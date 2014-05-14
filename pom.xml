@@ -4,7 +4,7 @@
     <groupId>hu.sch</groupId>
     <artifactId>sch-pek</artifactId>
     <packaging>pom</packaging>
-    <version>2.7.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>SCH PéK Application</name>
     <url>http://stewie.sch.bme.hu/projects/korok</url>
     <inceptionYear>2008</inceptionYear>
@@ -77,8 +77,8 @@
         <connection>scm:git:https://github.com/kir-dev/korok.git</connection>
         <developerConnection>scm:git:git@github.com:kir-dev/korok.git</developerConnection>
         <url>https://github.com/kir-dev/korok</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -99,10 +99,10 @@
         <module>sch-pek-domain</module>
         <module>sch-pek-ejb-services</module>
         <module>sch-pek-ejb-impl</module>
-        <module>sch-pek-web</module>
         <module>sch-pek-web-services</module>
         <module>sch-pek-ear</module>
         <module>sch-pek-util</module>
+        <module>sch-pek-internal-api</module>
     </modules>
 
     <dependencyManagement>
@@ -130,18 +130,6 @@
             </dependency>
             <dependency>
                 <groupId>hu.sch</groupId>
-                <artifactId>sch-pek-test</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>hu.sch</groupId>
-                <artifactId>sch-pek-web</artifactId>
-                <version>${project.version}</version>
-                <type>war</type>
-            </dependency>
-            <dependency>
-                <groupId>hu.sch</groupId>
                 <artifactId>sch-pek-web-services</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
@@ -150,6 +138,12 @@
                 <groupId>hu.sch</groupId>
                 <artifactId>sch-pek-util</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.sch</groupId>
+                <artifactId>sch-pek-internal-api</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -193,12 +187,17 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.1</version>
+                <version>3.3.2</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.8</version>
+                <version>1.9</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.opencsv</groupId>
@@ -235,47 +234,22 @@
                 <version>1.9.5</version>
                 <scope>test</scope>
             </dependency>
-                        <!-- web dependencies -->
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-core</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-datetime</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-extensions</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wicketstuff</groupId>
-                <artifactId>wicketstuff-tinymce</artifactId>
-                <version>${wicketstuff.version}</version>
-            </dependency>
-
-            <!-- Wicket Java EE integration. -->
-            <!-- Wicket-CDI depends on seam-conversation module to activate and
-            deactivate conversational contexts, so you will need a seam-conversation module
-            specific to your CDI container. For JBoss Weld: -->
-            <dependency>
-                <groupId>org.jboss.seam.conversation</groupId>
-                <artifactId>seam-conversation-weld</artifactId>
-                <version>3.0.0.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wicket</groupId>
-                <artifactId>wicket-cdi</artifactId>
-                <version>${wicket.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>com.itextpdf</groupId>
                 <artifactId>itextpdf</artifactId>
                 <version>5.4.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>1.9.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>1.9.2</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

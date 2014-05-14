@@ -7,9 +7,9 @@
         <version>3.0.0-SNAPSHOT</version>
     </parent>
     <groupId>hu.sch</groupId>
-    <artifactId>sch-pek-web-services</artifactId>
+    <artifactId>sch-pek-internal-api</artifactId>
     <packaging>war</packaging>
-    <name>SCH PéK Web services</name>
+    <name>SCH PéK Internal API</name>
     <build>
         <plugins>
             <plugin>
@@ -65,8 +65,8 @@
             <artifactId>javaee-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -75,6 +75,14 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -11,7 +11,7 @@ import hu.sch.services.AccountManager;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
-import hu.sch.services.exceptions.PekEJBException;
+import hu.sch.util.exceptions.PekException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import java.util.Date;
@@ -92,7 +92,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
      */
     @Override
     public void doRegistration(final RegisteringUser regUser, final String password)
-            throws UserNotFoundException, PekEJBException {
+            throws UserNotFoundException, PekException {
 
         final User user = new User();
         user.setScreenName(regUser.getScreenName());

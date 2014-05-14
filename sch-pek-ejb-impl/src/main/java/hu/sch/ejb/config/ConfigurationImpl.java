@@ -32,6 +32,7 @@ public class ConfigurationImpl implements Configuration {
     private static final String DOMAIN_KOROK = "domain.korok";
     private static final String SUPPORT_BASE_URL = "support.baseUrl";
     private static final String SUPPORT_DEFAULT_ID = "support.defaultId";
+    private static final String INTERNAL_API_SECRET = "api.secret";
 
     private final Properties properties = new Properties();
     private final String baseDir;
@@ -110,5 +111,10 @@ public class ConfigurationImpl implements Configuration {
         int size = Integer.parseInt(properties.getProperty(IMAGE_MAX_SIZE, "400"));
 
         return new ImageUploadConfig(path, size);
+    }
+
+    @Override
+    public String getInternalApiSecret() {
+        return properties.getProperty(INTERNAL_API_SECRET);
     }
 }

@@ -13,8 +13,8 @@ import hu.sch.services.Roles;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.services.exceptions.PekEJBException;
-import hu.sch.services.exceptions.PekErrorCode;
+import hu.sch.util.exceptions.PekException;
+import hu.sch.util.exceptions.PekErrorCode;
 import hu.sch.util.hash.Hashing;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
@@ -76,7 +76,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void createUser(User user, String password) throws PekEJBException {
+    public void createUser(User user, String password) throws PekException {
         final byte[] salt = generateSalt();
         final String passwordDigest = hashPassword(password, salt);
 
@@ -121,7 +121,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void confirm(final User user, final String password) throws PekEJBException {
+    public void confirm(final User user, final String password) throws PekException {
         if (password != null) {
             byte[] salt = generateSalt();
             String passwordDigest = hashPassword(password, salt);
@@ -174,27 +174,27 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void changePassword(String screenName, String oldPwd, String newPwd) throws PekEJBException {
+    public void changePassword(String screenName, String oldPwd, String newPwd) throws PekException {
         User user = userManager.findUserByScreenName(screenName);
         byte[] salt = Base64.decodeBase64(user.getSalt());
         String passwordHash = hashPassword(oldPwd, salt);
 
         if (!passwordHash.equals(user.getPasswordDigest())) {
             logger.info("Password change requested with invalid password for user {}", user.getId());
-            throw new PekEJBException(PekErrorCode.USER_PASSWORD_INVALID);
+            throw new PekException(PekErrorCode.USER_PASSWORD_INVALID);
         }
 
         user.setPasswordDigest(hashPassword(newPwd, salt));
         em.merge(user);
     }
 
-    private String hashPassword(String password, byte[] salt) throws PekEJBException {
+    private String hashPassword(String password, byte[] salt) throws PekException {
         byte[] passwordBytes;
         try {
             passwordBytes = password.getBytes("UTF-8");
         } catch (UnsupportedEncodingException ex) {
             logger.error("UTF-8 is not supported.", ex);
-            throw new PekEJBException(PekErrorCode.SYSTEM_ENCODING_NOTSUPPORTED);
+            throw new PekException(PekErrorCode.SYSTEM_ENCODING_NOTSUPPORTED);
         }
 
         byte[] hashInput = new byte[passwordBytes.length + salt.length];
@@ -215,7 +215,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean sendUserNameReminder(final String email) throws PekEJBException {
+    public boolean sendUserNameReminder(final String email) throws PekException {
 
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("email argument can't be null when sending user name reminder");
@@ -225,7 +225,7 @@ public class AccountManagerBean implements AccountManager {
             final User result = userManager.findUserByEmail(email);
 
             if (result == null) {
-                throw new PekEJBException(PekErrorCode.USER_NOTFOUND);
+                throw new PekException(PekErrorCode.USER_NOTFOUND);
             } else {
                 final String subject = MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_SUBJECT);
 
@@ -253,7 +253,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean sendLostPasswordChangeLink(final String email) throws PekEJBException {
+    public boolean sendLostPasswordChangeLink(final String email) throws PekException {
 
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("email argument can't be null when sending password change link");
@@ -263,7 +263,7 @@ public class AccountManagerBean implements AccountManager {
             final User user = userManager.findUserByEmail(email);
 
             if (user == null) {
-                throw new PekEJBException(PekErrorCode.USER_NOTFOUND);
+                throw new PekException(PekErrorCode.USER_NOTFOUND);
             }
 
             final String subject = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_SUBJECT);
@@ -300,7 +300,7 @@ public class AccountManagerBean implements AccountManager {
      */
     @Override
     public void replaceLostPassword(final String tokenKey, final String password)
-            throws PekEJBException {
+            throws PekException {
 
         //checks the token again (validity, expiry, etc)
         final User user = getUserByLostPasswordToken(tokenKey);
@@ -324,7 +324,7 @@ public class AccountManagerBean implements AccountManager {
      */
     @Override
     public User getUserByLostPasswordToken(final String tokenKey)
-            throws PekEJBException {
+            throws PekException {
 
         final TypedQuery<LostPasswordToken> q
                 = em.createNamedQuery(LostPasswordToken.getByToken, LostPasswordToken.class);
@@ -336,17 +336,17 @@ public class AccountManagerBean implements AccountManager {
             final long currentTimeMillis = System.currentTimeMillis();
             if (currentTimeMillis > token.getCreated().getTime() + LOST_PW_TOKEN_VALID_MS) {
                 logger.info("Somebody tried to use an expired token={}", tokenKey);
-                throw new PekEJBException(PekErrorCode.VALIDATION_TOKEN_EXPIRED);
+                throw new PekException(PekErrorCode.VALIDATION_TOKEN_EXPIRED);
             }
 
             return token.getSubjectUser();
 
         } catch (NoResultException | NonUniqueResultException ex) {
             logger.info("Somebody tried to use an invalid token={}", tokenKey);
-            throw new PekEJBException(PekErrorCode.VALIDATION_TOKEN_NOTFOUND);
+            throw new PekException(PekErrorCode.VALIDATION_TOKEN_NOTFOUND);
         } catch (PersistenceException ex) {
             logger.error("Unexpected exception while checking lost password token.", ex);
-            throw new PekEJBException(PekErrorCode.UNKNOWN);
+            throw new PekException(PekErrorCode.UNKNOWN);
         }
     }
 

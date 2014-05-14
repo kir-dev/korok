@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
+    <deployment>
+        <dependencies>
+            <module name="org.codehaus.jackson.jackson-mapper-asl" slot="main" export="true" />
+            <module name="org.codehaus.jackson.jackson-core-asl" slot="main" export="true" />
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>
