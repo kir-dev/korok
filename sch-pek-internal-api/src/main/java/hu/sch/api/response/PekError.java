@@ -1,24 +1,28 @@
 package hu.sch.api.response;
 
+import hu.sch.api.serializers.PekErrorCodeSerializer;
+import hu.sch.util.exceptions.PekErrorCode;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  *
  * @author tomi
  */
-public class PekError {
+public class PekError extends AbstractPekResponse {
 
-    private int code;
-    private String message;
+    private final PekErrorCode error;
 
-    public PekError(int code, String message) {
-        this.code = code;
-        this.message = message;
+    public PekError(PekErrorCode error) {
+        this.error = error;
     }
 
-    public int getCode() {
-        return code;
+    @JsonSerialize(using = PekErrorCodeSerializer.class)
+    public PekErrorCode getError() {
+        return error;
     }
 
-    public String getMessage() {
-        return message;
+    @Override
+    public boolean isSuccess() {
+        return false;
     }
 }

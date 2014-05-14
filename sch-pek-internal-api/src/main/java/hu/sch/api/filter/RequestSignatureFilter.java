@@ -3,6 +3,7 @@ package hu.sch.api.filter;
 import hu.sch.api.response.PekError;
 import hu.sch.api.response.PekResponse;
 import hu.sch.services.config.Configuration;
+import hu.sch.util.exceptions.PekErrorCode;
 import java.io.IOException;
 import java.io.StringWriter;
 import javax.inject.Inject;
@@ -54,8 +55,7 @@ public class RequestSignatureFilter implements Filter {
             timestamp = Long.parseLong(req.getHeader(SIGNATURE_TIMESTAMP_KEY));
         } catch (NumberFormatException ex) {
             logger.warn("Invalid timestamp format: {} on path: {}", req.getHeader(SIGNATURE_TIMESTAMP_KEY), req.getRequestURI());
-            // TODO: finalize error codes
-            sendSignatureError(res, new PekError(100, "invalid timestamp"));
+            sendSignatureError(res, new PekError(PekErrorCode.REQUEST_TIMESTAMP_INVALID));
             return;
         }
 
@@ -65,8 +65,7 @@ public class RequestSignatureFilter implements Filter {
 
         if (result != RequestSignatureResult.OK) {
             logger.warn("Invalid request signature: {}", result);
-            // TODO: finalize error codes
-            sendSignatureError(res, new PekError(101, "invalid signature"));
+            sendSignatureError(res, new PekError(PekErrorCode.REQUEST_SIGNATURE_INVALID));
         } else {
             chain.doFilter(wrappedRequest, response);
         }
@@ -90,15 +89,13 @@ public class RequestSignatureFilter implements Filter {
     }
 
     private void sendSignatureError(HttpServletResponse res, PekError error) {
-        PekResponse<Void> response = new PekResponse<>(error);
-
         try {
             res.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             res.setCharacterEncoding("UTF-8");
 
             ObjectMapper m = new ObjectMapper();
-            m.writeValue(res.getWriter(), response);
+            m.writeValue(res.getWriter(), error);
         } catch (IOException ex) {
             logger.warn("Could not send signature error.", ex);
         }
