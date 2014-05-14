@@ -3,8 +3,8 @@ package hu.sch.ejb.image;
 import hu.sch.services.config.ImageUploadConfig;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.User;
-import hu.sch.services.exceptions.PekEJBException;
-import hu.sch.services.exceptions.PekErrorCode;
+import hu.sch.util.exceptions.PekException;
+import hu.sch.util.exceptions.PekErrorCode;
 import hu.sch.util.hash.Hashing;
 import hu.sch.util.net.MediaType;
 import java.io.File;
@@ -65,9 +65,9 @@ public class ImageProcessor {
      *
      * @param img
      * @return the relative path of the image
-     * @throws PekEJBException if anything goes wrong with the image.
+     * @throws PekException if anything goes wrong with the image.
      */
-    public String process() throws PekEJBException {
+    public String process() throws PekException {
         validateImage();
         resize();
         resultPath = store();
@@ -77,14 +77,14 @@ public class ImageProcessor {
         return resultPath;
     }
 
-    public void resize() throws PekEJBException {
+    public void resize() throws PekException {
         try {
             ImageResizer ir = new ImageResizer(image.getData(), config.getMaxSize());
             imageAsBytes = ir.resizeImage().getBytes();
         } catch (IOException ex) {
             final String msg = "An error occured while processing the image.";
             logger.warn(msg, ex);
-            throw new PekEJBException(PekErrorCode.FILE_OPEN_FAILED, msg, ex);
+            throw new PekException(PekErrorCode.FILE_OPEN_FAILED, msg, ex);
         }
     }
 
@@ -96,7 +96,7 @@ public class ImageProcessor {
         new File(oldImagePath).delete();
     }
 
-    public String store() throws PekEJBException {
+    public String store() throws PekException {
         if (imageAsBytes == null) {
             throw new IllegalStateException("Image has not been resized yet.");
         }
@@ -105,11 +105,11 @@ public class ImageProcessor {
         return new ImageSaver(user, config).save(newFilename, imageAsBytes).getRelativePath();
     }
 
-    private void validateImage() throws PekEJBException {
+    private void validateImage() throws PekException {
         MediaType type = MediaType.parse(image.getMimeType());
 
         if (!type.isAny(MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG)) {
-            throw new PekEJBException(PekErrorCode.VALIDATION_IMAGE_FORMAT, "Uploaded file is not an image.");
+            throw new PekException(PekErrorCode.VALIDATION_IMAGE_FORMAT, "Uploaded file is not an image.");
         }
     }
 

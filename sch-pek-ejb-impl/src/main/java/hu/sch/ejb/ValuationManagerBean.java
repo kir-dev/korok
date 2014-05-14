@@ -23,8 +23,8 @@ import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
-import hu.sch.services.exceptions.PekEJBException;
-import hu.sch.services.exceptions.PekErrorCode;
+import hu.sch.util.exceptions.PekException;
+import hu.sch.util.exceptions.PekErrorCode;
 import hu.sch.services.exceptions.UserNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
@@ -504,7 +504,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     @Override
     //TODO?: a sender származtatott érték, biztos, hogy át kell ezt adni, elvégre
     //       csak körvezető adhat le értékelést...
-    public void addNewValuation(Group group, User sender, String valuationText, String principle) throws PekEJBException {
+    public void addNewValuation(Group group, User sender, String valuationText, String principle) throws PekException {
         Valuation valuation = new Valuation();
         valuation.setSender(sender);
         try {
@@ -520,7 +520,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         // check if there is an existing valuation already
         if (findLatestValuation(valuation.getGroup(), valuation.getSemester()) != null) {
             logger.warn("Tried to create valuation twice for the same group ({}) and semester ({})", group.getId(), valuation.getSemester());
-            throw new PekEJBException(PekErrorCode.DATABASE_CREATE_VALUATION_DUPLICATE,
+            throw new PekException(PekErrorCode.DATABASE_CREATE_VALUATION_DUPLICATE,
                     "Could not create valuation for the same semester twice.");
         }
 

@@ -7,7 +7,7 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.services.exceptions.PekEJBException;
+import hu.sch.util.exceptions.PekException;
 import javax.ejb.Local;
 import java.util.List;
 
@@ -103,7 +103,7 @@ public interface UserManagerLocal {
      *
      * @param user
      */
-    void updateUser(User user) throws PekEJBException;
+    void updateUser(User user) throws PekException;
 
     /**
      * Update user in the database and synchronize the directory service.
@@ -113,9 +113,9 @@ public interface UserManagerLocal {
      *
      * @param user the user to update
      * @param image the new profile image
-     * @throws PekEJBException
+     * @throws PekException
      */
-    public void updateUser(User user, ProfileImage image) throws PekEJBException;
+    public void updateUser(User user, ProfileImage image) throws PekException;
 
     /**
      * Gets all semester with point when point is greater 0. Result order by
@@ -167,5 +167,5 @@ public interface UserManagerLocal {
      * Remove user's profile image.
      * @param user
      */
-    public void removeProfileImage(User user) throws PekEJBException;
+    public void removeProfileImage(User user) throws PekException;
 }

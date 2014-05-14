@@ -12,7 +12,7 @@ import hu.sch.ejb.image.ImageRemoverService;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.services.exceptions.PekEJBException;
+import hu.sch.util.exceptions.PekException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -171,12 +171,12 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void updateUser(User user) throws PekEJBException {
+    public void updateUser(User user) throws PekException {
         updateUser(user, null);
     }
 
     @Override
-    public void updateUser(User user, ProfileImage image) throws PekEJBException {
+    public void updateUser(User user, ProfileImage image) throws PekException {
         // process image
         if (image != null) {
             ImageProcessor proc = new ImageProcessor(user, image, config.getImageUploadConfig());
@@ -238,7 +238,7 @@ public class UserManagerBean implements UserManagerLocal {
             return true;
         } catch (NoResultException ex) {
             logger.error("No user with {} screen name.", screenName);
-        } catch (PekEJBException ex) {
+        } catch (PekException ex) {
             logger.error("Could not copy image. Error code: {}", ex.getErrorCode());
         }
         return false;
@@ -290,7 +290,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void removeProfileImage(User user) throws PekEJBException {
+    public void removeProfileImage(User user) throws PekException {
         new ImageRemoverService(config).removeProfileImage(user);
         user.setPhotoPath(null);
         updateUser(user);
