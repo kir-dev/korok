@@ -1,7 +1,6 @@
 package hu.sch.api.filter;
 
 import hu.sch.api.response.PekError;
-import hu.sch.api.response.PekResponse;
 import hu.sch.services.config.Configuration;
 import hu.sch.util.exceptions.PekErrorCode;
 import java.io.IOException;
@@ -60,7 +59,7 @@ public class RequestSignatureFilter implements Filter {
         }
 
         RereadableHttpServletRequestWrapper wrappedRequest = new RereadableHttpServletRequestWrapper(req);
-        RequestSignature sig = new RequestSignature(getUrl(req), readBody(req), req.getHeader(SIGNATURE_KEY), timestamp, secret);
+        RequestSignature sig = new RequestSignature(getUrl(req), readBody(wrappedRequest), req.getHeader(SIGNATURE_KEY), timestamp, secret);
         RequestSignatureResult result = sig.checkSignature();
 
         if (result != RequestSignatureResult.OK) {

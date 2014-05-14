@@ -1,7 +1,9 @@
 package hu.sch.api.filter;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -27,6 +29,11 @@ public class RereadableHttpServletRequestWrapper extends HttpServletRequestWrapp
             rawBody = IOUtils.toByteArray(request.getInputStream());
         }
         return new ByteServletInputStream(rawBody);
+    }
+
+    @Override
+    public BufferedReader getReader() throws IOException {
+        return new BufferedReader(new InputStreamReader(getInputStream()));
     }
 
     private static class ByteServletInputStream extends ServletInputStream {
