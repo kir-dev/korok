@@ -4,7 +4,7 @@ A [PÉK][1] a VIR lényegében utolsó megmaradt darabkája. A történetéről 
 jövőjéről a [Kir-Dev blogon][2] lehet többet olvasni:
 [I. rész][3], [II. rész][4], [III. rész][5] és [IV. rész][6].
 
-A PÉK fejlesztése a [githubon][7] folyik. Amennyiben bugot fogsz az [issues][8]
+A PÉK fejlesztése [githubon][7] folyik. Amennyiben bugot fogsz az [issues][8]
 oldalon van lehetőséged ezt felénk jelezni. Ha egyéb más problémád van (pl
 regisztrálni szeretnél), akkor az Schönherz egységes [support oldalán][9] tudsz
 ticketet feladni.
@@ -20,8 +20,8 @@ A fejlesztői doksik a [`docs`](docs/) mappában találhatóak.
 3. Rakj össze egy fejlesztői környezetet. Részletek az [install.md](docs/install.md)-ben.
 4. Válassz magadnak feladatot: [issues oldalról][8] vagy kérdezz minket a [#kir-dev irc csatornán a freenodeon][10]
 5. Dolgozz egy külön branchen: `git checkout -b my-awesome-patch`
-6. Lehetőleg írj tesztet és futtasd le a már meglévőeket: `mvn clean test`
-6. Pushold a kódod a saját repótba: `git push -u origin my-awesome-patch`
+6. Lehetőleg írj tesztet és futtasd le a már meglévőket: `mvn clean test`
+6. Pushold a kódod a saját repódba: `git push -u origin my-awesome-patch`
 8. Küldj [pull requestet](https://github.com/kir-dev/korok/pulls).
 
 ## Kérdésem van, mit tegyek?
