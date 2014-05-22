@@ -151,11 +151,11 @@ public class User implements Serializable, Comparable<User> {
     @Column(name = "usr_show_recommended_photo", nullable = false, columnDefinition = "boolean default false")
     private boolean showRecommendedPhoto;
     //----------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
     private Set<IMAccount> imAccounts;
     //----------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
     private Set<UserAttribute> privateAttributes;
     //----------------------------------------------------
