@@ -6,6 +6,7 @@ import hu.sch.services.config.Environment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,8 +18,8 @@ import org.slf4j.LoggerFactory;
  *
  * This is the one which is used throughout the application.
  *
- * @author  aldaris
- * @author  tomi
+ * @author aldaris
+ * @author tomi
  */
 @ApplicationScoped
 public class ConfigurationImpl implements Configuration {
@@ -33,49 +34,19 @@ public class ConfigurationImpl implements Configuration {
     private static final String DOMAIN_PROFILE = "domain.profile";
     private static final String DOMAIN_KOROK = "domain.korok";
     private static final String INTERNAL_API_SECRET = "api.secret";
-
-    private final Properties properties = new Properties();
-    private final String baseDir;
+    private Properties properties = new Properties();
+    private String baseDir;
     private Environment environment = null;
 
-    public ConfigurationImpl() {
-        String dir = System.getProperty(PROPERTY_NAME);
-
-        if (dir == null) {
-            throw new IllegalArgumentException(
-                    "System property '" + PROPERTY_NAME + "' isn't set! Can't initialize application!");
-        }
-        if (!dir.endsWith("/")) {
-            dir += "/";
-        }
-        baseDir = dir;
-
-        try(FileInputStream fis =
-                new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE))) {
-
-            properties.load(fis);
-            logger.debug(properties.toString());
-        } catch (Exception ex) {
-            throw new IllegalArgumentException("Error while loading properties file!", ex);
-        }
+    @PostConstruct
+    public void initialize() {
+        baseDir = getBaseDir();
+        loadPropertiesFromFile();
+        loadEnvironment();
     }
 
     @Override
     public Environment getEnvironment() {
-        if (environment == null) {
-            // try environment system property first, then the properties file
-            String env = System.getProperty(ENVIRONMENT);
-            if (StringUtils.isBlank(env)) {
-                env = properties.getProperty(ENVIRONMENT, "DEVELOPMENT");
-            }
-            try {
-                environment = Environment.valueOf(env);
-            } catch (IllegalArgumentException ex) {
-                System.err.println("Illegal environment value. Fallbacking to DEVELOPMENT.");
-                environment = Environment.DEVELOPMENT;
-            }
-            logger.warn("The application is running in {} mode!", environment.toString());
-        }
         return environment;
     }
 
@@ -105,5 +76,43 @@ public class ConfigurationImpl implements Configuration {
     @Override
     public String getInternalApiSecret() {
         return properties.getProperty(INTERNAL_API_SECRET);
+    }
+
+    private void loadEnvironment() {
+        // try environment system property first, then the properties file
+        String env = System.getProperty(ENVIRONMENT);
+        if (StringUtils.isBlank(env)) {
+            env = properties.getProperty(ENVIRONMENT, "DEVELOPMENT");
+        }
+        try {
+            environment = Environment.valueOf(env);
+        } catch (IllegalArgumentException ex) {
+            System.err.println("Illegal environment value. Fallbacking to DEVELOPMENT.");
+            environment = Environment.DEVELOPMENT;
+        }
+        logger.warn("The application is running in {} mode!", environment.toString());
+    }
+
+    private String getBaseDir() throws IllegalArgumentException {
+        String dir = System.getProperty(PROPERTY_NAME);
+        if (dir == null) {
+            throw new IllegalArgumentException(
+                    "System property '" + PROPERTY_NAME + "' isn't set! Can't initialize application!");
+        }
+        if (!dir.endsWith("/")) {
+            dir += "/";
+        }
+        return dir;
+    }
+
+    private void loadPropertiesFromFile() throws IllegalArgumentException {
+        try (FileInputStream fis =
+                new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE))) {
+
+            properties.load(fis);
+            logger.debug(properties.toString());
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Error while loading properties file!", ex);
+        }
     }
 }
