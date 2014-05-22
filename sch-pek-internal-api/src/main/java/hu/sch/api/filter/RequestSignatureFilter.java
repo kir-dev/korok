@@ -1,5 +1,8 @@
 package hu.sch.api.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hu.sch.api.providers.ObjectMapperContextResolver;
+import hu.sch.api.providers.ObjectMapperFactory;
 import hu.sch.api.response.PekError;
 import hu.sch.services.config.Configuration;
 import hu.sch.util.exceptions.PekErrorCode;
@@ -14,10 +17,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Providers;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +97,7 @@ public class RequestSignatureFilter implements Filter {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             res.setCharacterEncoding("UTF-8");
 
-            ObjectMapper m = new ObjectMapper();
+            ObjectMapper m = new ObjectMapperFactory(config).createMapper();
             m.writeValue(res.getWriter(), error);
         } catch (IOException ex) {
             logger.warn("Could not send signature error.", ex);

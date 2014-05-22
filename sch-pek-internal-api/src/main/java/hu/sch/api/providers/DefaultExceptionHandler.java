@@ -1,4 +1,4 @@
-package hu.sch.api.error;
+package hu.sch.api.providers;
 
 import hu.sch.api.response.PekError;
 import hu.sch.util.exceptions.PekException;

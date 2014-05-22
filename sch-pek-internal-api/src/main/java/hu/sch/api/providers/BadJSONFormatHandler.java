@@ -1,12 +1,12 @@
-package hu.sch.api.error;
+package hu.sch.api.providers;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import hu.sch.api.response.PekError;
 import hu.sch.util.exceptions.PekErrorCode;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import org.codehaus.jackson.map.JsonMappingException;
 
 /**
  *

@@ -9,11 +9,7 @@ találod. A telepítéshez szükséges információk valószínűleg a
 ### Előkövetelmények
 
 * [PostgreSQL][1] legújabb változata + hozzá való [JDBC4 driver][2]
-* JBoss AS 7
-    * Szerezd be a szervert. Figyelj arra, hogy nem biztos, hogy binárisan
-      letölthető a legújabb stabil verzió, ebben az esetben töltsd le a forrást
-      és fordítsd le (maven powa). A lefordított 7.1.3-as verziót megtalálod itt:
-      `stewie://home/balo/jboss-v7.1.3.zip`
+* [Wildfly 8][wildfly] (JBoss 7 utód)
 * virdb dump (keresd @tmichel-t)
 * körök konfigurációs mappa megléte
 * Git
@@ -61,6 +57,7 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
         modules/org/postgresql/main
 
+* Másold be a mappába a letöltött PostgreSQL drivert.
 * A fenti mappában hozz létre egy `module.xml` nevű fájlt.
 * A tartalma legyen a következő (verzió értelemszerűen javítandó):
 
@@ -91,16 +88,15 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
 * Datasource felvétele: jboss-cli
 
-        xa-data-source add --name=schkp --driver-name=postgresql --jndi-name=java:/jdbc/sch --user-name=kir --password=alma123 --use-ccm=false --max-pool-size=25 --min-pool-size=10 --pool-prefill=true --prepared-statements-cache-size=30
+        xa-data-source add --name=schkp --driver-name=postgresql --jndi-name=java:/jdbc/sch --user-name=kir --password=almafa --use-ccm=false --max-pool-size=25 --min-pool-size=10 --pool-prefill=true --prepared-statements-cache-size=30 --xa-datasource-properties=[{ServerName=localhost}, {DatabaseName=vir}, {PortNumber=5432}]
 
-        /subsystem=datasources/xa-data-source=schkp/xa-datasource-properties=ServerName:add(value=localhost)
-        /subsystem=datasources/xa-data-source=schkp/xa-datasource-properties=PortNumber:add(value=5432)
-        /subsystem=datasources/xa-data-source=schkp/xa-datasource-properties=DatabaseName:add(value=vir)
-        xa-data-source enable --name=schkp
+* Server újraindítás után, jboss-cli-ben ellenőrizhetó
+
+        xa-data-source test-connection-in-pool --name=schkp
 
 * mail resource hozzáadása
 
-        /subsystem=mail/mail-session="java:/mail/korokMail":add(from=kir-dev`sch.bme.hu,jndi-name=java:/mail/korokMail)
+        /subsystem=mail/mail-session="java:/mail/korokMail":add(from=kir-dev@sch.bme.hu,jndi-name=java:/mail/korokMail)
 
 * Java property-k. `appdata/korok/` könyvtár tartalma: `config.properties, logback.xml` (`resources/` mappából kimásolhatók)
 
@@ -119,7 +115,7 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
 A projekt főkönyvtárából:
 
-    mvn -DskipTests clean package jboss-as:deploy
+    mvn -DskipTests clean package wildfly:deploy
 
 ## Front-end
 
@@ -134,3 +130,4 @@ ben/akármilyen szövegszerkesztőben beállítani az egész projektre, hogy a f
 [1]: http://www.postgresql.org/download/
 [2]: http://jdbc.postgresql.org/download.html
 [3]: https://docs.jboss.org/author/display/AS71/CLI+Recipes
+[wildfly]: http://wildfly.org/downloads/

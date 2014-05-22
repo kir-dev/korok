@@ -1,8 +1,8 @@
 package hu.sch.web.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import hu.sch.domain.user.User;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  *

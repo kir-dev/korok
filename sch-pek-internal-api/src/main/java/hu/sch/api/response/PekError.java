@@ -1,13 +1,13 @@
 package hu.sch.api.response;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import hu.sch.api.serializers.PekErrorCodeSerializer;
 import hu.sch.util.exceptions.PekErrorCode;
 import hu.sch.util.exceptions.PekException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.codehaus.jackson.annotate.JsonUnwrapped;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  *
