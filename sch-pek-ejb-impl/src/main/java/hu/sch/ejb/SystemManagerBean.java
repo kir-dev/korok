@@ -15,7 +15,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.hibernate.validator.engine.ConfigurationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,7 @@ public class SystemManagerBean implements SystemManagerLocal {
         valuationLink = baseLink + "valuation";
         considerLink = baseLink + "consider";
     }
-    
+
     @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {
         try {
@@ -183,5 +182,5 @@ public class SystemManagerBean implements SystemManagerLocal {
     public String getConsiderLink() {
         return considerLink;
     }
-    
+
 }
