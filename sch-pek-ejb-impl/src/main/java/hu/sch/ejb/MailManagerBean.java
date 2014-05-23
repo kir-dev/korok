@@ -1,7 +1,7 @@
 package hu.sch.ejb;
 
 import hu.sch.services.config.Configuration;
-import hu.sch.services.config.Configuration.Environment;
+import hu.sch.services.config.Environment;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -99,7 +99,7 @@ public class MailManagerBean {
             mail.setText(message);
             mail.setSentDate(new Date());
 
-            if (config.getEnvironment()!= Environment.TESTING) {
+            if (config.getEnvironment()!= Environment.TEST) {
                 // TESTING esetén ne küldjünk levelet!
                 Transport.send(mail);
                 log.info("Levél sikeresen elküldve.");

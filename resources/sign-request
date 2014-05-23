@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ -z "$1" ] && [ -z "$2" ]; then
+	echo "Usage ./sign-request URL [BODY]"
+	exit
+fi
+
+URL=$1
+BODY=$2
+SECRET="<set your secret here>"
+TIMESTAMP=`date +%s`
+DIGEST=$URL$BODY$TIMESTAMP$SECRET
+SIG=$(echo -n $DIGEST | openssl sha1 -hmac $SECRET | sed -e 's/^.* //')
+
+if [ -z "$BODY" ]; then
+	curl "localhost:8080$URL" \
+		 -H "X-Pek-Timestamp: $TIMESTAMP" \
+		 -H "X-Pek-Signature: $SIG" \
+		 -H "Content-Type: application/json" \
+		 -i
+else
+	curl "localhost:8080$URL" \
+		 -H "X-Pek-Timestamp: $TIMESTAMP" \
+		 -H "X-Pek-Signature: $SIG" \
+		 -H "Content-Type: application/json" \
+		 -d $BODY \
+		 -i
+fi
+# to have an extra CRLF after the request body
+echo

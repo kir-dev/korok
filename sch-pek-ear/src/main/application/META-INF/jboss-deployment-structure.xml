@@ -2,8 +2,10 @@
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
     <deployment>
         <dependencies>
-            <module name="org.codehaus.jackson.jackson-mapper-asl" slot="main" export="true" />
-            <module name="org.codehaus.jackson.jackson-core-asl" slot="main" export="true" />
+            <module name="com.fasterxml.jackson.core.jackson-annotations" slot="main" export="true" />
+            <module name="com.fasterxml.jackson.core.jackson-core" slot="main" export="true" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" slot="main" export="true" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" slot="main" export="true" />
         </dependencies>
     </deployment>
 </jboss-deployment-structure>

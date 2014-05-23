@@ -18,10 +18,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum PekErrorCode {
 
-    // TODO: add proper messages to error
-    // TODO: rename DATABASE to ENTITY
-    // TODO: create an error for all custom exceptions from sch-pek-ejb*
+    // TODO: add proper messages to error (github/#41)
+    // TODO: rename DATABASE to ENTITY (github/#41)
+    // TODO: create an error for all custom exceptions from sch-pek-ejb* (github/#41)
 
+    UNSPECIFIED(-1, "unspecified error"),
     // DATABASE ERRORS 1xx
     DATABASE_CREATE_FAILED(100),
     DATABASE_UPDATE_FAILED(101),
@@ -40,8 +41,9 @@ public enum PekErrorCode {
     USER_NOTFOUND(500),
     USER_PASSWORD_INVALID(501),
     // web layer errors 6xx
-    REQUEST_TIMESTAMP_INVALID(600),
-    REQUEST_SIGNATURE_INVALID(601);
+    REQUEST_TIMESTAMP_INVALID(600, "invalid timestamp"),
+    REQUEST_SIGNATURE_INVALID(601, "invalid signature"),
+    REQUEST_FORMAT_INVALID(602, "invalid request format");
     //------------------------------------------
     private int code;
     private String shortMessage;
