@@ -3,3 +3,6 @@ target/
 gfembed*
 derby.log
 nb*
+
+# generated logging.cli
+logging.cli

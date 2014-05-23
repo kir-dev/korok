@@ -10,7 +10,7 @@ találod. A telepítéshez szükséges információk valószínűleg a
 
 * [PostgreSQL][1] legújabb változata + hozzá való [JDBC4 driver][2]
 * [Wildfly 8][wildfly] (JBoss 7 utód)
-* virdb dump (keresd @tmichel-t)
+* virdb dump (keresd @tmichel -t)
 * körök konfigurációs mappa megléte
 * Git
 * Maven
@@ -18,8 +18,8 @@ találod. A telepítéshez szükséges információk valószínűleg a
 
 ### PostgreSQL konfig
 
-Elérhető egy teszt adatbázis _stewie-n_. Hozzáférést @tmichel-nél vagy
-@salierri-nél tudsz kérni.
+Elérhető egy teszt adatbázis _stewie-n_. Hozzáférést @tmichel -nél vagy
+@salierri -nél tudsz kérni.
 
 ### Adatbázis és felhasználó létrehozása
 
@@ -98,10 +98,9 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
         /subsystem=mail/mail-session="java:/mail/korokMail":add(from=kir-dev@sch.bme.hu,jndi-name=java:/mail/korokMail)
 
-* Java property-k. `appdata/korok/` könyvtár tartalma: `config.properties, logback.xml` (`resources/` mappából kimásolhatók)
+* Java property-k. `appdata/korok/` könyvtár tartalma: `config.properties` (`resources/` mappából kimásolhatók)
 
         /system-property=application.resource.dir:add(value=/home/balo/kir-dev/appdata)
-        /system-property=logback.configurationFile:add(value=/home/balo/kir-dev/appdata/korok/logback.xml)
 
     Az elérési utak értelemszerűen modosítandóak.
 
@@ -109,7 +108,14 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
         /subsystem=web/virtual-server=default-host:write-attribute(name=enable-welcome-root,value=false)
 
-* Az `${application.resource.dir}/korok` mappában a `config.properties` fájlban állítsd be rád vonatozó értékeket..
+* Az `${application.resource.dir}/korok` mappában a `config.properties` fájlban állítsd be rád vonatozó értékeket.
+* Logolás. Logoláshoz a Wildfly által biztosított `logging subsystem`et használjuk.
+Fejlesztői környezetben ehhez nem kell semmit sem konfigurálni. Alapból az `INFO` szintű
+log bejegyzéseket jeleníti meg a console-on és a server.log fájlban. Ha a `DEBUG` információkra is szükségesed van,
+akkor a `jboss-cli`ben futtasd a következő parancsokat:
+
+        /subsystem=logging/console-handler=CONSOLE:write-attribute(name=level, value=DEBUG)
+        /subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=DEBUG)
 
 ### Build & Deploy
 
