@@ -2,6 +2,7 @@ package hu.sch.api;
 
 import hu.sch.api.response.EntityView;
 import hu.sch.api.response.PekError;
+import hu.sch.api.response.PekSuccess;
 import hu.sch.util.exceptions.PekErrorCode;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -20,7 +21,7 @@ public abstract class Base {
 
     protected Response respondWithEntityOrNotFound(Object entity) {
         if (entity != null) {
-            return Response.ok(entity).build();
+            return Response.ok(new PekSuccess<>(entity)).build();
         }
         PekError error = new PekError(PekErrorCode.ENTITY_NOTFOUND, "entity cannot be found");
         return Response.status(Response.Status.NOT_FOUND).entity(error).build();
@@ -32,7 +33,7 @@ public abstract class Base {
         }
 
         if (entity.hasEntity()) {
-            return Response.ok(entity).build();
+            return Response.ok(new PekSuccess<>(entity)).build();
         }
         PekError error = new PekError(PekErrorCode.ENTITY_NOTFOUND,
                 String.format("%s cannot be found", entity.getEntityName()));

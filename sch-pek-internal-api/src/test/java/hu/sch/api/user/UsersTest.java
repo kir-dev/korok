@@ -1,5 +1,6 @@
 package hu.sch.api.user;
 
+import hu.sch.api.response.PekSuccess;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import javax.ws.rs.core.Response;
@@ -31,12 +32,12 @@ public class UsersTest {
     }
 
     @Test
-    public void userGetsWrappedInAUserView() {
+    public void userGetsWrappedInAPekSuccess() {
         setupUserManagerWith(new User());
         Response resp = usersEndpoint.getUserById();
-        assertThat(resp.getStatus()).isEqualTo(200);
-        assertThat(resp.getEntity()).isInstanceOf(UserView.class);
 
+        assertThat(resp.getStatus()).isEqualTo(200);
+        assertThat(resp.getEntity()).isInstanceOf(PekSuccess.class);
     }
 
     private void setupUserManagerWith(User user) {
