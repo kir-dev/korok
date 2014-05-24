@@ -3,3 +3,7 @@ target/
 gfembed*
 derby.log
 nb*
+
+# generated *.cli files
+logging.cli
+app-setup.cli

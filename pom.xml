@@ -106,7 +106,6 @@
         <maven.compiler.source>1.7</maven.compiler.source>
 
         <!-- dependency versions -->
-        <version.logback>1.1.2</version.logback>
     </properties>
 
     <modules>
@@ -184,16 +183,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.7</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${version.logback}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${version.logback}</version>
             </dependency>
 
             <dependency>

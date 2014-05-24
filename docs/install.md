@@ -10,7 +10,7 @@ találod. A telepítéshez szükséges információk valószínűleg a
 
 * [PostgreSQL][1] legújabb változata + hozzá való [JDBC4 driver][2]
 * [Wildfly 8][wildfly] (JBoss 7 utód)
-* virdb dump (keresd @tmichel-t)
+* virdb dump (keresd @tmichel -t)
 * körök konfigurációs mappa megléte
 * Git
 * Maven
@@ -18,8 +18,8 @@ találod. A telepítéshez szükséges információk valószínűleg a
 
 ### PostgreSQL konfig
 
-Elérhető egy teszt adatbázis _stewie-n_. Hozzáférést @tmichel-nél vagy
-@salierri-nél tudsz kérni.
+Elérhető egy teszt adatbázis _stewie-n_. Hozzáférést @tmichel -nél vagy
+@salierri -nél tudsz kérni.
 
 ### Adatbázis és felhasználó létrehozása
 
@@ -55,7 +55,7 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 * Töltsd le a legújabb [JDBC4 drivert][2].
 * Hozd létre a következő könyvtárstruktúrát a szerver mappájában:
 
-        modules/org/postgresql/main
+        modules/system/layers/base/org/postgresql/main
 
 * Másold be a mappába a letöltött PostgreSQL drivert.
 * A fenti mappában hozz létre egy `module.xml` nevű fájlt.
@@ -74,7 +74,7 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
 * Indítsd el a szervert (leállítás: ctrl+c)
 
-        jboss-as-7.1.3.Final/bin/standalone.sh
+        wildfly/bin/standalone.sh
 
 * Regisztráld a drivert: jboss-cli segítségével:
 
@@ -85,6 +85,22 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
         INFO [org.jboss.as.connector.subsystems.datasources] JBAS010404: Deploying non-JDBC-compliant driver class org.postgresql.Driver
 
 #### Alkalmazás konfigurálása
+
+Mindenek előtt indítsd el a szervert, ha még nem menne.
+
+Az alábbi lépéseket kézzel is végrehajthatod, de használhatod a `resources/install`
+mappában lévő `app-setup.sh` scriptet az automatizálásra.
+
+    $ cd resources/install
+    $ ./app-setup path/to/appdata
+    $ path/to/wildfly/bin/jboss-cli -c --file=app-setup.cli
+
+Vagy rögtön le is futtatható a setup script:
+
+    $ cd resources/install
+    $ JBOSS_HOME=/path/to/wildfly ./app-setup path/to/appdata
+   
+Manuális lépések:
 
 * Datasource felvétele: jboss-cli
 
@@ -98,18 +114,20 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
         /subsystem=mail/mail-session="java:/mail/korokMail":add(from=kir-dev@sch.bme.hu,jndi-name=java:/mail/korokMail)
 
-* Java property-k. `appdata/korok/` könyvtár tartalma: `config.properties, logback.xml` (`resources/` mappából kimásolhatók)
+* Java property-k. `appdata/korok/` könyvtár tartalma: `config.properties` (`resources/` mappából kimásolhatók)
 
         /system-property=application.resource.dir:add(value=/home/balo/kir-dev/appdata)
-        /system-property=logback.configurationFile:add(value=/home/balo/kir-dev/appdata/korok/logback.xml)
 
     Az elérési utak értelemszerűen modosítandóak.
 
-* Kapcsold ki a welcome-root-ot: jboss-cli
+* Az `${application.resource.dir}/korok` mappában a `config.properties` fájlban állítsd be rád vonatozó értékeket.
+* Logolás. Logoláshoz a Wildfly által biztosított `logging subsystem`et használjuk.
+Fejlesztői környezetben ehhez nem kell semmit sem konfigurálni. Alapból az `INFO` szintű
+log bejegyzéseket jeleníti meg a console-on és a server.log fájlban. Ha a `DEBUG` információkra is szükségesed van,
+akkor a `jboss-cli`ben futtasd a következő parancsokat:
 
-        /subsystem=web/virtual-server=default-host:write-attribute(name=enable-welcome-root,value=false)
-
-* Az `${application.resource.dir}/korok` mappában a `config.properties` fájlban állítsd be rád vonatozó értékeket..
+        /subsystem=logging/console-handler=CONSOLE:write-attribute(name=level, value=DEBUG)
+        /subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=DEBUG)
 
 ### Build & Deploy
 
