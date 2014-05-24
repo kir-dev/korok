@@ -4,5 +4,6 @@ gfembed*
 derby.log
 nb*
 
-# generated logging.cli
+# generated *.cli files
 logging.cli
+app-setup.cli

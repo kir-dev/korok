@@ -1,8 +1,13 @@
+#!/bin/bash
+
 if [ -z "$1" ]; then
 	echo "Usage: ./logging.sh LOG_PATH"
 	exit
 fi
 
+OUTFILE=logging.cli
+TMPDIR=/tmp
+OUTPATH=$TMPDIR/$OUTFILE
 LOGPATH=$1
 
 # cli batch for logging
@@ -21,4 +26,11 @@ CLIBATCH=$(cat <<BATCH
 BATCH
 )
 
-echo "$CLIBATCH" > logging.cli
+if [ -z "$JBOSS_HOME" ]; then
+	echo "No JBOSS_HOME specified, dumping config to $OUTFILE"
+	echo "$CLIBATCH" > $OUTFILE
+else
+	echo "$CLIBATCH" > $OUTPATH
+	$JBOSS_HOME/bin/jboss-cli.sh -c --file=$OUTPATH
+	rm $OUTPATH
+fi

@@ -55,7 +55,7 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 * Töltsd le a legújabb [JDBC4 drivert][2].
 * Hozd létre a következő könyvtárstruktúrát a szerver mappájában:
 
-        modules/org/postgresql/main
+        modules/system/layers/base/org/postgresql/main
 
 * Másold be a mappába a letöltött PostgreSQL drivert.
 * A fenti mappában hozz létre egy `module.xml` nevű fájlt.
@@ -74,7 +74,7 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
 * Indítsd el a szervert (leállítás: ctrl+c)
 
-        jboss-as-7.1.3.Final/bin/standalone.sh
+        wildfly/bin/standalone.sh
 
 * Regisztráld a drivert: jboss-cli segítségével:
 
