@@ -9,7 +9,7 @@ találod. A telepítéshez szükséges információk valószínűleg a
 ### Előkövetelmények
 
 * [PostgreSQL][1] legújabb változata + hozzá való [JDBC4 driver][2]
-* [Wildfly 8][wildfly] (JBoss 7 utód)
+* [Wildfly 8][wildfly] (JBoss 7 utód) _a 8.1.0.CR2-t töltsük egy [jackson provider bug][jackson-bug] miatt_
 * virdb dump (keresd @tmichel -t)
 * körök konfigurációs mappa megléte
 * Git
@@ -42,7 +42,7 @@ Dump betöltése:
 Az adatbázis helyes működését ellenőrizheted a `psql -U kir -d vir -h localhost`
 paranccsal kapott konzolban.
 
-### JBoss konfig
+### Wildfly konfig
 
 A szervert jelenleg standalone módban használjuk. A `jboss-cli` használatához
 értelemszerűen futnia kell a szervernek (hasznosság: [cli recipes][3]). A cli-hez
@@ -51,7 +51,7 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
 #### Postgres modul telepítése
 
-* Állítsd le a JBoss szervert.
+* Állítsd le a Wildfly szervert.
 * Töltsd le a legújabb [JDBC4 drivert][2].
 * Hozd létre a következő könyvtárstruktúrát a szerver mappájában:
 
@@ -99,7 +99,7 @@ Vagy rögtön le is futtatható a setup script:
 
     $ cd resources/install
     $ JBOSS_HOME=/path/to/wildfly ./app-setup path/to/appdata
-   
+
 Manuális lépések:
 
 * Datasource felvétele: jboss-cli
@@ -149,3 +149,4 @@ ben/akármilyen szövegszerkesztőben beállítani az egész projektre, hogy a f
 [2]: http://jdbc.postgresql.org/download.html
 [3]: https://docs.jboss.org/author/display/AS71/CLI+Recipes
 [wildfly]: http://wildfly.org/downloads/
+[jackson-bug]: https://community.jboss.org/thread/237728

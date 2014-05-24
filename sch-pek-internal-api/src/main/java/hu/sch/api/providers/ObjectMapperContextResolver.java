@@ -1,9 +1,7 @@
 package hu.sch.api.providers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import hu.sch.services.config.Configuration;
-import hu.sch.services.config.Environment;
 import javax.inject.Inject;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;

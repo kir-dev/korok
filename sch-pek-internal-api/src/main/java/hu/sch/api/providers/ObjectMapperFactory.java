@@ -2,6 +2,7 @@ package hu.sch.api.providers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.config.Environment;
 
@@ -19,6 +20,7 @@ public class ObjectMapperFactory {
 
     public ObjectMapper createMapper() {
         return new ObjectMapper()
+                .registerModule(new Hibernate4Module())
                 .configure(SerializationFeature.INDENT_OUTPUT, indent());
     }
 
