@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package hu.sch.util.test.net;
+package hu.sch.util.net;
 
-import hu.sch.util.net.MediaType;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -50,5 +49,10 @@ public class MediaTypeTest {
     public void isAnyReturnsFalseOnlyWhenThereIsNoMatch() {
         MediaType m = MediaType.parse("image/jpeg");
         assertFalse(m.isAny(MediaType.TEXT_PLAIN, MediaType.TEXT_HTML));
+    }
+
+    @Test
+    public void getContentTypeCreatesHTTPCompiantContentType() {
+        assertEquals("image/png", MediaType.IMAGE_PNG.getContentType());
     }
 }
