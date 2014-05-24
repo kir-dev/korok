@@ -86,6 +86,22 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
 
 #### Alkalmazás konfigurálása
 
+Mindenek előtt indítsd el a szervert, ha még nem menne.
+
+Az alábbi lépéseket kézzel is végrehajthatod, de használhatod a `resources/install`
+mappában lévő `app-setup.sh` scriptet az automatizálásra.
+
+    $ cd resources/install
+    $ ./app-setup path/to/appdata
+    $ cd path/to/wildfly/bin/jboss-cli -c --file=app-setup.cli
+
+Vagy rögtön le is futtatható a setup script:
+
+    $ cd resources/install
+    $ JBOSS_HOME=/path/to/wildfly ./app-setup path/to/appdata
+   
+Manuális lépések:
+
 * Datasource felvétele: jboss-cli
 
         xa-data-source add --name=schkp --driver-name=postgresql --jndi-name=java:/jdbc/sch --user-name=kir --password=almafa --use-ccm=false --max-pool-size=25 --min-pool-size=10 --pool-prefill=true --prepared-statements-cache-size=30 --xa-datasource-properties=[{ServerName=localhost}, {DatabaseName=vir}, {PortNumber=5432}]
@@ -103,10 +119,6 @@ tudni kell, hogy van faja tab kiegészítés és van egy fajta fura szintaxisa
         /system-property=application.resource.dir:add(value=/home/balo/kir-dev/appdata)
 
     Az elérési utak értelemszerűen modosítandóak.
-
-* Kapcsold ki a welcome-root-ot: jboss-cli
-
-        /subsystem=web/virtual-server=default-host:write-attribute(name=enable-welcome-root,value=false)
 
 * Az `${application.resource.dir}/korok` mappában a `config.properties` fájlban állítsd be rád vonatozó értékeket.
 * Logolás. Logoláshoz a Wildfly által biztosított `logging subsystem`et használjuk.
