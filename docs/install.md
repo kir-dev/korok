@@ -93,7 +93,7 @@ mappában lévő `app-setup.sh` scriptet az automatizálásra.
 
     $ cd resources/install
     $ ./app-setup path/to/appdata
-    $ cd path/to/wildfly/bin/jboss-cli -c --file=app-setup.cli
+    $ path/to/wildfly/bin/jboss-cli -c --file=app-setup.cli
 
 Vagy rögtön le is futtatható a setup script:
 
