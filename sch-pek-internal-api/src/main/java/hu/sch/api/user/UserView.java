@@ -1,7 +1,7 @@
 package hu.sch.api.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import hu.sch.api.response.EntityView;
+import hu.sch.api.response.AbstractEntityView;
 import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.User;
@@ -13,65 +13,54 @@ import java.util.Date;
  *
  * @author tomi
  */
-public class UserView implements EntityView {
-    private final User user;
+public class UserView extends AbstractEntityView<User> {
 
     public UserView(User user) {
-        this.user = user;
-    }
-
-    @Override
-    public boolean hasEntity() {
-        return user != null;
-    }
-
-    @Override
-    public String getEntityName() {
-        return User.class.getSimpleName();
+        super(user, User.class);
     }
 
     public Long getId() {
-        return user.getId();
+        return entity.getId();
     }
 
     public String getEmailAddress() {
-        return user.getEmailAddress();
+        return entity.getEmailAddress();
     }
 
     public String getNeptunCode() {
-        return user.getNeptunCode();
+        return entity.getNeptunCode();
     }
 
     public String getFirstName() {
-        return user.getFirstName();
+        return entity.getFirstName();
     }
 
     public String getLastName() {
-        return user.getLastName();
+        return entity.getLastName();
     }
 
     public String getNickName() {
-        return user.getNickName();
+        return entity.getNickName();
     }
 
     public Date getDateOfBirth() {
-        return user.getDateOfBirth();
+        return entity.getDateOfBirth();
     }
 
     public Gender getGender() {
-        return user.getGender();
+        return entity.getGender();
     }
 
     public StudentStatus getStudentStatus() {
-        return user.getStudentStatus();
+        return entity.getStudentStatus();
     }
 
     @JsonProperty("hasAvatar")
     public boolean hasPhoto() {
-        return user.hasPhoto();
+        return entity.hasPhoto();
     }
 
     public String getCellPhone() {
-        return user.getCellPhone();
+        return entity.getCellPhone();
     }
 }

@@ -5,11 +5,11 @@ package hu.sch.api.response;
  *
  * @author tomi
  */
-public class PekSuccess<T> implements PekResponse {
+public class PekSuccess implements PekResponse {
 
-    private final T data;
+    private final Object data;
 
-    public PekSuccess(T data) {
+    public PekSuccess(Object data) {
         this.data = data;
     }
 
@@ -18,7 +18,7 @@ public class PekSuccess<T> implements PekResponse {
         return true;
     }
 
-    public T getData() {
+    public Object getData() {
         return data;
     }
 }
