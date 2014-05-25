@@ -1,11 +1,8 @@
 package hu.sch.api.user;
 
 import hu.sch.api.exceptions.EntityNotFoundException;
-import hu.sch.api.response.PekResponse;
-import hu.sch.api.response.PekSuccess;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
-import javax.ws.rs.core.Response;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Before;
