@@ -92,7 +92,7 @@ public class SvieManagerBean implements SvieManagerLocal {
 
     @Override
     public List<User> getSvieMembers() {
-        Query q = em.createNamedQuery(Membership.getMembers);
+        Query q = em.createNamedQuery(Membership.getMembersWithSvieMembershipTypeNotEqual);
         q.setParameter("msType", SvieMembershipType.NEMTAG);
         return q.getResultList();
     }

@@ -30,11 +30,9 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "grp_membership")
 @NamedQueries(value = {
-    @NamedQuery(name = Membership.getMembership,
-            query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
     @NamedQuery(name = Membership.getActiveSvieMemberships,
             query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true AND ms.end IS null"),
-    @NamedQuery(name = Membership.getMembers,
+    @NamedQuery(name = Membership.getMembersWithSvieMembershipTypeNotEqual,
             query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
     @NamedQuery(name = Membership.getDelegatedMemberForGroup,
             query = "SELECT ms.user FROM Membership ms WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true"),
@@ -48,13 +46,9 @@ import javax.persistence.Transient;
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq", allocationSize = 1)
 public class Membership implements Serializable {
 
-    public static final String SORT_BY_GROUP = "group";
-    public static final String SORT_BY_POSTS = "postsAsString";
-    public static final String SORT_BY_INTERVAL = "interval";
     private static final long serialVersionUID = 1L;
-    public static final String getMembership = "getMembership";
     public static final String getActiveSvieMemberships = "getActiveSvieMemberships";
-    public static final String getMembers = "getMembers";
+    public static final String getMembersWithSvieMembershipTypeNotEqual = "getMembersWithSvieMembershipTypeNotEqual";
     public static final String getDelegatedMemberForGroup = "getDelegatedMemberForGroup";
     public static final String getAllDelegated = "getAllDelegated";
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
