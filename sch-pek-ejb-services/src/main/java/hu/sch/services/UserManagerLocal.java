@@ -31,12 +31,12 @@ public interface UserManagerLocal {
     /**
      * Gets the user with the specified id.
      *
+     * It also includes the user's memberships, groups and posts.
+     *
      * @param userId
-     * @param includeMemberships set it to true and it prefetches the
-     * memberships
      * @return the user or null if there is no user with the id
      */
-    User findUserById(Long userId, boolean includeMemberships);
+    User findUserByIdWithMemberships(Long userId);
 
     /**
      * Gets the users whose name contains the given fragment.

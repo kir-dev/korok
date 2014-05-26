@@ -36,37 +36,40 @@ public class UserManagerBean implements UserManagerLocal {
     private static Logger logger = LoggerFactory.getLogger(UserManagerBean.class);
     @PersistenceContext
     EntityManager em;
-    @Inject
     private SystemManagerLocal systemManager;
-    //
-    @Inject
     private Configuration config;
-    //
 
     public UserManagerBean() {
     }
 
-    // for testing
-    public UserManagerBean(EjbConstructorArgument args) {
-        this.em = args.getEm();
-        this.systemManager = args.getSystemManager();
-        this.config = args.getConfig();
+    public UserManagerBean(EntityManager em) {
+        this.em = em;
+    }
+
+    @Inject
+    public void setSystemManager(SystemManagerLocal systemManager) {
+        this.systemManager = systemManager;
+    }
+
+    @Inject
+    public void setConfig(Configuration config) {
+        this.config = config;
     }
 
     @Override
     public User findUserById(Long userId) {
-        return findUserById(userId, false);
+        if (userId == null || userId.equals(0L)) {
+            // TODO: github/#41: introduce exception instead of silent null
+            return null;
+        }
+        return em.find(User.class, userId);
     }
 
     @Override
-    public User findUserById(Long userId, boolean includeMemberships) {
-        if (userId.equals(0L)) {
+    public User findUserByIdWithMemberships(Long userId) {
+        if (userId == null || userId.equals(0L)) {
             // ha nincs használható userId, akkor ne menjünk el a DB-hez.
             return null;
-        }
-
-        if (!includeMemberships) {
-            return em.find(User.class, userId);
         }
 
         TypedQuery<User> q = em.createNamedQuery(User.findWithMemberships, User.class);
@@ -76,6 +79,7 @@ public class UserManagerBean implements UserManagerLocal {
             return q.getSingleResult();
         } catch (Exception ex) {
             logger.warn("Can't find user with memberships for this id: " + userId);
+            // TODO: github/#41: rethrow exception with wrapper
             return null;
         }
     }

@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "users")
 @NamedQueries({
     @NamedQuery(name = User.findWithMemberships,
-            query = "SELECT u FROM User u LEFT OUTER JOIN FETCH u.memberships WHERE u.id = :id"),
+            query = "SELECT u FROM User u LEFT JOIN FETCH u.memberships ms LEFT JOIN FETCH ms.posts posts LEFT JOIN FETCH ms.group LEFT JOIN FETCH posts.postType WHERE u.id = :id"),
     @NamedQuery(name = User.findUserByNeptunCode,
             query = "SELECT u FROM User u WHERE UPPER(u.neptunCode) = UPPER(:neptun)"),
     @NamedQuery(name = User.findByScreenName,
@@ -393,14 +393,14 @@ public class User implements Serializable, Comparable<User> {
         if (this.getMemberships() != null) {
             Collections.sort(this.getMemberships(),
                     new Comparator<Membership>() {
-                @Override
-                public int compare(Membership o1, Membership o2) {
-                    if (o1.getEnd() == null ^ o2.getEnd() == null) {
-                        return o1.getEnd() == null ? -1 : 1;
-                    }
-                    return o1.getGroup().compareTo(o2.getGroup());
-                }
-            });
+                        @Override
+                        public int compare(Membership o1, Membership o2) {
+                            if (o1.getEnd() == null ^ o2.getEnd() == null) {
+                                return o1.getEnd() == null ? -1 : 1;
+                            }
+                            return o1.getGroup().compareTo(o2.getGroup());
+                        }
+                    });
         }
     }
 
