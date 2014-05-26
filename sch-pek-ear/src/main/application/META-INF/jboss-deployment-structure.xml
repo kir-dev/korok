@@ -2,10 +2,10 @@
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
     <deployment>
         <dependencies>
-            <module name="com.fasterxml.jackson.core.jackson-annotations" slot="main" export="true" />
-            <module name="com.fasterxml.jackson.core.jackson-core" slot="main" export="true" />
-            <module name="com.fasterxml.jackson.core.jackson-databind" slot="main" export="true" />
-            <module name="org.jboss.resteasy.resteasy-jackson2-provider" slot="main" export="true" />
+            <module name="com.fasterxml.jackson.core.jackson-annotations" />
+            <module name="com.fasterxml.jackson.core.jackson-core" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
         </dependencies>
     </deployment>
 </jboss-deployment-structure>

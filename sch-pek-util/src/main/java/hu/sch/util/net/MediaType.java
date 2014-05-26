@@ -40,6 +40,10 @@ public final class MediaType {
         return subType;
     }
 
+    public String getContentType() {
+        return String.format("%s/%s", type, subType);
+    }
+
     public static MediaType parse(String mediaTypeString) {
         if (mediaTypeString == null) {
             throw new IllegalArgumentException("mediaTypeString cannot be null");

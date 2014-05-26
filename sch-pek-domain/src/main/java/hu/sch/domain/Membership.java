@@ -2,7 +2,7 @@ package hu.sch.domain;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.util.DateInterval;
-import hu.sch.domain.interfaces.MembershipTableEntry;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,32 +24,29 @@ import javax.persistence.Transient;
 
 /**
  * Csoporttagságot reprezentáló entity
+ *
  * @author hege
  */
 @Entity
 @Table(name = "grp_membership")
 @NamedQueries(value = {
     @NamedQuery(name = Membership.getMembership,
-    query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
+            query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
     @NamedQuery(name = Membership.getActiveSvieMemberships,
-    query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true AND ms.end IS null"),
+            query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true AND ms.end IS null"),
     @NamedQuery(name = Membership.getMembers,
-    query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
+            query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
     @NamedQuery(name = Membership.getDelegatedMemberForGroup,
-    query = "SELECT ms.user FROM Membership ms "
-    + "WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true"),
+            query = "SELECT ms.user FROM Membership ms WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true"),
     @NamedQuery(name = Membership.getAllDelegated,
-    query = "SELECT u FROM User u WHERE u.delegated = true "
-    + "ORDER BY u.lastName, u.firstName"),
+            query = "SELECT u FROM User u WHERE u.delegated = true ORDER BY u.lastName, u.firstName"),
     @NamedQuery(name = Membership.findMembershipsForGroup, query =
-    "SELECT ms FROM Membership ms "
-    + "WHERE ms.groupId = :id"),
+            "SELECT ms FROM Membership ms WHERE ms.groupId = :id"),
     @NamedQuery(name = Membership.findMembershipForUserAndGroup, query =
-    "SELECT ms FROM Membership ms WHERE ms.groupId = :groupId AND ms.userId = :userId")
+            "SELECT ms FROM Membership ms WHERE ms.groupId = :groupId AND ms.userId = :userId")
 })
-@SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq",
-        allocationSize = 1)
-public class Membership implements MembershipTableEntry {
+@SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq", allocationSize = 1)
+public class Membership implements Serializable {
 
     public static final String SORT_BY_GROUP = "group";
     public static final String SORT_BY_POSTS = "postsAsString";
@@ -62,7 +59,6 @@ public class Membership implements MembershipTableEntry {
     public static final String getAllDelegated = "getAllDelegated";
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
     public static final String findMembershipForUserAndGroup = "getMembershipForUserAndGroup";
-
     @Id
     @GeneratedValue(generator = "grp_members_seq")
     @Column(name = "id")
@@ -213,14 +209,6 @@ public class Membership implements MembershipTableEntry {
         hash = 29 * hash + (this.end != null ? this.end.hashCode() : 0);
         hash = 29 * hash + (this.posts != null ? this.posts.hashCode() : 0);
         return hash;
-    }
-
-    /**
-     * Ez csak azért kell, hogy általánosítani lehessen a MembershipTable logikáját.
-     */
-    @Override
-    public Membership getMembership() {
-        return this;
     }
 
     public String getPostsAsString() {

@@ -23,10 +23,11 @@ public enum PekErrorCode {
     // TODO: create an error for all custom exceptions from sch-pek-ejb* (github/#41)
 
     UNSPECIFIED(-1, "unspecified error"),
-    // DATABASE ERRORS 1xx
+    // ENTITY ERRORS 1xx
     DATABASE_CREATE_FAILED(100),
     DATABASE_UPDATE_FAILED(101),
     DATABASE_CREATE_VALUATION_DUPLICATE(102),
+    ENTITY_NOTFOUND(103, "entity not found"),
     // VALIDATION ERRORS 2xx
     VALIDATION_IMAGE_FORMAT(200),
     VALIDATION_TOKEN_EXPIRED(201),
@@ -43,7 +44,8 @@ public enum PekErrorCode {
     // web layer errors 6xx
     REQUEST_TIMESTAMP_INVALID(600, "invalid timestamp"),
     REQUEST_SIGNATURE_INVALID(601, "invalid signature"),
-    REQUEST_FORMAT_INVALID(602, "invalid request format");
+    REQUEST_FORMAT_INVALID(602, "invalid request format"),
+    RESOURCE_NOT_FOUND(604, "resource not found");
     //------------------------------------------
     private int code;
     private String shortMessage;

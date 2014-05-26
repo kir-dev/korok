@@ -46,6 +46,11 @@ public class PekError implements PekResponse {
         return pe;
     }
 
+    public static PekError notFound(String cause) {
+        PekError pe = new PekError(PekErrorCode.RESOURCE_NOT_FOUND, cause);
+        return pe;
+    }
+
     @JsonUnwrapped
     @JsonSerialize(using = PekErrorCodeSerializer.class)
     public PekErrorCode getError() {
