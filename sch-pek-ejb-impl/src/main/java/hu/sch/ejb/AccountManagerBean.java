@@ -7,22 +7,20 @@ import hu.sch.domain.user.LostPasswordToken;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
 import static hu.sch.ejb.MailManagerBean.getMailString;
-import hu.sch.services.config.Configuration;
 import hu.sch.services.AccountManager;
 import hu.sch.services.Roles;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.config.Configuration;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.util.exceptions.PekException;
 import hu.sch.util.exceptions.PekErrorCode;
+import hu.sch.util.exceptions.PekException;
 import hu.sch.util.hash.Hashing;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -56,11 +54,11 @@ public class AccountManagerBean implements AccountManager {
     @PersistenceContext
     private EntityManager em;
     //
-    @EJB(name = "UserManagerBean")
+    @Inject
     private UserManagerLocal userManager;
-    @EJB(name = "SystemManagerBean")
+    @Inject
     private SystemManagerLocal systemManager;
-    @EJB
+    @Inject
     private MailManagerBean mailManager;
     @Resource
     private SessionContext sessionContext;

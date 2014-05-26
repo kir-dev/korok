@@ -12,8 +12,8 @@ import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.SvieManagerLocal;
 import hu.sch.services.SystemManagerLocal;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -29,15 +29,15 @@ import org.slf4j.LoggerFactory;
 public class SvieManagerBean implements SvieManagerLocal {
 
     private static Logger logger = LoggerFactory.getLogger(SvieManagerBean.class);
-    @EJB
+    @Inject
     private GroupManagerLocal groupManager;
-    @EJB
+    @Inject
     private MembershipManagerLocal membershipManager;
-    @EJB
+    @Inject
     private MailManagerBean mailManager;
-    @EJB(name = "LogManagerBean")
+    @Inject
     private LogManagerLocal logManager;
-    @EJB
+    @Inject
     private SystemManagerLocal systemManager;
     @PersistenceContext
     private EntityManager em;

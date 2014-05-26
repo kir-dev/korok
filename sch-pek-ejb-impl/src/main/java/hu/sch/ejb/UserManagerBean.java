@@ -1,6 +1,5 @@
 package hu.sch.ejb;
 
-import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.services.config.Configuration;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.*;
@@ -38,15 +36,7 @@ public class UserManagerBean implements UserManagerLocal {
     private static Logger logger = LoggerFactory.getLogger(UserManagerBean.class);
     @PersistenceContext
     EntityManager em;
-    @EJB(name = "LogManagerBean")
-    LogManagerLocal logManager;
-    @EJB
-    MailManagerBean mailManager;
-    @EJB
-    AccountManager accountManager;
-    @EJB(name = "PostManagerBean")
-    PostManagerLocal postManager;
-    @EJB
+    @Inject
     private SystemManagerLocal systemManager;
     //
     @Inject
