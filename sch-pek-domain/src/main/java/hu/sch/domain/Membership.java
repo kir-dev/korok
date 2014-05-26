@@ -3,8 +3,11 @@ package hu.sch.domain;
 import hu.sch.domain.user.User;
 import hu.sch.domain.util.DateInterval;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,6 +56,8 @@ public class Membership implements Serializable {
     public static final String getAllDelegated = "getAllDelegated";
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
     public static final String findMembershipForUserAndGroup = "getMembershipForUserAndGroup";
+    public static final String INACTIVE_MEMBERSHIP_POST = "öregtag";
+    public static final String ACTIVE_MEMBERSHIP_POST = "tag";
     @Id
     @GeneratedValue(generator = "grp_members_seq")
     @Column(name = "id")
@@ -85,9 +90,6 @@ public class Membership implements Serializable {
     //----------------------------------------------------
     @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER)
     private Set<Post> posts = new HashSet<>();
-    //----------------------------------------------------
-    @Transient
-    private String postsAsString;
 
     /**
      * Egy csoporttagság egyedi azonosítója
@@ -205,26 +207,29 @@ public class Membership implements Serializable {
         return hash;
     }
 
-    public String getPostsAsString() {
-        if (postsAsString == null) {
-            StringBuilder sb = new StringBuilder(posts.size() * 16 + 3);
-            if (end != null) {
-                sb.append("öregtag");
-            }
-
-            for (Post post : posts) {
-                if (sb.length() != 0) {
-                    sb.append(", ");
-                }
-                sb.append(post.getPostType().toString());
-            }
-
-            if (sb.length() == 0) {
-                sb.append("tag");
-            }
-            postsAsString = sb.toString();
+    /**
+     * Gets all the posts that a user have, including 'öregtag' and 'tag' posts.
+     *
+     * @return a list of posts
+     */
+    public List<String> getAllPosts() {
+        List<String> postList = new ArrayList<>();
+        for (Post post : getPosts()) {
+            postList.add(post.getPostType().getPostName());
         }
 
-        return postsAsString;
+        if (!isActive()) {
+            postList.add(INACTIVE_MEMBERSHIP_POST);
+        }
+
+        if (postList.isEmpty()) {
+            postList.add(ACTIVE_MEMBERSHIP_POST);
+        }
+
+        return Collections.unmodifiableList(postList);
+    }
+
+    public boolean isActive() {
+        return getEnd() == null;
     }
 }
