@@ -14,7 +14,7 @@ találod. A telepítéshez szükséges információk valószínűleg a
 * körök konfigurációs mappa megléte
 * Git
 * Maven
-* JDK (1.7+)
+* JDK (1.8+)
 
 ### PostgreSQL konfig
 
