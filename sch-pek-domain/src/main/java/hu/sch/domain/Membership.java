@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -213,10 +214,9 @@ public class Membership implements Serializable {
      * @return a list of posts
      */
     public List<String> getAllPosts() {
-        List<String> postList = new ArrayList<>();
-        for (Post post : getPosts()) {
-            postList.add(post.getPostType().getPostName());
-        }
+        List<String> postList = getPosts().stream()
+                .map(p -> p.getPostType().getPostName())
+                .collect(Collectors.toCollection(ArrayList::new));
 
         if (!isActive()) {
             postList.add(INACTIVE_MEMBERSHIP_POST);

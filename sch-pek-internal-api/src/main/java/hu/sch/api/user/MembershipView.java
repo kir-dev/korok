@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -22,12 +23,10 @@ public class MembershipView extends AbstractEntityView<Membership> {
 
     public static List<MembershipView> fromCollection(Collection<Membership> collection) {
         MembershipSorter sorter = new MembershipSorter(collection);
-        List<MembershipView> result = new ArrayList<>();
-        for (Membership membership : sorter.sort()) {
-            result.add(new MembershipView(membership));
-        }
-
-        return result;
+        return sorter.sort()
+                .stream()
+                .map(ms -> new MembershipView(ms))
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
