@@ -35,7 +35,7 @@ public class UserManagerBean implements UserManagerLocal {
 
     private static Logger logger = LoggerFactory.getLogger(UserManagerBean.class);
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
     private SystemManagerLocal systemManager;
     private Configuration config;
 

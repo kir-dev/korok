@@ -30,8 +30,6 @@ import javax.xml.bind.annotation.XmlRootElement;
             query = "SELECT u FROM User u WHERE UPPER(u.neptunCode) = UPPER(:neptun)"),
     @NamedQuery(name = User.findByScreenName,
             query = "SELECT u FROM User u WHERE UPPER(u.screenName) = UPPER(:screenName)"),
-    @NamedQuery(name = User.findUser, query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
-            + "upper(u.emailAddress) = upper(:emailcim)"),
     @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
 })
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq",
@@ -43,7 +41,6 @@ public class User implements Serializable, Comparable<User> {
     private static final long serialVersionUID = 1L;
     public static final String findWithMemberships = "findUserWithMemberships";
     public static final String findUserByNeptunCode = "findUserByNeptunCode";
-    public static final String findUser = "findUser";
     public static final String findByScreenName = "findByScreenName";
     public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
     //----------------------------------------------------
@@ -133,8 +130,8 @@ public class User implements Serializable, Comparable<User> {
     @Column(name = "usr_svie_member_type", nullable = false)
     private SvieMembershipType svieMembershipType;
     //----------------------------------------------------
-    @ManyToOne
-    @JoinColumn(name = "usr_svie_primary_membership", insertable = true, updatable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usr_svie_primary_membership")
     private Membership sviePrimaryMembership;
     //----------------------------------------------------
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

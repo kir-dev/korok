@@ -1,7 +1,5 @@
 package hu.sch.api.user;
 
-import hu.sch.api.response.PekResponse;
-import hu.sch.api.response.PekSuccess;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 

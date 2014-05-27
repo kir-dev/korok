@@ -65,14 +65,14 @@ public class Membership implements Serializable {
     private Long id;
     //----------------------------------------------------
     @ManyToOne(optional = false)
-    @JoinColumn(name = "grp_id", insertable = true, updatable = true)
+    @JoinColumn(name = "grp_id")
     private Group group;
     //----------------------------------------------------
     @Column(name = "grp_id", insertable = false, updatable = false)
     private Long groupId;
     //----------------------------------------------------
     @ManyToOne(optional = false)
-    @JoinColumn(name = "usr_id", insertable = true, updatable = true)
+    @JoinColumn(name = "usr_id")
     private User user;
     //----------------------------------------------------
     @Column(name = "usr_id", insertable = false, updatable = false)
