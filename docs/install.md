@@ -135,6 +135,10 @@ A projekt főkönyvtárából:
 
     mvn -DskipTests clean package wildfly:deploy
 
+Amennyiben az éles rendszerre fordítasz használdt a `production` maven profilt:
+
+    mvn -DskipTests clean package wildfly:deploy -P production
+
 ## Front-end
 
 TBA
