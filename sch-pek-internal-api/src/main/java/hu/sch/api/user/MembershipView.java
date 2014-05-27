@@ -2,6 +2,7 @@ package hu.sch.api.user;
 
 import hu.sch.api.response.AbstractEntityView;
 import hu.sch.domain.Membership;
+import hu.sch.domain.util.MembershipSorter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,8 +21,9 @@ public class MembershipView extends AbstractEntityView<Membership> {
     }
 
     public static List<MembershipView> fromCollection(Collection<Membership> collection) {
+        MembershipSorter sorter = new MembershipSorter(collection);
         List<MembershipView> result = new ArrayList<>();
-        for (Membership membership : collection) {
+        for (Membership membership : sorter.sort()) {
             result.add(new MembershipView(membership));
         }
 

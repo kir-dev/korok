@@ -389,21 +389,6 @@ public class User implements Serializable, Comparable<User> {
         return String.format("%s %s", getLastName(), getFirstName());
     }
 
-    public void sortMemberships() {
-        if (this.getMemberships() != null) {
-            Collections.sort(this.getMemberships(),
-                    new Comparator<Membership>() {
-                        @Override
-                        public int compare(Membership o1, Membership o2) {
-                            if (o1.getEnd() == null ^ o2.getEnd() == null) {
-                                return o1.getEnd() == null ? -1 : 1;
-                            }
-                            return o1.getGroup().compareTo(o2.getGroup());
-                        }
-                    });
-        }
-    }
-
     /**
      * A felhasználó választott felhasználóneve.
      *
