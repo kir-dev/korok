@@ -39,33 +39,33 @@ public class ValuationMessage implements Serializable {
     //
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
+    private Long id;
     //----------------------------------------------------
     @ManyToOne
     @JoinColumn(name = "group_id")
-    protected Group group;
+    private Group group;
     //----------------------------------------------------
     @Index(name = "fki_group_id")
     @Column(name = "group_id", insertable = false, updatable = false)
-    protected Long groupId;
+    private Long groupId;
     //----------------------------------------------------
     @Embedded
-    protected Semester semester;
+    private Semester semester;
     //----------------------------------------------------
     @ManyToOne
     @JoinColumn(name = "felado_usr_id")
     @Index(name = "fki_felado_usr_id")
-    protected User sender;
+    private User sender;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "feladas_ido", columnDefinition = "timestamp without time zone")
-    protected Date date;
+    private Date date;
     //----------------------------------------------------
     @Column(name = "uzenet", columnDefinition = "text", length = 4096)
-    protected String message;
+    private String message;
     //----------------------------------------------------
     @Column(name = "from_system", columnDefinition = "boolean default false")
-    protected boolean fromSystem;
+    private boolean fromSystem;
 
     public Date getDate() {
         return date;

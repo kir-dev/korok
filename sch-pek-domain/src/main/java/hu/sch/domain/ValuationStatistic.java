@@ -8,12 +8,12 @@ import java.io.Serializable;
  */
 public class ValuationStatistic implements Serializable {
 
-    protected Valuation valuation;
-    protected Double averagePoint;
-    protected Long summaPoint;
-    protected Long givenKDO;
-    protected Long givenKB;
-    protected Long givenAB;
+    private Valuation valuation;
+    private Double averagePoint;
+    private Long summaPoint;
+    private Long givenKDO;
+    private Long givenKB;
+    private Long givenAB;
 
     public ValuationStatistic(Valuation valuation, Double averagePoint, Long summaPoint,
             Long givenKDO, Long givenKB, Long givenAB) {

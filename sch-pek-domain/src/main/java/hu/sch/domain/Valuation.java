@@ -84,82 +84,82 @@ public class Valuation implements Serializable {
     //----------------------------------------------------
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
+    private Long id;
     //----------------------------------------------------
     @OneToOne
     @JoinColumn(name = "next_version")
-    protected Valuation nextVersion;
+    private Valuation nextVersion;
     //----------------------------------------------------
     @ManyToOne
     @JoinColumn(name = "grp_id")
-    protected Group group;
+    private Group group;
     //----------------------------------------------------
     @Column(name = "grp_id", insertable = false, updatable = false)
-    protected Long groupId;
+    private Long groupId;
     //----------------------------------------------------
     @ManyToOne(optional = true)
     @JoinColumn(name = "felado_usr_id")
-    protected User sender;
+    private User sender;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "feladas", columnDefinition = "timestamp without time zone")
-    protected Date sended;
+    private Date sended;
     //----------------------------------------------------
     @Column(name = "szoveges_ertekeles", columnDefinition = "text", length = 4096, nullable = false)
     @Basic(fetch = FetchType.LAZY)
-    protected String valuationText;
+    private String valuationText;
     //----------------------------------------------------
     @Column(name = "pontozasi_elvek", columnDefinition = "text default ''::text", nullable = false)
-    protected String principle;
+    private String principle;
     //----------------------------------------------------
     @Enumerated(EnumType.STRING)
     @Column(name = "pontigeny_statusz")
-    protected ValuationStatus pointStatus;
+    private ValuationStatus pointStatus;
     //----------------------------------------------------
     @Enumerated(EnumType.STRING)
     @Column(name = "belepoigeny_statusz")
-    protected ValuationStatus entrantStatus;
+    private ValuationStatus entrantStatus;
     //----------------------------------------------------
     @Embedded
     @Index(name = "ert_semester_idx")
-    protected Semester semester;
+    private Semester semester;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "utolso_modositas", columnDefinition = "timestamp without time zone")
-    protected Date lastModified;
+    private Date lastModified;
     //----------------------------------------------------
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "elbiralo_usr_id")
-    protected User consideredBy;
+    private User consideredBy;
     //----------------------------------------------------
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "utolso_elbiralas", columnDefinition = "timestamp without time zone")
-    protected Date lastConsidered;
+    private Date lastConsidered;
     //----------------------------------------------------
     @Column(name = "explanation", columnDefinition = "text", nullable = false) // TODO: nullable? a régibe nem volt az
-    protected String explanation;
+    private String explanation;
     //----------------------------------------------------
     @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
-    protected List<EntrantRequest> entrantRequests;
+    private List<EntrantRequest> entrantRequests;
     //----------------------------------------------------
     @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY)
-    protected List<PointRequest> pointRequests;
+    private List<PointRequest> pointRequests;
     //----------------------------------------------------
     @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    protected Set<EntrantRequest> entrantRequestsAsSet;
+    private Set<EntrantRequest> entrantRequestsAsSet;
     //----------------------------------------------------
     @OneToMany(mappedBy = "valuation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    protected Set<PointRequest> pointRequestsAsSet;
+    private Set<PointRequest> pointRequestsAsSet;
     //----------------------------------------------------
     @Transient
-    protected Float averagePoint;
+    private Float averagePoint;
     //----------------------------------------------------
     @Version
     @Column(name = "optlock", nullable = false, columnDefinition = "int4 default 0")
-    protected int optLock;
+    private int optLock;
     //----------------------------------------------------
     @Column(name = "is_considered", nullable = false, columnDefinition = "boolean default false")
-    protected boolean considered;
+    private boolean considered;
 
     @PrePersist
     protected void setDefaultValues() {

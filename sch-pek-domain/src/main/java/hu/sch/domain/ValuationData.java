@@ -13,10 +13,10 @@ import java.io.Serializable;
  */
 public class ValuationData implements Serializable {
 
-    protected User user;
-    protected Valuation valuation = null;
-    protected PointRequest pointRequest;
-    protected EntrantRequest entrantRequest;
+    private User user;
+    private Valuation valuation = null;
+    private PointRequest pointRequest;
+    private EntrantRequest entrantRequest;
 
     public ValuationData(User user, PointRequest pointRequest, EntrantRequest entrantRequest) {
         this.user = user;

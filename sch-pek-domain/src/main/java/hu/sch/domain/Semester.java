@@ -17,7 +17,7 @@ public class Semester implements Serializable, Comparable<Semester> {
      * Pl. 200720081 -> 2007/2008 tanév 1. (őszi) féléve
      */
     @Column(name = "semester", length = 9, nullable = false)
-    protected String id;
+    private String id;
 
     public Semester() {
         id = "200020011";

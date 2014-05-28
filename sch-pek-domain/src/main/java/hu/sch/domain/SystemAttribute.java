@@ -25,13 +25,13 @@ public class SystemAttribute implements Serializable {
     public static final String NEWBIE_TIME = "golyaidoszak";
     @Id
     @GeneratedValue
-    Long attributeId;
+    private Long attributeId;
     //----------------------------------------------------
     @Column(nullable = false)
-    String attributeName;
+    private String attributeName;
     //----------------------------------------------------
     @Column(nullable = false)
-    String attributeValue;
+    private String attributeValue;
 
     public Long getAttributeId() {
         return attributeId;

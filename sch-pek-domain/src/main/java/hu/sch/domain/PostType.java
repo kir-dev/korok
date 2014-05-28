@@ -40,17 +40,17 @@ public class PostType implements Serializable {
     @Id
     @GeneratedValue(generator = "poszttipus_seq")
     @Column(name = "pttip_id")
-    Long id;
+    private Long id;
     //----------------------------------------------------
     @ManyToOne
     @JoinColumn(name = "grp_id", insertable = true, updatable = true)
-    Group group;
+    private Group group;
     //----------------------------------------------------
     @Column(name = "pttip_name", length = 30)
-    String postName;
+    private String postName;
     //----------------------------------------------------
     @Column(name = "delegated_post")
-    Boolean delegatedPost;
+    private Boolean delegatedPost;
 
     public Long getId() {
         return id;
