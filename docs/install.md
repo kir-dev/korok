@@ -14,7 +14,7 @@ találod. A telepítéshez szükséges információk valószínűleg a
 * körök konfigurációs mappa megléte
 * Git
 * Maven
-* JDK (1.7+)
+* JDK (1.8+)
 
 ### PostgreSQL konfig
 
@@ -134,6 +134,10 @@ akkor a `jboss-cli`ben futtasd a következő parancsokat:
 A projekt főkönyvtárából:
 
     mvn -DskipTests clean package wildfly:deploy
+
+Amennyiben az éles rendszerre fordítasz használd a `production` maven profilt:
+
+    mvn -DskipTests clean package wildfly:deploy -P production
 
 ## Front-end
 

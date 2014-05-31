@@ -15,8 +15,8 @@ import hu.sch.util.exceptions.PekException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import java.util.Date;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -34,9 +34,9 @@ public class RegistrationManager implements RegistrationManagerLocal {
     @PersistenceContext
     private EntityManager em;
     //
-    @EJB(name = "UserManagerBean")
+    @Inject
     private UserManagerLocal userManager;
-    @EJB(name = "AccountManagerBean")
+    @Inject
     private AccountManager accountManager;
     //
     private static final Logger logger = LoggerFactory.getLogger(RegistrationManager.class);

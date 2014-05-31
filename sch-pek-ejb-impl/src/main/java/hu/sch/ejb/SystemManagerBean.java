@@ -8,7 +8,6 @@ import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -37,7 +36,7 @@ public class SystemManagerBean implements SystemManagerLocal {
     //
     @PersistenceContext
     EntityManager em;
-    @EJB
+    @Inject
     MailManagerBean mailManager;
 
     @PostConstruct

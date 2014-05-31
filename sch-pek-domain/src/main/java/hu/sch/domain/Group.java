@@ -3,6 +3,7 @@ package hu.sch.domain;
 import hu.sch.domain.enums.GroupStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.logging.Log;
+import hu.sch.domain.util.MembershipSorter;
 import hu.sch.util.HungarianStringComparator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -312,8 +313,7 @@ public class Group implements Serializable, Comparable<Group> {
     }
 
     private void loadMembers() {
-        sortMemberships();
-        List<Membership> list = getMemberships();
+        List<Membership> list = new MembershipSorter(getMemberships()).sort();
 
         members = new ArrayList<>(list.size());
         activeMemberships = new ArrayList<>();
@@ -348,20 +348,6 @@ public class Group implements Serializable, Comparable<Group> {
             loadMembers();
         }
         return inactiveMemberships;
-    }
-
-    public void sortMemberships() {
-        if (getMemberships() != null) {
-            Collections.sort(getMemberships(), new Comparator<Membership>() {
-                @Override
-                public int compare(Membership o1, Membership o2) {
-                    if (o1.getEnd() == null ^ o2.getEnd() == null) {
-                        return o1.getEnd() == null ? -1 : 1;
-                    }
-                    return o1.getUser().compareTo(o2.getUser());
-                }
-            });
-        }
     }
 
     public List<Log> getLogs() {

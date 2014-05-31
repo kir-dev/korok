@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class AbstractEntityView<T> implements EntityView {
 
-    private Class<T> entityClass;
+    private final Class<T> entityClass;
     protected final T entity;
 
     public AbstractEntityView(T entity, Class<T> clazz) {

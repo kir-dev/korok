@@ -3,9 +3,13 @@ package hu.sch.domain;
 import hu.sch.domain.user.User;
 import hu.sch.domain.util.DateInterval;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,11 +34,9 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "grp_membership")
 @NamedQueries(value = {
-    @NamedQuery(name = Membership.getMembership,
-            query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true"),
     @NamedQuery(name = Membership.getActiveSvieMemberships,
             query = "SELECT ms FROM Membership ms WHERE ms.user = :user AND ms.group.isSvie = true AND ms.end IS null"),
-    @NamedQuery(name = Membership.getMembers,
+    @NamedQuery(name = Membership.getMembersWithSvieMembershipTypeNotEqual,
             query = "SELECT u FROM User u WHERE u.svieMembershipType <> :msType"),
     @NamedQuery(name = Membership.getDelegatedMemberForGroup,
             query = "SELECT ms.user FROM Membership ms WHERE ms.group.id=:groupId AND ms.user.sviePrimaryMembership = ms AND ms.user.delegated = true"),
@@ -48,31 +50,29 @@ import javax.persistence.Transient;
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq", allocationSize = 1)
 public class Membership implements Serializable {
 
-    public static final String SORT_BY_GROUP = "group";
-    public static final String SORT_BY_POSTS = "postsAsString";
-    public static final String SORT_BY_INTERVAL = "interval";
     private static final long serialVersionUID = 1L;
-    public static final String getMembership = "getMembership";
     public static final String getActiveSvieMemberships = "getActiveSvieMemberships";
-    public static final String getMembers = "getMembers";
+    public static final String getMembersWithSvieMembershipTypeNotEqual = "getMembersWithSvieMembershipTypeNotEqual";
     public static final String getDelegatedMemberForGroup = "getDelegatedMemberForGroup";
     public static final String getAllDelegated = "getAllDelegated";
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
     public static final String findMembershipForUserAndGroup = "getMembershipForUserAndGroup";
+    public static final String INACTIVE_MEMBERSHIP_POST = "öregtag";
+    public static final String ACTIVE_MEMBERSHIP_POST = "tag";
     @Id
     @GeneratedValue(generator = "grp_members_seq")
     @Column(name = "id")
     private Long id;
     //----------------------------------------------------
     @ManyToOne(optional = false)
-    @JoinColumn(name = "grp_id", insertable = true, updatable = true)
+    @JoinColumn(name = "grp_id")
     private Group group;
     //----------------------------------------------------
     @Column(name = "grp_id", insertable = false, updatable = false)
     private Long groupId;
     //----------------------------------------------------
     @ManyToOne(optional = false)
-    @JoinColumn(name = "usr_id", insertable = true, updatable = true)
+    @JoinColumn(name = "usr_id")
     private User user;
     //----------------------------------------------------
     @Column(name = "usr_id", insertable = false, updatable = false)
@@ -91,9 +91,6 @@ public class Membership implements Serializable {
     //----------------------------------------------------
     @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER)
     private Set<Post> posts = new HashSet<>();
-    //----------------------------------------------------
-    @Transient
-    private String postsAsString;
 
     /**
      * Egy csoporttagság egyedi azonosítója
@@ -211,26 +208,28 @@ public class Membership implements Serializable {
         return hash;
     }
 
-    public String getPostsAsString() {
-        if (postsAsString == null) {
-            StringBuilder sb = new StringBuilder(posts.size() * 16 + 3);
-            if (end != null) {
-                sb.append("öregtag");
-            }
+    /**
+     * Gets all the posts that a user have, including 'öregtag' and 'tag' posts.
+     *
+     * @return a list of posts
+     */
+    public List<String> getAllPosts() {
+        List<String> postList = getPosts().stream()
+                .map(p -> p.getPostType().getPostName())
+                .collect(Collectors.toCollection(ArrayList::new));
 
-            for (Post post : posts) {
-                if (sb.length() != 0) {
-                    sb.append(", ");
-                }
-                sb.append(post.getPostType().toString());
-            }
-
-            if (sb.length() == 0) {
-                sb.append("tag");
-            }
-            postsAsString = sb.toString();
+        if (!isActive()) {
+            postList.add(INACTIVE_MEMBERSHIP_POST);
         }
 
-        return postsAsString;
+        if (postList.isEmpty()) {
+            postList.add(ACTIVE_MEMBERSHIP_POST);
+        }
+
+        return Collections.unmodifiableList(postList);
+    }
+
+    public boolean isActive() {
+        return getEnd() == null;
     }
 }

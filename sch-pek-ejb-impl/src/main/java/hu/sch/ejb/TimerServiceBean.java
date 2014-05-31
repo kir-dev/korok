@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -31,13 +31,13 @@ import org.slf4j.LoggerFactory;
 public class TimerServiceBean {
 
     private static final Logger logger = LoggerFactory.getLogger(TimerServiceBean.class);
-    @EJB
+    @Inject
     private MailManagerBean mailManager;
-    @EJB(name = "SystemManagerBean")
+    @Inject
     private SystemManagerLocal systemManager;
-    @EJB
+    @Inject
     private GroupManagerLocal groupManager;
-    @EJB
+    @Inject
     private AccountManager accountManager;
     @PersistenceContext
     private EntityManager em;

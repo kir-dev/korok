@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -39,7 +39,7 @@ public class MembershipManagerBean implements MembershipManagerLocal {
 
     @PersistenceContext
     private EntityManager em;
-    @EJB
+    @Inject
     LogManagerLocal logManager;
 
     @Override

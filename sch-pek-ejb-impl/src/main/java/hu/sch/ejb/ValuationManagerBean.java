@@ -37,10 +37,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.OptimisticLockException;
@@ -62,13 +62,13 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     private static final Logger logger = LoggerFactory.getLogger(ValuationManagerBean.class);
     @PersistenceContext
     EntityManager em;
-    @EJB
+    @Inject
     private UserManagerLocal userManager;
-    @EJB
+    @Inject
     private SystemManagerLocal systemManager;
-    @EJB
+    @Inject
     private MailManagerBean mailManager;
-    @EJB
+    @Inject
     private GroupManagerLocal groupManager;
 
     @Override

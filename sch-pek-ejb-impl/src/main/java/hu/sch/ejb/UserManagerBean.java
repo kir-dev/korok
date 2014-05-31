@@ -1,6 +1,5 @@
 package hu.sch.ejb;
 
-import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.services.config.Configuration;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.*;
@@ -37,46 +35,41 @@ public class UserManagerBean implements UserManagerLocal {
 
     private static Logger logger = LoggerFactory.getLogger(UserManagerBean.class);
     @PersistenceContext
-    EntityManager em;
-    @EJB(name = "LogManagerBean")
-    LogManagerLocal logManager;
-    @EJB
-    MailManagerBean mailManager;
-    @EJB
-    AccountManager accountManager;
-    @EJB(name = "PostManagerBean")
-    PostManagerLocal postManager;
-    @EJB
+    private EntityManager em;
     private SystemManagerLocal systemManager;
-    //
-    @Inject
     private Configuration config;
-    //
 
     public UserManagerBean() {
     }
 
-    // for testing
-    public UserManagerBean(EjbConstructorArgument args) {
-        this.em = args.getEm();
-        this.systemManager = args.getSystemManager();
-        this.config = args.getConfig();
+    public UserManagerBean(EntityManager em) {
+        this.em = em;
+    }
+
+    @Inject
+    public void setSystemManager(SystemManagerLocal systemManager) {
+        this.systemManager = systemManager;
+    }
+
+    @Inject
+    public void setConfig(Configuration config) {
+        this.config = config;
     }
 
     @Override
     public User findUserById(Long userId) {
-        return findUserById(userId, false);
+        if (userId == null || userId.equals(0L)) {
+            // TODO: github/#41: introduce exception instead of silent null
+            return null;
+        }
+        return em.find(User.class, userId);
     }
 
     @Override
-    public User findUserById(Long userId, boolean includeMemberships) {
-        if (userId.equals(0L)) {
+    public User findUserByIdWithMemberships(Long userId) {
+        if (userId == null || userId.equals(0L)) {
             // ha nincs használható userId, akkor ne menjünk el a DB-hez.
             return null;
-        }
-
-        if (!includeMemberships) {
-            return em.find(User.class, userId);
         }
 
         TypedQuery<User> q = em.createNamedQuery(User.findWithMemberships, User.class);
@@ -86,6 +79,7 @@ public class UserManagerBean implements UserManagerLocal {
             return q.getSingleResult();
         } catch (Exception ex) {
             logger.warn("Can't find user with memberships for this id: " + userId);
+            // TODO: github/#41: rethrow exception with wrapper
             return null;
         }
     }

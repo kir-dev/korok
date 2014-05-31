@@ -3,7 +3,6 @@ package hu.sch.ejb.test.user;
 import hu.sch.domain.SpotImage;
 import hu.sch.services.config.ImageUploadConfig;
 import hu.sch.domain.user.User;
-import hu.sch.ejb.EjbConstructorArgument;
 import hu.sch.ejb.UserManagerBean;
 import hu.sch.services.config.Configuration;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
@@ -27,9 +26,8 @@ public class RecommendedPhotoTest extends AbstractDatabaseBackedTest {
         Configuration cfg =  mock(Configuration.class);
         when(cfg.getImageUploadConfig()).thenReturn(new ImageUploadConfig("/", 200));
 
-        final EjbConstructorArgument args = new EjbConstructorArgument(getEm());
-        args.setConfig(cfg);
-        bean = new UserManagerBean(args);
+        bean = new UserManagerBean(getEm());
+        bean.setConfig(cfg);
         createUser();
     }
 
@@ -45,7 +43,7 @@ public class RecommendedPhotoTest extends AbstractDatabaseBackedTest {
         UserBuilder b = new UserBuilder().withNeptun(neptun);
         User user = b.build();
         user.setShowRecommendedPhoto(true);
-        
+
         SpotImage img = new SpotImage();
         img.setImagePath("");
         img.setNeptunCode(neptun);
