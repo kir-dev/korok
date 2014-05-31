@@ -15,7 +15,7 @@ public class EntityNotFoundException extends PekWebException {
     private static final String MESSAGE  = " cannot be found";
 
     public EntityNotFoundException(Class<?> clazz) {
-        super(new PekError(PekErrorCode.ENTITY_NOTFOUND, makeMessage(clazz)));
+        super(new PekError(PekErrorCode.ENTITY_NOTFOUND, makeMessage(clazz)), 404);
     }
 
     private static String makeMessage(Class<?> clazz) {
