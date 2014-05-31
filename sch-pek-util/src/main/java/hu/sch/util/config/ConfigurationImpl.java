@@ -43,6 +43,8 @@ class ConfigurationImpl implements Configuration {
         baseDir = getBaseDir();
         loadPropertiesFromFile();
         loadEnvironment();
+
+        verify();
     }
 
     @Override
@@ -110,5 +112,10 @@ class ConfigurationImpl implements Configuration {
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error while loading properties file!", ex);
         }
+    }
+
+    // verifies the configuration that it only contains legal values
+    private void verify() {
+        // TODO: github/#109
     }
 }
