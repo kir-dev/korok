@@ -1,4 +1,4 @@
-package hu.sch.services.config;
+package hu.sch.util.config;
 
 /**
  *
@@ -12,6 +12,7 @@ public interface Configuration {
 
     ImageUploadConfig getImageUploadConfig();
 
+    // TODO: unify this with profile domian (github/#106)
     String getKorokDomain();
 
     String getProfileDomain();

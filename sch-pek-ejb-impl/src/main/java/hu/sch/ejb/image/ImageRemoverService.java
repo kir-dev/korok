@@ -1,7 +1,7 @@
 package hu.sch.ejb.image;
 
 import hu.sch.domain.user.User;
-import hu.sch.services.config.Configuration;
+import hu.sch.util.config.Configuration;
 import java.io.File;
 import java.util.Objects;
 

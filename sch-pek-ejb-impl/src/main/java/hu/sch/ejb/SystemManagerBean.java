@@ -3,7 +3,7 @@ package hu.sch.ejb;
 import hu.sch.domain.enums.ValuationPeriod;
 import hu.sch.domain.SystemAttribute;
 import hu.sch.domain.Semester;
-import hu.sch.services.config.Configuration;
+import hu.sch.util.config.Configuration;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.exceptions.NoSuchAttributeException;
 import java.util.Map;

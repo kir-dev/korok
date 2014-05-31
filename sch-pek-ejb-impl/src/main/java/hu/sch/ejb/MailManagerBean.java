@@ -1,7 +1,7 @@
 package hu.sch.ejb;
 
-import hu.sch.services.config.Configuration;
-import hu.sch.services.config.Environment;
+import hu.sch.util.config.Configuration;
+import hu.sch.util.config.Environment;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;

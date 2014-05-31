@@ -2,8 +2,8 @@ package hu.sch.api.user;
 
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.services.config.Configuration;
-import hu.sch.services.config.ImageUploadConfig;
+import hu.sch.util.ConfigurationStub;
+import hu.sch.util.config.ImageUploadConfig;
 import java.io.File;
 import java.io.IOException;
 import javax.ws.rs.core.MediaType;
@@ -55,9 +55,9 @@ public class UsersAvatarTest {
         file.createNewFile();
         user.setPhotoPath("image.png");
 
-        ImageUploadConfig iuc = new ImageUploadConfig(tmpFolder.getRoot().getPath(), 0);
-        Configuration config = mock(Configuration.class);
-        when(config.getImageUploadConfig()).thenReturn(iuc);
+        ImageUploadConfig iuc = new ImageUploadConfig(tmpFolder.getRoot().getPath(), 0, 0);
+        ConfigurationStub config = new ConfigurationStub();
+        config.setImageUploadConfig(iuc);
         avatar.setConfig(config);
     }
 }

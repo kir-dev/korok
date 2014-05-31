@@ -1,4 +1,4 @@
-package hu.sch.services.config;
+package hu.sch.util.config;
 
 public enum Environment {
 

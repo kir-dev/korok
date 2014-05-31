@@ -3,8 +3,8 @@ package hu.sch.api.providers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import hu.sch.services.config.Configuration;
-import hu.sch.services.config.Environment;
+import hu.sch.util.config.Configuration;
+import hu.sch.util.config.Environment;
 
 /**
  * Custom factory for creating a pre-configured ObjectMapper for PÉK.

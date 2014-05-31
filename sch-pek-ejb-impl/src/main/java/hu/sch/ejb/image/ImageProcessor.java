@@ -1,6 +1,6 @@
 package hu.sch.ejb.image;
 
-import hu.sch.services.config.ImageUploadConfig;
+import hu.sch.util.config.ImageUploadConfig;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.User;
 import hu.sch.util.exceptions.PekException;
@@ -9,9 +9,6 @@ import hu.sch.util.hash.Hashing;
 import hu.sch.util.net.MediaType;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

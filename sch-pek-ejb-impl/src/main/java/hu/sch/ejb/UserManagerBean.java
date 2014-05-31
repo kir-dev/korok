@@ -2,7 +2,7 @@ package hu.sch.ejb;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
-import hu.sch.services.config.Configuration;
+import hu.sch.util.config.Configuration;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.UserAttribute;
 import hu.sch.domain.user.UserAttributeName;

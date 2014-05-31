@@ -48,6 +48,10 @@
             <groupId>hu.sch</groupId>
             <artifactId>sch-pek-domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>hu.sch</groupId>
+            <artifactId>sch-pek-util</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
@@ -100,6 +104,15 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate4</artifactId>
+        </dependency>
+
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>hu.sch</groupId>
+            <artifactId>sch-pek-util</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
         </dependency>
     </dependencies>
 </project>

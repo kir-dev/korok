@@ -1,8 +1,5 @@
-package hu.sch.ejb.config;
+package hu.sch.util.config;
 
-import hu.sch.services.config.ImageUploadConfig;
-import hu.sch.services.config.Configuration;
-import hu.sch.services.config.Environment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
@@ -22,19 +19,23 @@ import org.slf4j.LoggerFactory;
  * @author tomi
  */
 @ApplicationScoped
-public class ConfigurationImpl implements Configuration {
+class ConfigurationImpl implements Configuration {
+
+    private static final String DEFAULT_AVATAR_SIZE = "400";
+    private static final String DEFAULT_THUMBNAIL_SIZE = "150";
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationImpl.class);
     private static final String PROPERTY_NAME = "application.resource.dir";
     private static final String ENVIRONMENT = "environment";
     private static final String APPLICATION_FOLDER = "korok";
     private static final String CONFIG_FILE = "config.properties";
-    private static final String IMAGE_UPLOAD_PATH = "image.upload.path";
-    private static final String IMAGE_MAX_SIZE = "image.upload.max";
+    private static final String AVATAR_UPLOAD_PATH = "image.upload.path";
+    private static final String AVATAR_MAX_SIZE = "image.upload.max";
+    private static final String THUMBNAIL_SIZE = "image.upload.thumbnail";
     private static final String DOMAIN_PROFILE = "domain.profile";
     private static final String DOMAIN_KOROK = "domain.korok";
     private static final String INTERNAL_API_SECRET = "api.secret";
-    private Properties properties = new Properties();
+    private final Properties properties = new Properties();
     private String baseDir;
     private Environment environment = null;
 
@@ -67,10 +68,11 @@ public class ConfigurationImpl implements Configuration {
 
     @Override
     public ImageUploadConfig getImageUploadConfig() {
-        String path = properties.getProperty(IMAGE_UPLOAD_PATH);
-        int size = Integer.parseInt(properties.getProperty(IMAGE_MAX_SIZE, "400"));
+        String path = properties.getProperty(AVATAR_UPLOAD_PATH);
+        int size = Integer.parseInt(properties.getProperty(AVATAR_MAX_SIZE, DEFAULT_AVATAR_SIZE));
+        int thumbnail = Integer.parseInt(properties.getProperty(THUMBNAIL_SIZE, DEFAULT_THUMBNAIL_SIZE));
 
-        return new ImageUploadConfig(path, size);
+        return new ImageUploadConfig(path, size, thumbnail);
     }
 
     @Override

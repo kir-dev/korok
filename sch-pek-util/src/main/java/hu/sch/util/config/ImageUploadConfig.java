@@ -1,4 +1,4 @@
-package hu.sch.services.config;
+package hu.sch.util.config;
 
 /**
  *
@@ -8,10 +8,12 @@ public class ImageUploadConfig {
 
     private final String basePath;
     private final int maxSize;
+    private final int thumbnailSize;
 
-    public ImageUploadConfig(String basePath, int maxSize) {
+    public ImageUploadConfig(String basePath, int maxSize, int thumbnailSize) {
         this.basePath = basePath;
         this.maxSize = maxSize;
+        this.thumbnailSize = thumbnailSize;
     }
 
     /**
@@ -26,5 +28,12 @@ public class ImageUploadConfig {
      */
     public int getMaxSize() {
         return maxSize;
+    }
+
+    /**
+     * Gets the size of the thumbnail.
+     */
+    public int getThumbnailSize() {
+        return thumbnailSize;
     }
 }
