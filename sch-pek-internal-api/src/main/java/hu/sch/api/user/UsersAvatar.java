@@ -1,5 +1,7 @@
 package hu.sch.api.user;
 
+import hu.sch.api.exceptions.AvatarNotFoundException;
+import hu.sch.api.exceptions.PekWebException;
 import hu.sch.domain.user.User;
 import hu.sch.util.config.Configuration;
 import java.io.File;
@@ -31,18 +33,12 @@ public class UsersAvatar extends UsersBase {
     }
 
     @GET
-    public Response getAvatar() {
+    public AvatarView getAvatar() {
         User user = fetchUser();
-        if (!user.hasPhoto()) {
-            return respondWithNotFound("User does not have an avatar.");
+        if (user.getPhotoPath() == null) {
+            throw new AvatarNotFoundException();
         }
 
-        String photoPath = user.getPhotoFullPath(config.getImageUploadConfig().getBasePath());
-        File image = new File(photoPath);
-        if (!image.exists()) {
-            return respondWithNotFound("Avatar file cannot be found on the disk.");
-        }
-
-        return Response.ok(image).type(new MediaType("image", "png")).build();
+        return new AvatarView(user, config.getDomain());
     }
 }
