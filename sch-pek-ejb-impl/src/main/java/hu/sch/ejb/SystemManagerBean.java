@@ -41,8 +41,10 @@ public class SystemManagerBean implements SystemManagerLocal {
 
     @PostConstruct
     void init() {
-        showUserLink = "https://" + config.getProfileDomain() + "/profile/show/virid/";
-        baseLink = "https://" + config.getKorokDomain() + "/korok/";
+        // TODO: github/#106: fix double domain
+        // TODO: fix urls
+        showUserLink = "https://" + config.getDomain() + "/profile/show/virid/";
+        baseLink = "https://" + config.getDomain() + "/korok/";
         valuationLink = baseLink + "valuation";
         considerLink = baseLink + "consider";
     }

@@ -32,8 +32,7 @@ class ConfigurationImpl implements Configuration {
     private static final String AVATAR_UPLOAD_PATH = "image.upload.path";
     private static final String AVATAR_MAX_SIZE = "image.upload.max";
     private static final String THUMBNAIL_SIZE = "image.upload.thumbnail";
-    private static final String DOMAIN_PROFILE = "domain.profile";
-    private static final String DOMAIN_KOROK = "domain.korok";
+    private static final String DOMAIN = "domain";
     private static final String INTERNAL_API_SECRET = "api.secret";
     private final Properties properties = new Properties();
     private String baseDir;
@@ -57,13 +56,8 @@ class ConfigurationImpl implements Configuration {
     }
 
     @Override
-    public String getProfileDomain() {
-        return properties.getProperty(DOMAIN_PROFILE);
-    }
-
-    @Override
-    public String getKorokDomain() {
-        return properties.getProperty(DOMAIN_KOROK);
+    public String getDomain() {
+        return properties.getProperty(DOMAIN);
     }
 
     @Override
