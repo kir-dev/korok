@@ -1,13 +1,14 @@
 package hu.sch.ejb.test.user;
 
 import hu.sch.domain.SpotImage;
-import hu.sch.services.config.ImageUploadConfig;
+import hu.sch.util.config.ImageUploadConfig;
 import hu.sch.domain.user.User;
 import hu.sch.ejb.UserManagerBean;
-import hu.sch.services.config.Configuration;
+import hu.sch.util.config.Configuration;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
 import hu.sch.ejb.test.util.Queries;
+import hu.sch.util.ConfigurationStub;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -23,8 +24,8 @@ public class RecommendedPhotoTest extends AbstractDatabaseBackedTest {
 
     @Override
     protected void before() {
-        Configuration cfg =  mock(Configuration.class);
-        when(cfg.getImageUploadConfig()).thenReturn(new ImageUploadConfig("/", 200));
+        ConfigurationStub cfg = new ConfigurationStub();
+        cfg.setImageUploadConfig(new ImageUploadConfig("/", 200, 200));
 
         bean = new UserManagerBean(getEm());
         bean.setConfig(cfg);

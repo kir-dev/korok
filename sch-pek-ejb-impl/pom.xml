@@ -99,6 +99,13 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>hu.sch</groupId>
+            <artifactId>sch-pek-util</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Import the EJB API, we use provided scope as the API is included in JBoss WildFly -->
         <dependency>

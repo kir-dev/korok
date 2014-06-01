@@ -11,7 +11,7 @@ import hu.sch.services.AccountManager;
 import hu.sch.services.Roles;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
-import hu.sch.services.config.Configuration;
+import hu.sch.util.config.Configuration;
 import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.util.exceptions.PekErrorCode;
 import hu.sch.util.exceptions.PekException;

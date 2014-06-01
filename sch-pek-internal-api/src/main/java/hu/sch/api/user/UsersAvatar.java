@@ -1,7 +1,7 @@
 package hu.sch.api.user;
 
 import hu.sch.domain.user.User;
-import hu.sch.services.config.Configuration;
+import hu.sch.util.config.Configuration;
 import java.io.File;
 import javax.inject.Inject;
 import javax.ws.rs.GET;

@@ -1,6 +1,6 @@
 package hu.sch.ejb;
 
-import hu.sch.services.config.Configuration;
+import hu.sch.util.config.Configuration;
 import hu.sch.services.SystemManagerLocal;
 import javax.persistence.EntityManager;
 
