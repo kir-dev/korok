@@ -1,6 +1,8 @@
 package hu.sch.api.filter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -24,10 +26,10 @@ public class RequestSignature {
     private final String signature;
     private final long timestamp;
     private final String secret;
-    private final String body;
+    private final byte[] body;
     private final String url;
 
-    public RequestSignature(String url, String body, String signature, long timestamp, String secret) {
+    public RequestSignature(String url, byte[] body, String signature, long timestamp, String secret) {
         if (StringUtils.isEmpty(secret)) {
             throw new IllegalArgumentException("secret cannot be empty");
         }
@@ -86,14 +88,24 @@ public class RequestSignature {
      * @throws IOException
      */
     private byte[] createSignatureBase() {
-        StringBuilder sig = new StringBuilder(url);
-        if (body != null) {
-            sig.append(body);
-        }
-        sig.append(timestamp);
-        sig.append(secret);
+        final Charset utf8 = StandardCharsets.UTF_8;
+        byte[] urlBytes = url.getBytes(utf8);
+        byte[] timeStampBytes = Long.toString(timestamp).getBytes(utf8);
+        byte[] secretBytes = secret.getBytes(utf8);
 
-        return sig.toString().getBytes(StandardCharsets.UTF_8);
+        // concatenate
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            stream.write(urlBytes);
+            stream.write(body);
+            stream.write(timeStampBytes);
+            stream.write(secretBytes);
+        } catch (IOException ex){
+            logger.error("Could not create signature base", ex);
+            return new byte[0];
+        }
+
+        return stream.toByteArray();
     }
 
     private boolean isTimestampValid() {
