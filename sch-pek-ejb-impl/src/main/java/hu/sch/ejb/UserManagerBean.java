@@ -170,7 +170,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void updateUser(User user, ProfileImage image) throws PekException {
+    public User updateUser(User user, ProfileImage image) throws PekException {
         // process image
         if (image != null) {
             ImageProcessor proc = new ImageProcessor(user, image, config.getImageUploadConfig());
@@ -179,7 +179,7 @@ public class UserManagerBean implements UserManagerLocal {
         }
 
         // save user
-        em.merge(user);
+        return em.merge(user);
     }
 
     @Override
