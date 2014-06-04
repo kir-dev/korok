@@ -34,6 +34,7 @@ class ConfigurationImpl implements Configuration {
     private static final String THUMBNAIL_SIZE = "image.upload.thumbnail";
     private static final String DOMAIN = "domain";
     private static final String INTERNAL_API_SECRET = "api.secret";
+    private static final String SKIP_REQUEST_SIGNATURE = "skip.signature.check";
     private final Properties properties = new Properties();
     private String baseDir;
     private Environment environment = null;
@@ -74,6 +75,24 @@ class ConfigurationImpl implements Configuration {
     @Override
     public String getInternalApiSecret() {
         return properties.getProperty(INTERNAL_API_SECRET);
+    }
+
+    @Override
+    public boolean skipRequestSignature() {
+        // it is only applicable during DEVELOPMENT
+        if (getEnvironment() != Environment.DEVELOPMENT) {
+            return false;
+        }
+
+        // use system property first (this way we can set it during runtime via jboss-cli)
+        String skipRequestSig = System.getProperty(SKIP_REQUEST_SIGNATURE);
+        if (skipRequestSig != null) {
+            return Boolean.parseBoolean(skipRequestSig);
+        }
+
+        // fallback to property in the config files
+        skipRequestSig = properties.getProperty(SKIP_REQUEST_SIGNATURE, "false");
+        return Boolean.parseBoolean(skipRequestSig);
     }
 
     private void loadEnvironment() {

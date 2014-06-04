@@ -15,4 +15,6 @@ public interface Configuration {
     String getDomain();
 
     String getInternalApiSecret();
+
+    boolean skipRequestSignature();
 }

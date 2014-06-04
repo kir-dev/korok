@@ -11,6 +11,7 @@ public class ConfigurationStub implements Configuration {
     private ImageUploadConfig imgConf = new ImageUploadConfig("/", 400, 150);
     private String domain = "pek.sch.bme.hu";
     private String apiSecret = "secret";
+    private boolean checkSig = false;
 
     @Override
     public String getDevEmail() {
@@ -37,6 +38,11 @@ public class ConfigurationStub implements Configuration {
         return apiSecret;
     }
 
+    @Override
+    public boolean skipRequestSignature() {
+        return checkSig;
+    }
+
     public void setDevMail(String devMail) {
         this.devMail = devMail;
     }
@@ -55,5 +61,9 @@ public class ConfigurationStub implements Configuration {
 
     public void setApiSecret(String apiSecret) {
         this.apiSecret = apiSecret;
+    }
+
+    public void setCheckSig(boolean checkSig) {
+        this.checkSig = checkSig;
     }
 }
