@@ -21,7 +21,7 @@ public class MethodNotAllowedProvider implements ExceptionMapper<NotAllowedExcep
         final String cause = String.format("%s is not allowed for path (%s).", request.getMethod(), request.getRequestURI());
         PekError error = new PekError(PekErrorCode.METHOD_NOT_ALLOWED, cause);
         return Response
-                .status(Response.Status.METHOD_NOT_ALLOWED)
+                .fromResponse(exception.getResponse())
                 .entity(error)
                 .type(MediaType.APPLICATION_JSON)
                 .build();

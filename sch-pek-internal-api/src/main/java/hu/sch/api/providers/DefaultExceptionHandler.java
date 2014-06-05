@@ -6,7 +6,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import org.jboss.resteasy.spi.LoggableFailure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,25 +28,12 @@ public class DefaultExceptionHandler implements ExceptionMapper<Exception>{
         if (exception.getCause() != null && exception.getCause() instanceof PekException) {
             return handlePekException((PekException) exception.getCause());
         }
-        if (exception instanceof LoggableFailure) {
-            return handleRestEasyBuiltInException((LoggableFailure) exception);
-        }
 
         return buildResponse(500, PekError.internal(exception.getMessage()));
     }
 
     private Response handlePekException(PekException exception) {
         return buildResponse(500, new PekError(exception));
-    }
-
-    private Response handleRestEasyBuiltInException(LoggableFailure failure) {
-        int status;
-        if (failure.getResponse() != null) {
-            status = failure.getResponse().getStatus();
-        } else {
-            status = failure.getErrorCode();
-        }
-        return buildResponse(status, PekError.internal(failure.getMessage()));
     }
 
     private Response buildResponse(int status, PekError error) {

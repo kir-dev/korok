@@ -30,6 +30,11 @@ public class ApplicationResponseWrapper implements ContainerResponseFilter {
     // wrap only bare (not already wrapped in a PekResponse) and
     // responses only with application/json content-type
     private boolean needsWrapping(ContainerResponseContext responseContext) {
+        if (responseContext.getEntityClass() == null) {
+            // do not try to wrap empty responses
+            return false;
+        }
+
         return !PekResponse.class.isAssignableFrom(responseContext.getEntityClass())
                 && responseContext.getMediaType().equals(MediaType.APPLICATION_JSON_TYPE);
     }
