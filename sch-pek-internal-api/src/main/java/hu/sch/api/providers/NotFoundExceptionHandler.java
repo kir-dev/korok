@@ -24,7 +24,7 @@ public class NotFoundExceptionHandler implements ExceptionMapper<NotFoundExcepti
     public Response toResponse(NotFoundException e) {
         logger.warn("Resource was not found: {}", e.getMessage());
         return Response
-                .status(Response.Status.NOT_FOUND)
+                .fromResponse(e.getResponse())
                 .type(MediaType.APPLICATION_JSON_TYPE)
                 .entity(new PekError(PekErrorCode.RESOURCE_NOT_FOUND, e.getMessage()))
                 .build();
