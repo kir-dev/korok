@@ -11,7 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 @Provider
-public class MethodNotAllowedProvider implements ExceptionMapper<NotAllowedException> {
+public class MethodNotAllowedHandler implements ExceptionMapper<NotAllowedException> {
 
     @Context
     private HttpServletRequest request;
