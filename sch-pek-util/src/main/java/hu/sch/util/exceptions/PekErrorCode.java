@@ -35,6 +35,7 @@ public enum PekErrorCode {
     INVALID_JSON_FORMAT(WEB, "003", "invalid json format"),
     MISSING_CONTENT(WEB, "004", "missing content"),
     RESOURCE_NOT_FOUND(WEB, "005", "resource not found"),
+    METHOD_NOT_ALLOWED(WEB, "006", "method not allowed"),
     // SYSTEM type errors
     INTERNAL_ERROR(SYSTEM, "001", "internal error"),
     // ACOUNT type errors
