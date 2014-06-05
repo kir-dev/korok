@@ -163,8 +163,10 @@ public class AccountManagerBean implements AccountManager {
     }
 
     private String generateConfirmationLink(final User user) {
+        // TODO: github/#106: fix double domain
+        // TODO: fix url
         return String.format("https://%s/profile/confirm/code/%s",
-                config.getProfileDomain(),
+                config.getDomain(),
                 user.getConfirmationCode());
     }
 
@@ -364,8 +366,10 @@ public class AccountManagerBean implements AccountManager {
     }
 
     private String generateLostPasswordLink(final LostPasswordToken token) {
+        // TODO: github/#106: fix double domain
+        // TODO: fix url
         return String.format("https://%s/profile/replacelostpassword/token/%s",
-                config.getProfileDomain(),
+                config.getDomain(),
                 token.getToken());
     }
 

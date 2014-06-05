@@ -32,9 +32,9 @@ class ConfigurationImpl implements Configuration {
     private static final String AVATAR_UPLOAD_PATH = "image.upload.path";
     private static final String AVATAR_MAX_SIZE = "image.upload.max";
     private static final String THUMBNAIL_SIZE = "image.upload.thumbnail";
-    private static final String DOMAIN_PROFILE = "domain.profile";
-    private static final String DOMAIN_KOROK = "domain.korok";
+    private static final String DOMAIN = "domain";
     private static final String INTERNAL_API_SECRET = "api.secret";
+    private static final String SKIP_REQUEST_SIGNATURE = "skip.signature.check";
     private final Properties properties = new Properties();
     private String baseDir;
     private Environment environment = null;
@@ -44,6 +44,8 @@ class ConfigurationImpl implements Configuration {
         baseDir = getBaseDir();
         loadPropertiesFromFile();
         loadEnvironment();
+
+        verify();
     }
 
     @Override
@@ -57,13 +59,8 @@ class ConfigurationImpl implements Configuration {
     }
 
     @Override
-    public String getProfileDomain() {
-        return properties.getProperty(DOMAIN_PROFILE);
-    }
-
-    @Override
-    public String getKorokDomain() {
-        return properties.getProperty(DOMAIN_KOROK);
+    public String getDomain() {
+        return properties.getProperty(DOMAIN);
     }
 
     @Override
@@ -78,6 +75,24 @@ class ConfigurationImpl implements Configuration {
     @Override
     public String getInternalApiSecret() {
         return properties.getProperty(INTERNAL_API_SECRET);
+    }
+
+    @Override
+    public boolean skipRequestSignature() {
+        // it is only applicable during DEVELOPMENT
+        if (getEnvironment() != Environment.DEVELOPMENT) {
+            return false;
+        }
+
+        // use system property first (this way we can set it during runtime via jboss-cli)
+        String skipRequestSig = System.getProperty(SKIP_REQUEST_SIGNATURE);
+        if (skipRequestSig != null) {
+            return Boolean.parseBoolean(skipRequestSig);
+        }
+
+        // fallback to property in the config files
+        skipRequestSig = properties.getProperty(SKIP_REQUEST_SIGNATURE, "false");
+        return Boolean.parseBoolean(skipRequestSig);
     }
 
     private void loadEnvironment() {
@@ -116,5 +131,10 @@ class ConfigurationImpl implements Configuration {
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error while loading properties file!", ex);
         }
+    }
+
+    // verifies the configuration that it only contains legal values
+    private void verify() {
+        // TODO: github/#109
     }
 }

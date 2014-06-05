@@ -24,12 +24,16 @@ public class RereadableHttpServletRequestWrapper extends HttpServletRequestWrapp
         this.request = request;
     }
 
-    @Override
-    public ServletInputStream getInputStream() throws IOException {
+    public byte[] getRawBody() throws IOException {
         if (rawBody == null) {
             rawBody = IOUtils.toByteArray(request.getInputStream());
         }
-        return new ByteServletInputStream(rawBody);
+        return rawBody;
+    }
+
+    @Override
+    public ServletInputStream getInputStream() throws IOException {
+        return new ByteServletInputStream(getRawBody());
     }
 
     @Override

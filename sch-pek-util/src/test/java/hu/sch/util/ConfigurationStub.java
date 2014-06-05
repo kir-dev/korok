@@ -9,9 +9,9 @@ public class ConfigurationStub implements Configuration {
     private String devMail = "test@example.com";
     private Environment env = Environment.TEST;
     private ImageUploadConfig imgConf = new ImageUploadConfig("/", 400, 150);
-    private String korokDomain = "korok.sch.bme.hu";
-    private String profileDomain = "profile.sch.bme.hu";
+    private String domain = "pek.sch.bme.hu";
     private String apiSecret = "secret";
+    private boolean checkSig = false;
 
     @Override
     public String getDevEmail() {
@@ -29,18 +29,18 @@ public class ConfigurationStub implements Configuration {
     }
 
     @Override
-    public String getKorokDomain() {
-        return korokDomain;
-    }
-
-    @Override
-    public String getProfileDomain() {
-        return profileDomain;
+    public String getDomain() {
+        return domain;
     }
 
     @Override
     public String getInternalApiSecret() {
         return apiSecret;
+    }
+
+    @Override
+    public boolean skipRequestSignature() {
+        return checkSig;
     }
 
     public void setDevMail(String devMail) {
@@ -55,15 +55,15 @@ public class ConfigurationStub implements Configuration {
         this.imgConf = imgConf;
     }
 
-    public void setKorokDomain(String korokDomain) {
-        this.korokDomain = korokDomain;
-    }
-
-    public void setProfileDomain(String profileDomain) {
-        this.profileDomain = profileDomain;
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     public void setApiSecret(String apiSecret) {
         this.apiSecret = apiSecret;
+    }
+
+    public void setCheckSig(boolean checkSig) {
+        this.checkSig = checkSig;
     }
 }

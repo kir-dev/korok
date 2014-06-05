@@ -26,8 +26,8 @@ public class PekWebException extends WebApplicationException {
         super(message, prepareResponse(response));
     }
 
-    public PekWebException(PekError error) {
-        super(preparePekErrorResponse(error));
+    public PekWebException(PekError error, int status) {
+        super(preparePekErrorResponse(error, status));
     }
 
     private static Response prepareResponse(Response response) {
@@ -37,9 +37,9 @@ public class PekWebException extends WebApplicationException {
                 .build();
     }
 
-    private static Response preparePekErrorResponse(PekError error) {
+    private static Response preparePekErrorResponse(PekError error, int status) {
         return Response
-                .status(Response.Status.INTERNAL_SERVER_ERROR)
+                .status(status)
                 .type(MediaType.APPLICATION_JSON_TYPE)
                 .entity(error)
                 .build();

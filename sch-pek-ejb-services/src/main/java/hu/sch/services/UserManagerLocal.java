@@ -115,7 +115,7 @@ public interface UserManagerLocal {
      * @param image the new profile image
      * @throws PekException
      */
-    public void updateUser(User user, ProfileImage image) throws PekException;
+    public User updateUser(User user, ProfileImage image) throws PekException;
 
     /**
      * Gets all semester with point when point is greater 0. Result order by

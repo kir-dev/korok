@@ -12,10 +12,9 @@ public interface Configuration {
 
     ImageUploadConfig getImageUploadConfig();
 
-    // TODO: unify this with profile domian (github/#106)
-    String getKorokDomain();
-
-    String getProfileDomain();
+    String getDomain();
 
     String getInternalApiSecret();
+
+    boolean skipRequestSignature();
 }

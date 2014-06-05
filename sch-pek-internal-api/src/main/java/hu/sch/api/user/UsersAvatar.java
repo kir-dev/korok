@@ -1,13 +1,30 @@
 package hu.sch.api.user;
 
+import hu.sch.api.exceptions.AvatarNotFoundException;
+import hu.sch.api.exceptions.PekWebException;
+import hu.sch.api.exceptions.RequestFormatException;
+import hu.sch.api.response.PekError;
+import hu.sch.api.response.PekResponse;
+import hu.sch.api.response.PekSuccess;
+import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.User;
 import hu.sch.util.config.Configuration;
-import java.io.File;
+import hu.sch.util.exceptions.PekErrorCode;
+import hu.sch.util.exceptions.PekException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Context;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -15,6 +32,8 @@ import javax.ws.rs.core.Response;
  */
 @Path(UsersBase.PATH + "/avatar")
 public class UsersAvatar extends UsersBase {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(UsersAvatar.class);
 
     private Configuration config;
 
@@ -31,18 +50,57 @@ public class UsersAvatar extends UsersBase {
     }
 
     @GET
-    public Response getAvatar() {
+    public AvatarView getAvatar() {
         User user = fetchUser();
-        if (!user.hasPhoto()) {
-            return respondWithNotFound("User does not have an avatar.");
+        if (user.getPhotoPath() == null) {
+            throw new AvatarNotFoundException();
         }
 
-        String photoPath = user.getPhotoFullPath(config.getImageUploadConfig().getBasePath());
-        File image = new File(photoPath);
-        if (!image.exists()) {
-            return respondWithNotFound("Avatar file cannot be found on the disk.");
+        return new AvatarView(user, config.getDomain());
+    }
+
+    @PUT
+    @Consumes("image/*")
+    public AvatarView uploadAvatar(@Context HttpServletRequest request, InputStream image) {
+        byte[] imageBytes;
+        try {
+            imageBytes = IOUtils.toByteArray(image);
+        } catch (IOException ex) {
+            logger.warn("Could not read image from request body.", ex);
+            // TODO: create a standard error reporting process github/#110
+            throw new PekWebException(PekError.unspecified(ex.getMessage()), 500);
         }
 
-        return Response.ok(image).type(new MediaType("image", "png")).build();
+        // empty image
+        if (imageBytes.length == 0) {
+            throw new RequestFormatException("No image was present.");
+        }
+
+        String mimeType = request.getContentType();
+        ProfileImage profileImage = new ProfileImage(mimeType, imageBytes, imageBytes.length);
+
+        User user = fetchUser();
+
+        try {
+            // TODO: authorization?
+            user = userManager.updateUser(user, profileImage);
+        } catch (PekException ex) {
+            // TODO: create a standard error reporting process github/#110
+            throw new PekWebException(new PekError(ex), 500);
+        }
+
+        return new AvatarView(user, config.getDomain());
+    }
+
+    @DELETE
+    public PekResponse deleteAvatar() {
+        User user = fetchUser();
+        try {
+            userManager.removeProfileImage(user);
+            return new PekSuccess(null);
+        } catch (PekException ex) {
+            logger.warn("Could not delete profile image for user: {}", user.getId());
+            return new PekError(ex);
+        }
     }
 }

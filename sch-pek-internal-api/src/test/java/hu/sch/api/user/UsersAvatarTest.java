@@ -1,5 +1,6 @@
 package hu.sch.api.user;
 
+import hu.sch.api.exceptions.AvatarNotFoundException;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.util.ConfigurationStub;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -27,7 +29,7 @@ public class UsersAvatarTest {
     private User user;
 
     @Rule
-    public TemporaryFolder tmpFolder = new TemporaryFolder();
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setupUser() {
@@ -39,25 +41,18 @@ public class UsersAvatarTest {
 
     @Test
     public void userDoesNotHaveAnAvatar() {
-        assertThat(avatar.getAvatar().getStatus()).isEqualTo(404);
+        thrown.expect(AvatarNotFoundException.class);
+        avatar.getAvatar();
     }
 
     @Test
-    public void setsContentTypeToImagePng() throws IOException {
-        prepareImageFile();
+    public void urlOfTheAvatarIsReturned() {
+        ConfigurationStub cfg = new ConfigurationStub();
+        cfg.setDomain("example.com");
+        avatar.setConfig(cfg);
+        user.setPhotoPath("photo.png");
 
-        Response resp = avatar.getAvatar();
-        assertThat(resp.getMediaType()).isEqualTo(MediaType.valueOf("image/png"));
-    }
-
-    private void prepareImageFile() throws IOException {
-        File file = tmpFolder.newFile("image.png");
-        file.createNewFile();
-        user.setPhotoPath("image.png");
-
-        ImageUploadConfig iuc = new ImageUploadConfig(tmpFolder.getRoot().getPath(), 0, 0);
-        ConfigurationStub config = new ConfigurationStub();
-        config.setImageUploadConfig(iuc);
-        avatar.setConfig(config);
+        AvatarView resp = avatar.getAvatar();
+        assertThat(resp.getPath()).isEqualTo("//example.com/photo.png");
     }
 }

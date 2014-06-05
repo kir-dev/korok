@@ -2,7 +2,6 @@ package hu.sch.ejb.image;
 
 import hu.sch.util.config.ImageUploadConfig;
 import hu.sch.domain.user.User;
-import hu.sch.util.config.Configuration;
 import hu.sch.util.exceptions.PekException;
 import hu.sch.util.exceptions.PekErrorCode;
 import java.io.File;
@@ -83,9 +82,8 @@ public final class ImageSaver {
         // NOTE: file path (relative to base path) needs to be all downcase
         Path dir = Paths.get(
                 imageConfig.getBasePath(),
-                user.getScreenName().substring(0, 1).toLowerCase(),
-                user.getScreenName().toLowerCase());
-
+                filename.substring(0, 1),
+                filename.substring(0, 2));
         dir.toFile().mkdirs();
 
         return Paths.get(dir.toString(), filename);

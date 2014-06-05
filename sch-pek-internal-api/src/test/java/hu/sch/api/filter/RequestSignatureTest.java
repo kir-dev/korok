@@ -1,21 +1,15 @@
 package hu.sch.api.filter;
 
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
-import static org.mockito.Mockito.*;
 
 /**
  *
@@ -78,7 +72,7 @@ public class RequestSignatureTest {
 
     @Test
     public void validSignature() {
-        RequestSignature sig = new RequestSignature(PATH, BODY, createSignature(PATH, BODY), createTimestamp(), SECRET);
+        RequestSignature sig = new RequestSignature(PATH, BODY.getBytes(StandardCharsets.UTF_8), createSignature(PATH, BODY), createTimestamp(), SECRET);
         assertEquals(RequestSignatureResult.OK, sig.checkSignature());
     }
 
@@ -86,7 +80,7 @@ public class RequestSignatureTest {
     public void validSignatureWithoutBody() {
         // sig: /foo1399822115secret
         RequestSignature sig1 = new RequestSignature(PATH, null, createSignature(PATH, null), createTimestamp(), SECRET);
-        RequestSignature sig2 = new RequestSignature(PATH, "", createSignature(PATH, ""), createTimestamp(), SECRET);
+        RequestSignature sig2 = new RequestSignature(PATH, new byte[0], createSignature(PATH, ""), createTimestamp(), SECRET);
 
         assertEquals(RequestSignatureResult.OK, sig1.checkSignature());
         assertEquals(RequestSignatureResult.OK, sig2.checkSignature());
