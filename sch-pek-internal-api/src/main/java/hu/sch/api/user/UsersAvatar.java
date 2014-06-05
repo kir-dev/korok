@@ -2,6 +2,7 @@ package hu.sch.api.user;
 
 import hu.sch.api.exceptions.AvatarNotFoundException;
 import hu.sch.api.exceptions.PekWebException;
+import hu.sch.api.exceptions.RequestFormatException;
 import hu.sch.api.response.PekError;
 import hu.sch.api.response.PekResponse;
 import hu.sch.api.response.PekSuccess;
@@ -70,7 +71,10 @@ public class UsersAvatar extends UsersBase {
             throw new PekWebException(PekError.unspecified(ex.getMessage()), 500);
         }
 
-        // TODO: handle empty image array
+        // empty image
+        if (imageBytes.length == 0) {
+            throw new RequestFormatException("No image was present.");
+        }
 
         String mimeType = request.getContentType();
         ProfileImage profileImage = new ProfileImage(mimeType, imageBytes, imageBytes.length);
