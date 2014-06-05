@@ -25,7 +25,7 @@ public class BadJSONFormatHandler implements ExceptionMapper<JsonMappingExceptio
     }
 
     private PekError fromException(JsonMappingException exception) {
-        return new PekError(PekErrorCode.REQUEST_FORMAT_INVALID, exception.getMessage());
+        return new PekError(PekErrorCode.INVALID_JSON_FORMAT, exception.getMessage());
     }
 
 }

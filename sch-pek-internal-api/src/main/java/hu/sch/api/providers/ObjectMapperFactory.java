@@ -1,6 +1,7 @@
 package hu.sch.api.providers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import hu.sch.util.config.Configuration;
@@ -21,7 +22,8 @@ public class ObjectMapperFactory {
     public ObjectMapper createMapper() {
         return new ObjectMapper()
                 .registerModule(new Hibernate4Module())
-                .configure(SerializationFeature.INDENT_OUTPUT, indent());
+                .configure(SerializationFeature.INDENT_OUTPUT, indent())
+                .setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
     }
 
     private boolean indent() {

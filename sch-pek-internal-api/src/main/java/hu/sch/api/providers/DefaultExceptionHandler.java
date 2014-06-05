@@ -33,7 +33,7 @@ public class DefaultExceptionHandler implements ExceptionMapper<Exception>{
             return handleRestEasyBuiltInException((LoggableFailure) exception);
         }
 
-        return buildResponse(500, PekError.unspecified(exception.getMessage()));
+        return buildResponse(500, PekError.internal(exception.getMessage()));
     }
 
     private Response handlePekException(PekException exception) {
@@ -47,7 +47,7 @@ public class DefaultExceptionHandler implements ExceptionMapper<Exception>{
         } else {
             status = failure.getErrorCode();
         }
-        return buildResponse(status, PekError.unspecified(failure.getMessage()));
+        return buildResponse(status, PekError.internal(failure.getMessage()));
     }
 
     private Response buildResponse(int status, PekError error) {

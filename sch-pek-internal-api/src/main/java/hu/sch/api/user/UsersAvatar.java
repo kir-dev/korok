@@ -68,7 +68,7 @@ public class UsersAvatar extends UsersBase {
         } catch (IOException ex) {
             logger.warn("Could not read image from request body.", ex);
             // TODO: create a standard error reporting process github/#110
-            throw new PekWebException(PekError.unspecified(ex.getMessage()), 500);
+            throw new PekWebException(new PekError(PekErrorCode.FILE_OPEN_FAILED, ex.getMessage()), 500);
         }
 
         // empty image

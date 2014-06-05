@@ -106,7 +106,8 @@ public class ImageProcessor {
         MediaType type = MediaType.parse(image.getMimeType());
 
         if (!type.isAny(MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG)) {
-            throw new PekException(PekErrorCode.VALIDATION_IMAGE_FORMAT, "Uploaded file is not an image.");
+            String msg = String.format("Mime-type (%s) is not supported. Supported types are: image/gif, image/jpeg, image/png", type.getContentType());
+            throw new PekException(PekErrorCode.INVALID_IMAGE_MIME_TYPE, msg);
         }
     }
 

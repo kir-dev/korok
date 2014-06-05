@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 public class RequestFormatException extends PekWebException{
 
     public RequestFormatException(String cause) {
-        super(new PekError(PekErrorCode.REQUEST_FORMAT_INVALID, cause), 400);
+        super(new PekError(PekErrorCode.MISSING_CONTENT, cause), 400);
     }
 
 }

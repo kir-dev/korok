@@ -1,76 +1,89 @@
 package hu.sch.util.exceptions;
 
-import org.apache.commons.lang3.StringUtils;
+import static hu.sch.util.exceptions.PekErrorType.*;
 
 /**
- * Error codes for the exceptions. It has a code and a message key for
- * localization purposes.
+ * Error codes are returned to the client when something goes wrong while
+ * processing a request.
  *
- * The name of the error codes should be hierarchical so that it is easy to
- * understand what it refers to. The naming convention is the following:
- *
- * TYPE_[SUBTYPE_]OPERATION_WHATJUSTHAPPENED
- *
- * Eg. DATABASE_CREATE_FAILED refers to a database error, create operation and
- * that it failed.
+ * An error code is a 5-character string. The first two characters are the type
+ * (or the class) of the error. It helps the client identify unknown errors. For
+ * every error code there is a human readable message. Its sole purpose is
+ * helping developers identify the error. It must not contain context specific
+ * information.
  *
  * @author tomi
  */
 public enum PekErrorCode {
 
-    // TODO: add proper messages to error (github/#41)
-    // TODO: rename DATABASE to ENTITY (github/#41)
-    // TODO: create an error for all custom exceptions from sch-pek-ejb* (github/#41)
+    // ENTITY type errors
+    ENTITY_CREATE_FAILED(ENITITY, "001", "failed to create entity"),
+    ENTITY_UPDATE_FAILED(ENITITY, "002", "failed to update entity"),
+    ENTITY_DUPLICATE(ENITITY, "003", "duplicate entity found"),
+    ENTITY_NOT_FOUND(ENITITY, "004", "entity not found"),
+    // VALIDATION type errors
+    INVALID_IMAGE_MIME_TYPE(VALIDATION, "001", "invalid image mime-type"),
+    TOKEN_NOT_FOUND(VALIDATION, "002", "token not found"),
+    TOKEN_EXPIRED(VALIDATION, "003", "token is expired"),
+    // IO type errors
+    FILE_CREATE_FAILED(IO, "001", "failed to create file"),
+    FILE_OPEN_FAILED(IO, "002", "failed to open file"),
+    FILE_NOT_FOUND(IO, "003", "file not found"),
+    // WEB type errors
+    INVALID_REQUEST_TIMESTAMP(WEB, "001", "invalid timestamp"),
+    INVALID_REQUEST_SIGNATURE(WEB, "002", "invalid signature"),
+    INVALID_JSON_FORMAT(WEB, "003", "invalid json format"),
+    MISSING_CONTENT(WEB, "004", "missing content"),
+    RESOURCE_NOT_FOUND(WEB, "005", "resource not found"),
+    // SYSTEM type errors
+    INTERNAL_ERROR(SYSTEM, "001", "internal error"),
+    // ACOUNT type errors
+    INVALID_PASSWORD(ACCOUNT, "001", "invalid password"),
+    ;
 
-    UNSPECIFIED(-1, "unspecified error"),
-    // ENTITY ERRORS 1xx
-    DATABASE_CREATE_FAILED(100),
-    DATABASE_UPDATE_FAILED(101),
-    DATABASE_CREATE_VALUATION_DUPLICATE(102),
-    ENTITY_NOTFOUND(103, "entity not found"),
-    // VALIDATION ERRORS 2xx
-    VALIDATION_IMAGE_FORMAT(200),
-    VALIDATION_TOKEN_EXPIRED(201),
-    VALIDATION_TOKEN_NOTFOUND(202),
-    // FILE IO ERRORS 3xx
-    FILE_CREATE_FAILED(300),
-    FILE_OPEN_FAILED(301),
-    // SYSTEM ERRROS 4xx
-    SYSTEM_ENCODING_NOTSUPPORTED(400),
-    UNKNOWN(401),
-    // USER ERRORS 5xx
-    USER_NOTFOUND(500),
-    USER_PASSWORD_INVALID(501),
-    // web layer errors 6xx
-    REQUEST_TIMESTAMP_INVALID(600, "invalid timestamp"),
-    REQUEST_SIGNATURE_INVALID(601, "invalid signature"),
-    REQUEST_FORMAT_INVALID(602, "invalid request format"),
-    RESOURCE_NOT_FOUND(604, "resource not found");
-    //------------------------------------------
-    private int code;
-    private String shortMessage;
+    private final PekErrorType type;
+    private final String code;
+    private final String message;
 
-    private PekErrorCode(int code) {
-        this(code, null);
-    }
-
-    private PekErrorCode(int code, String shortMessage) {
+    private PekErrorCode(PekErrorType type, String code, String message) {
+        this.type = type;
         this.code = code;
-        this.shortMessage = shortMessage;
+        this.message = message;
     }
 
     /**
-     * Gets the numerical code for the error.
+     * Gets the type (class) of the error.
+     *
+     * @return the type of the error
      */
-    public int getCode() {
+    public PekErrorType getType() {
+        return type;
+    }
+
+    /**
+     * Gets the (3-character) code of the error.
+     *
+     * @return code of the error
+     */
+    public String getCode() {
         return code;
     }
 
-    public String getShortMessage() {
-        String msg = shortMessage;
-        if (StringUtils.isBlank(msg)) {
-            msg = this.name().toLowerCase().replace('_', ' ');
-        }
-        return msg;
+    /**
+     * Gets the human readable message of the error.
+     *
+     * @return message of the error
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * Gets the 5-character representation of the error
+     *
+     * @return
+     */
+    public String getValue() {
+        return type.getValue() + getCode();
     }
 }
