@@ -3,6 +3,8 @@ package hu.sch.api.user;
 import hu.sch.api.exceptions.AvatarNotFoundException;
 import hu.sch.api.exceptions.PekWebException;
 import hu.sch.api.response.PekError;
+import hu.sch.api.response.PekResponse;
+import hu.sch.api.response.PekSuccess;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.domain.user.User;
 import hu.sch.util.config.Configuration;
@@ -15,6 +17,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -83,5 +86,17 @@ public class UsersAvatar extends UsersBase {
         }
 
         return new AvatarView(user, config.getDomain());
+    }
+
+    @DELETE
+    public PekResponse deleteAvatar() {
+        User user = fetchUser();
+        try {
+            userManager.removeProfileImage(user);
+            return new PekSuccess(null);
+        } catch (PekException ex) {
+            logger.warn("Could not delete profile image for user: {}", user.getId());
+            return new PekError(ex);
+        }
     }
 }
