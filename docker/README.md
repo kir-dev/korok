@@ -14,6 +14,8 @@ Továbbra is szükseged lesz linuxra vagy OSX-re a fejlesztéshez, de ez VM is l
 
 Ajánlott elolvasni a teljes [telepítesi doksit][2]. 14.04-tol is javasolt a fenti módszer, mert ugyan benne van már az ubuntus repoban, de csak karbantártasi releaseket kapsz onnan, azt is lassan.
 
+## Let's do it
+
     $ cd ~/korok/docker/data/
     $ cp -r ~/korok/resources appdata # modify the config if needed
     $ cp ~/vir-dump.sql appdata/ # db dump or dummy db
@@ -31,11 +33,11 @@ A jelenlegi setup 3 konténerből áll:
     - ha törlöd a konténert, akkor az ott módositott / létrehozott fájlok értelemszerűen elvesznek
     - a többi konténer törlese az ebben tárolt adatokat nem befolyásolja
     - ha nagyon akarod a host gépedre is linkelhetsz, lásd ismet a [doksit][3]
-    - ennek nem kell futnia, csak egyszer le kell buildelni es utána egyszer run-t indítani rá, hogy elnevezzük (csak a ps -a kimenettel látszik, *exited* státuszban)
+    - ennek nem kell futnia, csak egyszer le kell buildelni es utána egyszer `run`-t indítani rá, hogy elnevezzük (csak a ps -a kimenettel látszik, *exited* státuszban)
 * **postgres**
-    - ha nem létezik még a /var/lib/postgresql mappa, akkor inicializálja a vir es vir-test adatbázisokat és a kir felhasználót
+    - ha nem létezik még a /var/lib/postgresql mappa, akkor inicializálja a `vir` es `vir-test` adatbázisokat és a `kir` felhasználót
     - az egyszerűség kedvéért a host gépre ki van forwardolva a fix 5432-es porton
-    - create-instances.sh fájlban tudod módosítani a jelszót
+    - `create-instances.sh` fájlban tudod módosítani a jelszót
 * **wildfly**: appszerver
     - portok: 8080 (web), 9990 (cli), 22 (ssh)
     - be tudsz lépni ssh-val (root/dev123)
