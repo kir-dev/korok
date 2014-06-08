@@ -57,10 +57,17 @@ public class RequestSignatureFilter implements Filter {
 
         long timestamp = 0;
         try {
-            timestamp = Long.parseLong(req.getHeader(SIGNATURE_TIMESTAMP_KEY));
+            String timestampString = req.getHeader(SIGNATURE_TIMESTAMP_KEY);
+            if (timestampString == null) {
+                // no header is present for timestamp
+                sendSignatureError(res, new PekError(PekErrorCode.INVALID_REQUEST_TIMESTAMP, "Timestamp is missing."));
+                return;
+            }
+
+            timestamp = Long.parseLong(timestampString);
         } catch (NumberFormatException ex) {
             logger.warn("Invalid timestamp format: {} on path: {}", req.getHeader(SIGNATURE_TIMESTAMP_KEY), req.getRequestURI());
-            sendSignatureError(res, new PekError(PekErrorCode.REQUEST_TIMESTAMP_INVALID));
+            sendSignatureError(res, new PekError(PekErrorCode.INVALID_REQUEST_TIMESTAMP, ex.getMessage()));
             return;
         }
 
@@ -70,7 +77,7 @@ public class RequestSignatureFilter implements Filter {
 
         if (result != RequestSignatureResult.OK) {
             logger.warn("Invalid request signature: {}", result);
-            sendSignatureError(res, new PekError(PekErrorCode.REQUEST_SIGNATURE_INVALID));
+            sendSignatureError(res, new PekError(PekErrorCode.INVALID_REQUEST_SIGNATURE, "Invalid signature."));
         } else {
             chain.doFilter(wrappedRequest, response);
         }

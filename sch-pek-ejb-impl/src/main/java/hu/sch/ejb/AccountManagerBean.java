@@ -17,6 +17,7 @@ import hu.sch.util.exceptions.PekErrorCode;
 import hu.sch.util.exceptions.PekException;
 import hu.sch.util.hash.Hashing;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
@@ -181,7 +182,7 @@ public class AccountManagerBean implements AccountManager {
 
         if (!passwordHash.equals(user.getPasswordDigest())) {
             logger.info("Password change requested with invalid password for user {}", user.getId());
-            throw new PekException(PekErrorCode.USER_PASSWORD_INVALID);
+            throw new PekException(PekErrorCode.INVALID_PASSWORD, "Invalid original password.");
         }
 
         user.setPasswordDigest(hashPassword(newPwd, salt));
@@ -190,12 +191,7 @@ public class AccountManagerBean implements AccountManager {
 
     private String hashPassword(String password, byte[] salt) throws PekException {
         byte[] passwordBytes;
-        try {
-            passwordBytes = password.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            logger.error("UTF-8 is not supported.", ex);
-            throw new PekException(PekErrorCode.SYSTEM_ENCODING_NOTSUPPORTED);
-        }
+        passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
         byte[] hashInput = new byte[passwordBytes.length + salt.length];
         System.arraycopy(passwordBytes, 0, hashInput, 0, passwordBytes.length);
@@ -225,7 +221,7 @@ public class AccountManagerBean implements AccountManager {
             final User result = userManager.findUserByEmail(email);
 
             if (result == null) {
-                throw new PekException(PekErrorCode.USER_NOTFOUND);
+                throw new PekException(PekErrorCode.ENTITY_NOT_FOUND, String.format("User for %s email was not found.", email));
             } else {
                 final String subject = MailManagerBean.getMailString(MailManagerBean.MAIL_USERNAME_REMINDER_SUBJECT);
 
@@ -263,7 +259,7 @@ public class AccountManagerBean implements AccountManager {
             final User user = userManager.findUserByEmail(email);
 
             if (user == null) {
-                throw new PekException(PekErrorCode.USER_NOTFOUND);
+                throw new PekException(PekErrorCode.ENTITY_NOT_FOUND, String.format("User for %s email was not found.", email));
             }
 
             final String subject = MailManagerBean.getMailString(MailManagerBean.MAIL_LOST_PASSWORD_SUBJECT);
@@ -336,17 +332,14 @@ public class AccountManagerBean implements AccountManager {
             final long currentTimeMillis = System.currentTimeMillis();
             if (currentTimeMillis > token.getCreated().getTime() + LOST_PW_TOKEN_VALID_MS) {
                 logger.info("Somebody tried to use an expired token={}", tokenKey);
-                throw new PekException(PekErrorCode.VALIDATION_TOKEN_EXPIRED);
+                throw new PekException(PekErrorCode.TOKEN_EXPIRED, "Password reset token is expired.");
             }
 
             return token.getSubjectUser();
 
         } catch (NoResultException | NonUniqueResultException ex) {
             logger.info("Somebody tried to use an invalid token={}", tokenKey);
-            throw new PekException(PekErrorCode.VALIDATION_TOKEN_NOTFOUND);
-        } catch (PersistenceException ex) {
-            logger.error("Unexpected exception while checking lost password token.", ex);
-            throw new PekException(PekErrorCode.UNKNOWN);
+            throw new PekException(PekErrorCode.TOKEN_NOT_FOUND, "Token was not found.");
         }
     }
 

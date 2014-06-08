@@ -28,10 +28,10 @@ public final class PekErrorCodeSerializer extends JsonSerializer<PekErrorCode> {
     @Override
     public void serialize(PekErrorCode t, JsonGenerator generator, SerializerProvider sp) throws IOException, JsonProcessingException {
         // dump values into host object
-        generator.writeFieldName("code");
-        generator.writeNumber(t.getCode());
+        generator.writeFieldName("error_code");
+        generator.writeString(t.getValue());
         generator.writeFieldName("message");
-        generator.writeString(t.getShortMessage());
+        generator.writeString(t.getMessage());
     }
 
     @Override

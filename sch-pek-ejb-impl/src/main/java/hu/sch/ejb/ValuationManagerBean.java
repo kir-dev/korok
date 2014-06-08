@@ -520,7 +520,7 @@ public class ValuationManagerBean implements ValuationManagerLocal {
         // check if there is an existing valuation already
         if (findLatestValuation(valuation.getGroup(), valuation.getSemester()) != null) {
             logger.warn("Tried to create valuation twice for the same group ({}) and semester ({})", group.getId(), valuation.getSemester());
-            throw new PekException(PekErrorCode.DATABASE_CREATE_VALUATION_DUPLICATE,
+            throw new PekException(PekErrorCode.ENTITY_DUPLICATE,
                     "Could not create valuation for the same semester twice.");
         }
 
