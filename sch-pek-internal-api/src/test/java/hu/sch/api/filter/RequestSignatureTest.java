@@ -1,5 +1,6 @@
 package hu.sch.api.filter;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -78,7 +79,6 @@ public class RequestSignatureTest {
 
     @Test
     public void validSignatureWithoutBody() {
-        // sig: /foo1399822115secret
         RequestSignature sig1 = new RequestSignature(PATH, null, createSignature(PATH, null), createTimestamp(), SECRET);
         RequestSignature sig2 = new RequestSignature(PATH, new byte[0], createSignature(PATH, ""), createTimestamp(), SECRET);
 
@@ -87,18 +87,24 @@ public class RequestSignatureTest {
     }
 
     private String createSignature(String url, String body) {
-        StringBuilder sb = new StringBuilder(url);
-        if (body != null) {
-            sb.append(new String(body));
-        }
-        sb.append(System.currentTimeMillis() / 1000L).append(SECRET);
-
-        final String algo = "HmacSHA1";
+        // TODO: it would be nice if the signature calculation's implementation does not leaked out here
+        // maybe we need to introduce a new class for this?
         try {
+            ByteArrayOutputStream s = new ByteArrayOutputStream();
+            s.write(url.getBytes(StandardCharsets.UTF_8));
+            if (body != null) {
+                s.write(body.getBytes(StandardCharsets.UTF_8));
+            } else {
+                s.write(new byte[0]);
+            }
+            s.write(String.valueOf(System.currentTimeMillis() / 1000L).getBytes(StandardCharsets.UTF_8));
+            s.write(SECRET.getBytes(StandardCharsets.UTF_8));
+
+            final String algo = "HmacSHA1";
             SecretKeySpec key = new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), algo);
             Mac hmac = Mac.getInstance(algo);
             hmac.init(key);
-            return Hex.encodeHexString(hmac.doFinal(sb.toString().getBytes(StandardCharsets.UTF_8)));
+            return Hex.encodeHexString(hmac.doFinal(s.toByteArray()));
         } catch (Exception ex) {
         }
         return "";

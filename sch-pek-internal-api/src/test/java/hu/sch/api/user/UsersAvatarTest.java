@@ -4,18 +4,12 @@ import hu.sch.api.exceptions.AvatarNotFoundException;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.util.ConfigurationStub;
-import hu.sch.util.config.ImageUploadConfig;
-import java.io.File;
-import java.io.IOException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
 
 /**
  *
