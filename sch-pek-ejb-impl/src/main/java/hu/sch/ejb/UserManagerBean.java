@@ -4,8 +4,6 @@ import hu.sch.domain.user.User;
 import hu.sch.domain.*;
 import hu.sch.util.config.Configuration;
 import hu.sch.domain.user.ProfileImage;
-import hu.sch.domain.user.UserAttribute;
-import hu.sch.domain.user.UserAttributeName;
 import hu.sch.ejb.image.ImageProcessor;
 import hu.sch.ejb.image.ImageRemoverService;
 import hu.sch.ejb.image.ImageSaver;
@@ -245,24 +243,6 @@ public class UserManagerBean implements UserManagerLocal {
         SpotImage img = q.getSingleResult();
 
         removeSpotImage(user, img);
-    }
-
-    @Override
-    public void invertAttributeVisibility(User user, UserAttributeName attr) {
-        boolean done = false;
-        for (UserAttribute a : user.getPrivateAttributes()) {
-            if (a.getAttributeName() == attr) {
-                a.setVisible(!a.isVisible());
-                done = true;
-                break;
-            }
-        }
-
-        // user's attribute list does not contian the given attribute
-        // which means it is NOT visible, so we'll make it visible
-        if (!done) {
-            user.getPrivateAttributes().add(new UserAttribute(attr, true));
-        }
     }
 
     /**

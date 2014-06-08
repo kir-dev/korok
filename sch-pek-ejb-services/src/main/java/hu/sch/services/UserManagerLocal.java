@@ -5,7 +5,6 @@ import hu.sch.domain.PointHistory;
 import hu.sch.domain.SpotImage;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.ProfileImage;
-import hu.sch.domain.user.UserAttributeName;
 import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.util.exceptions.PekException;
 import javax.ejb.Local;
@@ -154,14 +153,6 @@ public interface UserManagerLocal {
      * @param user
      */
     void declineRecommendedPhoto(User user);
-
-    /**
-     * Inverts the visibility of an attribute.
-     *
-     * @param user
-     * @param attr the attribute which visibility has to be altered
-     */
-    public void invertAttributeVisibility(User user, UserAttributeName attr);
 
     /**
      * Remove user's profile image.

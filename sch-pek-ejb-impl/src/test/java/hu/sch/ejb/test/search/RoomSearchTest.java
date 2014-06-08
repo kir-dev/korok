@@ -1,8 +1,6 @@
 package hu.sch.ejb.test.search;
 
 import hu.sch.domain.user.User;
-import hu.sch.domain.user.UserAttribute;
-import hu.sch.domain.user.UserAttributeName;
 import hu.sch.ejb.search.SearchManagerBean;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
@@ -60,7 +58,6 @@ public class RoomSearchTest extends AbstractDatabaseBackedTest {
 
     private void createUser(String dorm, String room) {
         User user = new UserBuilder().build();
-        user.getPrivateAttributes().add(new UserAttribute(UserAttributeName.ROOM_NUMBER, true));
         user.setRoom(room);
         user.setDormitory(dorm);
         getEm().persist(user);
