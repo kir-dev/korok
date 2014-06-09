@@ -2,7 +2,6 @@ package hu.sch.ejb;
 
 import hu.sch.domain.user.User;
 import hu.sch.domain.*;
-import hu.sch.domain.user.IMAccount;
 import hu.sch.util.config.Configuration;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.ejb.image.ImageProcessor;
@@ -10,7 +9,6 @@ import hu.sch.ejb.image.ImageRemoverService;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.services.exceptions.EntityNotFoundException;
 import hu.sch.util.exceptions.PekException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -288,21 +286,5 @@ public class UserManagerBean implements UserManagerLocal {
         new ImageRemoverService(config).removeProfileImage(user);
         user.setPhotoPath(null);
         updateUser(user);
-    }
-
-    @Override
-    public IMAccount removeIMAccount(Long userId, Long imId) throws EntityNotFoundException {
-        User user = findUserByIdWithIMAccounts(userId);
-        if (user == null) {
-            throw new EntityNotFoundException(User.class, userId);
-        }
-
-        Optional<IMAccount> imAcc = user.getImAccounts().stream().filter(im -> im.getId().equals(imId)).findFirst();
-        if (imAcc.isPresent()) {
-            final IMAccount imEntity = imAcc.get();
-            user.getImAccounts().remove(imEntity);
-            return imEntity;
-        }
-        throw new EntityNotFoundException(IMAccount.class, imId);
     }
 }

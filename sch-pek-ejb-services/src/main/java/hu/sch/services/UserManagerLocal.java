@@ -3,11 +3,9 @@ package hu.sch.services;
 import hu.sch.domain.EntrantRequest;
 import hu.sch.domain.PointHistory;
 import hu.sch.domain.SpotImage;
-import hu.sch.domain.user.IMAccount;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.services.exceptions.EntityNotFoundException;
 import hu.sch.util.exceptions.PekException;
 import javax.ejb.Local;
 import java.util.List;
@@ -170,14 +168,4 @@ public interface UserManagerLocal {
      * @param user
      */
     public void removeProfileImage(User user) throws PekException;
-
-    /**
-     * Remove an im account from a user.
-     *
-     * @param userId
-     * @param imId
-     * @return
-     * @throws EntityNotFoundException
-     */
-    IMAccount removeIMAccount(Long userId, Long imId) throws EntityNotFoundException;
 }
