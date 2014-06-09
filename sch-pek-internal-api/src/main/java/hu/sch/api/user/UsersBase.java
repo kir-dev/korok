@@ -1,6 +1,6 @@
 package hu.sch.api.user;
 
-import hu.sch.api.exceptions.EntityNotFoundException;
+import hu.sch.api.exceptions.EntityNotFoundWebException;
 import hu.sch.api.Base;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
@@ -31,7 +31,7 @@ public abstract class UsersBase extends Base {
      * Fetch user by id.
      *
      * @return user entity
-     * @throws EntityNotFoundException
+     * @throws EntityNotFoundWebException
      */
     protected User fetchUser() {
         return fetchUser(userManager::findUserById);
@@ -42,12 +42,12 @@ public abstract class UsersBase extends Base {
      *
      * @param fetcherFunc
      * @return user entity
-     * @throws EntityNotFoundException
+     * @throws EntityNotFoundWebException
      */
     protected User fetchUser(Function<Long, User> fetcherFunc) {
         User user = fetcherFunc.apply(id);
         if (user == null) {
-            throw new EntityNotFoundException(User.class);
+            throw new EntityNotFoundWebException(User.class);
         }
 
         return user;
