@@ -1,9 +1,6 @@
 package hu.sch.ejb.search;
 
 import hu.sch.domain.user.User;
-import hu.sch.domain.user.UserAttribute;
-import hu.sch.domain.user.UserAttributeName;
-import hu.sch.domain.user.UserAttribute_;
 import hu.sch.domain.user.User_;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +9,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -27,7 +22,6 @@ public class SearchQueryBuilder {
     private EntityManager em;
     private final String keyword;
     private Root<User> usr;
-    private Join<User, UserAttribute> privAttr;
     private CriteriaBuilder builder;
 
     public SearchQueryBuilder(EntityManager em, String keyword) {
@@ -40,7 +34,6 @@ public class SearchQueryBuilder {
         CriteriaQuery<User> q = builder.createQuery(User.class);
 
         usr = q.from(User.class);
-        privAttr = usr.join(User_.privateAttributes, JoinType.LEFT);
 
         List<Predicate> andFilters = new ArrayList<>();
         for (String word : keyword.split(" ")) {
@@ -74,18 +67,12 @@ public class SearchQueryBuilder {
 
     private Predicate buildEmailQueryPart(String word) {
         return builder.and(
-                // email is visible
-                builder.equal(privAttr.get(UserAttribute_.attrName), UserAttributeName.EMAIL),
-                builder.isTrue(privAttr.get(UserAttribute_.visible)),
                 // and equals to the given word
                 builder.equal(usr.get(User_.emailAddress), word));
     }
 
     private Predicate buildRoomNumberQueryPart(String word) {
         return builder.and(
-                // roomnumber is visible
-                builder.equal(privAttr.get(UserAttribute_.attrName), UserAttributeName.ROOM_NUMBER),
-                builder.isTrue(privAttr.get(UserAttribute_.visible)),
                 // room number consists of [dormitor] [room]
                 builder.or(
                     buildLikeQueryPart(usr.get(User_.dormitory), buildLikeString(word)),

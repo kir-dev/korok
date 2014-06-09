@@ -152,10 +152,6 @@ public class User implements Serializable, Comparable<User> {
     @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
     private Set<IMAccount> imAccounts;
     //----------------------------------------------------
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "usr_id", referencedColumnName = "usr_id", nullable = false)
-    private Set<UserAttribute> privateAttributes;
-    //----------------------------------------------------
     @Column(name = "usr_status")
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -573,42 +569,6 @@ public class User implements Serializable, Comparable<User> {
 
     public void setConfirmationCode(String confirmationCode) {
         this.confirmationCode = confirmationCode;
-    }
-
-    /**
-     * Rejtett attribútumok.
-     *
-     * Egy attribútum csak akkor látható, ha benne van a kollekcióban és a
-     * 'visibile' mezője true értékű.
-     */
-    public Set<UserAttribute> getPrivateAttributes() {
-        if (privateAttributes == null) {
-            privateAttributes = new HashSet<>();
-        }
-        return privateAttributes;
-    }
-
-    public void setPrivateAttributes(Set<UserAttribute> privateAttributes) {
-        this.privateAttributes = privateAttributes;
-    }
-
-    /**
-     * Eldönti egy megadott attribútum típsuról, hogy az látható-e.
-     *
-     * @param attr az attritbútum neve
-     * @return true ha látható, egyébként false.
-     */
-    public boolean isAttributeVisible(UserAttributeName attr) {
-        UserAttribute userAttr = null;
-        for (UserAttribute a : getPrivateAttributes()) {
-            if (a.getAttributeName() == attr) {
-                userAttr = a;
-                break;
-            }
-        }
-
-        // csak akkor lathato egy attributum, ha expicit meg van jelolve lathatokent
-        return (userAttr != null ? userAttr.isVisible() : false);
     }
 
     /**
