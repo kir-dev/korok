@@ -26,7 +26,7 @@ public class RequestSignature {
         }
 
         this.url = url;
-        this.body = body != null ? body : new byte[0];
+        this.body = body;
         this.signature = signature;
         this.secret = secret;
         this.timestamp = timestamp;

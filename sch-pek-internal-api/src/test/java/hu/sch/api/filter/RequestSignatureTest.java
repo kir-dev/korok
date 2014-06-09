@@ -78,8 +78,9 @@ public class RequestSignatureTest {
     @Test
     public void validSignatureWithoutBody() {
         final long timestamp = createTimestamp();
-        RequestSignature sig1 = new RequestSignature(PATH, null, signature.calculateHex(PATH, timestamp, BODY), timestamp, SECRET);
-        RequestSignature sig2 = new RequestSignature(PATH, new byte[0], signature.calculateHex(PATH, timestamp, BODY), timestamp, SECRET);
+        final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
+        RequestSignature sig1 = new RequestSignature(PATH, null, signature.calculateHex(PATH, timestamp, null), timestamp, SECRET);
+        RequestSignature sig2 = new RequestSignature(PATH, emptyBody, signature.calculateHex(PATH, timestamp, emptyBody), timestamp, SECRET);
 
         assertEquals(RequestSignatureResult.OK, sig1.checkSignature());
         assertEquals(RequestSignatureResult.OK, sig2.checkSignature());

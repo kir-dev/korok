@@ -12,7 +12,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Signature {
+public final class Signature {
 
     private static final Logger logger = LoggerFactory.getLogger(Signature.class);
     private static final String HMAC_SHA1_ALGO = "HmacSHA1";
@@ -60,7 +60,7 @@ public class Signature {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
             stream.write(urlBytes);
-            stream.write(body);
+            stream.write(getBodyBytes(body));
             stream.write(timeStampBytes);
             stream.write(secret);
         } catch (IOException ex) {
@@ -71,4 +71,7 @@ public class Signature {
         return stream.toByteArray();
     }
 
+    private byte[] getBodyBytes(byte[] body) {
+        return body != null ? body : new byte[0];
+    }
 }
