@@ -16,6 +16,10 @@ public class EntityNotFoundWebException extends PekWebException {
         super(new PekError(PekErrorCode.ENTITY_NOT_FOUND, makeMessage(clazz)), 404);
     }
 
+    public EntityNotFoundWebException(EntityNotFoundException ex) {
+        super(new PekError(ex.getErrorCode(), ex.getMessage()), 404);
+    }
+
     private static String makeMessage(Class<?> clazz) {
         return clazz.getSimpleName().concat(MESSAGE);
     }
