@@ -83,6 +83,19 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
+    public User findUserByIdWithIMAccounts(Long userId) {
+        try {
+            return em.createNamedQuery(User.findWithIMAccounts, User.class)
+                    .setParameter("id", userId)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            logger.warn("Could not find user with id {}", userId);
+        }
+
+        return null;
+    }
+
+    @Override
     public User findUserByScreenName(String screenName) {
         try {
             return em.createNamedQuery(User.findByScreenName, User.class)
