@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -28,9 +29,11 @@ public class IMAccount implements Serializable {
     //--------------------------------
     @Column(name = "protocol")
     @Enumerated(EnumType.STRING)
+    @NotNull
     private IMProtocol protocol;
     //--------------------------------
     @Column(name = "account_name")
+    @NotNull
     private String accountName;
 
     public IMAccount() {

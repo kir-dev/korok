@@ -6,8 +6,10 @@ import hu.sch.services.IMAccountManager;
 import hu.sch.services.exceptions.EntityNotFoundException;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -22,8 +24,17 @@ public class UsersIMAccounts extends UsersBase {
     }
 
     @GET
-    public Set<IMAccount> getIMAcconts() {
+    public Set<IMAccount> getIMAccounts() {
         return fetchUser(userManager::findUserByIdWithIMAccounts).getImAccounts();
+    }
+
+    @POST
+    public IMAccount createIMAccount(@Valid IMAccount account) {
+        try {
+            return iMAccountManager.createAccount(id, account);
+        } catch (EntityNotFoundException ex) {
+            throw new EntityNotFoundWebException(ex);
+        }
     }
 
     @DELETE

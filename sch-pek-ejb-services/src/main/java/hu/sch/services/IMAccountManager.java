@@ -17,4 +17,6 @@ public interface IMAccountManager {
      */
     IMAccount removeIMAccount(Long userId, Long imId) throws EntityNotFoundException;
 
+    IMAccount createAccount(Long userId, IMAccount account) throws EntityNotFoundException;
+
 }

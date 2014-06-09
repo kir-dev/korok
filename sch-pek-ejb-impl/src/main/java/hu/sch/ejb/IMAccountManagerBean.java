@@ -17,10 +17,7 @@ public class IMAccountManagerBean implements IMAccountManager {
 
     @Override
     public IMAccount removeIMAccount(Long userId, Long imId) throws EntityNotFoundException {
-        User user = userManager.findUserByIdWithIMAccounts(userId);
-        if (user == null) {
-            throw new EntityNotFoundException(User.class, userId);
-        }
+        User user = findUser(userId);
 
         Optional<IMAccount> imAcc = user.getImAccounts().stream().filter(im -> im.getId().equals(imId)).findFirst();
         if (imAcc.isPresent()) {
@@ -29,6 +26,22 @@ public class IMAccountManagerBean implements IMAccountManager {
             return imEntity;
         }
         throw new EntityNotFoundException(IMAccount.class, imId);
+    }
+
+    @Override
+    public IMAccount createAccount(Long userId, IMAccount account) throws EntityNotFoundException {
+        User user = findUser(userId);
+        user.getImAccounts().add(account);
+        return account;
+    }
+
+    private User findUser(Long id) throws EntityNotFoundException {
+        User user = userManager.findUserByIdWithIMAccounts(id);
+        if (user == null) {
+            throw new EntityNotFoundException(User.class, id);
+        }
+
+        return user;
     }
 
 }
