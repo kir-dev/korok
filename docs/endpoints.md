@@ -5,7 +5,7 @@ csak a legszükségesebb információkat találod meg itt, amivel már elindulha
 Az api általános leírását a [api.md](api.md) fájlban találod.
 
 Egyelőre minden végpont `/internal` prefixszel van ellátva. Ez még változhat a jövőben.
-Az alábbi leírásból mindenhol elhagytuk a prefix a prefixet az átláthatóság miatt.
+Az alábbi leírásból mindenhol elhagytuk a prefixet az átláthatóság miatt.
 
 Ez tehát azt jelenti, hogy a leírásban megadott útvonal elé mindig oda kell illeszteni
 a `/internal` prefixet, amikor a szerverrel akarunk kommunikálni.
