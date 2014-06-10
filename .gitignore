@@ -7,3 +7,6 @@ nb*
 # generated *.cli files
 logging.cli
 app-setup.cli
+
+# front-end files
+front-end/node_modules/
