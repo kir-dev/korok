@@ -2,7 +2,7 @@
 
 Itt az api végpontokról lehet egy áttekintő leírást találni. Az egyes végpontokról
 csak a legszükségesebb információkat találod meg itt, amivel már elindulhatsz.
-Az api általános leírását a [api.md](docs/api.md) fájlban találod.
+Az api általános leírását a [api.md](api.md) fájlban találod.
 
 Egyelőre minden végpont `/internal` prefixszel van ellátva. Ez még változhat a jövőben.
 Az alábbi leírásból mindenhol elhagytuk a prefix a prefixet az átláthatóság miatt.
