@@ -8,12 +8,17 @@ import hu.sch.services.exceptions.EntityNotFoundException;
 import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Stateless
 public class IMAccountManagerBean implements IMAccountManager {
 
     @Inject
     private UserManagerLocal userManager;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     public IMAccount removeIMAccount(Long userId, Long imId) throws EntityNotFoundException {
@@ -42,6 +47,19 @@ public class IMAccountManagerBean implements IMAccountManager {
         }
 
         return user;
+    }
+
+    @Override
+    public IMAccount updateIMAccount(Long imId, IMAccount imAcc) throws EntityNotFoundException {
+        IMAccount acc = em.find(IMAccount.class, imId);
+        if (acc == null) {
+            throw new EntityNotFoundException(IMAccount.class, imId);
+        }
+
+        acc.setAccountName(imAcc.getAccountName());
+        acc.setProtocol(imAcc.getProtocol());
+
+        return acc;
     }
 
 }

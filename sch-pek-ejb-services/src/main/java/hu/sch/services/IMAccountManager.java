@@ -19,4 +19,6 @@ public interface IMAccountManager {
 
     IMAccount createAccount(Long userId, IMAccount account) throws EntityNotFoundException;
 
+    public IMAccount updateIMAccount(Long imId, IMAccount imAcc) throws EntityNotFoundException;
+
 }

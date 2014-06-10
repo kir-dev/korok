@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -42,6 +43,16 @@ public class UsersIMAccounts extends UsersBase {
     public IMAccount deleteIMAccount(@PathParam("im_id") Long imId) {
         try {
             return iMAccountManager.removeIMAccount(id, imId);
+        } catch (EntityNotFoundException ex) {
+            throw new EntityNotFoundWebException(ex);
+        }
+    }
+
+    @PUT
+    @Path("{im_id}")
+    public IMAccount updateIMAccount(@PathParam("im_id") Long imId, @Valid IMAccount imAcc) {
+        try {
+            return iMAccountManager.updateIMAccount(imId, imAcc);
         } catch (EntityNotFoundException ex) {
             throw new EntityNotFoundWebException(ex);
         }
