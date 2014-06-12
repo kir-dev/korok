@@ -1,0 +1,161 @@
+
+@defaultFont: 'Open Sans';
+@defaultFontColor: white;
+@defaultFontSize: 14px;
+@light: 300;
+@regular: 400;
+@bold: 700;
+
+* {
+  font-family: @defaultFont;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url('../images/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+// header - navigation and user-field
+
+header {
+  color: @defaultFontColor;
+  font-size: @defaultFontSize;
+  padding: 10px;
+  height: 20px;
+
+  nav {
+    float: left;
+
+    a {
+      float: left;
+      text-decoration: none;
+      color: @defaultFontColor;
+      margin-right: 30px;
+    }
+  }
+
+  #user-field {
+    float: right;
+
+    #user-name {
+      font-weight: @bold;
+      margin-right: 10px;
+    }
+
+    #user-img {
+      width: 20px;
+      float: right;
+    }
+  }
+}
+
+// content - search-field
+
+#logo {
+  float: left;
+
+  img {
+    display: block;
+    float: left;
+    width: 100px;
+  }
+
+  span {
+    display: block;
+    float: left;
+    font-size: 30px;
+    color: @defaultFontColor;
+    line-height: 100px;
+  }
+}
+
+#content {
+  margin-top: 80px;
+}
+
+#search-field {
+  float: left;
+  height: 100px;
+  //line-height: 100px;
+  margin-top: 27px;
+  margin-left: 30px;
+}
+
+#search-input {
+  width: 500px;
+  height: 25px;
+  padding: 10px;
+  position: relative;
+  background: white;
+
+  #search-text {
+    line-height: 25px;
+    border: none;
+    width: 500px;
+    height: 25px;
+    font-size: 22px;
+  }
+
+  #search-text:hover, #search-text:focus {
+    border: none;
+    outline: none;
+  }
+
+  #search-submit {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+    width: 25px;
+    height: 25px;
+  }
+}
+
+#search-help {
+  margin-top: 5px;
+  margin-right: 5px;
+  float: right;
+  font-size: 10px;
+  color: white;
+}
+
+// footer - copyright section
+
+footer {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 20px;
+  padding: 10px;
+
+  color: @defaultFontColor;
+  font-size: @defaultFontSize;
+
+  section {
+    float: right;
+  }
+}
+
+// some other help classes
+
+.Center-horizontally {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.wide-container {
+  .Center-horizontally;
+
+  width: 1200px;
+}
+
+.container {
+  .Center-horizontally;
+
+  width: 800px;
+}

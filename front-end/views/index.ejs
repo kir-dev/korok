@@ -2,10 +2,48 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,700,800,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'/>
+    <link rel='stylesheet' href='/stylesheets/landing-style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+
+    <header>
+        <nav>
+            <a href="/profil">Profil</a>
+            <a href="/korok">Körök</a>
+            <a href="http://kir-dev.sch.bme.hu/">Blog</a>
+            <a href="http://wiki.sch.bme.hu/">Wiki</a>
+            <a href="http://printer.sch.bme.hu">Printer</a>
+        </nav>
+        <section id="user-field">
+            Üdvözöllek <span id="user-name"><%= username %></span><img id="user-img" src="<%= userimgsrc %>"/>
+        </section>
+    </header>
+
+    <div class="container">
+        <div id="content">
+            
+            <div id="logo">
+                <img src="images/logo-256.png"><span>pék</span>
+            </div>
+
+            <div id="search-field">
+                <div id="search-input">
+                    <input id="search-text" type="text" placeholder="Keresel valamit? Információ kéne? Keress!!!"/>
+                    <button id="search-submit"></button>
+                </div>
+                <div id="search-help">Segítség</div>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <footer>
+        <section>
+            &copy; 2014 Kir-Dev | email: kir-dev [kukac] sch.bme.hu | twitter | facebook | #kir-dev on freenode
+        </section>
+    </footer>
+
   </body>
 </html>
