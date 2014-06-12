@@ -42,7 +42,7 @@ public class UsersIMAccounts extends UsersBase {
     @Path("{im_id}")
     public IMAccount deleteIMAccount(@PathParam("im_id") Long imId) {
         try {
-            return iMAccountManager.removeIMAccount(id, imId);
+            return iMAccountManager.removeIMAccount(imId);
         } catch (EntityNotFoundException ex) {
             throw new EntityNotFoundWebException(ex);
         }

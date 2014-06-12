@@ -21,16 +21,13 @@ public class IMAccountManagerBean implements IMAccountManager {
     private EntityManager em;
 
     @Override
-    public IMAccount removeIMAccount(Long userId, Long imId) throws EntityNotFoundException {
-        User user = findUser(userId);
-
-        Optional<IMAccount> imAcc = user.getImAccounts().stream().filter(im -> im.getId().equals(imId)).findFirst();
-        if (imAcc.isPresent()) {
-            final IMAccount imEntity = imAcc.get();
-            user.getImAccounts().remove(imEntity);
-            return imEntity;
+    public IMAccount removeIMAccount(Long id) throws EntityNotFoundException {
+        IMAccount imAcc = em.find(IMAccount.class, id);
+        if (imAcc == null) {
+            throw new EntityNotFoundException(IMAccount.class, id);
         }
-        throw new EntityNotFoundException(IMAccount.class, imId);
+        em.remove(imAcc);
+        return imAcc;
     }
 
     @Override

@@ -10,12 +10,11 @@ public interface IMAccountManager {
     /**
      * Remove an IM account from a user.
      *
-     * @param userId
-     * @param imId
+     * @param id
      * @return
      * @throws EntityNotFoundException
      */
-    IMAccount removeIMAccount(Long userId, Long imId) throws EntityNotFoundException;
+    IMAccount removeIMAccount(Long id) throws EntityNotFoundException;
 
     IMAccount createAccount(Long userId, IMAccount account) throws EntityNotFoundException;
 
