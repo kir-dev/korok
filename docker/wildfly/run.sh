@@ -19,7 +19,7 @@ sleep 15
 # Add db datasource if necessary
 CFG_FILE=/tmp/datasource-setup.cli
 CFG_COMMANDS=$(cat <<BATCH
-if (outcome != success) of /subsystem=datasources/data-source=schpek:read-resource-description
+if (outcome != success) of /subsystem=datasources/data-source=schpek:read-resource
 xa-data-source add --name=schkp --driver-name=postgresql --jndi-name=java:/jdbc/sch --user-name=kir --password=$VIR_DB_PASS --use-ccm=false --max-pool-size=25 --min-pool-size=10 --pool-prefill=true --prepared-statements-cache-size=30 --xa-datasource-properties=[{ServerName=$VIR_DB_HOST}, {DatabaseName=vir}, {PortNumber=$VIR_DB_PORT}]
 end-if
 BATCH
