@@ -1,0 +1,45 @@
+<section id="header-logo">
+    <a href="/"><img id="logo" src="images/logo-256.png" alt="logo"/></a>
+</section>
+
+<section id="header-app-name">
+    PéK
+</section>
+
+<section id="header-search">
+    <input id="header-search-field" type="text" placeholder="keresés..."/>
+    <button id="header-search-button"></button>
+</section>
+
+<nav>
+    <a href="http://kir-dev.sch.bme.hu/">Blog</a>
+    <a href="http://wiki.sch.bme.hu/">Wiki</a>
+    <a href="http://printer.sch.bme.hu">Printer</a>
+</nav>
+
+<section id="header-settings">
+    <button id="header-settings-button" ng-click="toggleSettings()">
+        <div id="header-reminder-counter" ng-show="reminders.length > 0">{{reminders.length}}</div>
+    </button>
+    <section id="header-settings-menu" ng-hide="settingsVisible">
+        <section>
+            <span class="settings-item"><a href="/settings">Beállítások</a><img src="images/settings-profile-ico.png"></span>
+            <span class="settings-item"><a href="/valuations">Értékelések</a><img src="images/eval-ico.png"></span>
+            <span class="settings-item"><a href="/svie">SVIE tagság</a><img src="images/svie-ico.png"></span>
+            <span class="settings-item"><a href="/groups">Körök</a><img src="images/groups-ico.png"></span>
+        </section>
+        <section id="header-settings-reminder">
+            <img src="images/reminder-ico.png">
+            <span> Emlékeztető </span>
+
+            <ul>
+                <li ng-repeat="reminder in reminders">{{reminder.reminder}}</li>
+            </ul>
+
+        </section>
+    </section>
+</section>
+
+<section id="header-user-field">
+    <span id="user-name">{{user}}</span><img id="user-img" ng-src="{{img}}"/>
+</section>

@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var http = require('http');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -9,6 +10,8 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+app.set('port', process.env.PORT || 9000);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -56,5 +59,8 @@ app.use(function(err, req, res, next) {
     });
 });
 
-
 module.exports = app;
+
+http.createServer(app).listen(app.get('port'), function(){
+    console.log('Express server listening on port ' + app.get('port'));
+});
