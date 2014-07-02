@@ -16,7 +16,12 @@ import java.nio.file.Paths;
 import java.util.*;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +85,19 @@ public class UserManagerBean implements UserManagerLocal {
             // TODO: github/#41: rethrow exception with wrapper
             return null;
         }
+    }
+
+    @Override
+    public User findUserByIdWithIMAccounts(Long userId) {
+        try {
+            return em.createNamedQuery(User.findWithIMAccounts, User.class)
+                    .setParameter("id", userId)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            logger.warn("Could not find user with id {}", userId);
+        }
+
+        return null;
     }
 
     @Override

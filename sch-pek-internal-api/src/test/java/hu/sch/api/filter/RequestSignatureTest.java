@@ -3,9 +3,6 @@ package hu.sch.api.filter;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.TimeZone;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
@@ -19,8 +16,9 @@ public class RequestSignatureTest {
 
     private static final String PATH = "/foo";
     private static final String SECRET = "secret";
-    private static final String BODY = "body";
+    private static final byte[] BODY = "body".getBytes(StandardCharsets.UTF_8);
     private Calendar cal;
+    private final Signature signature = new Signature(SECRET);
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -72,36 +70,20 @@ public class RequestSignatureTest {
 
     @Test
     public void validSignature() {
-        RequestSignature sig = new RequestSignature(PATH, BODY.getBytes(StandardCharsets.UTF_8), createSignature(PATH, BODY), createTimestamp(), SECRET);
+        final long timestamp = createTimestamp();
+        RequestSignature sig = new RequestSignature(PATH, BODY, signature.calculateHex(PATH, timestamp, BODY), timestamp, SECRET);
         assertEquals(RequestSignatureResult.OK, sig.checkSignature());
     }
 
     @Test
     public void validSignatureWithoutBody() {
-        // sig: /foo1399822115secret
-        RequestSignature sig1 = new RequestSignature(PATH, null, createSignature(PATH, null), createTimestamp(), SECRET);
-        RequestSignature sig2 = new RequestSignature(PATH, new byte[0], createSignature(PATH, ""), createTimestamp(), SECRET);
+        final long timestamp = createTimestamp();
+        final byte[] emptyBody = "".getBytes(StandardCharsets.UTF_8);
+        RequestSignature sig1 = new RequestSignature(PATH, null, signature.calculateHex(PATH, timestamp, null), timestamp, SECRET);
+        RequestSignature sig2 = new RequestSignature(PATH, emptyBody, signature.calculateHex(PATH, timestamp, emptyBody), timestamp, SECRET);
 
         assertEquals(RequestSignatureResult.OK, sig1.checkSignature());
         assertEquals(RequestSignatureResult.OK, sig2.checkSignature());
-    }
-
-    private String createSignature(String url, String body) {
-        StringBuilder sb = new StringBuilder(url);
-        if (body != null) {
-            sb.append(new String(body));
-        }
-        sb.append(System.currentTimeMillis() / 1000L).append(SECRET);
-
-        final String algo = "HmacSHA1";
-        try {
-            SecretKeySpec key = new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), algo);
-            Mac hmac = Mac.getInstance(algo);
-            hmac.init(key);
-            return Hex.encodeHexString(hmac.doFinal(sb.toString().getBytes(StandardCharsets.UTF_8)));
-        } catch (Exception ex) {
-        }
-        return "";
     }
 
     private long createTimestamp() {

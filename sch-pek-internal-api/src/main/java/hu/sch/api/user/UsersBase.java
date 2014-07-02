@@ -1,9 +1,10 @@
 package hu.sch.api.user;
 
-import hu.sch.api.exceptions.EntityNotFoundException;
+import hu.sch.api.exceptions.EntityNotFoundWebException;
 import hu.sch.api.Base;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
+import java.util.function.Function;
 import javax.inject.Inject;
 import javax.ws.rs.PathParam;
 
@@ -26,10 +27,27 @@ public abstract class UsersBase extends Base {
         this.userManager = userManager;
     }
 
+    /**
+     * Fetch user by id.
+     *
+     * @return user entity
+     * @throws EntityNotFoundWebException
+     */
     protected User fetchUser() {
-        User user= userManager.findUserById(id);
+        return fetchUser(userManager::findUserById);
+    }
+
+    /**
+     * Fetch user with the provided fetcher method
+     *
+     * @param fetcherFunc
+     * @return user entity
+     * @throws EntityNotFoundWebException
+     */
+    protected User fetchUser(Function<Long, User> fetcherFunc) {
+        User user = fetcherFunc.apply(id);
         if (user == null) {
-            throw new EntityNotFoundException(User.class);
+            throw new EntityNotFoundWebException(User.class);
         }
 
         return user;

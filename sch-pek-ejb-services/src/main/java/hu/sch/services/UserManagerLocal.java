@@ -38,6 +38,14 @@ public interface UserManagerLocal {
     User findUserByIdWithMemberships(Long userId);
 
     /**
+     * Gets a user with its IM accounts loaded.
+     *
+     * @param userId the virid of the user
+     * @return the user entity or null if not found
+     */
+    User findUserByIdWithIMAccounts(Long userId);
+
+    /**
      * Gets the users whose name contains the given fragment.
      *
      * @param nameFragment the name fragment to look for
@@ -156,6 +164,7 @@ public interface UserManagerLocal {
 
     /**
      * Remove user's profile image.
+     *
      * @param user
      */
     public void removeProfileImage(User user) throws PekException;

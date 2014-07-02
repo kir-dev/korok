@@ -1,6 +1,6 @@
 package hu.sch.api.user;
 
-import hu.sch.api.exceptions.EntityNotFoundException;
+import hu.sch.api.exceptions.EntityNotFoundWebException;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import static org.mockito.Mockito.*;
@@ -29,7 +29,7 @@ public class UsersTest {
     @Test
     public void userNotFound() {
         setupUserManagerWith(null);
-        thrown.expect(EntityNotFoundException.class);
+        thrown.expect(EntityNotFoundWebException.class);
         usersEndpoint.getUserById();
     }
 
