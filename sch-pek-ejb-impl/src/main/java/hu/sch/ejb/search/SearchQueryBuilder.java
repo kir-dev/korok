@@ -27,14 +27,27 @@ public class SearchQueryBuilder {
     public SearchQueryBuilder(EntityManager em, String keyword) {
         this.em = em;
         this.keyword = keyword;
+        this.builder = em.getCriteriaBuilder();
     }
 
     public TypedQuery<User> build() {
-        builder = em.getCriteriaBuilder();
         CriteriaQuery<User> q = builder.createQuery(User.class);
-
         usr = q.from(User.class);
+        prepareQuery(q);
 
+        return em.createQuery(q);
+    }
+
+    public TypedQuery<Long> buildForCount() {
+        CriteriaQuery<Long> q = builder.createQuery(Long.class);
+        usr = q.from(User.class);
+        q.select(builder.count(usr));
+        prepareQuery(q);
+
+        return em.createQuery(q);
+    }
+
+    private void prepareQuery(CriteriaQuery<?> q) {
         List<Predicate> andFilters = new ArrayList<>();
         for (String word : keyword.split(" ")) {
             Predicate or = builder.or(
@@ -44,14 +57,13 @@ public class SearchQueryBuilder {
                     buildLikeQueryPart(usr.get(User_.screenName), word),
                     buildEmailQueryPart(word),
                     buildRoomNumberQueryPart(word)
-                );
+            );
 
             andFilters.add(or);
         }
 
         q.where(andFilters.toArray(new Predicate[andFilters.size()]));
         q.distinct(true);
-        return em.createQuery(q);
     }
 
     private Predicate buildLikeQueryPart(Expression<String> expr, String word) {
@@ -75,9 +87,9 @@ public class SearchQueryBuilder {
         return builder.and(
                 // room number consists of [dormitor] [room]
                 builder.or(
-                    buildLikeQueryPart(usr.get(User_.dormitory), buildLikeString(word)),
-                    buildLikeQueryPart(usr.get(User_.room), buildLikeString(word))
+                        buildLikeQueryPart(usr.get(User_.dormitory), buildLikeString(word)),
+                        buildLikeQueryPart(usr.get(User_.room), buildLikeString(word))
                 )
-            );
+        );
     }
 }

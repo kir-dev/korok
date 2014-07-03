@@ -26,30 +26,30 @@ public class RoomSearchTest extends AbstractDatabaseBackedTest {
 
     @Test
     public void searchingForRoom() {
-        List<User> users = service.searchUsers("1612");
+        List<User> users = service.searchUsers("1612", 0, 25);
         assertFalse(users.isEmpty());
     }
 
     @Test
     public void searchingForRoomWithCapitalLetterInIt() {
         createUser("Koli", "B124");
-        assertEquals(1, service.searchUsers("B124").size());
+        assertEquals(1, service.searchUsers("B124", 0, 25).size());
     }
 
     @Test
     public void searchingForDormitory() {
-        assertFalse(service.searchUsers("Schönherz").isEmpty());
+        assertFalse(service.searchUsers("Schönherz", 0, 25).isEmpty());
     }
 
     @Test
     public void searchingForRoomAndDormitory() {
-        assertEquals(1, service.searchUsers("Schönherz 1612").size());
+        assertEquals(1, service.searchUsers("Schönherz 1612", 0, 25).size());
     }
 
     @Test
     public void searchingWithMultipleTermsIsRestrictive() {
         createUser("Koli", "B124");
-        assertTrue(service.searchUsers("Koli 1612").isEmpty());
+        assertTrue(service.searchUsers("Koli 1612", 0, 25).isEmpty());
     }
 
     private void createUser() {
