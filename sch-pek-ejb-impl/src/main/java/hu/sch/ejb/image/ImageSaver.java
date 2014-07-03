@@ -31,7 +31,7 @@ public final class ImageSaver {
         imageConfig = config;
     }
 
-    public ImageSaver copy(String sourcePath) throws PekException {
+    public ImageSaver copy(String sourcePath) {
         File img = new File(sourcePath);
         byte[] bytes;
 
@@ -44,7 +44,7 @@ public final class ImageSaver {
         return save(img.getName(), bytes);
     }
 
-    public ImageSaver save(String filename, byte[] data) throws PekException {
+    public ImageSaver save(String filename, byte[] data) {
         try {
             lastPath = Files.write(buildImagePath(filename), data);
             return this;

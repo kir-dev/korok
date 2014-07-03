@@ -64,7 +64,7 @@ public class ImageProcessor {
      * @return the relative path of the image
      * @throws PekException if anything goes wrong with the image.
      */
-    public String process() throws PekException {
+    public String process() {
         validateImage();
         resize();
         resultPath = store();
@@ -74,7 +74,7 @@ public class ImageProcessor {
         return resultPath;
     }
 
-    public void resize() throws PekException {
+    public void resize() {
         try {
             ImageResizer ir = new ImageResizer(image.getData(), config.getMaxSize());
             imageAsBytes = ir.resizeImage().getBytes();
@@ -93,7 +93,7 @@ public class ImageProcessor {
         new File(oldImagePath).delete();
     }
 
-    public String store() throws PekException {
+    public String store() {
         if (imageAsBytes == null) {
             throw new IllegalStateException("Image has not been resized yet.");
         }
@@ -102,7 +102,7 @@ public class ImageProcessor {
         return new ImageSaver(user, config).save(newFilename, imageAsBytes).getRelativePath();
     }
 
-    private void validateImage() throws PekException {
+    private void validateImage() {
         MediaType type = MediaType.parse(image.getMimeType());
 
         if (!type.isAny(MediaType.IMAGE_GIF, MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG)) {

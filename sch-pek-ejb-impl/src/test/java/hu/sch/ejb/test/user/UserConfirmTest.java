@@ -23,7 +23,7 @@ public class UserConfirmTest extends AbstractDatabaseBackedTest {
     }
 
     @Test
-    public void confirmUserWhoHasPassword() throws PekException {
+    public void confirmUserWhoHasPassword() {
         User user = new UserBuilder().build();
 
         user.setPasswordDigest("test-digest");
@@ -41,7 +41,7 @@ public class UserConfirmTest extends AbstractDatabaseBackedTest {
     }
 
     @Test
-    public void confirmUserWhoDoesNotHavePassword() throws PekException {
+    public void confirmUserWhoDoesNotHavePassword() {
         User user = new UserBuilder().build();
         user.setConfirmationCode("confirmation-code");
         getEm().persist(user);

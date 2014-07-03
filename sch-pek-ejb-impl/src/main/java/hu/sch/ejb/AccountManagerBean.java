@@ -75,7 +75,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void createUser(User user, String password) throws PekException {
+    public void createUser(User user, String password) {
         final byte[] salt = generateSalt();
         final String passwordDigest = hashPassword(password, salt);
 
@@ -120,7 +120,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void confirm(final User user, final String password) throws PekException {
+    public void confirm(final User user, final String password) {
         if (password != null) {
             byte[] salt = generateSalt();
             String passwordDigest = hashPassword(password, salt);
@@ -175,7 +175,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void changePassword(String screenName, String oldPwd, String newPwd) throws PekException {
+    public void changePassword(String screenName, String oldPwd, String newPwd) {
         User user = userManager.findUserByScreenName(screenName);
         byte[] salt = Base64.decodeBase64(user.getSalt());
         String passwordHash = hashPassword(oldPwd, salt);
@@ -189,7 +189,7 @@ public class AccountManagerBean implements AccountManager {
         em.merge(user);
     }
 
-    private String hashPassword(String password, byte[] salt) throws PekException {
+    private String hashPassword(String password, byte[] salt) {
         byte[] passwordBytes;
         passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
@@ -211,7 +211,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean sendUserNameReminder(final String email) throws PekException {
+    public boolean sendUserNameReminder(final String email) {
 
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("email argument can't be null when sending user name reminder");
@@ -249,7 +249,7 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public boolean sendLostPasswordChangeLink(final String email) throws PekException {
+    public boolean sendLostPasswordChangeLink(final String email) {
 
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("email argument can't be null when sending password change link");
@@ -296,7 +296,7 @@ public class AccountManagerBean implements AccountManager {
      */
     @Override
     public void replaceLostPassword(final String tokenKey, final String password)
-            throws PekException {
+            {
 
         //checks the token again (validity, expiry, etc)
         final User user = getUserByLostPasswordToken(tokenKey);
@@ -320,7 +320,7 @@ public class AccountManagerBean implements AccountManager {
      */
     @Override
     public User getUserByLostPasswordToken(final String tokenKey)
-            throws PekException {
+            {
 
         final TypedQuery<LostPasswordToken> q
                 = em.createNamedQuery(LostPasswordToken.getByToken, LostPasswordToken.class);

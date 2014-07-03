@@ -110,7 +110,7 @@ public interface UserManagerLocal {
      *
      * @param user
      */
-    void updateUser(User user) throws PekException;
+    void updateUser(User user);
 
     /**
      * Update user in the database and synchronize the directory service.
@@ -122,7 +122,7 @@ public interface UserManagerLocal {
      * @param image the new profile image
      * @throws PekException
      */
-    public User updateUser(User user, ProfileImage image) throws PekException;
+    public User updateUser(User user, ProfileImage image);
 
     /**
      * Gets all semester with point when point is greater 0. Result order by
@@ -167,5 +167,5 @@ public interface UserManagerLocal {
      *
      * @param user
      */
-    public void removeProfileImage(User user) throws PekException;
+    public void removeProfileImage(User user);
 }

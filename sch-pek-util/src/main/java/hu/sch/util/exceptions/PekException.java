@@ -8,7 +8,7 @@ package hu.sch.util.exceptions;
  *
  * @author tomi
  */
-public class PekException extends Exception {
+public class PekException extends RuntimeException {
 
     private final PekErrorCode errorCode;
     private final PekErrorDetails details;
