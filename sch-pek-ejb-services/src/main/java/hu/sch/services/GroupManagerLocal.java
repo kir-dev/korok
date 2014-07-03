@@ -60,14 +60,6 @@ public interface GroupManagerLocal {
     Group findGroupByName(String name);
 
     /**
-     * Gets all groups which name contains the given fragment.
-     *
-     * @param nameFragment the name fragment to look for.
-     * @return list of groups or an empty list if no group matches the criteria
-     */
-    List<Group> findGroupsByName(String nameFragment);
-
-    /**
      * Gets the users for a group with a specific post.
      *
      * @param groupId

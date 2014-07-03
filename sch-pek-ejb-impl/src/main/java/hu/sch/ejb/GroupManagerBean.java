@@ -120,16 +120,6 @@ public class GroupManagerBean implements GroupManagerLocal {
     }
 
     @Override
-    public List<Group> findGroupsByName(String nameFragment) {
-        Query q =
-                em.createQuery("SELECT g FROM Group g "
-                + "WHERE UPPER(g.name) LIKE UPPER(:groupName) "
-                + "ORDER BY g.name");
-        q.setParameter("groupName", "%" + nameFragment + "%");
-        return q.getResultList();
-    }
-
-    @Override
     public List<User> findMembersByGroupAndPost(Long groupId, String post) {
         Query q = em.createNamedQuery(Group.findMembersByGroupAndPost);
         q.setParameter("groupId", groupId);
