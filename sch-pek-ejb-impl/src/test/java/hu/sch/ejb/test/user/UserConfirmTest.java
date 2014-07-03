@@ -5,7 +5,7 @@ import hu.sch.domain.user.UserStatus;
 import hu.sch.ejb.AccountManagerBean;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekException;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class UserConfirmTest extends AbstractDatabaseBackedTest {
     }
 
     @Test
-    public void confirmUserWhoHasPassword() throws PekException {
+    public void confirmUserWhoHasPassword() {
         User user = new UserBuilder().build();
 
         user.setPasswordDigest("test-digest");
@@ -41,7 +41,7 @@ public class UserConfirmTest extends AbstractDatabaseBackedTest {
     }
 
     @Test
-    public void confirmUserWhoDoesNotHavePassword() throws PekException {
+    public void confirmUserWhoDoesNotHavePassword() {
         User user = new UserBuilder().build();
         user.setConfirmationCode("confirmation-code");
         getEm().persist(user);

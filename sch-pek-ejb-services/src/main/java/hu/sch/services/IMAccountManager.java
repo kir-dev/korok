@@ -14,10 +14,10 @@ public interface IMAccountManager {
      * @return
      * @throws EntityNotFoundException
      */
-    IMAccount removeIMAccount(Long id) throws EntityNotFoundException;
+    IMAccount removeIMAccount(Long id);
 
-    IMAccount createAccount(Long userId, IMAccount account) throws EntityNotFoundException;
+    IMAccount createAccount(Long userId, IMAccount account);
 
-    public IMAccount updateIMAccount(Long imId, IMAccount imAcc) throws EntityNotFoundException;
+    public IMAccount updateIMAccount(Long imId, IMAccount imAcc);
 
 }

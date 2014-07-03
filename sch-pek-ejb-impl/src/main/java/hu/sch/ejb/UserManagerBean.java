@@ -9,7 +9,7 @@ import hu.sch.ejb.image.ImageRemoverService;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -181,12 +181,12 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void updateUser(User user) throws PekException {
+    public void updateUser(User user) {
         updateUser(user, null);
     }
 
     @Override
-    public User updateUser(User user, ProfileImage image) throws PekException {
+    public User updateUser(User user, ProfileImage image) {
         // process image
         if (image != null) {
             ImageProcessor proc = new ImageProcessor(user, image, config.getImageUploadConfig());
@@ -282,7 +282,7 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public void removeProfileImage(User user) throws PekException {
+    public void removeProfileImage(User user) {
         new ImageRemoverService(config).removeProfileImage(user);
         user.setPhotoPath(null);
         updateUser(user);

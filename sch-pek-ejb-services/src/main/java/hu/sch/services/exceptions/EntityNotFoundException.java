@@ -1,9 +1,6 @@
 
 package hu.sch.services.exceptions;
 
-import hu.sch.util.exceptions.PekErrorCode;
-import hu.sch.util.exceptions.PekException;
-
 /**
  *
  * @author Tamas Michelberger

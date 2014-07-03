@@ -2,7 +2,6 @@ package hu.sch.services;
 
 import hu.sch.domain.user.LostPasswordToken;
 import hu.sch.domain.user.User;
-import hu.sch.util.exceptions.PekException;
 import javax.ejb.Local;
 
 /**
@@ -22,7 +21,7 @@ public interface AccountManager {
      *
      * @throws hu.sch.services.exceptions.PekException
      */
-    void confirm(User user, String password) throws PekException;
+    void confirm(User user, String password);
 
     /**
      * Create a new user.
@@ -34,7 +33,7 @@ public interface AccountManager {
      *
      * @throws hu.sch.services.exceptions.PekException
      */
-    void createUser(User user, String password) throws PekException;
+    void createUser(User user, String password);
 
     /**
      * Changes the user's password.
@@ -46,7 +45,7 @@ public interface AccountManager {
      * does not match the stored one.
      */
     void changePassword(String screenName, String oldPwd, String newPwd)
-            throws PekException;
+           ;
 
     /**
      * Searches the user in the datastore by email and sends an email with the
@@ -58,7 +57,7 @@ public interface AccountManager {
      * @throws hu.sch.services.exceptions.PekException when user not found.
      * @throws IllegalArgumentException when the argument is null or empty.
      */
-    boolean sendUserNameReminder(String email) throws PekException;
+    boolean sendUserNameReminder(String email);
 
     /**
      * Searches the user in the datastore by email and sends an email with a
@@ -70,7 +69,7 @@ public interface AccountManager {
      * @throws hu.sch.services.exceptions.PekException when user not found.
      * @throws IllegalArgumentException when the argument is null or empty.
      */
-    boolean sendLostPasswordChangeLink(String email) throws PekException;
+    boolean sendLostPasswordChangeLink(String email);
 
     /**
      * Searches the user in the datastore by the {@link LostPasswordToken#token}
@@ -81,7 +80,7 @@ public interface AccountManager {
      * @throws hu.sch.services.exceptions.PekException if the token is
      * invalid or expired, or any persistence exception occured
      */
-    public User getUserByLostPasswordToken(String tokenKey) throws PekException;
+    public User getUserByLostPasswordToken(String tokenKey);
 
     /**
      * If the given token key is valid then replace the password of
@@ -92,7 +91,7 @@ public interface AccountManager {
      * @throws hu.sch.services.exceptions.PekException if the token expired
      * or invalid
      */
-    void replaceLostPassword(String tokenKey, String password) throws PekException;
+    void replaceLostPassword(String tokenKey, String password);
 
     /**
      * Removes expired tokens from the database.

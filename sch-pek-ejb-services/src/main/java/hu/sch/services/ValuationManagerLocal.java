@@ -14,7 +14,6 @@ import hu.sch.domain.ValuationMessage;
 import hu.sch.domain.ValuationStatistic;
 import hu.sch.domain.rest.ApprovedEntrant;
 import hu.sch.domain.rest.PointInfo;
-import hu.sch.util.exceptions.PekException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
 import hu.sch.services.exceptions.valuation.NoExplanationException;
@@ -141,8 +140,7 @@ public interface ValuationManagerLocal {
      * @param valuationText Szöveges értékelés
      * @param principle Pontozási elvek
      */
-    void addNewValuation(Group group, User sender, String valuationText, String principle)
-            throws PekException;
+    void addNewValuation(Group group, User sender, String valuationText, String principle);
 
     /**
      * Az aktuális szemeszterben leadhat-e új értékelést az adott csoport.

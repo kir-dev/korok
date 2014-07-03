@@ -2,8 +2,8 @@ package hu.sch.ejb.image;
 
 import hu.sch.util.config.ImageUploadConfig;
 import hu.sch.domain.user.User;
-import hu.sch.util.exceptions.PekException;
-import hu.sch.util.exceptions.PekErrorCode;
+import hu.sch.services.exceptions.PekException;
+import hu.sch.services.exceptions.PekErrorCode;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,7 +31,7 @@ public final class ImageSaver {
         imageConfig = config;
     }
 
-    public ImageSaver copy(String sourcePath) throws PekException {
+    public ImageSaver copy(String sourcePath) {
         File img = new File(sourcePath);
         byte[] bytes;
 
@@ -44,7 +44,7 @@ public final class ImageSaver {
         return save(img.getName(), bytes);
     }
 
-    public ImageSaver save(String filename, byte[] data) throws PekException {
+    public ImageSaver save(String filename, byte[] data) {
         try {
             lastPath = Files.write(buildImagePath(filename), data);
             return this;

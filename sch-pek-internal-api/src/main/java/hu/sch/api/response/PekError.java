@@ -3,9 +3,9 @@ package hu.sch.api.response;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import hu.sch.api.serializers.PekErrorCodeSerializer;
-import hu.sch.util.exceptions.PekErrorCode;
-import hu.sch.util.exceptions.PekErrorDetails;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekErrorCode;
+import hu.sch.services.exceptions.PekErrorDetails;
+import hu.sch.services.exceptions.PekException;
 
 /**
  *

@@ -1,7 +1,7 @@
 package hu.sch.api.providers;
 
 import hu.sch.api.response.PekError;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -21,19 +21,7 @@ public class DefaultExceptionHandler implements ExceptionMapper<Exception>{
     @Override
     public Response toResponse(Exception exception) {
         logger.error("Unhandled exception", exception);
-
-        if (exception instanceof PekException) {
-            return handlePekException((PekException) exception);
-        }
-        if (exception.getCause() != null && exception.getCause() instanceof PekException) {
-            return handlePekException((PekException) exception.getCause());
-        }
-
         return buildResponse(500, PekError.internal(exception.getMessage()));
-    }
-
-    private Response handlePekException(PekException exception) {
-        return buildResponse(500, new PekError(exception));
     }
 
     private Response buildResponse(int status, PekError error) {
