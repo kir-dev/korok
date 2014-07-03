@@ -2,7 +2,7 @@ package hu.sch.services;
 
 import hu.sch.domain.user.RegisteringUser;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import javax.ejb.Local;

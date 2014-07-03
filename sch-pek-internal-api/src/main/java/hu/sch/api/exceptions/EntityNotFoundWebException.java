@@ -2,7 +2,7 @@ package hu.sch.api.exceptions;
 
 import hu.sch.api.response.PekError;
 import hu.sch.services.exceptions.EntityNotFoundException;
-import hu.sch.util.exceptions.PekErrorCode;
+import hu.sch.services.exceptions.PekErrorCode;
 
 /**
  *

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.sch.api.providers.ObjectMapperFactory;
 import hu.sch.api.response.PekError;
 import hu.sch.util.config.Configuration;
-import hu.sch.util.exceptions.PekErrorCode;
+import hu.sch.services.exceptions.PekErrorCode;
 import java.io.IOException;
 import java.io.StringWriter;
 import javax.inject.Inject;

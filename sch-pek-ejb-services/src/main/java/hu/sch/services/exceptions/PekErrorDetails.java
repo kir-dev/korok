@@ -1,4 +1,4 @@
-package hu.sch.util.exceptions;
+package hu.sch.services.exceptions;
 
 /**
  * Marker interface for the details of the error.

@@ -11,7 +11,7 @@ import hu.sch.services.AccountManager;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.InvalidNewbieStateException;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekException;
 import hu.sch.services.exceptions.UserAlreadyExistsException;
 import hu.sch.services.exceptions.UserNotFoundException;
 import java.util.Date;

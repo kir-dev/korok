@@ -2,8 +2,8 @@ package hu.sch.ejb.image;
 
 import hu.sch.util.config.ImageUploadConfig;
 import hu.sch.domain.user.User;
-import hu.sch.util.exceptions.PekException;
-import hu.sch.util.exceptions.PekErrorCode;
+import hu.sch.services.exceptions.PekException;
+import hu.sch.services.exceptions.PekErrorCode;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

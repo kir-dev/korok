@@ -2,7 +2,7 @@
 package hu.sch.api.exceptions;
 
 import hu.sch.api.response.PekError;
-import hu.sch.util.exceptions.PekErrorCode;
+import hu.sch.services.exceptions.PekErrorCode;
 import javax.ws.rs.core.Response;
 
 public class RequestFormatException extends PekWebException{

@@ -9,7 +9,7 @@ import hu.sch.ejb.image.ImageRemoverService;
 import hu.sch.ejb.image.ImageSaver;
 import hu.sch.services.*;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

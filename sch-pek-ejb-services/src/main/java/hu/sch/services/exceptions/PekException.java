@@ -1,4 +1,4 @@
-package hu.sch.util.exceptions;
+package hu.sch.services.exceptions;
 
 /**
  * Base exception for all PEK exceptions.

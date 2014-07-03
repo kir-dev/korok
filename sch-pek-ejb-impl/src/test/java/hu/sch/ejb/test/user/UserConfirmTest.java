@@ -5,7 +5,7 @@ import hu.sch.domain.user.UserStatus;
 import hu.sch.ejb.AccountManagerBean;
 import hu.sch.ejb.test.base.AbstractDatabaseBackedTest;
 import hu.sch.ejb.test.builder.UserBuilder;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekException;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

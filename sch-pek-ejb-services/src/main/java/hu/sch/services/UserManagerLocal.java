@@ -6,7 +6,7 @@ import hu.sch.domain.SpotImage;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.ProfileImage;
 import hu.sch.services.exceptions.DuplicatedUserException;
-import hu.sch.util.exceptions.PekException;
+import hu.sch.services.exceptions.PekException;
 import javax.ejb.Local;
 import java.util.List;
 

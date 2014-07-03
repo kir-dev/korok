@@ -1,4 +1,4 @@
-package hu.sch.util.exceptions;
+package hu.sch.services.exceptions;
 
 /**
  * Type for PekErrorCode. Every error code has a 2-character type.

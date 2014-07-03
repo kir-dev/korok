@@ -1,6 +1,6 @@
-package hu.sch.util.exceptions;
+package hu.sch.services.exceptions;
 
-import static hu.sch.util.exceptions.PekErrorType.*;
+import static hu.sch.services.exceptions.PekErrorType.*;
 
 /**
  * Error codes are returned to the client when something goes wrong while
