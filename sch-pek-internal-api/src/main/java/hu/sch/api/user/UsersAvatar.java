@@ -81,26 +81,17 @@ public class UsersAvatar extends UsersBase {
 
         User user = fetchUser();
 
-        try {
-            // TODO: authorization?
-            user = userManager.updateUser(user, profileImage);
-        } catch (PekException ex) {
-            // TODO: create a standard error reporting process github/#110
-            throw new PekWebException(new PekError(ex), 500);
-        }
+        // TODO: authorization?
+        user = userManager.updateUser(user, profileImage);
 
         return new AvatarView(user, config.getDomain());
     }
 
     @DELETE
     public PekResponse deleteAvatar() {
+        // TODO: authorization?
         User user = fetchUser();
-        try {
-            userManager.removeProfileImage(user);
-            return new PekSuccess(null);
-        } catch (PekException ex) {
-            logger.warn("Could not delete profile image for user: {}", user.getId());
-            return new PekError(ex);
-        }
+        userManager.removeProfileImage(user);
+        return new PekSuccess(null);
     }
 }
