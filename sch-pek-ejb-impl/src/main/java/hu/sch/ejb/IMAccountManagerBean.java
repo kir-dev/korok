@@ -5,7 +5,6 @@ import hu.sch.domain.user.User;
 import hu.sch.services.IMAccountManager;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.EntityNotFoundException;
-import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -21,7 +20,7 @@ public class IMAccountManagerBean implements IMAccountManager {
     private EntityManager em;
 
     @Override
-    public IMAccount removeIMAccount(Long id) throws EntityNotFoundException {
+    public IMAccount removeIMAccount(Long id) {
         IMAccount imAcc = em.find(IMAccount.class, id);
         if (imAcc == null) {
             throw new EntityNotFoundException(IMAccount.class, id);
@@ -31,7 +30,7 @@ public class IMAccountManagerBean implements IMAccountManager {
     }
 
     @Override
-    public IMAccount createAccount(Long userId, IMAccount account) throws EntityNotFoundException {
+    public IMAccount createAccount(Long userId, IMAccount account) {
         User user = findUser(userId);
         user.getImAccounts().add(account);
         return account;
@@ -47,7 +46,7 @@ public class IMAccountManagerBean implements IMAccountManager {
     }
 
     @Override
-    public IMAccount updateIMAccount(Long imId, IMAccount imAcc) throws EntityNotFoundException {
+    public IMAccount updateIMAccount(Long imId, IMAccount imAcc) {
         IMAccount acc = em.find(IMAccount.class, imId);
         if (acc == null) {
             throw new EntityNotFoundException(IMAccount.class, imId);
