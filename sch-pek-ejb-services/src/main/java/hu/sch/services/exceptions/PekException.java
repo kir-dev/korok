@@ -1,5 +1,7 @@
 package hu.sch.services.exceptions;
 
+import javax.ejb.ApplicationException;
+
 /**
  * Base exception for all PEK exceptions.
  *
@@ -8,6 +10,7 @@ package hu.sch.services.exceptions;
  *
  * @author tomi
  */
+@ApplicationException(inherited = true, rollback = true)
 public class PekException extends RuntimeException {
 
     private final PekErrorCode errorCode;
