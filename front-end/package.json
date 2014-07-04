@@ -14,6 +14,12 @@
     "express-session": "*",
     "debug": "~0.7.4",
     "ejs": "~0.8.5",
-    "less-middleware": "1.0.x"
+    "less-middleware": "1.0.x",
+    "passport": "*",
+    "passport-http-bearer": "*",
+    "passport-oauth": "*",
+    "express-params": "*",
+    "request": "*",
+    "hashlib2": "^1.0.3"
   }
 }
