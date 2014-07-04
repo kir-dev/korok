@@ -5,9 +5,11 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var session = require('express-session');
+var index = require('./routes/index');
+var profile = require('./routes/profile');
+var groups = require('./routes/groups');
+var valuations = require('./routes/valuations');
 
 var app = express();
 
@@ -21,21 +23,33 @@ app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(cookieParser());
+app.use(cookieParser('top secret'));
+app.use(session());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+app.use('/', index);
 
-/// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
+app.use('/profile', profile);
+app.use('/profile/settings', profile);
+app.use('/profile/svie', profile);
+app.use('/profile/:id', profile);
+
+app.use('/valuations', valuations);
+app.use('/valuations/:id', valuations);
+
+app.use('/groups', groups);
+app.use('/groups/new', groups);
+app.use('/groups/:id', groups);
+app.use('/groups/:id/settings', groups);
+
+/// error handlers
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.send(500, 'Something broken');
     next(err);
 });
 
-/// error handlers
 
 // development error handler
 // will print stacktrace
@@ -61,6 +75,6 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-http.createServer(app).listen(app.get('port'), function(){
+app.listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
 });

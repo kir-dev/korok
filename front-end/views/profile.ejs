@@ -1,31 +1,18 @@
 <!DOCTYPE html>
 <html ng-app="pekFrontendApp">
-  <head>
+<head>
     <title><%= title %></title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,700,800,600&subset=latin,latin-ext' rel='stylesheet' type='text/css'/>
     <link rel="stylesheet" href="/stylesheets/header.css">
-    <link rel='stylesheet' href='/stylesheets/landing-style.css' />
-  </head>
-  <body>
+    <link rel="stylesheet" href="/stylesheets/landing-style.css" />
+</head>
+<body>
 
     <header ng-include="'partials/header.html'" ng-controller="HeaderCtrl"></header>
 
     <section id="content">
         <div class="container">
-
-                <div id="content-logo">
-                    <img src="images/logo-256.png"><span>pék</span>
-                </div>
-
-                <div id="search-field">
-                    <div id="search-input">
-                        <input id="search-text" type="text" placeholder="Keresel valamit? Információ kéne? Keress!!!"/>
-                        <button id="search-submit"></button>
-                    </div>
-                    <div id="search-help">Segítség</div>
-                </div>
-
-                <div class="clearfix"></div>
+            This is the profile
         </div>
     </section>
 
@@ -41,5 +28,5 @@
     <script src="scripts/angular-app.js"></script>
     <script src="scripts/controllers/header-controller.js"></script>
 
-  </body>
+</body>
 </html>
