@@ -5,7 +5,5 @@
 'use strict';
 
 angular.module('pekFrontendApp', [
-
-]).run(['$rootScope', function($rootScope) {
-
-}]);
+    'applicationServices'
+]);

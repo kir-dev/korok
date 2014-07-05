@@ -19,7 +19,7 @@ router.get('/', auth.checkAuth, function(req, res) {
 });
 
 router.post('/', auth.checkAuth, function(req, res) {
-   res.send('index post handler');
+
 });
 
 module.exports = router;

@@ -19,6 +19,7 @@ var profile = require('./routes/profile');
 var groups = require('./routes/groups');
 var valuations = require('./routes/valuations');
 var login = require('./routes/login');
+var user = require('./routes/user');
 
 
 /// authentication modules
@@ -58,7 +59,7 @@ app.param('id', /^\d+$/);
 app.use('/', index);
 
 app.use('/login', login);
-
+app.use('/user', user);
 app.use('/profile', profile);
 app.use('/profile/settings', profile);
 app.use('/profile/svie', profile);
@@ -104,6 +105,6 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 /// running application
-app.listen(app.get('port'), function(){
+app.listen(app.get('port'), '152.66.180.107', function(){
     console.log('Express server listening on port ' + app.get('port'));
 });

@@ -10,7 +10,7 @@ router.get('/', function(req, res) {
 
     var user = 'Róka Edina';
 
-    res.render('profile', {
+    res.render('index', {
         title: user + ' - Profil'
     });
 });

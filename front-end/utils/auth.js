@@ -178,6 +178,8 @@ var getUserProfileInformation = function getUserProfileInformation(req, res, nex
 
             var responseBody = JSON.parse(body);
             req.session.user_id = responseBody.internal_id;
+            req.session.user_name = responseBody.displayName;
+
             console.log(responseBody);
 
             // the user is authenticated redirecting to landing-page
