@@ -1,8 +1,8 @@
-/**
- * Created by Kresshy on 2014.07.04..
- */
+'use strict';
 
 var express = require('express');
+var auth = require('../utils/auth');
+
 var router = express.Router();
 
 router.use(function(req, res, next) {
@@ -13,22 +13,34 @@ router.use(function(req, res, next) {
 });
 
 /* GET home page. */
-router.get('/', function(req, res) {
+router.get('/', function(req, res, next) {
 
     console.log('login get request handler');
-    console.log(req.body);
+    var code = req.query.code;
+    var state = req.query.state;
 
-    res.send(200, 'stuff');
+    if (code == '') {
+        res.send(500, 'Something bad happened');
+        throw new Error('Code cannot be empty');
+    }
+
+    if (state == '') {
+        res.send(500, 'Something bad happened');
+        throw new Error('State cannot be empty');
+    }
+
+    console.log('code: ' + code);
+    console.log('state: ' + state);
+
+    auth.loginUser(req, res, next, code);
 });
 
-router.post('/', function(req, res) {
+router.post('/', function(req, res, next) {
 
     console.log('login post request handler');
     console.log(req);
 
     res.send(200, 'stuff');
 });
-
-
 
 module.exports = router;

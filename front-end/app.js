@@ -1,3 +1,5 @@
+'use strict';
+
 /// required modules
 var express = require('express');
 var path = require('path');
@@ -8,6 +10,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var params = require('express-params');
+var uuid = require('node-uuid');
+var config = require('./config');
 
 /// import routing
 var index = require('./routes/index');
@@ -34,12 +38,17 @@ app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(cookieParser('top secret'));
-app.use(session({secret: 'top secret'}));
+
+app.use(cookieParser(config.cookieSecret));
+app.use(session({
+    secret: config.sessionSecret
+}));
+
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize());
-app.use(passport.session());
+
+//app.use(passport.initialize());
+//app.use(passport.session());
 
 params.extend(app)
 
