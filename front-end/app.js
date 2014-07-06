@@ -20,6 +20,7 @@ var groups = require('./routes/groups');
 var valuations = require('./routes/valuations');
 var login = require('./routes/login');
 var user = require('./routes/user');
+var search = require('./routes/search');
 
 
 /// authentication modules
@@ -60,6 +61,8 @@ app.use('/', index);
 
 app.use('/login', login);
 app.use('/user', user);
+app.use('/search', search);
+
 app.use('/profile', profile);
 app.use('/profile/settings', profile);
 app.use('/profile/svie', profile);

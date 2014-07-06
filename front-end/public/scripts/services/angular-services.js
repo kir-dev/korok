@@ -13,3 +13,17 @@ applicationServices.factory('User', ['$resource',
         );
     }
 ]);
+
+applicationServices.factory('Search', ['$resource',
+    function($resource) {
+        return $resource(
+            '/search',
+            {
+                term: '@term'
+            },
+            {
+                get: {method: 'GET', isArray: false, params: {term: '@term'}}
+            }
+        );
+    }
+]);

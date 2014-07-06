@@ -19,12 +19,12 @@ router.get('/', function(req, res, next) {
     var code = req.query.code;
     var state = req.query.state;
 
-    if (code == '') {
+    if (code === '') {
         res.send(500, 'Something bad happened');
         throw new Error('Code cannot be empty');
     }
 
-    if (state == '') {
+    if (state === '') {
         res.send(500, 'Something bad happened');
         throw new Error('State cannot be empty');
     }

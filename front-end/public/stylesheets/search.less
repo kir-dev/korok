@@ -1,0 +1,117 @@
+@defaultFont: 'Open Sans';
+@defaultFontColor: white;
+@blackFontColor: black;
+@defaultFontSize: 14px;
+@light: 300;
+@regular: 400;
+@bold: 700;
+
+// content - search-field
+
+#search-logo {
+  float: left;
+
+  img {
+    display: block;
+    float: left;
+    width: 100px;
+  }
+
+  span {
+    display: block;
+    float: left;
+    font-size: 30px;
+    color: @defaultFontColor;
+    line-height: 100px;
+  }
+}
+
+#search {
+  position: relative;
+  height: 100px;
+  width: 750px;
+  margin-top: 150px;
+  margin-left: auto;
+  margin-right: auto;
+
+  #search-help-content {
+    position: absolute;
+    right: 35px;
+    bottom: -180px;
+    font-size: 12px;
+    text-align: justify;
+    padding: 10px;
+
+    background: #ffffff;
+    width: 250px;
+    height: 150px;
+    box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  #search-help-content:after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: -10px;
+    right: 25px;
+    border-bottom: 10px solid white;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+}
+
+#search-field {
+  float: left;
+  margin-left: 50px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  width: 500px;
+  height: 50px;
+  position: relative;
+  background: white;
+
+  #search-input {
+    border: none;
+    float: left;
+    height: 30px;
+    width: 400px;
+    padding: 10px;
+  }
+
+  #search-input:focus {
+    border: none;
+    outline: none;
+  }
+
+  #search-submit {
+    background: url('../images/search-icon-300.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    border: none;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+    width: 30px;
+    height: 30px;
+  }
+
+  #search-submit:hover {
+    cursor: pointer;
+  }
+
+  #search-submit:focus {
+    border: none;
+    outline: none;
+  }
+}
+
+#search-help {
+  position: absolute;
+  bottom: -20px;
+  right: 5px;
+
+  font-size: 10px;
+  color: white;
+  cursor: pointer;
+}

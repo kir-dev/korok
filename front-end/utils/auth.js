@@ -19,9 +19,11 @@ var _authProviderURL = config.authProviderURL;
 
 /// check if the user is authenticated or not
 var checkAuth  = function checkAuth(req, res, next) {
-    if (!req.session.user_id) {
+    if (!req.session.user_id /*|| !req.cookies.user_id*/) {
         authenticate(req, res, next);
     } else {
+        console.log('by session: ' + req.session.user_id);
+        //console.log('by cookie: ' + req.cookies.user_id);
         next();
     }
 }
@@ -179,6 +181,9 @@ var getUserProfileInformation = function getUserProfileInformation(req, res, nex
             var responseBody = JSON.parse(body);
             req.session.user_id = responseBody.internal_id;
             req.session.user_name = responseBody.displayName;
+
+            //var minute = 60 * 1000;
+            //res.cookie('user_id', responseBody.internal_id, {maxAge: minute});
 
             console.log(responseBody);
 

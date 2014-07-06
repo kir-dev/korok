@@ -1,0 +1,66 @@
+@defaultFont: 'Open Sans';
+@defaultFontColor: white;
+@blackFontColor: black;
+@defaultFontSize: 14px;
+@light: 300;
+@regular: 400;
+@bold: 700;
+
+* {
+  font-family: @defaultFont;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url('../images/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+#content {
+  margin-top: 80px;
+}
+
+// some utils and other help classes
+
+.Center-horizontally {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.wide-container {
+  .Center-horizontally;
+
+  width: 1200px;
+}
+
+.medium-container {
+  .Center-horizontally;
+
+  width: 1000px;
+}
+
+.small-container {
+  .Center-horizontally;
+
+  width: 800px;
+}
+
+.clearfix {
+  clear: both;
+}
+
+.unselectable {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+
+  /*
+    Introduced in IE 10.
+    See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+  */
+  -ms-user-select: none;
+  user-select: none;
+}
