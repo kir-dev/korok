@@ -1,6 +1,6 @@
 <div id="search">
     <div id="search-logo">
-        <img src="images/logo-256.png"/>
+        <img src="/images/logo-256.png"/>
         <span>PéK</span>
     </div>
     <div id="search-field">
@@ -18,6 +18,17 @@
         Másra is szeretnél keresni? Javasold <a href="mailto:kir-dev@sch.bme.hu">itt</a>!
     </div>
 </div>
+
 <div id="search-results">
 
+    <a class="search-result" ng-repeat="result in results | orderBy: predicate" ng-href="{{result.type}}/{{result.id}}">
+        <div>
+            <!--<div class="search-result-type">{{(result.type === 'profile')? "Felhasználó": "Kör"}}</div>-->
+            <img ng-src="{{result.img}}"/>
+            <div class="search-result-display">{{result.display}}</div>
+            <div class="search-result-roomNumber" ng-show="result.roomNumber">Szoba: {{result.roomNumber}}</div>
+        </div>
+    </a>
+
+    <div class="clearfix"></div>
 </div>

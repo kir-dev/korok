@@ -10,11 +10,11 @@
   </head>
   <body>
 
-    <header ng-include="'partials/header.html'" ng-controller="HeaderCtrl"></header>
+    <header ng-include="'/partials/header.html'" ng-controller="HeaderCtrl"></header>
 
     <section id="content">
         <div class="medium-container">
-            <div ng-include="'partials/search.html'" ng-controller="SearchCtrl"></div>
+            <div ng-include="'/partials/search.html'" ng-controller="SearchCtrl"></div>
         </div>
     </section>
 
@@ -28,10 +28,10 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.18/angular-resource.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.18/angular-animate.js"></script>
 
-    <script src="scripts/angular-app.js"></script>
-    <script src="scripts/controllers/header-controller.js"></script>
-    <script src="scripts/controllers/search-controller.js"></script>
-    <script src="scripts/services/angular-services.js"></script>
+    <script src="/scripts/angular-app.js"></script>
+    <script src="/scripts/controllers/header-controller.js"></script>
+    <script src="/scripts/controllers/search-controller.js"></script>
+    <script src="/scripts/services/angular-services.js"></script>
 
   </body>
 </html>
