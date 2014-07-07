@@ -8,5 +8,6 @@ module.exports = {
     authenticationURL: 'https://some.oauth.hu/oauth/login',
     authProviderURL: 'https://some.oauth.hu/',
     cookieSecret: 'top secret',
-    sessionSecret: 'top secret'
+    sessionSecret: 'top secret',
+    hostAddress: '0.0.0.0'
 };

@@ -13,8 +13,6 @@ router.use(function(req, res, next) {
 /* GET home page. */
 router.get('/', auth.checkAuth, function(req, res) {
 
-
-
     res.send('');
 });
 

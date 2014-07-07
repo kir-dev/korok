@@ -108,6 +108,6 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 /// running application
-app.listen(app.get('port'), '152.66.180.107', function(){
+app.listen(app.get('port'), config.hostAddress, function(){
     console.log('Express server listening on port ' + app.get('port'));
 });
