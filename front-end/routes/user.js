@@ -10,8 +10,8 @@ router.get('/', function(req, res) {
 
     var userInformation = {};
 
-    userInformation.user = 'Szabolcs Varadi' || req.session.user_name;
-    userInformation.userId = '12345' || req.session.user_id;
+    userInformation.user = req.session.user_name;
+    userInformation.userId = req.session.user_id;
     userInformation.img = '/user/profile-pic.png';
     userInformation.reminders = [
         {
