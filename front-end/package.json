@@ -20,7 +20,6 @@
     "passport-oauth": "*",
     "express-params": "*",
     "request": "*",
-    "hashlib2": "^1.0.3",
     "promise": "^5.0.0",
     "node-uuid": "^1.4.1"
   }

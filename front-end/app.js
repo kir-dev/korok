@@ -21,6 +21,8 @@ var valuations = require('./routes/valuations');
 var login = require('./routes/login');
 var user = require('./routes/user');
 var search = require('./routes/search');
+var groupsProfile = require('./routes/groups-profile');
+
 
 
 /// authentication modules
@@ -73,7 +75,7 @@ app.use('/valuations/:id', valuations);
 
 app.use('/groups', groups);
 app.use('/groups/new', groups);
-app.use('/groups/:id', groups);
+app.use('/groups/:id', groupsProfile);
 app.use('/groups/:id/settings', groups);
 
 /// error handlers
