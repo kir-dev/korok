@@ -10,7 +10,7 @@ router.get('/', function(req, res) {
 
     var user = 'Róka Edina';
 
-    res.render('profile', {
+    res.render('groups', {
         title: user + ' - Profil'
     });
 });
@@ -27,21 +27,21 @@ router.post('/', function(req, res) {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     },
                     {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     },
                     {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     }
                 ]
@@ -54,21 +54,21 @@ router.post('/', function(req, res) {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     },
                     {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     },
                     {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     }
                 ]
@@ -81,25 +81,25 @@ router.post('/', function(req, res) {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     },
                     {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     },
                     {
                         name: 'Szabolcs Varadi',
                         id: '1',
                         position: 'PR Felelős, fejlesztő',
-                        joined: '2000.10.10',
+                        joined: '2000.10.10'
 
                     }
                 ]
-            },
+            }
         ]
     };
 
