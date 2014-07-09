@@ -1,17 +1,13 @@
-/**
- * Created by Edina on 2014.07.08..
- */
-
 'use strict';
 
 module.exports = {
-    clientID: '0123456789',
-    clientSecret: 'qwertzuiop0123469',
-    tokenURL: 'https://some.oauth.hu/oauth/token',
-    tokenVerifyURL: 'https://some.oauth.hu/oauth/resource',
-    authenticationURL: 'https://some.oauth.hu/oauth/login',
-    authProviderURL: 'https://some.oauth.hu/',
+    clientID: '53882599638799218494',
+    clientSecret: 'VKnuk0SLOyACQrVIeEbmcWRmQfGbGFQcQ5M14fCIUCLltguOlL2DiIqyowPv3gOIbb0V8BdRDo3xLnCw',
+    tokenURL: 'https://auth.sch.bme.hu/oauth2/token',
+    tokenVerifyURL: 'https://auth.sch.bme.hu/oauth2/resource',
+    authenticationURL: 'https://auth.sch.bme.hu/site/login',
+    authProviderURL: 'https://auth.sch.bme.hu/',
     cookieSecret: 'top secret',
     sessionSecret: 'top secret',
-    hostAddress: '0.0.0.0'
+    hostAddress: '152.66.178.136'
 };

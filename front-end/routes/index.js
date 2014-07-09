@@ -12,11 +12,7 @@ router.use(function(req, res, next) {
 });
 
 /* GET home page. */
-<<<<<<< HEAD
-router.get('/',  function(req, res) {
-=======
-router.get('/', function(req, res) {
->>>>>>> profil
+router.get('/', auth.checkAuth, function(req, res) {
       res.render('index', {
           title: 'Profil és Körök - Kir-Dev'
       });
