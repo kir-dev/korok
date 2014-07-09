@@ -1,6 +1,4 @@
-/**
- * Created by Kresshy on 2014.06.29..
- */
+'use strict';
 
 var express = require('express');
 var router = express.Router();

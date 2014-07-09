@@ -1,6 +1,4 @@
-/**
- * Created by Edina on 2014.07.08..
- */
+'use strict';
 
 var express = require('express');
 var router = express.Router();
