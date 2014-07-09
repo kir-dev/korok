@@ -49,3 +49,14 @@ applicationServices.factory('Groups', ['$resource',
         );
     }
 ]);
+
+applicationServices.factory('GroupsProfile', ['$resource',
+    function($resource) {
+        return $resource(
+            '/groups/profile',
+            {
+                post: {method: 'POST', isArray: false, params: {}}
+            }
+        );
+    }
+]);

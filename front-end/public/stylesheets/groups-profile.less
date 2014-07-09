@@ -1,0 +1,190 @@
+// Container - logo, title
+#gprofile-container{
+  width: 1200px;
+  height: 475px;
+  margin: 250px auto 40px auto;
+  padding: 0 0 40px 0;
+  position: relative;
+  z-index: -1;
+  background-color: white;
+}
+.gprofile-logo{
+  width: 240px;
+  height: 240px;
+  padding: 5px;
+  position: absolute;
+  left: 40px;
+  top: -125px;
+  box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  img{
+    width: 240px;
+    height: 240px;
+    background-color: #808080;
+  }
+}
+#gprofile-sub-container{
+  width: 1200px;
+  height: 400px;
+  padding: 20px 0 20px 0;
+  border-bottom: 1px solid #DDD;
+  background: white;
+}
+.gprofile-photo-name{
+  position: absolute;
+  left:330px;
+  top: -100px;
+  color: #ffffff;
+  p{
+    font-size: 20px;
+    text-transform: uppercase;
+    color: #FFF;
+  }
+}
+.gprofile-name {
+  font-weight: 300;
+  font-size: 40px;
+  text-transform: uppercase;
+}
+
+// Header-navigation --------------------------------------------------
+
+.gprofile-header-navigation{
+  padding:0 0 0 30px;
+  ul{
+    display: block;
+  }
+  li{
+    float: left;
+    list-style-type: none;
+    +li{
+      padding-left: 30px;
+    }
+  }
+  a{
+    padding: 0px 5px;
+    display: block;
+    text-decoration: none;
+    color: black;
+    &:hover{
+      background-color: rgba(5, 5, 5, 0.5);
+      color: #F5F5F5;
+    }
+  }
+}
+
+//  Header - Profil datas ---------------------------------------------
+
+.gprofile-profil-link{
+  float: right;
+  p{
+    padding:0 20px 0 0;
+    float: left;
+    text-transform: uppercase;
+    +p{
+      padding:0 20px 0 0;
+    }
+  }
+  img{
+    width: 20px;
+    height: 20px;
+    margin: 5px 0 0 0;
+    padding: 0 20px 0 0;
+    float: left;
+  }
+}
+
+
+// Sub menu ------------------------------------------------------
+
+.gprofile-sub-menu {
+  width: 1200px;
+  height: 40px;
+  margin: 0px auto;
+  border-bottom: 1px solid #DDD;
+  line-height: 40px;
+  background: white;
+
+}
+.gprofile-sub-menu-navigation {
+  padding: 0 0 0 30px;
+  margin:0 0 0 210px;
+  ul{
+    display: block;
+  }
+  li{
+    float: left;
+    list-style-type: none;
+    +li{
+      padding: 0 0 0 30px;
+    }
+  }
+  a{
+    height: 40px;
+    display: block;
+    text-decoration: none;
+    color: black;
+    &:hover{
+      color: #F5F5F5;
+      background-color: rgba(5, 5, 5, 0.5);
+    }
+  }
+  .on{;
+    height: 36px;
+    border-bottom: 5px solid #2E6DDF;
+  }
+}
+
+// Main content - text
+
+#gprofile-main-content{
+  width: 960px;
+  height: 420px;
+  float: left;
+  background: white;
+}
+.gprofile-main-content-text{
+  height: 400px;
+  margin: 5px 0 0 0;
+  padding:0 10px 0 0;
+  overflow-y: auto;
+  text-align: justify;
+  p{
+    margin: 10px 0;
+  }
+  h1, h2, h3{
+    margin: 10px 0;
+    font-weight: 300;
+    text-transform:  uppercase;
+  }
+}
+
+
+// Sidebar: semester, navigation ---------------------------------------------------------
+
+#gprofile-sidebar{
+  width: 195px;
+  height: 420px;
+  padding:0 0 0 45px;
+  float: left;
+  background: #FFF;
+  a{
+    text-decoration: none;
+    .on{
+      font-weight: 600;
+      color: #2A2A5F;
+    }
+  }
+}
+.gprofile-semester{
+  padding: 50px 0 0 0;
+  ul{
+    padding: 20px 0 20px 0;
+    list-style-type: none;
+  }
+}
+.gprofile-sidebar-navigation ul{
+  padding: 20px 0 20px 0;
+  list-style-type: none;
+  color: #2E6DDF;
+}
