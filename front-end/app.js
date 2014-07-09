@@ -74,9 +74,9 @@ app.use('/valuations', valuations);
 app.use('/valuations/:id', valuations);
 
 app.use('/groups', groups);
-app.use('/groups/new', groups);
-app.use('/groups/:id', groupsProfile);
-app.use('/groups/:id/settings', groups);
+app.use('/group/new', groups);
+app.use('/group/:id', groupsProfile);
+app.use('/group/:id/settings', groups);
 
 /// error handlers
 app.use(function(err, req, res, next) {
