@@ -7,8 +7,6 @@ import hu.sch.domain.util.MembershipSorter;
 import hu.sch.util.HungarianStringComparator;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,6 +41,8 @@ import javax.xml.bind.annotation.XmlTransient;
             "SELECT g FROM Group g LEFT JOIN FETCH g.parent "
             + "WHERE g.status='akt' ORDER BY g.name"),
     @NamedQuery(name = Group.findByName, query = "SELECT g FROM Group g WHERE g.name = :name"),
+    @NamedQuery(name = Group.findByNameFragment, query = "SELECT g FROM Group g WHERE UPPER(g.name) LIKE UPPER(:groupName) ORDER BY g.name"),
+    @NamedQuery(name = Group.countByNameFragment, query = "SELECT COUNT(g) FROM Group g WHERE UPPER(g.name) LIKE UPPER(:groupName)"),
     @NamedQuery(name = Group.findMembersByGroupAndPost,
             query = "SELECT u FROM User u "
             + "LEFT JOIN u.memberships ms "
@@ -69,6 +69,8 @@ public class Group implements Serializable, Comparable<Group> {
     public static final String groupHierarchy = "groupHierarchy";
     public static final String findByName = "findByName";
     public static final String findMembersByGroupAndPost = "findMembersByGroupAndPost";
+    public static final String findByNameFragment = "Group.findByNameFragment";
+    public static final String countByNameFragment = "Group.countByNameFragment";
     //----------------------------------------------------
     @Id
     @GeneratedValue(generator = "groups_seq")

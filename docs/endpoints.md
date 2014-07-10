@@ -74,3 +74,50 @@ Lekérdezés:
 Törlés:
 
     DELETE /users/{virid}/im/{im_id}
+
+## Keresés
+
+    POST /search
+
+A keresés jelenleg 2 módban használható: felhasználókat és köröket lehet keresni.
+A keresés egy POST kéréssel lehet indítani. A következő formátumú JSON-t vár:
+
+    {
+        "term": "keresési kifejezés",
+        "mode": "USER" | "GROUP",
+        "page": <szám: alapértelmezetten 0>,
+        "perPage": <szám: alapértelmezetten 25>
+    }
+
+A `term` és a `mode` kötelező mező. A lapozás 0. "lapról" indul.
+
+A válaszban mindig megkapjuk, hogy hány kör és hány felhasználó van összesen az
+adott keresési kifejezéssel. Ezen túl a megadott módtól függően a `users` vagy a
+`groups` lista kerül feltöltésre.
+
+Egy példa futtatás:
+
+    $ curl localhost:8080/internal/search -i -H'Content-Type: application/json' -H'Accept: application/json' -d '{"term": "tmichel", "mode": "USER"}'
+    HTTP/1.1 200 OK
+    Connection: keep-alive
+    X-Powered-By: Undertow/1
+    Server: WildFly/8
+    Transfer-Encoding: chunked
+    Content-Type: application/json
+    Date: Thu, 03 Jul 2014 10:52:12 GMT
+
+    {
+      "data" : {
+        "count_of_users" : 1,
+        "count_of_groups" : 0,
+        "users" : [ {
+          "email_address" : "tmichel@example.com",
+          "first_name" : "Tamás",
+          "last_name" : "Michelberger",
+          "nick_name" : "Tomi",
+          ...
+        } ],
+        "groups" : [ ]
+      },
+      "success" : true
+    }

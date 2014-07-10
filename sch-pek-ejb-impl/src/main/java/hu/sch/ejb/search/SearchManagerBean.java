@@ -1,5 +1,6 @@
 package hu.sch.ejb.search;
 
+import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
 import hu.sch.services.SearchManagerLocal;
 import java.util.Calendar;
@@ -34,15 +35,18 @@ public class SearchManagerBean implements SearchManagerLocal {
     }
 
     @Override
-    public List<User> searchUsers(String keyword) {
+    public List<User> searchUsers(String keyword, int page, int perPage) {
         TypedQuery<User> q = new SearchQueryBuilder(em, keyword).build();
+        q.setFirstResult(perPage * page);
+        q.setMaxResults(perPage);
+
         return q.getResultList();
     }
 
     @Override
     public List<User> searchBirthdayUsers(Date date) {
-        Query q = em.createQuery("SELECT u FROM User u "
-                + "WHERE MONTH(u.dateOfBirth) = :month AND DAY(u.dateOfBirth) = :day");
+        TypedQuery<User> q = em.createQuery("SELECT u FROM User u "
+                + "WHERE MONTH(u.dateOfBirth) = :month AND DAY(u.dateOfBirth) = :day", User.class);
 
         Calendar c = Calendar.getInstance();
         c.setTime(date);
@@ -51,5 +55,31 @@ public class SearchManagerBean implements SearchManagerLocal {
         q.setParameter("day", c.get(Calendar.DAY_OF_MONTH));
 
         return q.getResultList();
+    }
+
+    @Override
+    public List<Group> searchGroups(String term, int page, int perPage) {
+        TypedQuery<Group> q = em.createNamedQuery(Group.findByNameFragment, Group.class);
+        q.setParameter("groupName", createLikeExpression(term));
+        // pagination
+        q.setMaxResults(perPage);
+        q.setFirstResult(page * perPage);
+        return q.getResultList();
+    }
+
+    @Override
+    public long countUsers(String term) {
+        return new SearchQueryBuilder(em, term).buildForCount().getSingleResult();
+    }
+
+    @Override
+    public long countGroup(String term) {
+        TypedQuery<Long> q = em.createNamedQuery(Group.countByNameFragment, Long.class);
+        q.setParameter("groupName", createLikeExpression(term));
+        return q.getSingleResult();
+    }
+
+    private String createLikeExpression(String expr) {
+        return "%".concat(expr).concat("%");
     }
 }

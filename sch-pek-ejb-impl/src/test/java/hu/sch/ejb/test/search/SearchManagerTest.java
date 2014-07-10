@@ -7,7 +7,6 @@ import hu.sch.ejb.test.builder.UserBuilder;
 import hu.sch.services.SearchManagerLocal;
 import java.util.Date;
 import java.util.List;
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -48,7 +47,7 @@ public class SearchManagerTest extends AbstractDatabaseBackedTest {
     @Test
     public void complexSearchForName() {
         new UserBuilder().withFirstName("Teszt").withScreenName("hello").create(getEm());
-        List<User> result = searchManager.searchUsers("teszt");
+        List<User> result = searchManager.searchUsers("teszt", 0, 25);
 
         assertEquals(1, result.size());
     }
@@ -61,7 +60,7 @@ public class SearchManagerTest extends AbstractDatabaseBackedTest {
                 .build();
         persist(u);
 
-        List<User> result = searchManager.searchUsers(email);
+        List<User> result = searchManager.searchUsers(email, 0, 25);
         assertFalse("User with email could not be found.", result.isEmpty());
     }
 }
