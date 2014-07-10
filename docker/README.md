@@ -62,6 +62,12 @@ Logok figyelése: `docker logs -f <NAME>`
 
 Ugyanúgy, ahogy eddig, csak a cli portját a Wildfly konténerre állítsd be.
 
+## Tippek, trükkök
+
+* Delete all containers: `$ docker rm $(docker ps -a -q)`
+* Delete all images: `$ docker rmi $(docker images -q)`
+
+
 [1]: https://www.docker.io/
 [2]: http://docs.docker.io/installation/ubuntulinux/#
 [3]: http://docs.docker.io/userguide/dockervolumes/
