@@ -34,7 +34,7 @@ var authenticate = function authenticate(req, res, next) {
     if (!_accessToken) {
         // access token is missing
 
-        //console.log('Access Token is missing');
+        console.log('Access Token is missing');
         getAccessToken(req, res, next);
     } else {
         // verifying existing access token
@@ -43,18 +43,18 @@ var authenticate = function authenticate(req, res, next) {
             // promise resolve
 
             if(data.success) {
-                //console.log('access token is verified: ' + data.success);
+                console.log('access token is verified: ' + data.success);
                 isAccessTokenVerified = true;
             } else {
-                //console.log('access token is verified: ' + data.success);
+                console.log('access token is verified: ' + data.success);
                 isAccessTokenVerified = false;
             }
 
             if(isAccessTokenVerified) {
-                //console.log('redirecting to authURL');
+                console.log('redirecting to authURL');
                 redirectAuthenticationURL(req, res, next);
             } else {
-                //console.log('asking for a new access token');
+                console.log('asking for a new access token');
                 getAccessToken(req, res, next);
             }
 
@@ -62,7 +62,7 @@ var authenticate = function authenticate(req, res, next) {
             // promise reject
 
             res.send(500, 'something bad happened');
-            //console.log(err);
+            console.log(err);
         });
     }
 }
@@ -78,7 +78,7 @@ var verifyAccessToken = function verifyAccessToken(req, res, next) {
                 }
 
                 var responseBody = JSON.parse(body);
-                //console.log(responseBody);
+                console.log(responseBody);
 
                 return resolve(responseBody);
         });
@@ -107,7 +107,7 @@ var getAccessToken = function getAccessToken(req, res, next) {
              var responseBody = JSON.parse(body);
             _accessToken = responseBody.access_token;
 
-            //console.log('the access token is: ' + _accessToken);
+            console.log('the access token is: ' + _accessToken);
 
             if(!_accessToken)
                 throw new Error('Access token is missing');
@@ -116,20 +116,20 @@ var getAccessToken = function getAccessToken(req, res, next) {
 
             verifyAccessToken().then( function(data) {
                 if(data.success) {
-                    //console.log('access token is verified: ' + data.success);
+                    console.log('access token is verified: ' + data.success);
                     isAccessTokenVerified = true;
                 } else {
-                    //console.log('access token is verified: ' + data.success);
+                    console.log('access token is verified: ' + data.success);
                     isAccessTokenVerified = false;
                 }
 
                 if(isAccessTokenVerified) {
-                    //console.log('redirecting to authURL');
+                    console.log('redirecting to authURL');
                     redirectAuthenticationURL(req, res, next);
                 }
             }, function (err) {
                 res.send(500, 'something bad happened');
-                //console.log(err);
+                console.log(err);
             });
 
     }).auth(_clientID, _clientSecret, true);
@@ -159,9 +159,9 @@ var loginUser = function loginUser(req, res, next, code) {
             _refreshToken = responseBody.refresh_token;
             _userAccessToken = responseBody.access_token;
 
-            //console.log(_refreshToken);
-            //console.log(_userAccessToken);
-            //console.log(body);
+            console.log(_refreshToken);
+            console.log(_userAccessToken);
+            console.log(body);
 
             getUserProfileInformation(req, res, next, _userAccessToken);
 
@@ -174,7 +174,7 @@ var getUserProfileInformation = function getUserProfileInformation(req, res, nex
     request.get(_authProviderURL + 'api/profile?access_token=' + userAccessToken,
         function(error, response, body) {
             if (error)
-                //console.log(error.message);
+                console.log(error.message);
 
             var responseBody = JSON.parse(body);
             req.session.user_id = responseBody.internal_id;
@@ -183,7 +183,7 @@ var getUserProfileInformation = function getUserProfileInformation(req, res, nex
             //var minute = 60 * 1000;
             //res.cookie('user_id', responseBody.internal_id, {maxAge: minute});
 
-            //console.log(responseBody);
+            console.log(responseBody);
 
             // the user is authenticated redirecting to landing-page
             res.redirect('/');

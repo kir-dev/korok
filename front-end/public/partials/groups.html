@@ -1,28 +1,37 @@
+<div id="groups">
 <div class="groups-container">
     <div class="groups-container-top">
-        <p>Körök</p>
-        <span class="groups-input-field">
-             <input type="text" placeholder="keresel egy kört?">
-             <button></button>
-        </span>
-    </div>
-    <div class="groups-boxes">
-        <div class="groups-box">
-            <div class="groups-logo"></div>
-            <p class="groups-name">Kir-Dev</p>
+
+        <div id="groups-page-name">Körök</div>
+
+        <div class="groups-input-field">
+             <input id="groups-input" type="text" placeholder="keresel egy kört?" ng-model="groupquery"/>
+             <button id="groups-submit"></button>
         </div>
+    </div>
+
+    <div class="groups-boxes">
+
+        <a class="groups-box" ng-repeat="group in groups | filter:{name:groupquery}" ng-href="/groups/{{group.id}}">
+            <img class="groups-logo" ng-src="{{group.img}}"/>
+            <div class="groups-name">{{group.name}}</div>
+        </a>
+
         <div class="clearfix"></div>
     </div>
-    <div class="groups-container-bottom">
-    </div>
+
+    <div class="groups-container-bottom"> </div>
+
     <div class="groups-paginator">
         <button id="groups-previous" class="groups-page">&laquo;</button>
-        <button id="1" class="groups-page on">1</button>
-        <button id="2" class="groups-page">2</button>
-        <button id="3" class="groups-page">3</button>
-        <button id="4" class="groups-page">4</button>
-        <button id="5" class="groups-page">5</button>
-        <button id="6" class="groups-page">6</button>
+        <button id="page-1" class="groups-page on">1</button>
+        <button id="page-2" class="groups-page">2</button>
+        <button id="page-3" class="groups-page">3</button>
+        <button id="page-4" class="groups-page">4</button>
+        <button id="page-5" class="groups-page">5</button>
+        <button id="page-6" class="groups-page">6</button>
         <button id="groups-next" class="groups-page">&raquo;</button>
     </div>
+
+</div>
 </div>

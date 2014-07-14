@@ -1,16 +1,21 @@
+#groups {
+  padding-top: 150px;
+  padding-bottom: 40px;
+}
+
 .groups-container{
   min-height: 600px;
   background: #ffffff;
-  margin-top: 150px;
   position: relative;
-  z-index: -1;
 }
+
 .groups-container-top{
   height: 73px;
+  background: #ffffff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  /*padding-top: 31px;*/
 }
-.groups-container-top p{
+
+#groups-page-name{
   line-height: 68px;
   margin-left: 60px;
   float:left;
@@ -21,30 +26,24 @@
 }
 
 .groups-input-field{
-  display: inline;
   margin: 15px;
   float: right;
   width: 350px;
   height: 30px;
-  /*line-height: 73px;*/
-  border-width: 1px;
-  border-style: solid;
-  border-color: #adadad;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 5px;
 }
 
-.groups-input-field input{
+#groups-input {
   float: left;
   color: #adadad;
   width: 310px;
   height: 30px;
   border: none;
-  /*margin: 8px 50px 8px;*/
   font-size: 18px;
-  /*padding-left: 20px;*/
 }
 
-.groups-input-field button {
+#groups-submit {
   background: url("../images/search-icon-300.png");
   background-repeat: no-repeat;
   background-size: cover;
@@ -53,35 +52,37 @@
   width: 30px;
   height: 30px;
 }
-.groups-input-field input:focus{
+
+#groups-input:focus{
   border: none;
   outline: none;
 }
-.groups-input-field button:focus{
+
+#groups-submit:focus{
   border: none;
   outline: none;
 }
+
 .groups-boxes{
-  width: 1000px;
-  padding-bottom: 25px;
-  z-index: -1;
+  padding-bottom: 80px;
 }
+
 .groups-box{
   background: white;
   float: left;
-  width: 200px;
-  height: 200px;
+  width: 160px;
+  height: 220px;
   margin: 15px 15px;
   box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.1);
   padding: 5px;
-  padding-bottom: 0;
 }
+
 .groups-logo{
-  background-color: #fafafa;
+  background-color: grey;
   height: 160px;
-  width: 180px;
-  margin: 5px 13px;
+  width: 160px;
 }
+
 .groups-name{
   height: 25px;
   line-height: 25px;
@@ -89,6 +90,7 @@
   font-size: 14px;
   text-align: center;
 }
+
 .groups-container-bottom{
   height: 30px;
   position: absolute;
@@ -97,6 +99,7 @@
   right: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
+
 .groups-paginator{
   background: white;
   width: 350px;
@@ -109,6 +112,7 @@
   margin-left: -175px;
   box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.1);
 }
+
 .groups-page{
   background: #ffffff;
   border: none;

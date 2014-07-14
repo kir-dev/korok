@@ -23,8 +23,6 @@ var user = require('./routes/user');
 var search = require('./routes/search');
 var groupsProfile = require('./routes/groups-profile');
 
-
-
 /// authentication modules
 //var passport = require('passport');
 //var BearerStrategy = require('passport-http-bearer').Strategy;
