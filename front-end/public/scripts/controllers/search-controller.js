@@ -41,6 +41,13 @@ angular.module('pekFrontendApp').controller('SearchCtrl', ['$scope', '$rootScope
                 display: 'SEM',
                 img: '/profile/pic/valami.png',
                 roomNumber: null
+            },
+            {
+                type: 'group',
+                id: '2',
+                display: 'SEM',
+                img: '/profile/pic/valami.png',
+                roomNumber: null
             }
         ]
     }

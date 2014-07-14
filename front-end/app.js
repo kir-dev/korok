@@ -21,7 +21,7 @@ var valuations = require('./routes/valuations');
 var login = require('./routes/login');
 var user = require('./routes/user');
 var search = require('./routes/search');
-
+var groupsProfile = require('./routes/groups-profile');
 
 /// authentication modules
 //var passport = require('passport');
@@ -72,9 +72,9 @@ app.use('/valuations', valuations);
 app.use('/valuations/:id', valuations);
 
 app.use('/groups', groups);
-app.use('/groups/new', groups);
-app.use('/groups/:id', groups);
-app.use('/groups/:id/settings', groups);
+app.use('/group/new', groups);
+app.use('/group/:id', groupsProfile);
+app.use('/group/:id/settings', groups);
 
 /// error handlers
 app.use(function(err, req, res, next) {
@@ -108,6 +108,6 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 /// running application
-app.listen(app.get('port'), '152.66.180.107', function(){
+app.listen(app.get('port'), config.hostAddress, function(){
     console.log('Express server listening on port ' + app.get('port'));
 });

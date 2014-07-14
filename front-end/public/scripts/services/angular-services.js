@@ -27,3 +27,36 @@ applicationServices.factory('Search', ['$resource',
         );
     }
 ]);
+
+applicationServices.factory('Profile', ['$resource',
+    function($resource) {
+        return $resource(
+            '/profile',
+            {
+                post: {method: 'POST', isArray: false, params: {}}
+            }
+        );
+    }
+]);
+
+applicationServices.factory('Groups', ['$resource',
+    function($resource) {
+        return $resource(
+            '/groups',
+            {
+                post: {method: 'POST', isArray: false, params: {}}
+            }
+        );
+    }
+]);
+
+applicationServices.factory('GroupsProfile', ['$resource',
+    function($resource) {
+        return $resource(
+            '/groups/profile',
+            {
+                post: {method: 'POST', isArray: false, params: {}}
+            }
+        );
+    }
+]);

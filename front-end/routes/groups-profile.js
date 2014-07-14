@@ -8,7 +8,7 @@ router.get('/', function(req, res) {
 
     var user = 'Róka Edina';
 
-    res.render('profile', {
+    res.render('groups-profile', {
         title: user + ' - Profil'
     });
 });

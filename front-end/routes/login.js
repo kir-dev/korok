@@ -15,7 +15,6 @@ router.use(function(req, res, next) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-    console.log('login get request handler');
     var code = req.query.code;
     var state = req.query.state;
 
@@ -29,16 +28,11 @@ router.get('/', function(req, res, next) {
         throw new Error('State cannot be empty');
     }
 
-    console.log('code: ' + code);
-    console.log('state: ' + state);
-
+    // TODO: verify received state
     auth.loginUser(req, res, next, code);
 });
 
 router.post('/', function(req, res, next) {
-
-    console.log('login post request handler');
-    console.log(req);
 
     res.send(200, 'stuff');
 });

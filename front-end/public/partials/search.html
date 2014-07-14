@@ -20,10 +20,8 @@
 </div>
 
 <div id="search-results">
-
     <a class="search-result" ng-repeat="result in results | orderBy: predicate" ng-href="{{result.type}}/{{result.id}}">
         <div>
-            <!--<div class="search-result-type">{{(result.type === 'profile')? "Felhasználó": "Kör"}}</div>-->
             <img ng-src="{{result.img}}"/>
             <div class="search-result-display">{{result.display}}</div>
             <div class="search-result-roomNumber" ng-show="result.roomNumber">Szoba: {{result.roomNumber}}</div>

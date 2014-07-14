@@ -19,11 +19,9 @@ var _authProviderURL = config.authProviderURL;
 
 /// check if the user is authenticated or not
 var checkAuth  = function checkAuth(req, res, next) {
-    if (!req.session.user_id /*|| !req.cookies.user_id*/) {
+    if (!req.session.user_id) {
         authenticate(req, res, next);
     } else {
-        console.log('by session: ' + req.session.user_id);
-        //console.log('by cookie: ' + req.cookies.user_id);
         next();
     }
 }
