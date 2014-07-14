@@ -1,5 +1,6 @@
 'use strict';
 
 angular.module('pekFrontendApp', [
-    'applicationServices'
+    'applicationServices',
+    'ui.bootstrap'
 ]);
