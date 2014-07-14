@@ -1,0 +1,18 @@
+{
+  "name": "front-end",
+  "version": "0.0.0",
+  "homepage": "https://github.com/kir-dev/korok",
+  "authors": [
+    "Szabolcs Varadi <kresshy@gmail.com>"
+  ],
+  "description": "PéK Application front-end",
+  "main": "app.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular-bootstrap": "~0.11.0",
+    "angular": "~1.2.20",
+    "angular-resource": "~1.2.20",
+    "angular-animate": "~1.2.20"
+  }
+}

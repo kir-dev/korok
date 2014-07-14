@@ -13,3 +13,4 @@ front-end/node_modules/
 front-end/config.js
 front-end/*.log
 front-end/public/stylesheets/*.css
+front-end/public/scripts/deps/

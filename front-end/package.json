@@ -21,6 +21,13 @@
     "express-params": "*",
     "request": "*",
     "promise": "^5.0.0",
-    "node-uuid": "^1.4.1"
+    "node-uuid": "^1.4.1",
+    "bower": "^1.3.8"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-wiredep": "^1.8.0",
+    "grunt-contrib-watch": "^0.6.1"
   }
 }
