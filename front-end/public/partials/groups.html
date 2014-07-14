@@ -12,7 +12,7 @@
 
     <div class="groups-boxes">
 
-        <a class="groups-box" ng-repeat="group in groups | filter:{name:groupquery}" ng-href="/groups/{{group.id}}">
+        <a class="groups-box" ng-repeat="group in groups | filter:{name:groupquery}" ng-href="/group/{{group.id}}">
             <img class="groups-logo" ng-src="{{group.img}}"/>
             <div class="groups-name">{{group.name}}</div>
         </a>
