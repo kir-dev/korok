@@ -17,7 +17,7 @@ angular.module('pekFrontendApp').directive('editableLabel', function() {
             '<input type="text" class="form-control" ng-show="disabled" placeholder="{{text}}" disabled>' +
             '<input type="text" class="form-control" ng-hide="disabled" ng-model="text">' +
             '<span class="input-group-btn">' +
-            '<button class="btn btn-default" type="button" ng-click="toggle()">' +
+            '<button id="edit-button" class="btn btn-default" type="button" ng-click="toggle()">' +
             '<span class="glyphicon" ng-class="{\'glyphicon-pencil\': disabled == true, \'glyphicon-ok\': disabled == false}"></span>' +
             '</button>' +
             '</span>' +
