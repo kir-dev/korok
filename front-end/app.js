@@ -63,10 +63,10 @@ app.use('/login', login);
 app.use('/user', user);
 app.use('/search', search);
 
-app.use('/profile', profile);
-app.use('/profile/settings', profile);
-app.use('/profile/svie', profile);
-app.use('/profile/:id', profile);
+app.use('/profile', profile.routerProfile);
+app.use('/profile/settings', profile.routerSettings);
+app.use('/profile/svie', profile.routerSvie);
+app.use('/profile/:id', profile.routerProfileByID);
 
 app.use('/valuations', valuations);
 app.use('/valuations/:id', valuations);

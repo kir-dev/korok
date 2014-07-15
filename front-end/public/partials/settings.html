@@ -1,0 +1,46 @@
+<div id="settings">
+    <div id="settings-container">
+        <div class="settings-logo">
+            <img ng-src="{{user.pic}}"/>
+        </div>
+
+        <div class="settings-photo-name">
+            <div class="settings-name">{{user.name}}</div>
+            <div class="settings-room">{{user.dormitory}} {{user.room}}</div>
+        </div>
+
+        <tabset vertical="true">
+            <tab heading="Adatok">
+                <div class="settings-rightbar">
+                    Személyes adatok
+
+                    <editable-label text="user.name"></editable-label>
+                    <editable-label text="user.firstname"></editable-label>
+                    <editable-label text="user.lastname"></editable-label>
+                    <editable-label text="user.sex"></editable-label>
+                    <editable-label text="user.birthdate"></editable-label>
+                    <editable-label text="user.address"></editable-label>
+                    <editable-label text="user.mobile"></editable-label>
+                    <editable-label text="user.website"></editable-label>
+                    <editable-label text="user.room"></editable-label>
+                    <editable-label text="user.dormitory"></editable-label>
+                    <ul>
+                        <li ng-repeat="im in user.ims">
+                            {{im.name}}    <editable-label text="im.nick"></editable-label>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="clearfix"></div>
+            </tab>
+            <tab heading="Köröd">
+                <div class="settings-rightbar">
+                    Sajnáljuk de nem vagy körvezető... :'( gyere vissza majd ha az leszel ;)
+                </div>
+                <div class="clearfix"></div>
+            </tab>
+
+        </tabset>
+        <div class="clearfix"></div>
+    </div>
+</div>
