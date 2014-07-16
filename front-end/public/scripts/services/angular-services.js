@@ -39,6 +39,17 @@ applicationServices.factory('Profile', ['$resource',
     }
 ]);
 
+applicationServices.factory('ProfileSettings', ['$resource',
+    function($resource) {
+        return $resource(
+            '/profile/settings',
+            {
+                post: {method: 'POST', isArray: false, params: {}}
+            }
+        );
+    }
+]);
+
 applicationServices.factory('Groups', ['$resource',
     function($resource) {
         return $resource(

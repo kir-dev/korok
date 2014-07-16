@@ -1,10 +1,14 @@
 'use strict';
 
 var express = require('express');
-var router = express.Router();
+
+var routerProfile = express.Router();
+var routerSettings = express.Router();
+var routerSvie = express.Router();
+var routerProfileByID = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res) {
+routerProfile.get('/', function(req, res) {
 
     var user = 'Full Name';
 
@@ -13,7 +17,7 @@ router.get('/', function(req, res) {
     });
 });
 
-router.post('/', function(req, res) {
+routerProfile.post('/', function(req, res) {
 
     var profile = {
         name: 'Full Name',
@@ -44,5 +48,38 @@ router.post('/', function(req, res) {
     res.send(profile);
 });
 
-module.exports = router;
+routerSettings.get('/', function(req, res) {
+    var user = 'Full Name';
+
+    res.render('settings', {
+        title: user + ' - Settings'
+    });
+});
+
+routerSettings.post('/', function(req, res) {
+
+});
+
+routerSvie.get('/', function(req, res) {
+
+});
+
+routerSvie.post('/', function(req, res) {
+
+});
+
+routerProfileByID.get('/', function(req, res) {
+
+});
+
+routerProfileByID.post('/', function(req, res) {
+
+});
+
+module.exports = {
+    routerProfile: routerProfile,
+    routerSettings: routerSettings,
+    routerSvie: routerSvie,
+    routerProfileByID: routerProfileByID
+};
 
