@@ -12,6 +12,7 @@ var session = require('express-session');
 var params = require('express-params');
 var uuid = require('node-uuid');
 var config = require('./config');
+var log4js = require('log4js');
 
 /// import routing
 var index = require('./routes/index');
@@ -48,6 +49,16 @@ app.use(session({
 
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+
+log4js.configure({
+    appenders: [
+        {type: 'console'},
+        {type: 'file', filename: 'logs/pekFrontendApp.log', category: 'pekFrontendApp'}
+    ]
+});
+
+var logger = log4js.getLogger('pekFrontendApp');
+logger.info('PEK FrontEnd Application is starting up');
 
 //app.use(passport.initialize());
 //app.use(passport.session());
@@ -109,5 +120,5 @@ module.exports = app;
 
 /// running application
 app.listen(app.get('port'), config.hostAddress, function(){
-    console.log('Express server listening on port ' + app.get('port'));
+    logger.info('PEK FrontEnd Application is listening on port' + app.get('port'));
 });
