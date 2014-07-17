@@ -1,4 +1,4 @@
-package hu.sch.api.search.group;
+package hu.sch.api.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.enums.GroupStatus;
