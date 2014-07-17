@@ -171,3 +171,43 @@ Egy példa:
       },
       "success" : true
     }
+
+### Körtagságok lekérdezése
+
+    GET /groups/{id}/memberships/active
+
+    GET /groups/{id}/memberships/inactive
+
+`active` a jelenleg is aktív tagságokat adja vissza, míg az `inactive` az öregtagságokat.
+Egy tömbként kapjuk meg a tagságokat. A tagságok a következő json objektumokként reprezentáltak.
+Részletes leírás a `GroupMembershipView` osztályban található.
+
+Egy példa:
+    $ curl localhost:8080/internal/groups/106/memberships/inactive -i -H'Content-Type: application/json' -H'Accept: application/json' -s | head -30
+
+    HTTP/1.1 200 OK
+    Connection: keep-alive
+    X-Powered-By: Undertow/1
+    Server: WildFly/8
+    Transfer-Encoding: chunked
+    Content-Type: application/json
+    Date: Thu, 17 Jul 2014 17:31:28 GMT
+
+    {
+      "data" : [ {
+            "posts" : [ "öregtag" ],
+            "user_fullname" : "John Smith",
+            "end" : "2009-08-31",
+            "start" : "2009-05-20",
+            "id" : 1
+          }, {
+            "posts" : [ "öregtag" ],
+            "user_fullname" : "John Doe",
+            "end" : "2003-05-14",
+            "start" : "2002-09-16",
+            "id" : 2
+          },
+          ...
+      ],
+      success: true
+    }
