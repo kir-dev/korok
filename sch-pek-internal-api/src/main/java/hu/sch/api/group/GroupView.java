@@ -2,6 +2,9 @@ package hu.sch.api.group;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.enums.GroupStatus;
+import java.util.Collection;
+import java.util.List;
+import static java.util.stream.Collectors.toList;
 
 public class GroupView {
 
@@ -9,6 +12,10 @@ public class GroupView {
 
     public GroupView(Group group) {
         this.group = group;
+    }
+
+    public static List<GroupView> fromCollection(Collection<Group> groups) {
+        return groups.stream().map(g->new GroupView(g)).collect(toList());
     }
 
     public Long getId() {

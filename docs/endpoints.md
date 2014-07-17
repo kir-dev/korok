@@ -121,3 +121,53 @@ Egy példa futtatás:
       },
       "success" : true
     }
+
+## Körök lekérdezése
+
+### Összes kör lekérdezése
+
+    GET /groups
+
+Példa futtás
+
+    $ curl localhost:8080/internal/groups -i -H'Content-Type: application/json' -H'Accept: application/json'
+
+Ez visszaadja az összes aktív kör alapadatait. A `GroupView` osztályban találhatóak meg,
+hogy pontosan milyen adatokat ad vissza.
+
+### Egyetlen kör lekérdezése
+
+    GET /groups/{id}
+
+A megadott azonosítójú kört kérdezi le, annak alapadataival. A `GroupView` osztályban találhatóak meg,
+hogy pontosan milyen adatokat ad vissza.
+
+Egy példa:
+
+    $ curl localhost:8080/internal/groups/106 -i -H'Content-Type: application/json' -H'Accept: application/json' -sHTTP/1.1 200 OK
+
+    Connection: keep-alive
+    X-Powered-By: Undertow/1
+    Server: WildFly/8
+    Transfer-Encoding: chunked
+    Content-Type: application/json
+    Date: Thu, 17 Jul 2014 15:20:04 GMT
+
+    {
+      "data" : {
+        "introduction" : "A Villanykari Információs Rendszer fejlesztésével és üzemeltetésével foglalkozó kör.",
+        "web_page" : "http://kir-dev.sch.bme.hu",
+        "mailing_list" : "kir-dev@sch.bme.hu",
+        "founded" : 2001,
+        "is_svie" : true,
+        "delegate_number" : 1,
+        "number_of_primary_members" : null,
+        "users_can_apply" : true,
+        "head" : "KIR Admin",
+        "status" : "akt",
+        "name" : "KIR fejlesztők és üzemeltetők",
+        "id" : 106,
+        "type" : "szakmai kör"
+      },
+      "success" : true
+    }
