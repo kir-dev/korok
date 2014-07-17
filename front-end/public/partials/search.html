@@ -1,0 +1,32 @@
+<div id="search">
+    <div id="search-logo">
+        <img src="/images/logo-256.png"/>
+        <span>PéK</span>
+    </div>
+    <div id="search-field">
+        <input id="search-input" type="text" ng-model="term" placeholder="keress embereket, köröket..."/>
+        <button id="search-submit" ng-click="search()"></button>
+        <div id="search-help" ng-click="toggleHelp()" class="unselectable">segítség</div>
+    </div>
+    <div id="search-help-content" ng-show="helpVisible">
+        Írd be, amire szeretnél keresni, de ha pontosabb infóra vágysz, akkor az alábbi parancsokat is használhatod:<br/>
+        <br/>
+        szoba: {szobaszám} - itt lakó emberek<br/>
+        felhasználó: {Példa Attila} - P. Attila profil<br/>
+        kör: {Kir-Dev} v. {kirdev} - Kir-Dev profil<br/>
+        <br/>
+        Másra is szeretnél keresni? Javasold <a href="mailto:kir-dev@sch.bme.hu">itt</a>!
+    </div>
+</div>
+
+<div id="search-results">
+    <a class="search-result" ng-repeat="result in results | orderBy: predicate" ng-href="{{result.type}}/{{result.id}}">
+        <div>
+            <img ng-src="{{result.img}}"/>
+            <div class="search-result-display">{{result.display}}</div>
+            <div class="search-result-roomNumber" ng-show="result.roomNumber">Szoba: {{result.roomNumber}}</div>
+        </div>
+    </a>
+
+    <div class="clearfix"></div>
+</div>

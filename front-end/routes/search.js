@@ -6,16 +6,14 @@ var auth = require('../utils/auth.js');
 
 router.use(function(req, res, next) {
 
-    // write your middleware here
-
+    // write your middleware her
     next();
 });
 
 /* GET home page. */
 router.get('/', auth.checkAuth, function(req, res) {
-      res.render('index', {
-          title: 'Profil és Körök - Kir-Dev'
-      });
+
+    res.send('');
 });
 
 router.post('/', auth.checkAuth, function(req, res) {

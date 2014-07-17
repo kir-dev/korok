@@ -1,16 +1,38 @@
+'use strict';
+
+/// required modules
 var express = require('express');
 var path = require('path');
+var http = require('http');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var params = require('express-params');
+var uuid = require('node-uuid');
+var config = require('./config');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+/// import routing
+var index = require('./routes/index');
+var profile = require('./routes/profile');
+var groups = require('./routes/groups');
+var valuations = require('./routes/valuations');
+var login = require('./routes/login');
+var user = require('./routes/user');
+var search = require('./routes/search');
+var groupsProfile = require('./routes/groups-profile');
+
+/// authentication modules
+//var passport = require('passport');
+//var BearerStrategy = require('passport-http-bearer').Strategy;
+//var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 
 var app = express();
 
-// view engine setup
+app.set('port', process.env.PORT || 9000);
+
+/// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -18,21 +40,48 @@ app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(cookieParser());
+
+app.use(cookieParser(config.cookieSecret));
+app.use(session({
+    secret: config.sessionSecret
+}));
+
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+//app.use(passport.initialize());
+//app.use(passport.session());
 
-/// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
+params.extend(app)
+
+/// routing
+app.param('id', /^\d+$/);
+
+app.use('/', index);
+
+app.use('/login', login);
+app.use('/user', user);
+app.use('/search', search);
+
+app.use('/profile', profile);
+app.use('/profile/settings', profile);
+app.use('/profile/svie', profile);
+app.use('/profile/:id', profile);
+
+app.use('/valuations', valuations);
+app.use('/valuations/:id', valuations);
+
+app.use('/groups', groups);
+app.use('/group/new', groups);
+app.use('/group/:id', groupsProfile);
+app.use('/group/:id/settings', groups);
 
 /// error handlers
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.send(500, 'Something broken');
+    next(err);
+});
 
 // development error handler
 // will print stacktrace
@@ -56,5 +105,9 @@ app.use(function(err, req, res, next) {
     });
 });
 
-
 module.exports = app;
+
+/// running application
+app.listen(app.get('port'), config.hostAddress, function(){
+    console.log('Express server listening on port ' + app.get('port'));
+});

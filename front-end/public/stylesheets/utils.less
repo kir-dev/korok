@@ -1,0 +1,104 @@
+@defaultFont: 'Open Sans';
+@defaultFontColor: white;
+@blackFontColor: black;
+@defaultFontSize: 14px;
+@light: 300;
+@regular: 400;
+@bold: 700;
+
+* {
+  font-family: @defaultFont;
+  margin: 0;
+  padding: 0;
+  box-sizing: content-box !important;
+}
+
+body {
+  background: url('../images/bg.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  position: relative;
+}
+
+a {
+  text-decoration: none;
+}
+
+.link-border {
+  border: 1px solid transparent;
+}
+
+.link-border:hover {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+// sticky footer magic
+
+html, body {
+  height: 100%;
+}
+
+#content {
+  min-height: 100%;
+  margin-bottom: -30px;
+}
+
+#content:after {
+  content: "";
+  display: block;
+}
+
+footer, #content:after {
+  height: 20px;
+}
+
+footer {
+  text-align: right;
+  color: #ffffff;
+  padding: 5px;
+  padding-right: 10px;
+  font-size: 14px;
+  font-weight: 100;
+}
+
+// some utils and other help classes
+
+.Center-horizontally {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.wide-container {
+  .Center-horizontally;
+
+  width: 1200px;
+}
+
+.medium-container {
+  .Center-horizontally;
+
+  width: 1000px;
+}
+
+.small-container {
+  .Center-horizontally;
+
+  width: 800px;
+}
+
+.clearfix {
+  clear: both;
+}
+
+.unselectable {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  /*
+    Introduced in IE 10.
+    See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+  */
+  -ms-user-select: none;
+  user-select: none;
+}
