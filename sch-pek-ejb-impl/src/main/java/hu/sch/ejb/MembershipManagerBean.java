@@ -177,4 +177,14 @@ public class MembershipManagerBean implements MembershipManagerLocal {
 
         return q.getResultList();
     }
+
+    @Override
+    public List<Membership> findActiveMembershipsForGroup(Long groupId) {
+        return new GroupMembershipFetcher(em, groupId).findActive();
+    }
+
+    @Override
+    public List<Membership> findInactiveMembershipsForGroup(Long groupId) {
+        return new GroupMembershipFetcher(em, groupId).findInactive();
+    }
 }

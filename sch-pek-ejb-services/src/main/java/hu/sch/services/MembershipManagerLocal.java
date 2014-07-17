@@ -23,7 +23,8 @@ public interface MembershipManagerLocal {
      * @param user the user which wants to join.
      * @param membershipStart start of the membership
      * @param membershipEnd end of the membership
-     * @param isAuthorized true and the user will get an automatic "tag" post in the group.
+     * @param isAuthorized true and the user will get an automatic "tag" post in
+     * the group.
      */
     void joinGroup(Group group, User user, Date membershipStart, Date membershipEnd, boolean isAuthorized)
             throws MembershipAlreadyExistsException;
@@ -35,7 +36,6 @@ public interface MembershipManagerLocal {
      * @return true if the deletion was successful, false otherwise.
      */
     void deleteMembership(Membership membership);
-
 
     /**
      * Gets a membership for the given user-group pair.
@@ -75,8 +75,7 @@ public interface MembershipManagerLocal {
     /**
      * Fetches and sets the memberships for the given group.
      *
-     * @param group the group which memberships collection will be
-     * populated.
+     * @param group the group which memberships collection will be populated.
      * @return the same group with the memberships included
      */
     public Group fetchMembershipsFor(Group group);
@@ -92,4 +91,22 @@ public interface MembershipManagerLocal {
      * @return
      */
     List<Membership> findMembershipsForUser(User user);
+
+    /**
+     * Gets active memberships for a group. Includes some user info in the
+     * fetched memeberships.
+     *
+     * @param groupId
+     * @return
+     */
+    List<Membership> findActiveMembershipsForGroup(Long groupId);
+
+    /**
+     * Gets inactive (öregtag) memberships for a group. Includes some user info
+     * in the fetched memeberships.
+     *
+     * @param groupId
+     * @return
+     */
+    List<Membership> findInactiveMembershipsForGroup(Long groupId);
 }
