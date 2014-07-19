@@ -62,10 +62,6 @@ public class GroupView {
         return group.getDelegateNumber();
     }
 
-    public Long getNumberOfPrimaryMembers() {
-        return group.getNumberOfPrimaryMembers();
-    }
-
     public boolean getUsersCanApply() {
         return group.getUsersCanApply();
     }

@@ -161,7 +161,6 @@ Egy példa:
         "founded" : 2001,
         "is_svie" : true,
         "delegate_number" : 1,
-        "number_of_primary_members" : null,
         "users_can_apply" : true,
         "head" : "KIR Admin",
         "status" : "akt",
