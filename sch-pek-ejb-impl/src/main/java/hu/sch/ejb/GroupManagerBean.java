@@ -152,8 +152,17 @@ public class GroupManagerBean implements GroupManagerLocal {
 
 
     @Override
-    public void updateGroup(Group group) {
-        em.merge(group);
+    public Group updateGroupInfo(Long id, Group group) {
+        Group groupToUpdate = findGroupById(id);
+
+        groupToUpdate.setName(group.getName());
+        groupToUpdate.setFounded(group.getFounded());
+        groupToUpdate.setIntroduction(group.getIntroduction());
+        groupToUpdate.setMailingList(group.getMailingList());
+        groupToUpdate.setUsersCanApply(group.getUsersCanApply());
+        groupToUpdate.setWebPage(group.getWebPage());
+
+        return groupToUpdate;
     }
 
     @Override

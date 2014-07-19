@@ -210,3 +210,20 @@ Egy példa:
       ],
       success: true
     }
+
+### Kör alapinformációinak szerkesztése
+
+**FONTOS**: ha valamelyik mező kimarad a kérésből, akkor annak az értékét töröljük az adatbázisból.
+
+    PUT /groups/{id}
+
+    {
+        "name": "Kir Dev",
+        "founded": 2001,
+        "introduction": "Webfejlesztés, móka, kacagás.",
+        "mailing_list": "mailinglist@example.com",
+        "users_can_apply": true,
+        "web_page": "http://example.com"
+    }
+
+Válaszban visszakapjuk a módosított kör adatait.

@@ -5,6 +5,7 @@ import hu.sch.services.GroupManagerLocal;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -23,6 +24,12 @@ public class Groups {
     @Path("{id}")
     public GroupView getById(@PathParam("id") Long id) {
         return new GroupView(groupManager.findGroupById(id));
+    }
+
+    @Path("{id}")
+    @PUT
+    public GroupView update(@PathParam("id") Long id, Group group) {
+        return new GroupView(groupManager.updateGroupInfo(id, group));
     }
 
     @Inject
