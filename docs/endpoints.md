@@ -121,3 +121,109 @@ Egy példa futtatás:
       },
       "success" : true
     }
+
+## Körök lekérdezése
+
+### Összes kör lekérdezése
+
+    GET /groups
+
+Példa futtás
+
+    $ curl localhost:8080/internal/groups -i -H'Content-Type: application/json' -H'Accept: application/json'
+
+Ez visszaadja az összes aktív kör alapadatait. A `GroupView` osztályban találhatóak meg,
+hogy pontosan milyen adatokat ad vissza.
+
+### Egyetlen kör lekérdezése
+
+    GET /groups/{id}
+
+A megadott azonosítójú kört kérdezi le, annak alapadataival. A `GroupView` osztályban találhatóak meg,
+hogy pontosan milyen adatokat ad vissza.
+
+Egy példa:
+
+    $ curl localhost:8080/internal/groups/106 -i -H'Content-Type: application/json' -H'Accept: application/json' -sHTTP/1.1 200 OK
+
+    Connection: keep-alive
+    X-Powered-By: Undertow/1
+    Server: WildFly/8
+    Transfer-Encoding: chunked
+    Content-Type: application/json
+    Date: Thu, 17 Jul 2014 15:20:04 GMT
+
+    {
+      "data" : {
+        "introduction" : "A Villanykari Információs Rendszer fejlesztésével és üzemeltetésével foglalkozó kör.",
+        "web_page" : "http://kir-dev.sch.bme.hu",
+        "mailing_list" : "kir-dev@sch.bme.hu",
+        "founded" : 2001,
+        "is_svie" : true,
+        "delegate_number" : 1,
+        "users_can_apply" : true,
+        "head" : "KIR Admin",
+        "status" : "akt",
+        "name" : "KIR fejlesztők és üzemeltetők",
+        "id" : 106,
+        "type" : "szakmai kör"
+      },
+      "success" : true
+    }
+
+### Körtagságok lekérdezése
+
+    GET /groups/{id}/memberships/active
+
+    GET /groups/{id}/memberships/inactive
+
+`active` a jelenleg is aktív tagságokat adja vissza, míg az `inactive` az öregtagságokat.
+Egy tömbként kapjuk meg a tagságokat. A tagságok a következő json objektumokként reprezentáltak.
+Részletes leírás a `GroupMembershipView` osztályban található.
+
+Egy példa:
+    $ curl localhost:8080/internal/groups/106/memberships/inactive -i -H'Content-Type: application/json' -H'Accept: application/json' -s | head -30
+
+    HTTP/1.1 200 OK
+    Connection: keep-alive
+    X-Powered-By: Undertow/1
+    Server: WildFly/8
+    Transfer-Encoding: chunked
+    Content-Type: application/json
+    Date: Thu, 17 Jul 2014 17:31:28 GMT
+
+    {
+      "data" : [ {
+            "posts" : [ "öregtag" ],
+            "user_fullname" : "John Smith",
+            "end" : "2009-08-31",
+            "start" : "2009-05-20",
+            "id" : 1
+          }, {
+            "posts" : [ "öregtag" ],
+            "user_fullname" : "John Doe",
+            "end" : "2003-05-14",
+            "start" : "2002-09-16",
+            "id" : 2
+          },
+          ...
+      ],
+      success: true
+    }
+
+### Kör alapinformációinak szerkesztése
+
+**FONTOS**: ha valamelyik mező kimarad a kérésből, akkor annak az értékét töröljük az adatbázisból.
+
+    PUT /groups/{id}
+
+    {
+        "name": "Kir Dev",
+        "founded": 2001,
+        "introduction": "Webfejlesztés, móka, kacagás.",
+        "mailing_list": "mailinglist@example.com",
+        "users_can_apply": true,
+        "web_page": "http://example.com"
+    }
+
+Válaszban visszakapjuk a módosított kör adatait.

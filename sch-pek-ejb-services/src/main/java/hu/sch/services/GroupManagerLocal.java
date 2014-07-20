@@ -87,9 +87,10 @@ public interface GroupManagerLocal {
     /**
      * Updates the group.
      *
-     * @param group group to update
+     * @param id id of the group to update
+     * @param group the source of group info, usually deserialized from the request
      */
-    void updateGroup(Group group);
+    Group updateGroupInfo(Long id, Group group);
 
     /**
      * Gets the leader for a group.

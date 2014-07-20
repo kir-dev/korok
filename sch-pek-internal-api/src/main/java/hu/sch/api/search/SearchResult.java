@@ -1,6 +1,6 @@
 package hu.sch.api.search;
 
-import hu.sch.api.search.group.GroupView;
+import hu.sch.api.group.GroupView;
 import hu.sch.api.user.UserView;
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
