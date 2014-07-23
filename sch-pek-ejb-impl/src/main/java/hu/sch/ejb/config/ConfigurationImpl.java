@@ -25,6 +25,7 @@ public class ConfigurationImpl implements Configuration {
     private static final String PROPERTY_NAME = "application.resource.dir";
     private static final String TIMES_FONT_FILE = "times.font.file";
     private static final String APPLICATION_FOLDER = "korok";
+    private static final String APPLICATION_FOLDER_KEY = "application.folder";
     private static final String CONFIG_FILE = "config.properties";
     private static final String IMAGE_UPLOAD_PATH = "image.upload.path";
     private static final String IMAGE_MAX_SIZE = "image.upload.max";
@@ -50,7 +51,7 @@ public class ConfigurationImpl implements Configuration {
         baseDir = dir;
 
         try(FileInputStream fis =
-                new FileInputStream(new File(baseDir + APPLICATION_FOLDER + "/" + CONFIG_FILE))) {
+                new FileInputStream(new File(baseDir + getApplicationFolder() + "/" + CONFIG_FILE))) {
 
             properties.load(fis);
             logger.debug(properties.toString());
@@ -101,7 +102,7 @@ public class ConfigurationImpl implements Configuration {
 
     @Override
     public String getFontPath() {
-        return baseDir + APPLICATION_FOLDER + "/" + properties.getProperty(TIMES_FONT_FILE);
+        return baseDir + getApplicationFolder() + "/" + properties.getProperty(TIMES_FONT_FILE);
     }
 
     @Override
@@ -110,5 +111,9 @@ public class ConfigurationImpl implements Configuration {
         int size = Integer.parseInt(properties.getProperty(IMAGE_MAX_SIZE, "400"));
 
         return new ImageUploadConfig(path, size);
+    }
+
+    private String getApplicationFolder() {
+        return System.getProperty(APPLICATION_FOLDER_KEY, APPLICATION_FOLDER);
     }
 }
