@@ -5,6 +5,7 @@ import hu.sch.services.config.Configuration;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.PhoenixApplication;
+import hu.sch.web.authz.OAuthSignInFlow;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.choosers.GoogleAnalyticsScript;
@@ -53,7 +54,12 @@ public abstract class PekPage extends WebPage {
 
     public PekPage() {
         DEFAULT_SUPPORT_ID = config.getSupportDefaultId();
-        loadUser();
+
+        // TODO: ignore pages that does not need authentication
+        if (!getSession().isUserSignedIn()) {
+            new OAuthSignInFlow(config.getOAuthCredentials()).start();
+        }
+
         init();
     }
 
@@ -80,18 +86,6 @@ public abstract class PekPage extends WebPage {
         add(headerLabel = new Label("headerLabel", new Model<String>("")));
         add(new FeedbackPanel("pagemessages").setEscapeModelStrings(false));
         add(new GoogleAnalyticsScript("analyticsJs"));
-    }
-
-    private void loadUser() {
-        Long virId = getAuthorizationComponent().getUserid(getRequest());
-        if (virId == null) {
-            // nincs virId, ilyenkor userId := 0?
-            getSession().setUserId(0L);
-            return;
-        } else if (!virId.equals(getSession().getUserId())) {
-            // TODO: ilyenkor mi van? egyelőre beállítjuk a session ben is
-            getSession().setUserId(virId);
-        }
     }
 
     /**
