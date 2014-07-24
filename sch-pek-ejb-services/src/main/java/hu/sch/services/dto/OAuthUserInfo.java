@@ -1,6 +1,7 @@
-package hu.sch.web.authz;
+package hu.sch.services.dto;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.Collections;
 import java.util.Map;
 
 public class OAuthUserInfo {
@@ -12,7 +13,7 @@ public class OAuthUserInfo {
     private Map<String, String> linkedAccounts;
 
     @SerializedName("roomNumber")
-    private String roomNumber;
+    private OAuthDormitory dormitory;
 
     public String getAuthSchInternalId() {
         return authSchInternalId;
@@ -23,20 +24,18 @@ public class OAuthUserInfo {
     }
 
     public Map<String, String> getLinkedAccounts() {
-        return linkedAccounts;
+        return Collections.unmodifiableMap(linkedAccounts);
     }
 
     public void setLinkedAccounts(Map<String, String> linkedAccounts) {
         this.linkedAccounts = linkedAccounts;
     }
 
-    public String getRoomNumber() {
-        return roomNumber;
+    public OAuthDormitory getDormitory() {
+        return dormitory;
     }
 
-    public void setRoomNumber(String roomNumber) {
-        this.roomNumber = roomNumber;
+    public void setDormitory(OAuthDormitory dormitory) {
+        this.dormitory = dormitory;
     }
-
-
 }

@@ -1,11 +1,11 @@
 package hu.sch.web.authz;
 
+import hu.sch.services.dto.OAuthUserInfo;
 import com.google.gson.Gson;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.config.OAuthCredentials;
 import hu.sch.web.session.VirSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
