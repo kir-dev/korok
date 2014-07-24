@@ -30,6 +30,7 @@ public class OAuthCallbackServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(OAuthCallbackServlet.class);
     private static final String REGISTER_URL = "/profile/register";
+    private static final String ERROR_HTML_URL = "/oauth_error.html";
 
     @Inject
     private Configuration config;
@@ -51,6 +52,7 @@ public class OAuthCallbackServlet extends HttpServlet {
             logger.info("User successfully logged in via OAuth.");
         } catch (OAuthProblemException | OAuthSystemException | OAuthFlowException ex) {
             logger.error("Error during oauth flow", ex);
+            getSession().invalidate();
             sendErrorResponse(resp);
         }
     }
@@ -108,12 +110,8 @@ public class OAuthCallbackServlet extends HttpServlet {
         throw new IllegalStateException("There is no session, probably oauth_callback servlet was called directly.");
     }
 
-    private void sendErrorResponse(HttpServletResponse response) {
-        try (PrintWriter writer = response.getWriter()) {
-            writer.println("Hiba! Kérlek próbálj meg bejelentkezni újra!");
-        } catch (IOException ex) {
-            logger.error("Could not send error response", ex);
-        }
+    private void sendErrorResponse(HttpServletResponse response) throws IOException {
+        response.sendRedirect(ERROR_HTML_URL);
     }
 
     // returns true when the virid could be set to the session
