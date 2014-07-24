@@ -2,6 +2,7 @@ package hu.sch.ejb.config;
 
 import hu.sch.services.config.ImageUploadConfig;
 import hu.sch.services.config.Configuration;
+import hu.sch.services.config.OAuthCredentials;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
@@ -33,6 +34,12 @@ public class ConfigurationImpl implements Configuration {
     private static final String DOMAIN_KOROK = "domain.korok";
     private static final String SUPPORT_BASE_URL = "support.baseUrl";
     private static final String SUPPORT_DEFAULT_ID = "support.defaultId";
+
+    private static final String OAUTH_CLIENT_ID = "oauth.client.id";
+    private static final String OAUTH_CLIENT_SECRET = "oauth.client.secret";
+    private static final String OAUTH_URL_LOGIN = "oauth.url.login";
+    private static final String OAUTH_URL_TOKEN = "oauth.url.token";
+    private static final String OAUTH_SCOPE = "oauth.scope";
 
     private final Properties properties = new Properties();
     private final String baseDir;
@@ -115,5 +122,16 @@ public class ConfigurationImpl implements Configuration {
 
     private String getApplicationFolder() {
         return System.getProperty(APPLICATION_FOLDER_KEY, APPLICATION_FOLDER);
+    }
+
+    @Override
+    public OAuthCredentials getOAuthCredentials() {
+        return new OAuthCredentials(
+                properties.getProperty(OAUTH_CLIENT_ID),
+                properties.getProperty(OAUTH_CLIENT_SECRET),
+                properties.getProperty(OAUTH_URL_TOKEN),
+                properties.getProperty(OAUTH_URL_LOGIN),
+                properties.getProperty(OAUTH_SCOPE)
+        );
     }
 }

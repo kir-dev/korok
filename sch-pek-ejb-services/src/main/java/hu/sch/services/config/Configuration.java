@@ -22,6 +22,8 @@ public interface Configuration {
 
     int getSupportDefaultId();
 
+    OAuthCredentials getOAuthCredentials();
+
     /**
      * Környezetet leíró enum a finomhangolásért
      */
