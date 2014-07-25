@@ -52,7 +52,7 @@ public class ShowUser extends KorokPage {
     private void initComponents() {
         try {
             if (id == null) {
-                id = getSession().getUserId();
+                id = getCurrentUserId();
                 ownProfile = true;
             }
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class ShowUser extends KorokPage {
 
         // Nézzük meg, hogy milyen csoportokba hívhatjuk meg a felhasználót.
         List<Group> groups;
-        User currentUser = getUser();
+        User currentUser = getCurrentUser();
         if (currentUser == null) {
             groups = new ArrayList<Group>();
         } else {

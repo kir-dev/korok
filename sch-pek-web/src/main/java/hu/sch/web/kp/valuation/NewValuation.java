@@ -62,7 +62,7 @@ public class NewValuation extends KorokPage {
             @Override
             protected void onSubmit() {
                 try {
-                    valuationManager.addNewValuation(group, getUser(), valuationText, principle);
+                    valuationManager.addNewValuation(group, getCurrentUser(), valuationText, principle);
                 } catch (PekEJBException ex) {
                     // on duplicate craete error do nothing
                     if (ex.getErrorCode() != PekErrorCode.DATABASE_CREATE_VALUATION_DUPLICATE) {

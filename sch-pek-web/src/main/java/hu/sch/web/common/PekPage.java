@@ -52,6 +52,7 @@ public abstract class PekPage extends WebPage {
     protected UserManagerLocal userManager;
     @Inject
     protected Configuration config;
+    private User user;
 
     public PekPage() {
         DEFAULT_SUPPORT_ID = config.getSupportDefaultId();
@@ -75,10 +76,10 @@ public abstract class PekPage extends WebPage {
         add(new WebComponent("favicon").add(
                 new AttributeModifier("href", new Model<String>("/images/" + getFavicon()))));
 
-        User user = getUser();
+        User user = getCurrentUser();
         if (user != null && user.isShowRecommendedPhoto()) {
             // javasoljunk neki egy fotót
-            add(new RecommendedPhotoPanel("recommendPhoto", getRemoteUser(), getUser()));
+            add(new RecommendedPhotoPanel("recommendPhoto", getRemoteUser(), getCurrentUser()));
         } else {
             add(new EmptyPanel("recommendPhoto").setVisible(false));
         }
@@ -142,8 +143,15 @@ public abstract class PekPage extends WebPage {
         return getAuthorizationComponent().getRemoteUser(getRequest());
     }
 
-    protected final User getUser() {
-        return userManager.findUserById(getSession().getUserId(), true);
+    protected final User getCurrentUser() {
+        if (user == null) {
+            user = getAuthorizationComponent().getUserAttributes(getRequest());
+        }
+        return user;
+    }
+
+    protected final Long getCurrentUserId() {
+        return getAuthorizationComponent().getUserid(getRequest());
     }
 
     @Override

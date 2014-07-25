@@ -2,6 +2,7 @@ package hu.sch.web.kp.group.admin;
 
 import hu.sch.domain.Membership;
 import hu.sch.services.MembershipManagerLocal;
+import hu.sch.web.PhoenixApplication;
 import hu.sch.web.kp.group.ShowGroup;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.components.SelectableMembership;
@@ -38,8 +39,8 @@ public final class AdminMembershipsPanel extends Panel {
     public AdminMembershipsPanel(String id, final List<Membership> activeMembers) {
         super(id);
 
-        final List<SelectableMembership> lines =
-                new ArrayList<SelectableMembership>(activeMembers.size());
+        final List<SelectableMembership> lines
+                = new ArrayList<SelectableMembership>(activeMembers.size());
         for (Membership ms : activeMembers) {
             lines.add(new SelectableMembership(ms));
         }
@@ -55,11 +56,11 @@ public final class AdminMembershipsPanel extends Panel {
                 columns.add(new PanelColumn<SelectableMembership>("SVIE",
                         MembershipTable.SORT_BY_SVIE) {
 
-                    @Override
-                    protected Panel getPanel(String componentId, SelectableMembership obj) {
-                        return new SvieMembershipDetailsIcon(componentId, obj.getMembership());
-                    }
-                });
+                            @Override
+                            protected Panel getPanel(String componentId, SelectableMembership obj) {
+                                return new SvieMembershipDetailsIcon(componentId, obj.getMembership());
+                            }
+                        });
 
                 columns.add(new PanelColumn<SelectableMembership>("Jogok") {
 
@@ -76,11 +77,10 @@ public final class AdminMembershipsPanel extends Panel {
             @Override
             public void onSubmit() {
                 try {
-                    long myId = ((VirSession) getSession()).getUserId();
                     for (SelectableMembership extendedGroup : lines) {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
-                            if (!ms.getUser().getId().equals(myId)) {
+                            if (!ms.getUser().getId().equals(getCurrentUserId())) {
                                 membershipManager.inactivateMembership(ms);
                             }
                         }
@@ -104,11 +104,10 @@ public final class AdminMembershipsPanel extends Panel {
             @Override
             public void onSubmit() {
                 try {
-                    long myId = ((VirSession) getSession()).getUserId();
                     for (SelectableMembership extendedGroup : lines) {
                         Membership ms = extendedGroup.getMembership();
                         if (extendedGroup.getSelected()) {
-                            if (!ms.getUser().getId().equals(myId)) {
+                            if (!ms.getUser().getId().equals(getCurrentUserId())) {
                                 membershipManager.deleteMembership(ms);
                             }
                         }
@@ -124,5 +123,9 @@ public final class AdminMembershipsPanel extends Panel {
         if (activeMembers.isEmpty()) {
             setVisible(false);
         }
+    }
+
+    private Long getCurrentUserId() {
+        return ((PhoenixApplication) getApplication()).getAuthorizationComponent().getUserid(getRequest());
     }
 }

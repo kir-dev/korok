@@ -79,7 +79,7 @@ public abstract class KorokPage extends PekPage {
      * @return          Van-e delegált posztja a csoportban?
      */
     protected final boolean hasUserDelegatedPostInGroup(Group group) {
-        User user = getUser();
+        User user = getCurrentUser();
         if (user == null) {
             return false;
         }

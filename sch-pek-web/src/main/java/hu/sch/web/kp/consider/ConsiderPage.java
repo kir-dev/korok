@@ -69,7 +69,7 @@ public class ConsiderPage extends KorokPage {
         IDataProvider<ValuationStatistic> dp = new ValuationStatisticDataProvider(
                 valuationManager.findValuationStatisticForSemester());
 
-        final User user = getUser();
+        final User user = getCurrentUser();
 
         Form form = new Form("considerForm") {
 

@@ -65,7 +65,7 @@ public class Valuations extends KorokPage {
         }
 
         if (!isUserGroupLeader(group)) {
-            log.warn("Paraméterátírásos próbálkozás! " + getUser().getId());
+            log.warn("Paraméterátírásos próbálkozás! " + getCurrentUserId());
             getSession().error("Nincs jogod a művelethez! A próbálkozásod naplózásra került!");
             throw new RestartResponseException(getApplication().getHomePage());
         }
@@ -74,7 +74,7 @@ public class Valuations extends KorokPage {
     }
 
     private void init() {
-        User user = userManager.findUserById(getSession().getUserId(), true);
+        User user = getCurrentUser();
         if (user == null || !isUserGroupLeaderInSomeGroup()) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));
             throw new RestartResponseException(GroupHierarchy.class);
