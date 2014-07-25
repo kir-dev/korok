@@ -114,7 +114,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
 
         user.setNeptunCode(regUser.getNeptun());
 
-        accountManager.createUser(user, password);
+        accountManager.createUser(user, password, null);
     }
 
     private RegisteringUser findRegUserByEducationId(final RegisteringUser regUser)

@@ -48,7 +48,7 @@ public class CreateNewPerson extends KorokPage {
                 user.setStudentStatus(StudentStatus.UNKNOWN);
                 user.setUserStatus(UserStatus.ACTIVE);
                 try {
-                    accountManager.createUser(user, RandomStringUtils.randomAlphanumeric(10));
+                    accountManager.createUser(user, RandomStringUtils.randomAlphanumeric(10), CreateNewPerson.this.getSession().getUserId());
                 } catch (PekEJBException ex) {
                     logger.error("Could not save user", ex);
                     throw new RestartResponseException(CreateNewPerson.class);
