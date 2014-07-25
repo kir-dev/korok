@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN usr_auth_sch_id VARCHAR(50) UNIQUE;
