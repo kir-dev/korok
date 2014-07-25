@@ -47,8 +47,14 @@ public class OAuthCallbackServlet extends HttpServlet {
             Long userId = updateSession(userInfo, accessToken);
             if (userId != null) {
                 userIntegration.updateUser(userId, userInfo);
-                // TODO: save and retrieve url so we can redirect back where the user came from
-                resp.sendRedirect("/");
+
+                String returnUrl = getSession().getReturnUrl();
+                if (returnUrl == null) {
+                    resp.sendRedirect("/");
+                } else {
+                    resp.sendRedirect(returnUrl);
+                    getSession().setReturnUrl(null);
+                }
             } else {
                 resp.sendRedirect(REGISTER_URL);
             }

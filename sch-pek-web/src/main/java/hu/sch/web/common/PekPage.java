@@ -58,7 +58,7 @@ public abstract class PekPage extends WebPage {
         DEFAULT_SUPPORT_ID = config.getSupportDefaultId();
 
         if (shouldInitiateLogin()) {
-            new OAuthSignInFlow(config.getOAuthCredentials()).start();
+            new OAuthSignInFlow(config.getOAuthCredentials(), getRequest()).start();
         }
 
         init();
