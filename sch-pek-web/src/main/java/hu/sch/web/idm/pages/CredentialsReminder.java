@@ -22,25 +22,16 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
  */
 public class CredentialsReminder extends KorokPage {
 
-    private enum Page {
-
-        USERNAME, PASSWORD;
-
-        @Override
-        public String toString() {
-            return super.toString().toLowerCase();
-        }
-    }
     //
-    private static final String PAGE_PARAM = "p";
+    public static final String PAGE_PARAM = "p";
     @Inject
     protected AccountManager accountManager;
-    private final Page currentPage;
+    private final CredentialReminderType currentPage;
     //
     private String mail;
 
     public CredentialsReminder() {
-        this(new PageParameters().add(PAGE_PARAM, Page.USERNAME.toString()));
+        this(new PageParameters().add(PAGE_PARAM, CredentialReminderType.USERNAME.lowercase()));
     }
 
     public CredentialsReminder(final PageParameters params) {
@@ -49,11 +40,11 @@ public class CredentialsReminder extends KorokPage {
             throw new RestartResponseException(getApplication().getHomePage());
         }
 
-        Page p;
+        CredentialReminderType p;
         try {
-            p = Page.valueOf(params.get(PAGE_PARAM).toString().toUpperCase());
+            p = CredentialReminderType.valueOf(params.get(PAGE_PARAM).toString().toUpperCase());
         } catch (IllegalArgumentException ex) {
-            p = Page.USERNAME; //default
+            p = CredentialReminderType.USERNAME; //default
         }
 
         currentPage = p;
@@ -63,8 +54,8 @@ public class CredentialsReminder extends KorokPage {
     protected void onInitialize() {
         super.onInitialize();
 
-        setHeaderLabelText(getString("headerLabel." + currentPage));
-        add(new Label("notifyLabel", getString("notifyLabel." + currentPage)));
+        setHeaderLabelText(getString("headerLabel." + currentPage.lowercase()));
+        add(new Label("notifyLabel", getString("notifyLabel." + currentPage.lowercase())));
 
         Form<Void> reminderForm = new StatelessForm<Void>("reminderForm") {
             @Override
@@ -88,7 +79,7 @@ public class CredentialsReminder extends KorokPage {
         add(reminderForm);
     }
 
-    private boolean sendReminder(final Page currentPage) throws PekEJBException {
+    private boolean sendReminder(final CredentialReminderType currentPage) throws PekEJBException {
         switch (currentPage) {
             case PASSWORD:
                 return accountManager.sendLostPasswordChangeLink(mail);
