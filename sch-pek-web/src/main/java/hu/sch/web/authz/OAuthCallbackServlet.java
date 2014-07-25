@@ -2,6 +2,7 @@ package hu.sch.web.authz;
 
 import hu.sch.services.dto.OAuthUserInfo;
 import com.google.gson.Gson;
+import hu.sch.services.AuthSchUserIntegration;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.config.OAuthCredentials;
 import hu.sch.web.session.VirSession;
@@ -35,20 +36,23 @@ public class OAuthCallbackServlet extends HttpServlet {
     @Inject
     private Configuration config;
 
+    @Inject
+    private AuthSchUserIntegration userIntegration;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String accessToken = getAccessToken(req);
             OAuthUserInfo userInfo = getUserInfo(accessToken);
-
-            if (updateSession(userInfo, accessToken)) {
+            Long userId = updateSession(userInfo, accessToken);
+            if (userId != null) {
+                userIntegration.updateUser(userId, userInfo);
                 // TODO: save and retrieve url so we can redirect back where the user came from
                 resp.sendRedirect("/");
             } else {
                 resp.sendRedirect(REGISTER_URL);
             }
 
-            // TODO: update user with info
             logger.info("User successfully logged in via OAuth.");
         } catch (OAuthProblemException | OAuthSystemException | OAuthFlowException ex) {
             logger.error("Error during oauth flow", ex);
@@ -114,17 +118,17 @@ public class OAuthCallbackServlet extends HttpServlet {
         response.sendRedirect(ERROR_HTML_URL);
     }
 
-    // returns true when the virid could be set to the session
-    private boolean updateSession(OAuthUserInfo userInfo, String accessToken) throws IOException {
+    // returns the user id when present, null otherwise
+    private Long updateSession(OAuthUserInfo userInfo, String accessToken) throws IOException {
         getSession().setAccessToken(accessToken);
 
         String virIdStr = userInfo.getLinkedAccounts().get("vir");
         if (StringUtils.isBlank(virIdStr)) {
-            return false;
+            return null;
         }
 
         Long id = Long.valueOf(virIdStr);
         getSession().setUserId(id);
-        return true;
+        return id;
     }
 }
