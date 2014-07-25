@@ -2,6 +2,7 @@ package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
+import hu.sch.services.MembershipManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.session.VirSession;
 import javax.inject.Inject;
@@ -18,6 +19,9 @@ public class SessionBasedAuthorization implements UserAuthorization {
     @Inject
     private UserManagerLocal userManager;
 
+    @Inject
+    private MembershipManagerLocal membershipManager;
+
     @Override
     public void init(Application wicketApplication) {
         // NOTE: we can do this here because the UserManager is stateless!
@@ -32,14 +36,12 @@ public class SessionBasedAuthorization implements UserAuthorization {
 
     @Override
     public boolean isGroupLeaderInGroup(Request wicketRequest, Group group) {
-        // TODO: check for group leadership
-        return true;
+        return membershipManager.isGroupLeader(getUserid(wicketRequest), group);
     }
 
     @Override
     public boolean isGroupLeaderInSomeGroup(Request wicketRequest) {
-        // TODO: check for group leadership
-        return true;
+        return membershipManager.hasGroupLeadership(getUserid(wicketRequest));
     }
 
     @Override
