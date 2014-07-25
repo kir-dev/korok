@@ -6,8 +6,7 @@ import hu.sch.domain.enums.ValuationStatus;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.config.Configuration.Environment;
 import hu.sch.services.SystemManagerLocal;
-import hu.sch.web.authz.AgentBasedAuthorization;
-import hu.sch.web.authz.DummyAuthorization;
+import hu.sch.web.authz.SessionBasedAuthorization;
 import hu.sch.web.authz.UserAuthorization;
 import hu.sch.web.error.Forbidden;
 import hu.sch.web.error.InternalServerError;
@@ -67,7 +66,6 @@ import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.PageRequestHandlerTracker;
 import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.cycle.RequestCycleContext;
 import org.apache.wicket.request.mapper.parameter.UrlPathPageParametersEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,24 +129,8 @@ public class PhoenixApplication extends WebApplication {
 
     @Override
     protected void init() {
-        //A környezetfüggő beállítások elvégzése
-        Environment env = config.getEnvironment();
-        if (env == Environment.DEVELOPMENT || env == Environment.TESTING) {
-            //Ha DEVELOPMENT környezetben vagyunk, akkor Dummyt használunk
-            authorizationComponent = new DummyAuthorization();
-        } else { // ha STAGING vagy PRODUCTION, akkor az AgentBased kell nekünk
-            authorizationComponent = new AgentBasedAuthorization();
-        }
-
-        if (config.getEnvironment().equals(Environment.PRODUCTION)) {
-            setRequestCycleProvider(new IRequestCycleProvider() {
-                @Override
-                public RequestCycle get(RequestCycleContext c) {
-                    c.setExceptionMapper(new DefaultExceptionMapper());
-                    return new RequestCycle(c);
-                }
-            });
-        }
+        setAuthorizationComponent(new SessionBasedAuthorization());
+        setRequestCycleProvider(new PekRequestCycleProvider(config));
 
         getMarkupSettings().setStripWicketTags(true);
 
@@ -217,6 +199,11 @@ public class PhoenixApplication extends WebApplication {
 
     public UserAuthorization getAuthorizationComponent() {
         return authorizationComponent;
+    }
+
+    public void setAuthorizationComponent(UserAuthorization authorizationComponent) {
+        this.authorizationComponent = authorizationComponent;
+        this.authorizationComponent.init(this);
     }
 
     private void mountPages() {
