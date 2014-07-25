@@ -2,6 +2,7 @@ package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
+import hu.sch.services.Role;
 import org.apache.wicket.Application;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.request.Request;
@@ -65,13 +66,11 @@ public final class DummyAuthorization implements UserAuthorization {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasAbstractRole(Request wicketRequest, String role) {
+    public boolean hasAbstractRole(Request wicketRequest, Role role) {
         switch (role) {
-            case "ADMIN":
-                return true;
-            case "JETI":
-                return true;
-            case "SVIE":
+            case ADMIN:
+            case JETI:
+            case SVIE:
                 return true;
             default:
                 return false;

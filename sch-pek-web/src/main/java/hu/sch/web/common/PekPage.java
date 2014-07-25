@@ -1,8 +1,9 @@
 package hu.sch.web.common;
 
 import hu.sch.domain.user.User;
-import hu.sch.services.config.Configuration;
+import hu.sch.services.Role;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.config.Configuration;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.PhoenixApplication;
 import hu.sch.web.authz.OAuthSignInFlow;
@@ -117,15 +118,15 @@ public abstract class PekPage extends WebPage {
     }
 
     protected final boolean isCurrentUserAdmin() {
-        return getAuthorizationComponent().hasAbstractRole(getRequest(), "ADMIN");
+        return getAuthorizationComponent().hasAbstractRole(getRequest(), Role.ADMIN);
     }
 
     protected final boolean isCurrentUserJETI() {
-        return getAuthorizationComponent().hasAbstractRole(getRequest(), "JETI");
+        return getAuthorizationComponent().hasAbstractRole(getRequest(), Role.JETI);
     }
 
     protected final boolean isCurrentUserSVIE() {
-        return getAuthorizationComponent().hasAbstractRole(getRequest(), "SVIE");
+        return getAuthorizationComponent().hasAbstractRole(getRequest(), Role.SVIE);
     }
 
     protected UserAuthorization getAuthorizationComponent() {

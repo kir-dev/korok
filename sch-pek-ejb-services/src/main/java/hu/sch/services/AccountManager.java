@@ -31,10 +31,11 @@ public interface AccountManager {
      *
      * @param user the user to be created
      * @param password
+     * @param currentUserId currently logged in user. It can be null if no user is logged in yet.
      *
      * @throws hu.sch.services.exceptions.PekEJBException
      */
-    void createUser(User user, String password) throws PekEJBException;
+    void createUser(User user, String password, Long currentUserId) throws PekEJBException;
 
     /**
      * Changes the user's password.

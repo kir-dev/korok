@@ -9,7 +9,8 @@ import hu.sch.domain.user.UserStatus;
 import static hu.sch.ejb.MailManagerBean.getMailString;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.AccountManager;
-import hu.sch.services.Roles;
+import hu.sch.services.Authorization;
+import hu.sch.services.Role;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.DuplicatedUserException;
@@ -20,10 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -56,14 +53,14 @@ public class AccountManagerBean implements AccountManager {
     @PersistenceContext
     private EntityManager em;
     //
-    @EJB(name = "UserManagerBean")
+    @Inject
     private UserManagerLocal userManager;
-    @EJB(name = "SystemManagerBean")
+    @Inject
     private SystemManagerLocal systemManager;
-    @EJB
+    @Inject
     private MailManagerBean mailManager;
-    @Resource
-    private SessionContext sessionContext;
+    @Inject
+    private Authorization authorization;
 
     public AccountManagerBean() {
     }
@@ -76,11 +73,11 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void createUser(User user, String password) throws PekEJBException {
+    public void createUser(User user, String password, Long currentUserId) throws PekEJBException {
         final byte[] salt = generateSalt();
         final String passwordDigest = hashPassword(password, salt);
 
-        final boolean isAdmin = sessionContext.isCallerInRole(Roles.ADMIN);
+        final boolean isAdmin = currentUserId != null && authorization.hasRole(currentUserId, Role.ADMIN);
 
         if (!isAdmin) {
             user.setSalt(Base64.encodeBase64String(salt));
