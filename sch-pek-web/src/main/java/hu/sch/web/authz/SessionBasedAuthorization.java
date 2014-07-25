@@ -58,7 +58,7 @@ public class SessionBasedAuthorization implements UserAuthorization {
     public User getUserAttributes(Request wicketRequest) {
         Long id = getUserid(wicketRequest);
         if (id != null) {
-            return userManager.findUserById(id);
+            return userManager.findUserById(id, true);
         }
 
         return null;
@@ -74,4 +74,8 @@ public class SessionBasedAuthorization implements UserAuthorization {
         return null;
     }
 
+    @Override
+    public boolean isLoggedIn(Request wicketRequest) {
+        return VirSession.get().isUserSignedIn();
+    }
 }

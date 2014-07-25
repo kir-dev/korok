@@ -35,7 +35,7 @@ public interface UserAuthorization {
      * Az aktuálisan bejelentkezett felhasználó körvezetőségét vizsgálja.
      *
      * @param wicketRequest wicketRequest
-     * @param group         group
+     * @param group group
      * @return Körvezető-e az adott csoportban a felhasználó
      */
     boolean isGroupLeaderInGroup(Request wicketRequest, Group group);
@@ -53,7 +53,7 @@ public interface UserAuthorization {
      * A felhasználó rendelkezik-e az adott szerepkörrel (ADMIN|JETI|SVIE)
      *
      * @param wicketRequest wicketRequest
-     * @param role          role
+     * @param role role
      * @return Rendelkezik-e a felhasználó az adott szereppel
      */
     boolean hasAbstractRole(Request wicketRequest, Role role);
@@ -73,4 +73,11 @@ public interface UserAuthorization {
      * @return A felhasználó egyedi azonosítója
      */
     String getRemoteUser(Request wicketRequest);
+
+    /**
+     * True-t ad vissza, ha van bejelentkezett felhasználó.
+     *
+     * @return
+     */
+    boolean isLoggedIn(Request wicketRequest);
 }
