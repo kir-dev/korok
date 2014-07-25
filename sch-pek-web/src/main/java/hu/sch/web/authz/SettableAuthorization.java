@@ -18,7 +18,7 @@ public class SettableAuthorization extends SessionBasedAuthorization {
     }
 
     @Override
-    public Long getUserid(Request wicketRequest) {
+    public Long getCurrentUserId(Request wicketRequest) {
         return userId;
     }
 

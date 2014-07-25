@@ -126,6 +126,6 @@ public final class AdminMembershipsPanel extends Panel {
     }
 
     private Long getCurrentUserId() {
-        return ((PhoenixApplication) getApplication()).getAuthorizationComponent().getUserid(getRequest());
+        return ((PhoenixApplication) getApplication()).getAuthorizationComponent().getCurrentUserId(getRequest());
     }
 }

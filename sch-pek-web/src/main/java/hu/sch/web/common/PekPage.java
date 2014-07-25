@@ -145,13 +145,13 @@ public abstract class PekPage extends WebPage {
 
     protected final User getCurrentUser() {
         if (user == null) {
-            user = getAuthorizationComponent().getUserAttributes(getRequest());
+            user = getAuthorizationComponent().getCurrentUser(getRequest());
         }
         return user;
     }
 
     protected final Long getCurrentUserId() {
-        return getAuthorizationComponent().getUserid(getRequest());
+        return getAuthorizationComponent().getCurrentUserId(getRequest());
     }
 
     @Override
