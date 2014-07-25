@@ -45,7 +45,13 @@ import javax.persistence.Transient;
     "SELECT ms FROM Membership ms "
     + "WHERE ms.groupId = :id"),
     @NamedQuery(name = Membership.findMembershipForUserAndGroup, query =
-    "SELECT ms FROM Membership ms WHERE ms.groupId = :groupId AND ms.userId = :userId")
+    "SELECT ms FROM Membership ms WHERE ms.groupId = :groupId AND ms.userId = :userId"),
+    @NamedQuery(name = Membership.countGroupLeaderInGroup, query =
+        "SELECT COUNT(ms) FROM Membership ms INNER JOIN ms.posts post WHERE ms.group = :group AND ms.userId = :userId AND post.postType.postName = '" + PostType.KORVEZETO + "'"
+    ),
+    @NamedQuery(name = Membership.countGroupLeaderShips, query =
+        "SELECT COUNT(ms) FROM Membership ms INNER JOIN ms.posts post WHERE ms.userId = :userId AND post.postType.postName = '" + PostType.KORVEZETO + "'"
+    ),
 })
 @SequenceGenerator(name = "grp_members_seq", sequenceName = "grp_members_seq",
         allocationSize = 1)
@@ -62,6 +68,8 @@ public class Membership implements MembershipTableEntry {
     public static final String getAllDelegated = "getAllDelegated";
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
     public static final String findMembershipForUserAndGroup = "getMembershipForUserAndGroup";
+    public static final String countGroupLeaderInGroup = "Membership.countGroupLeaderInGroup";
+    public static final String countGroupLeaderShips = "Membership.countGroupLeaderShips";
 
     @Id
     @GeneratedValue(generator = "grp_members_seq")
