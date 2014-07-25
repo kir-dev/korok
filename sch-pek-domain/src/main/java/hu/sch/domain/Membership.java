@@ -49,7 +49,7 @@ import javax.persistence.Transient;
     @NamedQuery(name = Membership.countGroupLeaderInGroup, query =
         "SELECT COUNT(ms) FROM Membership ms INNER JOIN ms.posts post WHERE ms.group = :group AND ms.userId = :userId AND post.postType.postName = '" + PostType.KORVEZETO + "'"
     ),
-    @NamedQuery(name = Membership.countGroupLeaderShips, query =
+    @NamedQuery(name = Membership.countGroupLeaderships, query =
         "SELECT COUNT(ms) FROM Membership ms INNER JOIN ms.posts post WHERE ms.userId = :userId AND post.postType.postName = '" + PostType.KORVEZETO + "'"
     ),
 })
@@ -69,7 +69,7 @@ public class Membership implements MembershipTableEntry {
     public static final String findMembershipsForGroup = "findMembershipsForGroup";
     public static final String findMembershipForUserAndGroup = "getMembershipForUserAndGroup";
     public static final String countGroupLeaderInGroup = "Membership.countGroupLeaderInGroup";
-    public static final String countGroupLeaderShips = "Membership.countGroupLeaderShips";
+    public static final String countGroupLeaderships = "Membership.countGroupLeaderships";
 
     @Id
     @GeneratedValue(generator = "grp_members_seq")

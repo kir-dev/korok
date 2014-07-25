@@ -23,7 +23,7 @@ public class GroupLeadership {
     }
 
     public boolean hasAny(Long userId) {
-        TypedQuery<Long> q = em.createNamedQuery(Membership.countGroupLeaderShips, Long.class);
+        TypedQuery<Long> q = em.createNamedQuery(Membership.countGroupLeaderships, Long.class);
         q.setParameter("userId", userId);
 
         return q.getSingleResult() > 0;
