@@ -31,7 +31,7 @@ public class SessionBasedAuthorization implements UserAuthorization {
     public void init(Application wicketApplication) {
         // NOTE: we can do this here because the UserManager is stateless!
         CdiContainer.get().getNonContextualManager().inject(this);
-        logger.info("SessionBasedAuthorization successfully initialized.");
+        logger.info("{} has been successfully initialized.", getClass().getSimpleName());
     }
 
     @Override
