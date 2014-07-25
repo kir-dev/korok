@@ -2,6 +2,7 @@ package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
+import hu.sch.services.Role;
 import org.apache.wicket.Application;
 import org.apache.wicket.request.Request;
 
@@ -55,7 +56,7 @@ public interface UserAuthorization {
      * @param role          role
      * @return Rendelkezik-e a felhasználó az adott szereppel
      */
-    boolean hasAbstractRole(Request wicketRequest, String role);
+    boolean hasAbstractRole(Request wicketRequest, Role role);
 
     /**
      * Az aktuálisan bejelentkezett felhasználó attribútumait adja vissza.

@@ -2,7 +2,9 @@ package hu.sch.web.authz;
 
 import hu.sch.domain.Group;
 import hu.sch.domain.user.User;
+import hu.sch.services.Authorization;
 import hu.sch.services.MembershipManagerLocal;
+import hu.sch.services.Role;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.web.session.VirSession;
 import javax.inject.Inject;
@@ -21,6 +23,9 @@ public class SessionBasedAuthorization implements UserAuthorization {
 
     @Inject
     private MembershipManagerLocal membershipManager;
+
+    @Inject
+    private Authorization authorization;
 
     @Override
     public void init(Application wicketApplication) {
@@ -45,9 +50,8 @@ public class SessionBasedAuthorization implements UserAuthorization {
     }
 
     @Override
-    public boolean hasAbstractRole(Request wicketRequest, String role) {
-        // TODO: get it from memberships
-        return true;
+    public boolean hasAbstractRole(Request wicketRequest, Role role) {
+        return authorization.hasRole(getUserid(wicketRequest), role);
     }
 
     @Override
