@@ -9,8 +9,13 @@ import hu.sch.web.kp.KorokPage;
 public class Logout extends KorokPage {
 
     public Logout() {
+        getSession().invalidate();
         setHeaderLabelText("Kijelentkezés");
-
         info("Sikeres kijelentkezés. :)");
+    }
+
+    @Override
+    protected boolean needsLogin() {
+        return false;
     }
 }
