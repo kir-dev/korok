@@ -177,4 +177,14 @@ public class MembershipManagerBean implements MembershipManagerLocal {
 
         return q.getResultList();
     }
+
+    @Override
+    public boolean isGroupLeader(Long userId, Group group) {
+        return new GroupLeadership(em).isLeader(group, userId);
+    }
+
+    @Override
+    public boolean hasGroupLeadership(Long userId) {
+        return new GroupLeadership(em).hasAny(userId);
+    }
 }
