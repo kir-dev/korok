@@ -57,8 +57,7 @@ public abstract class PekPage extends WebPage {
     public PekPage() {
         DEFAULT_SUPPORT_ID = config.getSupportDefaultId();
 
-        // TODO: ignore pages that does not need authentication
-        if (!getAuthorizationComponent().isLoggedIn(getRequest())) {
+        if (shouldInitiateLogin()) {
             new OAuthSignInFlow(config.getOAuthCredentials()).start();
         }
 
@@ -152,6 +151,14 @@ public abstract class PekPage extends WebPage {
 
     protected final Long getCurrentUserId() {
         return getAuthorizationComponent().getCurrentUserId(getRequest());
+    }
+
+    protected boolean needsLogin() {
+        return true;
+    }
+
+    private boolean shouldInitiateLogin() {
+        return needsLogin() && !getAuthorizationComponent().isLoggedIn(getRequest());
     }
 
     @Override

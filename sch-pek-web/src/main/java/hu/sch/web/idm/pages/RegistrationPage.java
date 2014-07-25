@@ -19,4 +19,9 @@ public class RegistrationPage extends KorokPage {
         }
         add(new RegisterWizard("wizard"));
     }
+
+    @Override
+    protected boolean needsLogin() {
+        return false;
+    }
 }

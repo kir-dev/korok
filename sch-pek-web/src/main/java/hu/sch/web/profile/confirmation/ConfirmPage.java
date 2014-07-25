@@ -90,4 +90,9 @@ public final class ConfirmPage extends ProfilePage {
 
         return false;
     }
+
+    @Override
+    protected boolean needsLogin() {
+        return false;
+    }
 }
