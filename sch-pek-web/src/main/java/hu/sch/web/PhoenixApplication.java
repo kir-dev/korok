@@ -16,7 +16,6 @@ import hu.sch.web.error.PageExpiredError;
 import hu.sch.web.idm.pages.CredentialsReminder;
 import hu.sch.web.idm.pages.RegistrationModePage;
 import hu.sch.web.kp.admin.CreateGroup;
-import hu.sch.web.kp.admin.CreateNewPerson;
 import hu.sch.web.kp.admin.EditSettings;
 import hu.sch.web.kp.consider.ConsiderPage;
 import hu.sch.web.kp.group.*;
@@ -234,7 +233,6 @@ public class PhoenixApplication extends WebApplication {
         mountPageWithPath("/korok/administration/svieusermgmt", SvieUserMgmt.class);
         mountPageWithPath("/korok/administration/sviegroupmgmt", SvieGroupMgmt.class);
         mountPageWithPath("/korok/creategroup", CreateGroup.class);
-        mountPageWithPath("/korok/createperson", CreateNewPerson.class);
 
         //IDM linkek
         mountPageWithPath("/korok/reminder", CredentialsReminder.class);
