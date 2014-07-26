@@ -175,15 +175,20 @@ public class AccountManagerBean implements AccountManager {
     @Override
     public void changePassword(String screenName, String oldPwd, String newPwd) throws PekEJBException {
         User user = userManager.findUserByScreenName(screenName);
-        byte[] salt = Base64.decodeBase64(user.getSalt());
-        String passwordHash = hashPassword(oldPwd, salt);
 
-        if (!passwordHash.equals(user.getPasswordDigest())) {
-            logger.info("Password change requested with invalid password for user {}", user.getId());
-            throw new PekEJBException(PekErrorCode.USER_PASSWORD_INVALID);
+        if (user.hasPassword()) {
+            byte[] salt = Base64.decodeBase64(user.getSalt());
+            String passwordHash = hashPassword(oldPwd, salt);
+
+            if (!passwordHash.equals(user.getPasswordDigest())) {
+                logger.info("Password change requested with invalid password for user {}", user.getId());
+                throw new PekEJBException(PekErrorCode.USER_PASSWORD_INVALID);
+            }
         }
 
-        user.setPasswordDigest(hashPassword(newPwd, salt));
+        byte[] newSalt = generateSalt();
+        user.setSalt(Base64.encodeBase64String(newSalt));
+        user.setPasswordDigest(hashPassword(newPwd, newSalt));
         em.merge(user);
     }
 
