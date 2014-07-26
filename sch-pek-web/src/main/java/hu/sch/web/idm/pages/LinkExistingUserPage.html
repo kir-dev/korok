@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+    <wicket:head>
+        <style>
+            form#userForm div.input {
+                margin: 5px 0 5px;
+            }
+            form#userForm div.submit {
+                margin-left: 290px;
+            }
+            form#userForm div.submit input {
+                height: 25px;
+            }
+        </style>
+    </wicket:head>
+    <wicket:extend>
+        <div class="notifybox">
+            A VIR felhasználóneveddel és a jelszavaddal tudod magad azonosítani.
+            Sikeres azonosítás után összekötjük a VIR fiókodat az auth.sch-s
+            fiókoddal.
+        </div>
+        <form wicket:id="loginForm" id="userForm">
+            <div class="input">
+                <label>Felhasználónév:</label>
+                <input type="text" wicket:id="username" class="textinput">
+            </div>
+            <div class="input">
+                <label>Jelszó:</label>
+                <input type="password" wicket:id="password" class="textinput">
+            </div>
+            <div class="submit">
+                <input type="submit" value="Mehet" class="btn"/>
+            </div>
+        </form>
+    </wicket:extend>
+</body>
+</html>

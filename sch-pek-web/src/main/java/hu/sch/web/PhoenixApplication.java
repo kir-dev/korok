@@ -13,8 +13,8 @@ import hu.sch.web.error.Forbidden;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.NotFound;
 import hu.sch.web.error.PageExpiredError;
-import hu.sch.web.idm.pages.RegistrationPage;
 import hu.sch.web.idm.pages.CredentialsReminder;
+import hu.sch.web.idm.pages.RegistrationModePage;
 import hu.sch.web.kp.admin.CreateGroup;
 import hu.sch.web.kp.admin.CreateNewPerson;
 import hu.sch.web.kp.admin.EditSettings;
@@ -238,6 +238,7 @@ public class PhoenixApplication extends WebApplication {
 
         //IDM linkek
         mountPageWithPath("/korok/reminder", CredentialsReminder.class);
+        mountPageWithPath("/profile/register", RegistrationModePage.class);
         mountPageWithPath("/korok/logout", Logout.class);
 
         mountPageWithPath("/profile", ShowPersonPage.class);
