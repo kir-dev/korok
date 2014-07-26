@@ -1,8 +1,5 @@
 package hu.sch.ejb;
 
-import hu.sch.domain.enums.SvieMembershipType;
-import hu.sch.domain.enums.SvieStatus;
-import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.StudentStatus;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
@@ -10,15 +7,13 @@ import hu.sch.services.AccountManager;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.dto.RegisteringUser;
-import hu.sch.services.exceptions.InvalidNewbieStateException;
-import hu.sch.services.exceptions.UserNotFoundException;
-import java.util.Date;
+import hu.sch.services.exceptions.PekEJBException;
+import hu.sch.services.exceptions.PekErrorCode;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +38,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
      * {@inheritDoc}
      */
     @Override
-    public User doRegistration(final RegisteringUser regUser) {
+    public User doRegistration(final RegisteringUser regUser) throws PekEJBException {
 
         final User user = new User();
         user.setScreenName(regUser.getScreenName());

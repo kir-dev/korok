@@ -30,7 +30,7 @@ public interface AccountManager {
      * @param user the user to be created
      * @return the persisted user
      */
-    User createUser(User user);
+    User createUser(User user) throws PekEJBException;
 
     /**
      * Changes the user's password.

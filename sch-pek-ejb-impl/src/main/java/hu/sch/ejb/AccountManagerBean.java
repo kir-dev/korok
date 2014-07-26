@@ -6,18 +6,16 @@ import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.LostPasswordToken;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
-import static hu.sch.ejb.MailManagerBean.getMailString;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.AccountManager;
 import hu.sch.services.Authorization;
-import hu.sch.services.Role;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.PekErrorCode;
+import hu.sch.util.ExceptionExtractor;
 import hu.sch.util.hash.Hashing;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -34,6 +32,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.time.DateUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,13 +74,20 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public User createUser(User user) {
+    public User createUser(User user) throws PekEJBException{
         user.setSvieMembershipType(SvieMembershipType.NEMTAG);
         user.setSvieStatus(SvieStatus.NEMTAG);
         user.setGender(Gender.NOTSPECIFIED);
 
-        em.persist(user);
-        return user;
+        try {
+            em.persist(user);
+            em.flush();
+            return user;
+        } catch (PersistenceException ex) {
+            ConstraintViolationException cve = ExceptionExtractor.extract(ex, ConstraintViolationException.class);
+            String fieldName = extractFieldName(cve);
+            throw new PekEJBException(PekErrorCode.DATABASE_CREATE_FAILED, ex, fieldName);
+        }
     }
 
     /**
@@ -342,5 +348,25 @@ public class AccountManagerBean implements AccountManager {
         byte[] providedPasswordBytes = passwordDigest.getBytes(StandardCharsets.UTF_8);
 
         return MessageDigest.isEqual(userPasswordBytes, providedPasswordBytes);
+    }
+
+    private String extractFieldName(ConstraintViolationException cve) {
+        if (cve == null) {
+            return null;
+        }
+
+        String[] fields = new String[] {
+            "auth_sch_id",
+            "bme_id",
+            "screen_name",
+        };
+
+        for (String f : fields) {
+            if (cve.getConstraintName().contains(f)) {
+                return f;
+            }
+        }
+
+        return null;
     }
 }

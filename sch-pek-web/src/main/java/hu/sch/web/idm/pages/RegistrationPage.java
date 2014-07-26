@@ -3,9 +3,11 @@ package hu.sch.web.idm.pages;
 import hu.sch.domain.user.User;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.dto.RegisteringUser;
+import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
+import java.util.logging.Level;
 import javax.inject.Inject;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -31,6 +33,7 @@ public class RegistrationPage extends KorokPage {
 
     private RegisteringUser user;
     private Label screenNameTakenLbl;
+    private final Form<RegisteringUser> regForm;
 
     @Inject
     private RegistrationManagerLocal registrationManager;
@@ -39,7 +42,8 @@ public class RegistrationPage extends KorokPage {
         setHeaderLabelText("Regisztráció");
 
         user = new RegisteringUser(getSession().getOAuthUserInfo());
-        add(createForm());
+        regForm = createForm();
+        add(regForm);
     }
 
     @Override
@@ -48,12 +52,16 @@ public class RegistrationPage extends KorokPage {
     }
 
     private void onRegFromSubmit() {
-        User registeredUser = registrationManager.doRegistration(user);
-        updateSession(registeredUser);
-        
-        getSession().info(getString("reg.successful"));
-        setResponsePage(getApplication().getHomePage());
-        logger.info("User (id: {}, screen name: {}) was successfully registered.", registeredUser.getId(), registeredUser.getScreenName());
+        try {
+            User registeredUser = registrationManager.doRegistration(user);
+            updateSession(registeredUser);
+
+            getSession().info(getString("reg.successful"));
+            setResponsePage(getApplication().getHomePage());
+            logger.info("User (id: {}, screen name: {}) was successfully registered.", registeredUser.getId(), registeredUser.getScreenName());
+        } catch (PekEJBException ex) {
+            reportError(ex);
+        }
     }
 
     private Form<RegisteringUser> createForm() {
@@ -108,5 +116,15 @@ public class RegistrationPage extends KorokPage {
         VirSession session = getSession();
         session.setOAuthUserInfo(null);
         session.setUserId(user.getId());
+    }
+
+    private void reportError(PekEJBException ex) {
+        if (ex.getParameters().length > 0) {
+            Object p = ex.getParameters()[0];
+
+            if (p != null) {
+                regForm.error(getString("err." + p.toString()));
+            }
+        }
     }
 }
