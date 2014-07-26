@@ -1,2 +1,59 @@
+<wicket:head>
+    <style>
+        form#regForm div.form-input {
+            margin: 5px 0 5px;
+        }
+        form#regForm div.submit {
+            margin-left: 290px;
+        }
+        form#regForm div.submit input {
+            height: 25px;
+        }
+        form#regForm div.form-input p.hint {
+            margin-left: 210px;
+            margin-top: 6px;
+        }
+        .screen-name-ok {
+            color: #22AA0F;
+        }
+        .screen-name-taken {
+            color: #e13902;
+        }
+    </style>
+</wicket:head>
 <wicket:extend>
+    <form wicket:id="regForm" id="regForm">
+        <div class="form-input">
+            <label wicket:id="lastNameLbl">Vezetéknév</label>
+            <input wicket:id="lastName" type="text" class="textinput">
+        </div>
+        <div class="form-input">
+            <label wicket:id="firstNameLbl">Keresztnév</label>
+            <input wicket:id="firstName" type="text" class="textinput">
+        </div>
+        <div class="form-input">
+            <label wicket:id="mailLbl">Email</label>
+            <input wicket:id="mail" type="text" class="textinput">
+        </div>
+        <div class="form-input">
+            <label wicket:id="screenNameLbl">Felhasználónév</label>
+            <input wicket:id="screenName" type="text" class="textinput">
+            <span wicket:id="screenNameTakenLbl" class="screen-name-ok">[screen name taken info]</span>
+            <p class="hint">
+                Ez a VIR felhasználóneved lesz, amivel a régi SSO-s oldalakra még
+                be tudsz majd lépni, valamint a VIR-en belül ezzel azonosítunk.
+            </p>
+        </div>
+        <div class="form-input">
+            <label wicket:id="dormitoryLbl">Kollégium</label>
+            <input wicket:id="dormitory" type="text" class="textinput">
+        </div>
+        <div class="form-input">
+            <label wicket:id="roomNumberLbl">Szoba</label>
+            <input wicket:id="roomNumber" type="text" class="textinput">
+        </div>
+        <div class="submit">
+            <input type="submit" value="Mentés" class="btn"/>
+        </div>
+    </form>
 </wicket:extend>
