@@ -24,6 +24,7 @@ public class LinkExistingUserPage extends KorokPage {
     private Form<Credentials> loginForm;
 
     public LinkExistingUserPage() {
+        setHeaderLabelText("Fiók összekapcsolás");
         credentials = new Credentials();
         loginForm = createForm();
         add(loginForm);
