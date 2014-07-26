@@ -1,10 +1,11 @@
 package hu.sch.services.dto;
 
 import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-public class OAuthUserInfo {
+public class OAuthUserInfo implements Serializable {
 
     @SerializedName("internal_id")
     private String authSchInternalId;

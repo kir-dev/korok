@@ -45,17 +45,12 @@ public class OAuthCallbackServlet extends HttpServlet {
             String accessToken = getAccessToken(req);
             OAuthUserInfo userInfo = getUserInfo(accessToken);
             Long userId = updateSession(userInfo, accessToken);
+
             if (userId != null) {
                 userIntegration.updateUser(userId, userInfo);
-
-                String returnUrl = getSession().getReturnUrl();
-                if (returnUrl == null) {
-                    resp.sendRedirect("/");
-                } else {
-                    resp.sendRedirect(returnUrl);
-                    getSession().setReturnUrl(null);
-                }
+                redirect(resp);
             } else {
+                getSession().setOAuthUserInfo(userInfo);
                 resp.sendRedirect(REGISTER_URL);
             }
 
@@ -64,6 +59,16 @@ public class OAuthCallbackServlet extends HttpServlet {
             logger.error("Error during oauth flow", ex);
             getSession().invalidate();
             sendErrorResponse(resp);
+        }
+    }
+
+    private void redirect(HttpServletResponse resp) throws IOException {
+        String returnUrl = getSession().getReturnUrl();
+        if (returnUrl == null) {
+            resp.sendRedirect("/");
+        } else {
+            resp.sendRedirect(returnUrl);
+            getSession().setReturnUrl(null);
         }
     }
 
@@ -91,6 +96,7 @@ public class OAuthCallbackServlet extends HttpServlet {
         OAuthJSONAccessTokenResponse response = client.accessToken(oauthRequest);
 
         getSession().setAccessToken(response.getAccessToken());
+        getSession().setOauthUserState(null);
         logger.debug("Access token: {}", response.getAccessToken());
         return response.getAccessToken();
     }

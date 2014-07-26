@@ -1,5 +1,6 @@
 package hu.sch.web.session;
 
+import hu.sch.services.dto.OAuthUserInfo;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.Request;
 
@@ -13,6 +14,7 @@ public class VirSession extends WebSession {
     private String oauthUserState;
     private String accessToken;
     private String returnUrl;
+    private OAuthUserInfo oAuthUserInfo;
 
     public VirSession(Request request) {
         super(request);
@@ -60,5 +62,13 @@ public class VirSession extends WebSession {
     public void setReturnUrl(String returnUrl) {
         this.returnUrl = returnUrl;
         dirty();
+    }
+
+    public OAuthUserInfo getOAuthUserInfo() {
+        return oAuthUserInfo;
+    }
+
+    public void setOAuthUserInfo(OAuthUserInfo oAuthUserInfo) {
+        this.oAuthUserInfo = oAuthUserInfo;
     }
 }
