@@ -75,45 +75,13 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void createUser(User user, String password, Long currentUserId) throws PekEJBException {
-        final byte[] salt = generateSalt();
-        final String passwordDigest = hashPassword(password, salt);
-
-        final boolean isAdmin = currentUserId != null && authorization.hasRole(currentUserId, Role.ADMIN);
-
-        if (!isAdmin) {
-            user.setSalt(Base64.encodeBase64String(salt));
-            user.setPasswordDigest(passwordDigest);
-        }
-
+    public User createUser(User user) {
         user.setSvieMembershipType(SvieMembershipType.NEMTAG);
         user.setSvieStatus(SvieStatus.NEMTAG);
         user.setGender(Gender.NOTSPECIFIED);
-        user.setConfirmationCode(generateConfirmationCode());
-        sendConfirmationEmail(user, isAdmin);
 
         em.persist(user);
-    }
-
-    /**
-     * Generates and sets a random confirmation code for the user.
-     */
-    private String generateConfirmationCode() {
-        final Random rnd = new SecureRandom();
-        final byte[] bytes = new byte[48];
-        String confirm = null;
-
-        final TypedQuery<Long> q = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.confirmationCode = :confirm", Long.class);
-
-        // check for uniqueness!
-        do {
-            rnd.nextBytes(bytes);
-            confirm = Base64.encodeBase64URLSafeString(bytes);
-            q.setParameter("confirm", confirm);
-        } while (!q.getSingleResult().equals(0L));
-
-        // 48 byte of randomness encoded into 64 characters
-        return confirm;
+        return user;
     }
 
     /**
@@ -133,40 +101,6 @@ public class AccountManagerBean implements AccountManager {
         user.setUserStatus(UserStatus.ACTIVE);
 
         em.merge(user);
-    }
-
-    /**
-     * Sends an email to the user with the confirmation code.
-     *
-     * @param user
-     * @param isCreatedByAdmin the email contains different texts depends from
-     * this (selfreg vs. admin reg)
-     * @return
-     */
-    private boolean sendConfirmationEmail(User user, boolean isCreatedByAdmin) {
-        String subject, body;
-
-        subject = getMailString(MailManagerBean.MAIL_CONFIRMATION_SUBJECT);
-
-        if (isCreatedByAdmin) {
-            body = String.format(
-                    getMailString(MailManagerBean.MAIL_CONFIRMATION_ADMIN_BODY),
-                    user.getFullName(),
-                    generateConfirmationLink(user));
-        } else {
-            body = String.format(
-                    getMailString(MailManagerBean.MAIL_CONFIRMATION_BODY),
-                    user.getFullName(),
-                    generateConfirmationLink(user));
-        }
-
-        return mailManager.sendEmail(user.getEmailAddress(), subject, body);
-    }
-
-    private String generateConfirmationLink(final User user) {
-        return String.format("https://%s/profile/confirm/code/%s",
-                config.getProfileDomain(),
-                user.getConfirmationCode());
     }
 
     /**
