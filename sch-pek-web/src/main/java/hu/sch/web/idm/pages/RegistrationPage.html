@@ -22,21 +22,24 @@
     </style>
 </wicket:head>
 <wicket:extend>
+    <div class="notifybox">
+        A csillaggal megjelölt mezők kitöltése kötelező!
+    </div>
     <form wicket:id="regForm" id="regForm">
         <div class="form-input">
-            <label wicket:id="lastNameLbl">Vezetéknév</label>
+            <label wicket:id="lastNameLbl">Vezetéknév*</label>
             <input wicket:id="lastName" type="text" class="textinput">
         </div>
         <div class="form-input">
-            <label wicket:id="firstNameLbl">Keresztnév</label>
+            <label wicket:id="firstNameLbl">Keresztnév*</label>
             <input wicket:id="firstName" type="text" class="textinput">
         </div>
         <div class="form-input">
-            <label wicket:id="mailLbl">Email</label>
+            <label wicket:id="mailLbl">Email*</label>
             <input wicket:id="mail" type="text" class="textinput">
         </div>
         <div class="form-input">
-            <label wicket:id="screenNameLbl">Felhasználónév</label>
+            <label wicket:id="screenNameLbl">Felhasználónév*</label>
             <input wicket:id="screenName" type="text" class="textinput">
             <span wicket:id="screenNameTakenLbl" class="screen-name-ok">[screen name taken info]</span>
             <p class="hint">

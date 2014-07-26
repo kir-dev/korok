@@ -3,6 +3,7 @@ package hu.sch.web.idm.pages;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.dto.RegisteringUser;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
 import javax.inject.Inject;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -58,21 +59,24 @@ public class RegistrationPage extends KorokPage {
             }
         };
 
-        addTextField(form, "screenName", true).add(new OnChangeAjaxBehavior() {
+        addTextField(form, "screenName", true)
+                .add(new OnChangeAjaxBehavior() {
 
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                if (registrationManager.isUidTaken(user.getScreenName())) {
-                    screenNameTakenLbl.add(new AttributeModifier("class", "screen-name-taken"));
-                    screenNameTakenLbl.setDefaultModelObject(getString("screenname.taken"));
-                } else {
-                    screenNameTakenLbl.add(new AttributeModifier("class", "screen-name-ok"));
-                    screenNameTakenLbl.setDefaultModelObject(getString("screenname.ok"));
-                }
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        if (registrationManager.isUidTaken(user.getScreenName())) {
+                            screenNameTakenLbl.add(new AttributeModifier("class", "screen-name-taken"));
+                            screenNameTakenLbl.setDefaultModelObject(getString("screenname.taken"));
+                        } else {
+                            screenNameTakenLbl.add(new AttributeModifier("class", "screen-name-ok"));
+                            screenNameTakenLbl.setDefaultModelObject(getString("screenname.ok"));
+                        }
 
-                target.add(screenNameTakenLbl);
-            }
-        });
+                        target.add(screenNameTakenLbl);
+                    }
+                })
+                .add(new FocusOnLoadBehavior());
+
 
         addTextField(form, "mail", true).add(EmailAddressValidator.getInstance());
         addTextField(form, "firstName", true);
@@ -90,7 +94,7 @@ public class RegistrationPage extends KorokPage {
         TextField<String> textField = new TextField<>(id);
         textField.setRequired(required);
         textField.setLabel(Model.of(getString(id)));
-        form.add(textField, new FormComponentLabel(id+"Lbl", textField));
+        form.add(textField, new FormComponentLabel(id + "Lbl", textField));
 
         return textField;
     }
