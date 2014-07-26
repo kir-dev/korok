@@ -31,7 +31,8 @@ public interface AccountManager {
      *
      * @param user the user to be created
      * @param password
-     * @param currentUserId currently logged in user. It can be null if no user is logged in yet.
+     * @param currentUserId currently logged in user. It can be null if no user
+     * is logged in yet.
      *
      * @throws hu.sch.services.exceptions.PekEJBException
      */
@@ -99,4 +100,13 @@ public interface AccountManager {
      * Removes expired tokens from the database.
      */
     void removeExpiredLostPasswordTokens();
+
+    /**
+     * Authenticate user.
+     *
+     * @param username
+     * @param password
+     * @return true only if username and password matches
+     */
+    boolean authenticate(String username, String password);
 }

@@ -18,6 +18,8 @@ import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.PekErrorCode;
 import hu.sch.util.hash.Hashing;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
@@ -185,14 +187,9 @@ public class AccountManagerBean implements AccountManager {
         em.merge(user);
     }
 
-    private String hashPassword(String password, byte[] salt) throws PekEJBException {
+    private String hashPassword(String password, byte[] salt) {
         byte[] passwordBytes;
-        try {
-            passwordBytes = password.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            logger.error("UTF-8 is not supported.", ex);
-            throw new PekEJBException(PekErrorCode.SYSTEM_ENCODING_NOTSUPPORTED);
-        }
+        passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
         byte[] hashInput = new byte[passwordBytes.length + salt.length];
         System.arraycopy(passwordBytes, 0, hashInput, 0, passwordBytes.length);
@@ -390,5 +387,21 @@ public class AccountManagerBean implements AccountManager {
         em.flush();
 
         return newToken;
+    }
+
+    @Override
+    public boolean authenticate(String username, String password) {
+        User user = userManager.findUserByScreenName(username);
+        if (user == null) {
+            return false;
+        }
+
+        byte[] salt = Base64.decodeBase64(user.getSalt());
+        String passwordDigest = hashPassword(password, salt);
+
+        byte[] userPasswordBytes = user.getPasswordDigest().getBytes(StandardCharsets.UTF_8);
+        byte[] providedPasswordBytes = passwordDigest.getBytes(StandardCharsets.UTF_8);
+
+        return MessageDigest.isEqual(userPasswordBytes, providedPasswordBytes);
     }
 }
