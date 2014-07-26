@@ -1,8 +1,10 @@
 package hu.sch.web.idm.pages;
 
+import hu.sch.domain.user.User;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.dto.RegisteringUser;
 import hu.sch.web.kp.KorokPage;
+import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
 import javax.inject.Inject;
 import org.apache.wicket.AttributeModifier;
@@ -46,8 +48,12 @@ public class RegistrationPage extends KorokPage {
     }
 
     private void onRegFromSubmit() {
-        // TODO
-        logger.info("User successfully registered.");
+        User registeredUser = registrationManager.doRegistration(user);
+        updateSession(registeredUser);
+        
+        getSession().info(getString("reg.successful"));
+        setResponsePage(getApplication().getHomePage());
+        logger.info("User (id: {}, screen name: {}) was successfully registered.", registeredUser.getId(), registeredUser.getScreenName());
     }
 
     private Form<RegisteringUser> createForm() {
@@ -77,7 +83,6 @@ public class RegistrationPage extends KorokPage {
                 })
                 .add(new FocusOnLoadBehavior());
 
-
         addTextField(form, "mail", true).add(EmailAddressValidator.getInstance());
         addTextField(form, "firstName", true);
         addTextField(form, "lastName", true);
@@ -97,5 +102,11 @@ public class RegistrationPage extends KorokPage {
         form.add(textField, new FormComponentLabel(id + "Lbl", textField));
 
         return textField;
+    }
+
+    private void updateSession(User user) {
+        VirSession session = getSession();
+        session.setOAuthUserInfo(null);
+        session.setUserId(user.getId());
     }
 }
