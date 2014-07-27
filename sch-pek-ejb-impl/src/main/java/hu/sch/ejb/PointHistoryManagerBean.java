@@ -50,10 +50,11 @@ public class PointHistoryManagerBean implements PointHistoryManagerLocal {
         long then = System.currentTimeMillis();
 
         deleteHistoryForSemester(semester);
-        generatePointHistoryForSemester(semester);
+        int numberOfGenerated = generatePointHistoryForSemester(semester);
 
         long elapsed = System.currentTimeMillis() - then;
         logger.info("Elapsed time for point history batch job: {} ms", elapsed);
+        logger.info("{} point history entries has been generated.", numberOfGenerated);
 
     }
 
@@ -64,7 +65,7 @@ public class PointHistoryManagerBean implements PointHistoryManagerLocal {
         q.executeUpdate();
     }
 
-    private void generatePointHistoryForSemester(Semester semester) {
+    private int generatePointHistoryForSemester(Semester semester) {
         Query q = em.createNativeQuery(pointGenerationQuery);
         q.setParameter("semester", semester.getId());
         q.setParameter("prevSemester", semester.getPrevious().getId());
@@ -82,5 +83,7 @@ public class PointHistoryManagerBean implements PointHistoryManagerLocal {
 
             em.persist(ph);
         }
+
+        return results.size();
     }
 }
