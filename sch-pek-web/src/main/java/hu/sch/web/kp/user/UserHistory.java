@@ -70,6 +70,7 @@ public class UserHistory extends KorokPage {
         User user = null;
         if (id == null) {
             user = getCurrentUser();
+            id = user.getId();
         } else {
             user = userManager.findUserById(id, true);
         }
