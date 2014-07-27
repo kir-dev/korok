@@ -33,6 +33,7 @@ import hu.sch.web.kp.valuation.Valuations;
 import hu.sch.web.kp.valuation.message.ValuationMessages;
 import hu.sch.web.kp.valuation.request.entrant.EntrantRequests;
 import hu.sch.web.kp.valuation.request.point.PointRequests;
+import hu.sch.web.landing.LandingPage;
 import hu.sch.web.profile.admin.AdminPage;
 import hu.sch.web.profile.birthday.BirthDayPage;
 import hu.sch.web.profile.confirmation.ReplaceLostPasswordPage;
@@ -47,7 +48,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.wicket.*;
 import org.apache.wicket.cdi.CdiConfiguration;
 import org.apache.wicket.core.request.handler.IPageRequestHandler;
@@ -90,13 +90,7 @@ public class PhoenixApplication extends WebApplication {
 
     @Override
     public Class<? extends Page> getHomePage() {
-        String url = ((HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest()).getRequestURL().toString();
-
-        if (url.contains("profile")) {
-            return ShowPersonPage.class;
-        }
-
-        return ShowUser.class;
+        return LandingPage.class;
     }
 
     /**

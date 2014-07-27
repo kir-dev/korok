@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Landing page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+    <wicket:head>
+        <style>
+            a#signInLink {
+                background-color: #517D9D;
+                font-size: 20px;
+                font-weight: bold;
+                border: 1px solid #345F7D;
+                padding: 5px 30px;
+                color: #ffffff;
+                display: inline-block;
+                text-align: center;
+            }
+            div#landing-container {
+                margin: 10px 0;
+                text-align: center;
+            }
+            div.center {
+                width: 200px;
+                margin: 20px auto;
+            }
+            p.version-info {
+                font-size: 14px;
+                margin: 10px 0;
+            }
+        </style>
+    </wicket:head>
+    <wicket:extend>
+        <div id="landing-container">
+            <h1>
+                Üdvözlünk a Profil és Körök alkalmazásban!
+            </h1>
+            <p wicket:id="versionInfoLinkContainer" class="version-info">
+                Történt pár változás, amiről jó ha tudsz.
+                Ezekről a <a wicket:id="versionInfoLink">következő linken</a> tudsz
+                részletesebben olvasni.
+            </p>
+            <div class="center">
+                <a id="signInLink" wicket:id="signInLink">Bejelentkezés</a>
+            </div>
+
+        </div>
+    </wicket:extend>
+</body>
+</html>
