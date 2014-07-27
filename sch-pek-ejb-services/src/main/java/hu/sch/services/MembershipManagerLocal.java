@@ -81,7 +81,7 @@ public interface MembershipManagerLocal {
     public Group fetchMembershipsFor(Group group);
 
     /**
-     * Gets memberships for user.
+     * Gets the active memberships for user.
      *
      * It includes groups and posts as well.
      *
@@ -91,6 +91,16 @@ public interface MembershipManagerLocal {
      * @return
      */
     List<Membership> findMembershipsForUser(User user);
+
+    /**
+     * Gets all the memberships (including inactives as well) for a user.
+     *
+     * It includes groups and posts as well.
+     *
+     * @param user
+     * @return
+     */
+    List<Membership> findAllMembershipForUser(User user);
 
     /**
      * Determines whether a user is a group leader in a group or not.
