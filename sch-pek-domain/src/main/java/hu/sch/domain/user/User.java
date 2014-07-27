@@ -727,6 +727,10 @@ public class User implements Serializable, Comparable<User> {
         this.bmeId = bmeId;
     }
 
+    public boolean hasPassword() {
+        return passwordDigest != null;
+    }
+
     @Override
     public String toString() {
         return String.format("User#%d name: %s, email: %s", getId(), getFullName(), getEmailAddress());

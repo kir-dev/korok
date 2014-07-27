@@ -258,7 +258,6 @@ public class EditSettings extends KorokPage {
         public KirDevFragment(String id, String markupId) {
             super(id, markupId, null, null);
             add(new BookmarkablePageLink<CreateGroup>("createGroup", CreateGroup.class));
-            add(new BookmarkablePageLink<CreateNewPerson>("createPerson", CreateNewPerson.class));
             add(new CsvExportForKfbLink("csvExport"));
 
             Form<Void> form = new Form<Void>("kirdevForm", new CompoundPropertyModel(this)) {

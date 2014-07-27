@@ -6,18 +6,18 @@ import hu.sch.domain.user.Gender;
 import hu.sch.domain.user.LostPasswordToken;
 import hu.sch.domain.user.User;
 import hu.sch.domain.user.UserStatus;
-import static hu.sch.ejb.MailManagerBean.getMailString;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.AccountManager;
 import hu.sch.services.Authorization;
-import hu.sch.services.Role;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.exceptions.DuplicatedUserException;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.services.exceptions.PekErrorCode;
+import hu.sch.util.ExceptionExtractor;
 import hu.sch.util.hash.Hashing;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
@@ -32,6 +32,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.time.DateUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,45 +74,20 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void createUser(User user, String password, Long currentUserId) throws PekEJBException {
-        final byte[] salt = generateSalt();
-        final String passwordDigest = hashPassword(password, salt);
-
-        final boolean isAdmin = currentUserId != null && authorization.hasRole(currentUserId, Role.ADMIN);
-
-        if (!isAdmin) {
-            user.setSalt(Base64.encodeBase64String(salt));
-            user.setPasswordDigest(passwordDigest);
-        }
-
+    public User createUser(User user) throws PekEJBException{
         user.setSvieMembershipType(SvieMembershipType.NEMTAG);
         user.setSvieStatus(SvieStatus.NEMTAG);
         user.setGender(Gender.NOTSPECIFIED);
-        user.setConfirmationCode(generateConfirmationCode());
-        sendConfirmationEmail(user, isAdmin);
 
-        em.persist(user);
-    }
-
-    /**
-     * Generates and sets a random confirmation code for the user.
-     */
-    private String generateConfirmationCode() {
-        final Random rnd = new SecureRandom();
-        final byte[] bytes = new byte[48];
-        String confirm = null;
-
-        final TypedQuery<Long> q = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.confirmationCode = :confirm", Long.class);
-
-        // check for uniqueness!
-        do {
-            rnd.nextBytes(bytes);
-            confirm = Base64.encodeBase64URLSafeString(bytes);
-            q.setParameter("confirm", confirm);
-        } while (!q.getSingleResult().equals(0L));
-
-        // 48 byte of randomness encoded into 64 characters
-        return confirm;
+        try {
+            em.persist(user);
+            em.flush();
+            return user;
+        } catch (PersistenceException ex) {
+            ConstraintViolationException cve = ExceptionExtractor.extract(ex, ConstraintViolationException.class);
+            String fieldName = extractFieldName(cve);
+            throw new PekEJBException(PekErrorCode.DATABASE_CREATE_FAILED, ex, fieldName);
+        }
     }
 
     /**
@@ -134,65 +110,31 @@ public class AccountManagerBean implements AccountManager {
     }
 
     /**
-     * Sends an email to the user with the confirmation code.
-     *
-     * @param user
-     * @param isCreatedByAdmin the email contains different texts depends from
-     * this (selfreg vs. admin reg)
-     * @return
-     */
-    private boolean sendConfirmationEmail(User user, boolean isCreatedByAdmin) {
-        String subject, body;
-
-        subject = getMailString(MailManagerBean.MAIL_CONFIRMATION_SUBJECT);
-
-        if (isCreatedByAdmin) {
-            body = String.format(
-                    getMailString(MailManagerBean.MAIL_CONFIRMATION_ADMIN_BODY),
-                    user.getFullName(),
-                    generateConfirmationLink(user));
-        } else {
-            body = String.format(
-                    getMailString(MailManagerBean.MAIL_CONFIRMATION_BODY),
-                    user.getFullName(),
-                    generateConfirmationLink(user));
-        }
-
-        return mailManager.sendEmail(user.getEmailAddress(), subject, body);
-    }
-
-    private String generateConfirmationLink(final User user) {
-        return String.format("https://%s/profile/confirm/code/%s",
-                config.getProfileDomain(),
-                user.getConfirmationCode());
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public void changePassword(String screenName, String oldPwd, String newPwd) throws PekEJBException {
         User user = userManager.findUserByScreenName(screenName);
-        byte[] salt = Base64.decodeBase64(user.getSalt());
-        String passwordHash = hashPassword(oldPwd, salt);
 
-        if (!passwordHash.equals(user.getPasswordDigest())) {
-            logger.info("Password change requested with invalid password for user {}", user.getId());
-            throw new PekEJBException(PekErrorCode.USER_PASSWORD_INVALID);
+        if (user.hasPassword()) {
+            byte[] salt = Base64.decodeBase64(user.getSalt());
+            String passwordHash = hashPassword(oldPwd, salt);
+
+            if (!passwordHash.equals(user.getPasswordDigest())) {
+                logger.info("Password change requested with invalid password for user {}", user.getId());
+                throw new PekEJBException(PekErrorCode.USER_PASSWORD_INVALID);
+            }
         }
 
-        user.setPasswordDigest(hashPassword(newPwd, salt));
+        byte[] newSalt = generateSalt();
+        user.setSalt(Base64.encodeBase64String(newSalt));
+        user.setPasswordDigest(hashPassword(newPwd, newSalt));
         em.merge(user);
     }
 
-    private String hashPassword(String password, byte[] salt) throws PekEJBException {
+    private String hashPassword(String password, byte[] salt) {
         byte[] passwordBytes;
-        try {
-            passwordBytes = password.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            logger.error("UTF-8 is not supported.", ex);
-            throw new PekEJBException(PekErrorCode.SYSTEM_ENCODING_NOTSUPPORTED);
-        }
+        passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
         byte[] hashInput = new byte[passwordBytes.length + salt.length];
         System.arraycopy(passwordBytes, 0, hashInput, 0, passwordBytes.length);
@@ -390,5 +332,41 @@ public class AccountManagerBean implements AccountManager {
         em.flush();
 
         return newToken;
+    }
+
+    @Override
+    public boolean authenticate(String username, String password) {
+        User user = userManager.findUserByScreenName(username);
+        if (user == null) {
+            return false;
+        }
+
+        byte[] salt = Base64.decodeBase64(user.getSalt());
+        String passwordDigest = hashPassword(password, salt);
+
+        byte[] userPasswordBytes = user.getPasswordDigest().getBytes(StandardCharsets.UTF_8);
+        byte[] providedPasswordBytes = passwordDigest.getBytes(StandardCharsets.UTF_8);
+
+        return MessageDigest.isEqual(userPasswordBytes, providedPasswordBytes);
+    }
+
+    private String extractFieldName(ConstraintViolationException cve) {
+        if (cve == null) {
+            return null;
+        }
+
+        String[] fields = new String[] {
+            "auth_sch_id",
+            "bme_id",
+            "screen_name",
+        };
+
+        for (String f : fields) {
+            if (cve.getConstraintName().contains(f)) {
+                return f;
+            }
+        }
+
+        return null;
     }
 }

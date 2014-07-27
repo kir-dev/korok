@@ -1,0 +1,24 @@
+<wicket:head>
+    <style>
+        div#registerPanel p {
+            margin: 10px 0 10px 0;
+        }
+        div#registerPanel p a {
+            font-weight: normal;
+        }
+        div#registerPanel p#info {
+            font-weight: bold;
+        }
+    </style>
+</wicket:head>
+<wicket:extend>
+    <div id="registerPanel">
+        <p id="info">Válassz az alábbi lehetőségek közül:</p>
+        <div>
+            <p><a wicket:id="newUserLink"><wicket:message key="reg.newuser" /></a></p>
+            <p><a wicket:id="loginLink"><wicket:message key="reg.login" /></a></p>
+            <p><a wicket:id="forgotPassLink"><wicket:message key="reg.forgotPass" /></a></p>
+            <p><a wicket:id="forgotUserLink"><wicket:message key="reg.forgotUser" /></a></p>
+        </div>
+    </div>
+</wicket:extend>

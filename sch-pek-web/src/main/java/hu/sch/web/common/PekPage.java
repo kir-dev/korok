@@ -113,7 +113,7 @@ public abstract class PekPage extends WebPage {
 
     protected final void createNavbarWithSupportId(int supportId) {
         navbarScript.setDefaultModel(
-                new Model<String>(NAVBAR_SCRIPT.replace("%d", Integer.toString(supportId))));
+                new Model<String>(String.format(NAVBAR_SCRIPT, supportId)));
         navbarScript.setVisible(getApplication().usesDeploymentConfig());
     }
 
