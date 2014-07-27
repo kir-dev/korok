@@ -4,6 +4,7 @@ import hu.sch.services.AccountManager;
 import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.profile.ProfilePage;
 import javax.inject.Inject;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
@@ -23,6 +24,9 @@ public class ChangePasswordPage extends ProfilePage {
     private String newPassword;
     private String newPasswordConfirmation;
 
+    private PasswordTextField oldPwd;
+    private WebMarkupContainer oldPwdCont;
+
     public ChangePasswordPage() {
         setHeaderLabelText("Jelszóváltoztatás");
         Form form = new Form("changePasswordForm", new CompoundPropertyModel(this)) {
@@ -31,16 +35,24 @@ public class ChangePasswordPage extends ProfilePage {
                 try {
                     accountManager.changePassword(getRemoteUser(), oldPassword, newPassword);
                     getSession().info("Sikeres jelszóváltoztatás");
+
+                    // reset ui
+                    oldPwd.setRequired(true);
+                    oldPwdCont.setVisible(true);
                 } catch (PekEJBException ex) {
                     getSession().error("Hibás jelszó!");
                 }
             }
         };
 
-        final PasswordTextField oldPw = new PasswordTextField("oldPassword");
-        oldPw.setRequired(true);
-        oldPw.setResetPassword(true);
-        form.add(oldPw);
+        oldPwdCont = new WebMarkupContainer("oldPasswordContainer");
+        oldPwdCont.setVisible(getCurrentUser().hasPassword());
+        form.add(oldPwdCont);
+
+        oldPwd = new PasswordTextField("oldPassword");
+        oldPwd.setRequired(getCurrentUser().hasPassword());
+        oldPwd.setResetPassword(true);
+        oldPwdCont.add(oldPwd);
 
         final PasswordTextField newPw = new PasswordTextField("newPassword");
         newPw.setRequired(true);
