@@ -35,13 +35,10 @@ class JetiFragment extends Fragment {
 
     private Semester semester;
     private ValuationPeriod valuationPeriod;
-    private ValuationPeriod oldValuationPeriod;
     @Inject
     private ValuationManagerLocal valuationManager;
     @Inject
     private SystemManagerLocal systemManager;
-    @Inject
-    private PointHistoryManagerLocal pointHistoryManager;
 
     public JetiFragment(String id, String markupId) {
         super(id, markupId, null, null);
@@ -53,8 +50,7 @@ class JetiFragment extends Fragment {
             semester = new Semester();
         }
 
-        oldValuationPeriod = systemManager.getErtekelesIdoszak();
-        setValuationPeriod(oldValuationPeriod);
+        setValuationPeriod(systemManager.getErtekelesIdoszak());
 
         SemesterForm beallitasForm = new SemesterForm("settingsForm") {
             @Override
@@ -62,15 +58,10 @@ class JetiFragment extends Fragment {
                 try {
                     systemManager.setSzemeszter(getSemester());
                     systemManager.setErtekelesIdoszak(getValuationPeriod());
-                    if (hasValuationPeriodChanged() && getValuationPeriod() == ValuationPeriod.NINCSERTEKELES) {
-                        pointHistoryManager.generateForSemesterAsync(getSemester());
-                    }
                     getSession().info(getLocalizer().getString("info.BeallitasokMentve", this));
                 } catch (MissingResourceException e) {
                     getSession().error(getLocalizer().getString("err.BeallitasokFailed", this));
                     logger.error("Error while saving settings.", e);
-                } finally {
-                    oldValuationPeriod = getValuationPeriod();
                 }
             }
         };
@@ -160,9 +151,5 @@ class JetiFragment extends Fragment {
             getSession().error(getLocalizer().getString("err.export", this));
             logger.error("Error while generating CSV export about " + entrantType.toString() + "s with " + minEntrantNum + " min value", ex);
         }
-    }
-
-    private boolean hasValuationPeriodChanged() {
-        return oldValuationPeriod != getValuationPeriod();
     }
 }
