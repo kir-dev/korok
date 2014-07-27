@@ -221,6 +221,30 @@ CREATE TABLE neptun_list (
 );
 
 
+--
+-- Name: point_history_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE point_history_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: point_history; Type: TABLE; Schema: public; Owner: -; Tablespace:
+--
+
+CREATE TABLE point_history (
+    id bigint DEFAULT nextval('point_history_seq'::regclass) NOT NULL,
+    usr_id bigint NOT NULL,
+    point integer NOT NULL,
+    semester character varying(9) NOT NULL
+);
+
+
 SET default_with_oids = true;
 
 --
@@ -347,11 +371,13 @@ CREATE TABLE users (
     usr_est_grad character varying(10),
     usr_dormitory character varying(50),
     usr_room character varying(10),
-    usr_confirm character varying(64),
     usr_status character varying(8) DEFAULT 'INACTIVE'::character varying NOT NULL,
     usr_password character varying(28),
     usr_salt character varying(12),
-    usr_lastlogin timestamp without time zone
+    usr_lastlogin timestamp without time zone,
+    usr_auth_sch_id character varying(50),
+    usr_bme_id character varying,
+    usr_created_at timestamp without time zone
 );
 
 
@@ -462,6 +488,14 @@ ALTER TABLE ONLY neptun_list
 
 
 --
+-- Name: point_history_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY point_history
+    ADD CONSTRAINT point_history_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: pontigenyles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
 --
 
@@ -515,6 +549,22 @@ ALTER TABLE ONLY grp_membership
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (usr_id);
+
+
+--
+-- Name: users_usr_auth_sch_id_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_usr_auth_sch_id_key UNIQUE (usr_auth_sch_id);
+
+
+--
+-- Name: users_usr_bme_id_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_usr_bme_id_key UNIQUE (usr_bme_id);
 
 
 --
@@ -776,6 +826,14 @@ ALTER TABLE ONLY log
 
 
 --
+-- Name: point_history_usr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY point_history
+    ADD CONSTRAINT point_history_usr_id_fkey FOREIGN KEY (usr_id) REFERENCES users(usr_id);
+
+
+--
 -- Name: poszt_grp_member_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -819,11 +877,3 @@ ALTER TABLE ONLY usr_private_attrs
 -- PostgreSQL database dump complete
 --
 
--- new table for storing point hitory
-CREATE SEQUENCE point_history_seq;
-CREATE TABLE point_history (
-    id bigint DEFAULT nextval('point_history_seq') PRIMARY KEY,
-    usr_id bigint REFERENCES users NOT NULL, -- user
-    point integer NOT NULL, -- point for the semester
-    semester varchar(9) NOT NULL -- semester
-);
