@@ -83,14 +83,6 @@ public interface UserManagerLocal {
     public User findUserByEmail(String email) throws DuplicatedUserException;
 
     /**
-     * Gets the user with specified confirmation code.
-     *
-     * @param code the confirmation code to look for
-     * @return
-     */
-    public User findUserByConfirmationCode(String code);
-
-    /**
      * Finds the user with the specified auth.sch id.
      *
      * @param authSchId

@@ -123,10 +123,6 @@ public class User implements Serializable, Comparable<User> {
     @Column(name = "usr_room")
     private String room;
     //----------------------------------------------------
-    @Column(name = "usr_confirm", length = 64)
-    @Size(max = 64)
-    private String confirmationCode;
-    //----------------------------------------------------
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "usr_svie_state", nullable = false)
@@ -599,17 +595,6 @@ public class User implements Serializable, Comparable<User> {
             return dormitory;
         }
         return String.format("%s %s", dormitory, room);
-    }
-
-    /**
-     * Regisztrációhoz szükéges megerősítő kód.
-     */
-    public String getConfirmationCode() {
-        return confirmationCode;
-    }
-
-    public void setConfirmationCode(String confirmationCode) {
-        this.confirmationCode = confirmationCode;
     }
 
     /**

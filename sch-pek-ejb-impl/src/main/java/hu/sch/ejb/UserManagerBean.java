@@ -142,25 +142,6 @@ public class UserManagerBean implements UserManagerLocal {
     }
 
     @Override
-    public User findUserByConfirmationCode(final String code) {
-        TypedQuery<User> q = em.createQuery("SELECT u FROM User u WHERE u.confirmationCode = :code", User.class);
-        q.setParameter("code", code);
-
-        logger.debug("Find user with confirmation code=" + code);
-
-        User result = null;
-        try {
-            result = q.getSingleResult();
-        } catch (NoResultException ex) {
-            logger.info("No user was found with {} confirmation code.", code);
-        } catch (NonUniqueResultException ex) {
-            logger.error("Multiple users were found for the same {} confirmation code.", code);
-        }
-
-        return result;
-    }
-
-    @Override
     public List<EntrantRequest> getEntrantRequestsForUser(User felhasznalo) {
         Query q = em.createQuery("SELECT e FROM EntrantRequest e "
                 + "WHERE e.user=:user "

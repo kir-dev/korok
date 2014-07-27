@@ -47,10 +47,6 @@ public class MailManagerBean {
     static final String MAIL_LOST_PASSWORD_SUBJECT = "username.lostpw.subject";
     static final String MAIL_LOST_PASSWORD_BODY = "username.lostpw.body";
     static final String MAIL_LOST_PASSWORD_BODY_NEWBIE = "username.lostpw.body.newbie";
-    // confirmation code
-    static final String MAIL_CONFIRMATION_SUBJECT = "confirmation.subject";
-    static final String MAIL_CONFIRMATION_BODY = "confirmation.body";
-    static final String MAIL_CONFIRMATION_ADMIN_BODY = "confirmation.admin.body";
     //admin reports
     static final String MAIL_ADMIN_REPORT_SUBJECT = "admin.report.subject";
     static final String MAIL_ADMIN_REPORT_BODY = "admin.report.body";

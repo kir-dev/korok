@@ -94,25 +94,6 @@ public class AccountManagerBean implements AccountManager {
      * {@inheritDoc}
      */
     @Override
-    public void confirm(final User user, final String password) throws PekEJBException {
-        if (password != null) {
-            byte[] salt = generateSalt();
-            String passwordDigest = hashPassword(password, salt);
-
-            user.setSalt(Base64.encodeBase64String(salt));
-            user.setPasswordDigest(passwordDigest);
-        }
-
-        user.setConfirmationCode(null);
-        user.setUserStatus(UserStatus.ACTIVE);
-
-        em.merge(user);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void changePassword(String screenName, String oldPwd, String newPwd) throws PekEJBException {
         User user = userManager.findUserByScreenName(screenName);
 

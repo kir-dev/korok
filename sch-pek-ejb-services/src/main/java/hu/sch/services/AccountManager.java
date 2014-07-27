@@ -6,23 +6,13 @@ import hu.sch.services.exceptions.PekEJBException;
 import javax.ejb.Local;
 
 /**
- * Account management. User creation, confirmation, password changing and
+ * Account management. User creation, password changing and
  * recover lost credentials.
  *
  * @author balo
  */
 @Local
 public interface AccountManager {
-
-    /**
-     * Confirms a user's registration.
-     *
-     * @param user
-     * @param password
-     *
-     * @throws hu.sch.services.exceptions.PekEJBException
-     */
-    void confirm(User user, String password) throws PekEJBException;
 
     /**
      * Create a new user.
