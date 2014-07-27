@@ -7,7 +7,6 @@ import hu.sch.services.exceptions.PekEJBException;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.behaviors.FocusOnLoadBehavior;
-import java.util.logging.Level;
 import javax.inject.Inject;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
