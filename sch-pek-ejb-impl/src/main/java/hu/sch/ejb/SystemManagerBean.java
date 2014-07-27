@@ -48,7 +48,7 @@ public class SystemManagerBean implements SystemManagerLocal {
         valuationLink = baseLink + "valuation";
         considerLink = baseLink + "consider";
     }
-    
+
     @Override
     public String getAttributeValue(String attributeName) throws NoSuchAttributeException {
         try {
@@ -161,7 +161,7 @@ public class SystemManagerBean implements SystemManagerLocal {
             params.get(SystemManagerLocal.EXC_REPORT_KEYS.EXCEPTION)
         };
 
-        mailManager.sendEmail("jee-dev@sch.bme.hu", subject, String.format(body, args));
+        mailManager.sendEmail(config.getErrorReportingEmail(), subject, String.format(body, args));
     }
 
     @Override
@@ -183,5 +183,5 @@ public class SystemManagerBean implements SystemManagerLocal {
     public String getConsiderLink() {
         return considerLink;
     }
-    
+
 }

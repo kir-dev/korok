@@ -34,12 +34,16 @@ public class ConfigurationImpl implements Configuration {
     private static final String DOMAIN_KOROK = "domain.korok";
     private static final String SUPPORT_BASE_URL = "support.baseUrl";
     private static final String SUPPORT_DEFAULT_ID = "support.defaultId";
+    private static final String DEV_MAIL = "devMail";
+    private static final String ERR_MAIL = "errMail";
 
     private static final String OAUTH_CLIENT_ID = "oauth.client.id";
     private static final String OAUTH_CLIENT_SECRET = "oauth.client.secret";
     private static final String OAUTH_URL_LOGIN = "oauth.url.login";
     private static final String OAUTH_URL_TOKEN = "oauth.url.token";
     private static final String OAUTH_SCOPE = "oauth.scope";
+
+    private static final String DEFAULT_ERR_EMAIL = "jee-dev@sch.bme.hu";
 
     private final Properties properties = new Properties();
     private final String baseDir;
@@ -84,7 +88,7 @@ public class ConfigurationImpl implements Configuration {
 
     @Override
     public String getDevEmail() {
-        return properties.getProperty("devMail");
+        return properties.getProperty(DEV_MAIL);
     }
 
     @Override
@@ -133,5 +137,10 @@ public class ConfigurationImpl implements Configuration {
                 properties.getProperty(OAUTH_URL_LOGIN),
                 properties.getProperty(OAUTH_SCOPE)
         );
+    }
+
+    @Override
+    public String getErrorReportingEmail() {
+        return properties.getProperty(ERR_MAIL, DEFAULT_ERR_EMAIL);
     }
 }

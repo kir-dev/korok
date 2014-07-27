@@ -8,6 +8,8 @@ public interface Configuration {
 
     String getDevEmail();
 
+    String getErrorReportingEmail();
+
     Environment getEnvironment();
 
     String getFontPath();

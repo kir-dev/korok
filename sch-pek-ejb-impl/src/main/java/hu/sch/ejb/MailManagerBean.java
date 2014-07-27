@@ -54,6 +54,9 @@ public class MailManagerBean {
     //admin reports
     static final String MAIL_ADMIN_REPORT_SUBJECT = "admin.report.subject";
     static final String MAIL_ADMIN_REPORT_BODY = "admin.report.body";
+    // auth.sch user update
+    static final String MAIL_AUTHSCH_USER_UPDATE_SUBJECT = "authsch.updateerror.subject";
+    static final String MAIL_AUTHSCH_USER_UPDATE_BODY = "authsch.updateerror.body";
 
     @Inject
     private Configuration config;
