@@ -709,7 +709,10 @@ public class User implements Serializable, Comparable<User> {
      * @return
      */
     public Date getLastLoginDate() {
-        return lastLoginDate;
+        if (lastLoginDate == null) {
+            return null;
+        }
+        return new Date(lastLoginDate.getTime());
     }
 
     public void setLastLoginDate(Date lastLoginDate) {

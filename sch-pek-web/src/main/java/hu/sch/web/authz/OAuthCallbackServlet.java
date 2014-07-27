@@ -53,7 +53,7 @@ public class OAuthCallbackServlet extends HttpServlet {
                 resp.sendRedirect(REGISTER_URL);
             }
 
-            logger.info("User successfully logged in via OAuth.");
+            logger.debug("User ({}) successfully logged in via OAuth.", userInfo.getAuthSchInternalId());
         } catch (OAuthProblemException | OAuthSystemException | OAuthFlowException ex) {
             logger.error("Error during oauth flow", ex);
             getSession().invalidate();

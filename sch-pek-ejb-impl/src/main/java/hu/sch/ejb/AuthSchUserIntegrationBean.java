@@ -28,8 +28,6 @@ public class AuthSchUserIntegrationBean implements AuthSchUserIntegration {
         user.setLastLoginDate(new Date());
         user.setBmeId(userInfo.getBmeId());
         updateRoomNumber(user, userInfo);
-
-        logger.info("Successfully updated user with data from auth.sch");
     }
 
     private void updateRoomNumber(User user, OAuthUserInfo userInfo) {
