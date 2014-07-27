@@ -644,8 +644,12 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 + "LEFT JOIN FETCH pReq.user u "
                 + "LEFT JOIN FETCH pReq.valuation v "
                 + "LEFT JOIN FETCH v.group g "
-                + "WHERE v.nextVersion IS NULL AND pReq.userId = :userId " + whereAnd);
+                + "WHERE v.pointStatus = :status "
+                + "AND v.nextVersion IS NULL "
+                + "AND pReq.userId = :userId "
+                + whereAnd);
         q.setParameter("userId", u.getId());
+        q.setParameter("status", ValuationStatus.ELFOGADVA);
         if (groupId != null) {
             q.setParameter("groupId", groupId);
         }
@@ -655,8 +659,12 @@ public class ValuationManagerBean implements ValuationManagerLocal {
                 + "LEFT JOIN FETCH eReq.user u "
                 + "LEFT JOIN FETCH eReq.valuation v "
                 + "LEFT JOIN FETCH v.group g "
-                + "WHERE v.nextVersion IS NULL AND eReq.userId = :userId " + whereAnd);
+                + "WHERE v.nextVersion IS NULL "
+                + "AND v.pointStatus = :status "
+                + "AND eReq.userId = :userId "
+                + whereAnd);
         q.setParameter("userId", u.getId());
+        q.setParameter("status", ValuationStatus.ELFOGADVA);
         if (groupId != null) {
             q.setParameter("groupId", groupId);
         }
