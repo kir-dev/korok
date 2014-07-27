@@ -20,7 +20,6 @@
         <class>hu.sch.domain.logging.Log</class>
 
         <class>hu.sch.domain.user.User</class>
-        <class>hu.sch.domain.user.RegisteringUser</class>
         <class>hu.sch.domain.user.IMAccount</class>
         <class>hu.sch.domain.user.UserAttribute</class>
         <class>hu.sch.domain.user.LostPasswordToken</class>
