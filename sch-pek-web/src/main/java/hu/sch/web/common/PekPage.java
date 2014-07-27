@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -87,6 +88,7 @@ public abstract class PekPage extends WebPage {
         add(headerLabel = new Label("headerLabel", new Model<String>("")));
         add(new FeedbackPanel("pagemessages").setEscapeModelStrings(false));
         add(new GoogleAnalyticsScript("analyticsJs"));
+        addCopyrightYearLabel();
     }
 
     /**
@@ -190,5 +192,9 @@ public abstract class PekPage extends WebPage {
      */
     protected String getSupportUrl() {
         return config.getSupportBaseUrl()+ DEFAULT_SUPPORT_ID;
+    }
+
+    private void addCopyrightYearLabel() {
+        add(new Label("copyrightYearLabel", Model.of(DateTime.now().getYear())));
     }
 }
