@@ -43,7 +43,8 @@
     </error-page>
 
     <session-config>
-        <session-timeout>120</session-timeout>
+        <!-- mimic oauth access token expiry time -->
+        <session-timeout>60</session-timeout>
         <cookie-config>
             <name>PEKSESSION</name>
             <http-only>true</http-only>

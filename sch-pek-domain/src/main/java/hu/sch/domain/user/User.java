@@ -169,6 +169,17 @@ public class User implements Serializable, Comparable<User> {
     //----------------------------------------------------
     @Column(name = "usr_salt")
     private String salt;
+    //----------------------------------------------------
+    @Column(name = "usr_auth_sch_id")
+    @Size(max = 50)
+    private String authSchId;
+    //----------------------------------------------------
+    @Column(name = "usr_lastlogin")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastLoginDate;
+    //----------------------------------------------------
+    @Column(name = "usr_bme_id")
+    private String bmeId;
 
     public User() {
         this.delegated = false;
@@ -679,6 +690,41 @@ public class User implements Serializable, Comparable<User> {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    /**
+     * gets the user's internal_id in auth.sch.
+     * @return
+     */
+    public String getAuthSchId() {
+        return authSchId;
+    }
+
+    public void setAuthSchId(String authSchId) {
+        this.authSchId = authSchId;
+    }
+
+    /**
+     * Get last login date. This field is updated on every login.
+     * @return
+     */
+    public Date getLastLoginDate() {
+        if (lastLoginDate == null) {
+            return null;
+        }
+        return new Date(lastLoginDate.getTime());
+    }
+
+    public void setLastLoginDate(Date lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    public String getBmeId() {
+        return bmeId;
+    }
+
+    public void setBmeId(String bmeId) {
+        this.bmeId = bmeId;
     }
 
     @Override
