@@ -91,6 +91,14 @@ public interface UserManagerLocal {
     public User findUserByConfirmationCode(String code);
 
     /**
+     * Finds the user with the specified auth.sch id.
+     *
+     * @param authSchId
+     * @return the user or null if not found
+     */
+    public User findUserByAuthSchId(String authSchId);
+
+    /**
      * Get entrant requests for the given user.
      *
      * @param user
@@ -165,6 +173,7 @@ public interface UserManagerLocal {
 
     /**
      * Remove user's profile image.
+     *
      * @param user
      */
     public void removeProfileImage(User user) throws PekEJBException;

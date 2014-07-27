@@ -32,7 +32,10 @@ import javax.xml.bind.annotation.XmlRootElement;
             query = "SELECT u FROM User u WHERE UPPER(u.screenName) = UPPER(:screenName)"),
     @NamedQuery(name = User.findUser, query = "SELECT u FROM User u WHERE upper(u.neptunCode) = upper(:neptunkod) OR "
             + "upper(u.emailAddress) = upper(:emailcim)"),
-    @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC")
+    @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC"),
+    @NamedQuery(name = User.findByAuthSchId, query =
+            "SELECT u FROM User u WHERE u.authSchId = :id"
+    ),
 })
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq",
         allocationSize = 1)
@@ -46,6 +49,7 @@ public class User implements Serializable, Comparable<User> {
     public static final String findUser = "findUser";
     public static final String findByScreenName = "findByScreenName";
     public static final String getAllValuatedSemesterForUser = "getAllValuatedSemesterForUser";
+    public static final String findByAuthSchId = "User.findByAuthSchId";
     //----------------------------------------------------
     @Id
     @GeneratedValue(generator = "users_seq")

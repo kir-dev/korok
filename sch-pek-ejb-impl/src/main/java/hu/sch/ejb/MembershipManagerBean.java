@@ -165,17 +165,29 @@ public class MembershipManagerBean implements MembershipManagerLocal {
 
     @Override
     public List<Membership> findMembershipsForUser(User user) {
-        TypedQuery<Membership> q = em.createQuery(
+        return buildMembershipQuery(user, false).getResultList();
+    }
+
+    @Override
+    public List<Membership> findAllMembershipForUser(User user) {
+        return buildMembershipQuery(user, true).getResultList();
+    }
+
+    private TypedQuery<Membership> buildMembershipQuery(User user, boolean includeInactive) {
+        StringBuilder sb = new StringBuilder(
                 "SELECT DISTINCT ms FROM Membership ms "
                 + "JOIN FETCH ms.group "
                 + "LEFT JOIN FETCH ms.posts p "
                 + "LEFT JOIN FETCH p.postType "
-                + "WHERE ms.user = :user "
-                + "AND ms.end IS NULL "
-                + "ORDER BY ms.group.id", Membership.class);
-        q.setParameter("user", user);
+                + "WHERE ms.user = :user ");
+        if (!includeInactive) {
+            sb.append("AND ms.end IS NULL ");
+        }
+        sb.append("ORDER BY ms.group.id");
 
-        return q.getResultList();
+        TypedQuery<Membership> q = em.createQuery(sb.toString(), Membership.class);
+        q.setParameter("user", user);
+        return q;
     }
 
     @Override
