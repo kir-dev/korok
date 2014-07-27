@@ -9,6 +9,7 @@ import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.services.dto.RegisteringUser;
 import hu.sch.services.exceptions.PekEJBException;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -69,6 +70,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
         user.setBmeId(regUser.getBmeId());
         user.setDormitory(regUser.getDormitory());
         user.setRoom(regUser.getRoomNumber());
+        user.setCreatedAt(new Date());
         return user;
     }
 

@@ -182,6 +182,10 @@ public class User implements Serializable, Comparable<User> {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastLoginDate;
     //----------------------------------------------------
+    @Column(name = "usr_created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    //----------------------------------------------------
     @Column(name = "usr_bme_id")
     private String bmeId;
 
@@ -729,6 +733,14 @@ public class User implements Serializable, Comparable<User> {
 
     public void setBmeId(String bmeId) {
         this.bmeId = bmeId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public boolean hasPassword() {
