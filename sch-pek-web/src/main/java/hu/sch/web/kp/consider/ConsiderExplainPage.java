@@ -1,6 +1,7 @@
 package hu.sch.web.kp.consider;
 
 import hu.sch.domain.ConsideredValuation;
+import hu.sch.services.PointHistoryManagerLocal;
 import hu.sch.web.kp.KorokPage;
 import hu.sch.services.ValuationManagerLocal;
 import hu.sch.services.exceptions.valuation.AlreadyModifiedException;
@@ -24,7 +25,10 @@ import org.apache.wicket.model.CompoundPropertyModel;
 public class ConsiderExplainPage extends KorokPage {
 
     @Inject
-    ValuationManagerLocal valuationManager;
+    private ValuationManagerLocal valuationManager;
+
+    @Inject
+    private PointHistoryManagerLocal pointHistoryManager;
 
     public ConsiderExplainPage(final List<ConsideredValuation> underConsider) {
         setHeaderLabelText("Elbírálás indoklása");
@@ -35,6 +39,7 @@ public class ConsiderExplainPage extends KorokPage {
             protected void onSubmit() {
                 try {
                     valuationManager.considerValuations(underConsider);
+                    pointHistoryManager.generateForSemesterAsync(getSemester());
                     getSession().info("Az elbírálás sikeres volt.");
                     setResponsePage(ConsiderPage.class);
                 } catch (NoExplanationException ex) {
