@@ -30,4 +30,9 @@ public final class NotFound extends KorokPage {
     public boolean isErrorPage() {
         return true;
     }
+
+    @Override
+    protected boolean needsLogin() {
+        return false;
+    }
 }

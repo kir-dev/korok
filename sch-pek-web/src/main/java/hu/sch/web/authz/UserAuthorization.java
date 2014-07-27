@@ -29,13 +29,13 @@ public interface UserAuthorization {
      * változókat.
      * @return A távoli felhasználó VIRID-ja.
      */
-    Long getUserid(Request wicketRequest);
+    Long getCurrentUserId(Request wicketRequest);
 
     /**
      * Az aktuálisan bejelentkezett felhasználó körvezetőségét vizsgálja.
      *
      * @param wicketRequest wicketRequest
-     * @param group         group
+     * @param group group
      * @return Körvezető-e az adott csoportban a felhasználó
      */
     boolean isGroupLeaderInGroup(Request wicketRequest, Group group);
@@ -53,18 +53,18 @@ public interface UserAuthorization {
      * A felhasználó rendelkezik-e az adott szerepkörrel (ADMIN|JETI|SVIE)
      *
      * @param wicketRequest wicketRequest
-     * @param role          role
+     * @param role role
      * @return Rendelkezik-e a felhasználó az adott szereppel
      */
     boolean hasAbstractRole(Request wicketRequest, Role role);
 
     /**
-     * Az aktuálisan bejelentkezett felhasználó attribútumait adja vissza.
+     * Az aktuálisan bejelentkezett felhasználót adja vissza.
      *
      * @param wicketRequest
      * @return Az Agent által átadott felhasználói attribútumok
      */
-    User getUserAttributes(Request wicketRequest);
+    User getCurrentUser(Request wicketRequest);
 
     /**
      * Az aktuálisan bejelentkezett felhasználó uid-jét adja vissza
@@ -73,4 +73,11 @@ public interface UserAuthorization {
      * @return A felhasználó egyedi azonosítója
      */
     String getRemoteUser(Request wicketRequest);
+
+    /**
+     * True-t ad vissza, ha van bejelentkezett felhasználó.
+     *
+     * @return
+     */
+    boolean isLoggedIn(Request wicketRequest);
 }

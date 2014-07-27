@@ -52,13 +52,13 @@ public abstract class PekPage extends WebPage {
     protected UserManagerLocal userManager;
     @Inject
     protected Configuration config;
+    private User user;
 
     public PekPage() {
         DEFAULT_SUPPORT_ID = config.getSupportDefaultId();
 
-        // TODO: ignore pages that does not need authentication
-        if (!getSession().isUserSignedIn()) {
-            new OAuthSignInFlow(config.getOAuthCredentials()).start();
+        if (shouldInitiateLogin()) {
+            new OAuthSignInFlow(config.getOAuthCredentials(), getRequest()).start();
         }
 
         init();
@@ -75,10 +75,10 @@ public abstract class PekPage extends WebPage {
         add(new WebComponent("favicon").add(
                 new AttributeModifier("href", new Model<String>("/images/" + getFavicon()))));
 
-        User user = getUser();
+        User user = getCurrentUser();
         if (user != null && user.isShowRecommendedPhoto()) {
             // javasoljunk neki egy fotót
-            add(new RecommendedPhotoPanel("recommendPhoto", getRemoteUser(), getUser()));
+            add(new RecommendedPhotoPanel("recommendPhoto", getRemoteUser(), getCurrentUser()));
         } else {
             add(new EmptyPanel("recommendPhoto").setVisible(false));
         }
@@ -142,8 +142,23 @@ public abstract class PekPage extends WebPage {
         return getAuthorizationComponent().getRemoteUser(getRequest());
     }
 
-    protected final User getUser() {
-        return userManager.findUserById(getSession().getUserId(), true);
+    protected final User getCurrentUser() {
+        if (user == null) {
+            user = getAuthorizationComponent().getCurrentUser(getRequest());
+        }
+        return user;
+    }
+
+    protected final Long getCurrentUserId() {
+        return getAuthorizationComponent().getCurrentUserId(getRequest());
+    }
+
+    protected boolean needsLogin() {
+        return true;
+    }
+
+    private boolean shouldInitiateLogin() {
+        return needsLogin() && !getAuthorizationComponent().isLoggedIn(getRequest());
     }
 
     @Override

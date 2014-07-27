@@ -34,7 +34,7 @@ public class EditGroupInfo extends KorokPage {
         setHeaderLabelText("Kör adatlap szerkesztése");
 
         group = groupManager.findGroupById(id);
-        User user = userManager.findUserById(getSession().getUserId(), true);
+        User user = getCurrentUser();
 
         if (user == null || !isUserGroupLeader(group)) {
             getSession().error(getLocalizer().getString("err.NincsJog", this));

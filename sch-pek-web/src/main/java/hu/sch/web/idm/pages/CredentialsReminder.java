@@ -81,8 +81,8 @@ public class CredentialsReminder extends KorokPage {
             }
         };
 
-        final TextField<String> mailTF =
-                new RequiredTextField<>("mail", new PropertyModel<String>(this, "mail"));
+        final TextField<String> mailTF
+                = new RequiredTextField<>("mail", new PropertyModel<String>(this, "mail"));
         mailTF.add(EmailAddressValidator.getInstance());
         reminderForm.add(mailTF);
         add(reminderForm);
@@ -95,5 +95,10 @@ public class CredentialsReminder extends KorokPage {
             default:
                 return accountManager.sendUserNameReminder(mail);
         }
+    }
+
+    @Override
+    protected boolean needsLogin() {
+        return false;
     }
 }

@@ -35,4 +35,9 @@ public final class PageExpiredError extends KorokPage {
     public boolean isErrorPage() {
         return true;
     }
+
+    @Override
+    protected boolean needsLogin() {
+        return false;
+    }
 }

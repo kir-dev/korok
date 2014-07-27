@@ -64,6 +64,11 @@ public class ReplaceLostPasswordPage extends ProfilePage {
         }.setVisible(showPasswordPanel));
     }
 
+    @Override
+    protected boolean needsLogin() {
+        return false;
+    }
+
     private boolean replacePassword(final String password) {
         try {
             accountManager.replaceLostPassword(lostPasswordCode, password);

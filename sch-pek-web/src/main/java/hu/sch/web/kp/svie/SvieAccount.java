@@ -33,7 +33,7 @@ public final class SvieAccount extends KorokPage {
     @Inject
     SvieManagerLocal svieManager;
     private static Logger log = LoggerFactory.getLogger(SvieAccount.class);
-    private final User user = getUser();
+    private final User user = getCurrentUser();
 
     public SvieAccount() {
 

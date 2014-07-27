@@ -31,34 +31,34 @@ public class SessionBasedAuthorization implements UserAuthorization {
     public void init(Application wicketApplication) {
         // NOTE: we can do this here because the UserManager is stateless!
         CdiContainer.get().getNonContextualManager().inject(this);
-        logger.info("SessionBasedAuthorization successfully initialized.");
+        logger.info("{} has been successfully initialized.", getClass().getSimpleName());
     }
 
     @Override
-    public Long getUserid(Request wicketRequest) {
+    public Long getCurrentUserId(Request wicketRequest) {
         return VirSession.get().getUserId();
     }
 
     @Override
     public boolean isGroupLeaderInGroup(Request wicketRequest, Group group) {
-        return membershipManager.isGroupLeader(getUserid(wicketRequest), group);
+        return membershipManager.isGroupLeader(getCurrentUserId(wicketRequest), group);
     }
 
     @Override
     public boolean isGroupLeaderInSomeGroup(Request wicketRequest) {
-        return membershipManager.hasGroupLeadership(getUserid(wicketRequest));
+        return membershipManager.hasGroupLeadership(getCurrentUserId(wicketRequest));
     }
 
     @Override
     public boolean hasAbstractRole(Request wicketRequest, Role role) {
-        return authorization.hasRole(getUserid(wicketRequest), role);
+        return authorization.hasRole(getCurrentUserId(wicketRequest), role);
     }
 
     @Override
-    public User getUserAttributes(Request wicketRequest) {
-        Long id = getUserid(wicketRequest);
+    public User getCurrentUser(Request wicketRequest) {
+        Long id = getCurrentUserId(wicketRequest);
         if (id != null) {
-            return userManager.findUserById(id);
+            return userManager.findUserById(id, true);
         }
 
         return null;
@@ -66,7 +66,7 @@ public class SessionBasedAuthorization implements UserAuthorization {
 
     @Override
     public String getRemoteUser(Request wicketRequest) {
-        User user = getUserAttributes(wicketRequest);
+        User user = getCurrentUser(wicketRequest);
         if (user != null) {
             return user.getScreenName();
         }
@@ -74,4 +74,8 @@ public class SessionBasedAuthorization implements UserAuthorization {
         return null;
     }
 
+    @Override
+    public boolean isLoggedIn(Request wicketRequest) {
+        return VirSession.get().isUserSignedIn();
+    }
 }

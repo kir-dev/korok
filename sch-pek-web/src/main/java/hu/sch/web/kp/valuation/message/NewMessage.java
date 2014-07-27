@@ -30,7 +30,7 @@ class NewMessage extends KorokPage {
 
         ValuationMessage vm = new ValuationMessage();
         vm.setGroup(group);
-        vm.setSender(getUser());
+        vm.setSender(getCurrentUser());
         vm.setSemester(semester);
         setDefaultModel(new CompoundPropertyModel<ValuationMessage>(vm));
 

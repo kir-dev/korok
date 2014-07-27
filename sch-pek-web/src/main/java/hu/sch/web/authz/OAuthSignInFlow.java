@@ -9,6 +9,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.wicket.protocol.http.request.WebClientInfo;
+import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.slf4j.LoggerFactory;
@@ -17,13 +18,16 @@ public class OAuthSignInFlow {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(OAuthSignInFlow.class);
     private final OAuthCredentials cred;
+    private final Request request;
 
-    public OAuthSignInFlow(OAuthCredentials oauthCred) {
+    public OAuthSignInFlow(OAuthCredentials oauthCred, Request request) {
         this.cred = oauthCred;
+        this.request = request;
     }
 
     public void start() {
         try {
+            saveReturnUrl();
             redirectToOAuthLogin();
         } catch (OAuthSystemException ex) {
             logger.error("Could not start oauth flow", ex);
@@ -31,10 +35,11 @@ public class OAuthSignInFlow {
     }
 
     private void redirectToOAuthLogin() throws OAuthSystemException {
+        // redirect url is not necessary since auth.sch will ignore it and redirect
+        // to a specified url
         OAuthClientRequest oauthRequest = OAuthClientRequest
                 .authorizationLocation(cred.getLoginUrl())
                 .setClientId(cred.getClientId())
-                .setRedirectURI(getRedirectUri())
                 .setState(generateUserState())
                 .setResponseType("code")
                 .setScope(cred.getScope())
@@ -43,9 +48,8 @@ public class OAuthSignInFlow {
         throw new RedirectToUrlException(oauthRequest.getLocationUri());
     }
 
-    private String getRedirectUri() {
-        //TODO: server url
-        return "http://127.0.0.1:8080/oauth_callback";
+    private void saveReturnUrl() {
+        VirSession.get().setReturnUrl("/" + request.getUrl().toString());
     }
 
     private String generateUserState() {

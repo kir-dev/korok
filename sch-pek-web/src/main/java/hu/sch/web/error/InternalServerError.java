@@ -47,7 +47,7 @@ public final class InternalServerError extends KorokPage {
         final UserAuthorization authComponent =
                 ((PhoenixApplication) getApplication()).getAuthorizationComponent();
 
-        final User userAttributes = authComponent.getUserAttributes(request);
+        final User userAttributes = authComponent.getCurrentUser(request);
 
         final Map<SystemManagerLocal.EXC_REPORT_KEYS, String> exceptionParams =
                 new EnumMap(SystemManagerLocal.EXC_REPORT_KEYS.class);
@@ -76,7 +76,7 @@ public final class InternalServerError extends KorokPage {
                     userAttributes.getEmailAddress());
         }
 
-        final Long userId = authComponent.getUserid(request);
+        final Long userId = authComponent.getCurrentUserId(request);
         if (userId != null) {
             exceptionParams.put(SystemManagerLocal.EXC_REPORT_KEYS.VIRID,
                     userId.toString());
@@ -96,5 +96,10 @@ public final class InternalServerError extends KorokPage {
     @Override
     public boolean isErrorPage() {
         return true;
+    }
+
+    @Override
+    protected boolean needsLogin() {
+        return false;
     }
 }

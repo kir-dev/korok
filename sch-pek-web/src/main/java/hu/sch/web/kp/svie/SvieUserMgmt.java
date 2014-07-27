@@ -49,7 +49,7 @@ public final class SvieUserMgmt extends KorokPage {
         createNavbarWithSupportId(34);
         if (!isCurrentUserSVIE()) {
             log.warn("Illetéktelen hozzáférési próbálkozás a SVIE beállításokhoz! Felhasználó: "
-                    + getSession().getUserId());
+                    + getCurrentUserId());
             getSession().error("Nem rendelkezel a megfelelő jogosultságokkal!");
             throw new RestartResponseException(getApplication().getHomePage());
         }

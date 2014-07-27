@@ -62,7 +62,7 @@ public class ShowGroup extends KorokPage {
         }
 
         final Group group = groupManager.findGroupById(id, true);
-        final User user = getUser();
+        final User user = getCurrentUser();
         //ha a kör nem létezik
         if (group == null) {
             error("A megadott kör nem létezik!");

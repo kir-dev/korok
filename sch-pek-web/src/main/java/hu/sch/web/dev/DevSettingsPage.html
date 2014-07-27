@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fejlesztői konzol</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Fejlesztői konzol</h1>
+        <p>
+            Fejlsztési időben jól jöhet, ha rendszerben kicsit szabadabban tudunk mozogni.
+            Ezen az oldalon beállíthatsz pár dolgot, amivel könnyebbé teheted a tesztelést.
+            Az egyes beállításokról részletesebb leírást mellettük találsz.
+        </p>
+        <div>
+            <span wicket:id="statusSpan">[hello]</span>
+        </div>
+        <form wicket:id="devSettingsForm">
+            <div>
+                <label>User id:</label>
+                <input wicket:id="userId" type="text">
+                <p>
+                    Az itt beállított id-jú felhasználó lesz a bejelentkezett felhasználó.
+                    Ezután a rendszer már teljesen úgyanúgy viselkedik, mintha az adott felhasználó
+                    a rendes bejelentkezési folyamaton ment volna keresztül.
+                </p>
+            </div>
+            <div>
+                <input type="submit" value="Mentés"/>
+            </div>
+            <div>
+                <input type="Submit" wicket:id="btnDeactivate" value="Visszaállítás">
+                <p>
+                    Ezzel visszállíthatod az eredeti session alapú felhasználókezelést.
+                    <br>
+                    <b>Figyelem!</b> Ez a gomb át fog irányítani a főoldalra és újra be fog jelentkeztetni.
+                </p>
+            </div>
+
+        </form>
+    </body>
+</html>

@@ -102,7 +102,7 @@ public final class ChangePost extends KorokPage {
                                 throw new RestartResponseException(ChangePost.class, new PageParameters().add("memberid", ms.getId()));
                             }
                         } else {
-                            log.warn("A következő felhasználó: " + getUser().getId() + " megpróbált a delegált posztjával körvezetővé válni, "
+                            log.warn("A következő felhasználó: " + getCurrentUserId() + " megpróbált a delegált posztjával körvezetővé válni, "
                                     + "vagy a körvezető személyét valaki másra megváltoztatni! A kezdeményezett fél: " + ms.getUser().getId());
                             getSession().error("Ez most nem volt szép Tőled, nemsokára jön is érted a fekete kocsi");
                             throw new RestartResponseException(ShowGroup.class, new PageParameters().add("id", ms.getGroup().getId()));

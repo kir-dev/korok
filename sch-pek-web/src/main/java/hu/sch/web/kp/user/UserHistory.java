@@ -67,11 +67,12 @@ public class UserHistory extends KorokPage {
     }
 
     private void initComponents() {
-        User user;
+        User user = null;
         if (id == null) {
-            id = getSession().getUserId();
+            user = getCurrentUser();
+        } else {
+            user = userManager.findUserById(id, true);
         }
-        user = userManager.findUserById(id, true);
         if (user == null) {
             logger.warn("Not founded user for UserHistory page with id: " + id);
             error("A megadott felhasználóhoz nem tartozik közösségi történet!");

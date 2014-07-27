@@ -12,6 +12,7 @@ public class VirSession extends WebSession {
     private Long userId;
     private String oauthUserState;
     private String accessToken;
+    private String returnUrl;
 
     public VirSession(Request request) {
         super(request);
@@ -50,5 +51,14 @@ public class VirSession extends WebSession {
 
     public boolean isUserSignedIn() {
         return getUserId() != null;
+    }
+
+    public String getReturnUrl() {
+        return returnUrl;
+    }
+
+    public void setReturnUrl(String returnUrl) {
+        this.returnUrl = returnUrl;
+        dirty();
     }
 }

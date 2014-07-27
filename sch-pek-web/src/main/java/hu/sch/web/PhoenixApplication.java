@@ -8,6 +8,7 @@ import hu.sch.services.config.Configuration.Environment;
 import hu.sch.services.SystemManagerLocal;
 import hu.sch.web.authz.SessionBasedAuthorization;
 import hu.sch.web.authz.UserAuthorization;
+import hu.sch.web.dev.DevSettingsPage;
 import hu.sch.web.error.Forbidden;
 import hu.sch.web.error.InternalServerError;
 import hu.sch.web.error.NotFound;
@@ -250,6 +251,10 @@ public class PhoenixApplication extends WebApplication {
         mountPageWithPath("/profile/admin", AdminPage.class);
         mountPageWithPath("/profile/confirm", ConfirmPage.class);
         mountPageWithPath("/profile/replacelostpassword", ReplaceLostPasswordPage.class);
+
+        if (config.getEnvironment() == Environment.DEVELOPMENT) {
+            mountPageWithPath("/dev", DevSettingsPage.class);
+        }
     }
 
     /**
