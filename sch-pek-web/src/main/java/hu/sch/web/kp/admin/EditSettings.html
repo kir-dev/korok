@@ -25,8 +25,11 @@
                 <input class="textinput" wicket:id="secondYear" style="width: 45px;"/>.
             </p>
             <p>
-                <label><wicket:message key="szemeszter.osziFelev"/>:</label>
-                <input type="checkbox" wicket:id="isAutumn"/>
+                <label wicket:id="autumnLbl">
+                    <input type="checkbox" wicket:id="isAutumn"/>
+                    <wicket:message key="szemeszter.osziFelev"/>
+                </label>
+
             </p>
             <span id="btns">
                 <input type="submit" class="btn" value="OK"/>
@@ -63,6 +66,27 @@
                 </tr>
             </table>
             <input type="submit" class="btn" value="Mentés" />
+        </form>
+        <form wicket:id="semesterForm">
+            <h2>Közösségi pontok újragenerálása</h2>
+            <p>Add meg, hogy melyik szemeszterre szeretnéd újragenerálni a pontokat.</p>
+
+            <div>
+                <labal><wicket:message key="szemeszter.evek"/>:</labal>
+                <input type="text" wicket:id="firstYear" class="textinput" style="width: 45px">
+                /
+                <input type="text" wicket:id="secondYear" class="textinput" style="width: 45px">
+            </div>
+            <div>
+                <label wicket:id="autumnLbl">
+                    <input type="checkbox" wicket:id="isAutumn"/>
+                    <wicket:message key="szemeszter.osziFelev"/>
+                </label>
+
+            </div>
+            <div>
+                <input type="submit" value="Generál!" class="btn"/>
+            </div>
         </form>
     </wicket:fragment>
 </wicket:extend>

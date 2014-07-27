@@ -13,17 +13,14 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.MissingResourceException;
-import org.apache.wicket.markup.html.form.CheckBox;
+import javax.inject.Inject;
+import org.apache.wicket.cdi.CdiContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -39,11 +36,16 @@ class JetiFragment extends Fragment {
     private Semester semester;
     private ValuationPeriod valuationPeriod;
     private ValuationPeriod oldValuationPeriod;
-    private final ValuationManagerLocal valuationManager;
+    @Inject
+    private ValuationManagerLocal valuationManager;
+    @Inject
+    private SystemManagerLocal systemManager;
+    @Inject
+    private PointHistoryManagerLocal pointHistoryManager;
 
-    public JetiFragment(String id, String markupId, final SystemManagerLocal systemManager, final ValuationManagerLocal valuationManager, final PointHistoryManagerLocal pointHistoryManager) {
+    public JetiFragment(String id, String markupId) {
         super(id, markupId, null, null);
-        this.valuationManager = valuationManager;
+        CdiContainer.get().getNonContextualManager().inject(this);
 
         try {
             semester = systemManager.getSzemeszter();
@@ -54,7 +56,7 @@ class JetiFragment extends Fragment {
         oldValuationPeriod = systemManager.getErtekelesIdoszak();
         setValuationPeriod(oldValuationPeriod);
 
-        Form<Semester> beallitasForm = new Form<Semester>("settingsForm") {
+        SemesterForm beallitasForm = new SemesterForm("settingsForm") {
             @Override
             public void onSubmit() {
                 try {
@@ -72,27 +74,9 @@ class JetiFragment extends Fragment {
                 }
             }
         };
+        beallitasForm.setSemester(semester);
 
-        beallitasForm.setModel(new CompoundPropertyModel<>(semester));
-        final TextField<Integer> firstYear = new TextField<>("firstYear");
-        beallitasForm.add(firstYear.add(new RangeValidator<>(2000, 2030)));
-        final TextField<Integer> secondYear = new TextField<>("secondYear");
-        beallitasForm.add(secondYear.add(new RangeValidator<>(2000, 2030)));
-        beallitasForm.add(new CheckBox("isAutumn"));
-        beallitasForm.add(new AbstractFormValidator() {
-            @Override
-            public FormComponent<?>[] getDependentFormComponents() {
-                return new FormComponent[]{firstYear, secondYear};
-            }
-
-            @Override
-            public void validate(Form<?> form) {
-                if (Integer.parseInt(firstYear.getValue()) + 1 != Integer.parseInt(secondYear.getValue())) {
-                    error(firstYear, "err.SzemeszterEvKulonbseg");
-                }
-            }
-        });
-        DropDownChoice<ValuationPeriod> ddc1 = new DropDownChoice<ValuationPeriod>("periodSelector", Arrays.asList(ValuationPeriod.values()));
+        DropDownChoice<ValuationPeriod> ddc1 = new DropDownChoice<>("periodSelector", Arrays.asList(ValuationPeriod.values()));
         ddc1.setRequired(true);
         ddc1.setModel(new PropertyModel<ValuationPeriod>(this, "valuationPeriod"));
         ddc1.setChoiceRenderer(new IChoiceRenderer<ValuationPeriod>() {

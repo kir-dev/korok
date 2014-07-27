@@ -28,9 +28,9 @@ public class EditSettings extends KorokPage {
 
         setHeaderLabelText("Adminisztráció");
 
-        JetiFragment jetiFragment = new JetiFragment("jetifragment", "jetipanel", systemManager, valuationManager, pointHistoryManager);
+        JetiFragment jetiFragment = new JetiFragment("jetifragment", "jetipanel");
         SvieFragment svieFragment = new SvieFragment("sviefragment", "sviepanel");
-        KirDevFragment kirDevFragment = new KirDevFragment("kirdevfragment", "kirdevpanel", systemManager);
+        KirDevFragment kirDevFragment = new KirDevFragment("kirdevfragment", "kirdevpanel");
 
         jetiFragment.setVisible(isCurrentUserJETI());
         svieFragment.setVisible(isCurrentUserSVIE());
