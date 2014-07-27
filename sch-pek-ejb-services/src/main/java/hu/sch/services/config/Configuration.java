@@ -26,6 +26,8 @@ public interface Configuration {
 
     OAuthCredentials getOAuthCredentials();
 
+    String getVersionInfoLink();
+
     /**
      * Környezetet leíró enum a finomhangolásért
      */

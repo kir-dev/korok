@@ -36,6 +36,7 @@ public class ConfigurationImpl implements Configuration {
     private static final String SUPPORT_DEFAULT_ID = "support.defaultId";
     private static final String DEV_MAIL = "devMail";
     private static final String ERR_MAIL = "errMail";
+    private static final String VERSION_INFO_LINK = "link.versioninfo";
 
     private static final String OAUTH_CLIENT_ID = "oauth.client.id";
     private static final String OAUTH_CLIENT_SECRET = "oauth.client.secret";
@@ -142,5 +143,10 @@ public class ConfigurationImpl implements Configuration {
     @Override
     public String getErrorReportingEmail() {
         return properties.getProperty(ERR_MAIL, DEFAULT_ERR_EMAIL);
+    }
+
+    @Override
+    public String getVersionInfoLink() {
+        return properties.getProperty(VERSION_INFO_LINK);
     }
 }
