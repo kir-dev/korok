@@ -295,4 +295,16 @@ public class UserManagerBean implements UserManagerLocal {
         user.setPhotoPath(null);
         updateUser(user);
     }
+
+    @Override
+    public User findUserByAuthSchId(String authSchId) {
+        try {
+            return em.createNamedQuery(User.findByAuthSchId, User.class)
+                    .setParameter("id", authSchId)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            logger.info("User cannot be found for auth.sch id: {}", authSchId);
+            return null;
+        }
+    }
 }
