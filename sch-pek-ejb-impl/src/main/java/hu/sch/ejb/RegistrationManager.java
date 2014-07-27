@@ -41,7 +41,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
      */
     @Override
     public User doRegistration(final RegisteringUser regUser) throws PekEJBException {
-        User user = createUser(regUser);
+        User user = buildUser(regUser);
         user = accountManager.createUser(user);
         setVisibleAttributes(user);
         return user;
@@ -57,7 +57,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
         return user != null;
     }
 
-    private User createUser(final RegisteringUser regUser) {
+    private User buildUser(final RegisteringUser regUser) {
         final User user = new User();
         user.setScreenName(regUser.getScreenName());
         user.setEmailAddress(regUser.getMail());
