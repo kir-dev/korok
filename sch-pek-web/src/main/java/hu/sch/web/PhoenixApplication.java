@@ -38,7 +38,6 @@ import hu.sch.web.profile.birthday.BirthDayPage;
 import hu.sch.web.profile.confirmation.ConfirmPage;
 import hu.sch.web.profile.confirmation.ReplaceLostPasswordPage;
 import hu.sch.web.profile.edit.EditPage;
-import hu.sch.web.profile.passwordchange.ChangePasswordPage;
 import hu.sch.web.profile.show.ShowPersonPage;
 import hu.sch.web.session.VirSession;
 import hu.sch.web.wicket.util.EntrantTypeConverter;
@@ -242,7 +241,6 @@ public class PhoenixApplication extends WebApplication {
         mountPageWithPath("/profile", ShowPersonPage.class);
         mountPageWithPath("/profile/show", ShowPersonPage.class);
         mountPageWithPath("/profile/edit", EditPage.class);
-        mountPageWithPath("/profile/changepassword", ChangePasswordPage.class);
         mountPageWithPath("/profile/birthdays", BirthDayPage.class);
         mountPageWithPath("/profile/admin", AdminPage.class);
         mountPageWithPath("/profile/confirm", ConfirmPage.class);
