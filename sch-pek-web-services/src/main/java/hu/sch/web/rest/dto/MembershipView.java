@@ -78,6 +78,11 @@ public class MembershipView {
         public String getGroupName() {
             return membership.getGroup().getName();
         }
+
+        @JsonProperty("group_id")
+        public Long getGroupId() {
+            return membership.getGroupId();
+        }
     }
 
 }
