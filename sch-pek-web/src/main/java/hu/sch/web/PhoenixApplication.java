@@ -229,7 +229,7 @@ public class PhoenixApplication extends WebApplication {
         //IDM linkek
         mountPageWithPath("/korok/reminder", CredentialsReminder.class);
         mountPageWithPath("/profile/register", RegistrationModePage.class);
-        mountPageWithPath("/korok/logout", Logout.class);
+        mountPageWithPath("/logout", Logout.class);
 
         mountPageWithPath("/profile", ShowPersonPage.class);
         mountPageWithPath("/profile/show", ShowPersonPage.class);
