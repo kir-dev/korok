@@ -20,7 +20,7 @@ rm -f $TMPFILE
 
 for id in $IDS; do
 	for attr in CELL_PHONE EMAIL SCREEN_NAME ROOM_NUMBER; do
-		echo "$id, $attr, true" >> $TMPFILE
+		echo "$id,$attr,true" >> $TMPFILE
 	done
 done
 
