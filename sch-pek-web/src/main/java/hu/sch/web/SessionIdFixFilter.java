@@ -18,9 +18,8 @@ public class SessionIdFixFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse)response;
-        HttpSession session = req.getSession();
 
-        if (session.isNew()) {
+        if (needsRedirect(req)) {
             res.sendRedirect(buildRedirectUri(req));
         } else {
             chain.doFilter(request, response);
