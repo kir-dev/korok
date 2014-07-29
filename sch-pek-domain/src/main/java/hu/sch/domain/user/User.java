@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
             + "upper(u.emailAddress) = upper(:emailcim)"),
     @NamedQuery(name = User.getAllValuatedSemesterForUser, query = "SELECT DISTINCT pr.valuation.semester FROM PointRequest pr WHERE pr.user = :user ORDER BY pr.valuation.semester DESC"),
     @NamedQuery(name = User.findByAuthSchId, query =
-            "SELECT u FROM User u WHERE u.authSchId = :id"
+            "SELECT u FROM User u WHERE LOWER(u.authSchId) = LOWER(:id)"
     ),
 })
 @SequenceGenerator(name = "users_seq", sequenceName = "users_usr_id_seq",
