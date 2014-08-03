@@ -1,5 +1,7 @@
 package hu.sch.services.config;
 
+import hu.sch.domain.user.StudentStatus;
+
 /**
  *
  * @author tomi
@@ -27,6 +29,8 @@ public interface Configuration {
     OAuthCredentials getOAuthCredentials();
 
     String getVersionInfoLink();
+
+    StudentStatus getNewUserStudentStatus();
 
     /**
      * Környezetet leíró enum a finomhangolásért

@@ -1,5 +1,6 @@
 package hu.sch.ejb.config;
 
+import hu.sch.domain.user.StudentStatus;
 import hu.sch.services.config.ImageUploadConfig;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.config.OAuthCredentials;
@@ -37,6 +38,7 @@ public class ConfigurationImpl implements Configuration {
     private static final String DEV_MAIL = "devMail";
     private static final String ERR_MAIL = "errMail";
     private static final String VERSION_INFO_LINK = "link.versioninfo";
+    private static final String NEW_USER_STUDENT_STATUS = "newuser.studentstatus";
 
     private static final String OAUTH_CLIENT_ID = "oauth.client.id";
     private static final String OAUTH_CLIENT_SECRET = "oauth.client.secret";
@@ -67,6 +69,8 @@ public class ConfigurationImpl implements Configuration {
 
             properties.load(fis);
             logger.debug(properties.toString());
+            // verify the value of status
+            getNewUserStudentStatus();
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error while loading properties file!", ex);
         }
@@ -148,5 +152,14 @@ public class ConfigurationImpl implements Configuration {
     @Override
     public String getVersionInfoLink() {
         return properties.getProperty(VERSION_INFO_LINK);
+    }
+
+    @Override
+    public StudentStatus getNewUserStudentStatus() {
+        String statusString = properties.getProperty(NEW_USER_STUDENT_STATUS);
+        if (statusString == null) {
+            throw new NullPointerException("student status cannot be null");
+        }
+        return StudentStatus.valueOf(statusString);
     }
 }
