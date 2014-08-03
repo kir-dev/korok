@@ -7,11 +7,13 @@ import hu.sch.domain.user.UserStatus;
 import hu.sch.services.AccountManager;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.UserManagerLocal;
+import hu.sch.services.config.Configuration;
 import hu.sch.services.dto.RegisteringUser;
 import hu.sch.services.exceptions.PekEJBException;
 import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -31,11 +33,12 @@ public class RegistrationManager implements RegistrationManagerLocal {
 
     @PersistenceContext
     private EntityManager em;
-    //
-    @EJB(name = "UserManagerBean")
+    @Inject
     private UserManagerLocal userManager;
-    @EJB(name = "AccountManagerBean")
+    @Inject
     private AccountManager accountManager;
+    @Inject
+    private Configuration config;
 
     /**
      * {@inheritDoc}
@@ -64,7 +67,7 @@ public class RegistrationManager implements RegistrationManagerLocal {
         user.setEmailAddress(regUser.getMail());
         user.setFirstName(regUser.getFirstName());
         user.setLastName(regUser.getLastName());
-        user.setStudentStatus(StudentStatus.ACTIVE);
+        user.setStudentStatus(config.getNewUserStudentStatus());
         user.setUserStatus(UserStatus.ACTIVE);
         user.setAuthSchId(regUser.getAuthSchId());
         user.setBmeId(regUser.getBmeId());
