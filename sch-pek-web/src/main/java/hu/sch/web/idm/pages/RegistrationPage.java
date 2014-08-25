@@ -1,6 +1,7 @@
 package hu.sch.web.idm.pages;
 
 import hu.sch.domain.user.User;
+import hu.sch.services.AuthSchUserIntegration;
 import hu.sch.services.RegistrationManagerLocal;
 import hu.sch.services.dto.RegisteringUser;
 import hu.sch.services.exceptions.PekEJBException;
@@ -37,6 +38,9 @@ public class RegistrationPage extends KorokPage {
     @Inject
     private RegistrationManagerLocal registrationManager;
 
+    @Inject
+    private AuthSchUserIntegration userIntegaration;
+
     public RegistrationPage() {
         setHeaderLabelText("Regisztráció");
 
@@ -54,6 +58,7 @@ public class RegistrationPage extends KorokPage {
         try {
             User registeredUser = registrationManager.doRegistration(user);
             updateSession(registeredUser);
+            userIntegaration.pingBack(getSession().getAccessToken());
 
             getSession().info(getString("reg.successful"));
             setResponsePage(getApplication().getHomePage());
