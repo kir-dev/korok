@@ -4,6 +4,10 @@ import hu.sch.domain.user.User;
 import hu.sch.services.AuthSchUserIntegration;
 import hu.sch.services.config.Configuration;
 import hu.sch.services.dto.OAuthUserInfo;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -19,6 +23,7 @@ import org.slf4j.LoggerFactory;
 public class AuthSchUserIntegrationBean implements AuthSchUserIntegration {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthSchUserIntegrationBean.class);
+    private static final String AUTH_SCH_PING_BACK_URL = "https://auth.sch.bme.hu/api/profile/resync?access_token=";
 
     @PersistenceContext
     private EntityManager em;
@@ -48,6 +53,22 @@ public class AuthSchUserIntegrationBean implements AuthSchUserIntegration {
         }
     }
 
+    @Override
+    @Asynchronous
+    public void pingBack(String accessToken) {
+        try {
+            String url = AUTH_SCH_PING_BACK_URL.concat(accessToken);
+            HttpURLConnection req = (HttpURLConnection)new URL(url).openConnection();
+            if (req.getResponseCode() != 200) {
+                logger.warn("auth.sch ping back returned {} code instead of 200");
+            }
+        } catch (MalformedURLException ex) {
+            logger.error("Noooooooooooooooooooooooo! Wrong url", ex);
+        } catch (IOException ex) {
+            logger.warn("Could not reach auth.sch for ping back", ex);
+        }
+    }
+
     private void updateRoomNumber(User user, OAuthUserInfo userInfo) {
         if (userInfo.getDormitory() != null) {
             user.setRoom(userInfo.getDormitory().getRoom());
@@ -66,5 +87,7 @@ public class AuthSchUserIntegrationBean implements AuthSchUserIntegration {
 
         mailManager.sendEmail(config.getErrorReportingEmail(), subject, body);
     }
+
+
 
 }
