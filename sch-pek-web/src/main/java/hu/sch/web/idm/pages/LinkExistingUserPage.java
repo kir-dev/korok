@@ -72,6 +72,7 @@ public class LinkExistingUserPage extends KorokPage {
 
         User user = userManager.findUserByScreenName(credentials.getUsername());
         userIntegration.updateUser(user.getId(), userInfo);
+        userIntegration.pingBack(getSession().getAccessToken());
 
         getSession().setUserId(user.getId());
         getSession().setOAuthUserInfo(null);

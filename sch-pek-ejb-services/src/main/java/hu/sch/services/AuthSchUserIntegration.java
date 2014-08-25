@@ -13,4 +13,10 @@ public interface AuthSchUserIntegration {
      * @param userInfo
      */
     void updateUser(Long userId, OAuthUserInfo userInfo);
+
+    /**
+     * Ping back to auth.sch so it knows when we synced a user.
+     * @param accessToken 
+     */
+    void pingBack(String accessToken);
 }
