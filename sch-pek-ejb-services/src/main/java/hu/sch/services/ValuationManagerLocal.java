@@ -239,11 +239,12 @@ public interface ValuationManagerLocal {
     /**
      * Visszaadja a neptunnal azonosított felhasználó adott félévben kapott belépőit.
      *
-     * @param neptun
+     * @param id valamilyen egyedi azonositoja a felhasznalonak. Elfogadja a
+     * neptunt vagy az auth.sch id-t.
      * @param semester
      * @return
      * @throws UserNotFoundException
      */
-    List<ApprovedEntrant> getApprovedEntrants(final String neptun,
+    List<ApprovedEntrant> getApprovedEntrants(final String id,
             final Semester semester) throws UserNotFoundException;
 }
