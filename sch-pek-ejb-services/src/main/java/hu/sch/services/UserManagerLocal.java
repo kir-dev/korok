@@ -169,4 +169,6 @@ public interface UserManagerLocal {
      * @param user
      */
     public void removeProfileImage(User user) throws PekEJBException;
+
+    User findUserByAuthSchId(String id, boolean includeMembeships);
 }

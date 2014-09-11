@@ -279,12 +279,23 @@ public class UserManagerBean implements UserManagerLocal {
 
     @Override
     public User findUserByAuthSchId(String authSchId) {
+        return findUserByAuthSchId(authSchId, false);
+    }
+
+    @Override
+    public User findUserByAuthSchId(String id, boolean includeMembeships) {
         try {
-            return em.createNamedQuery(User.findByAuthSchId, User.class)
-                    .setParameter("id", authSchId)
+            User user = em.createNamedQuery(User.findByAuthSchId, User.class)
+                    .setParameter("id", id)
                     .getSingleResult();
+
+            if (includeMembeships) {
+                Hibernate.initialize(user.getMemberships());
+            }
+
+            return user;
         } catch (NoResultException nre) {
-            logger.info("User cannot be found for auth.sch id: {}", authSchId);
+            logger.info("User cannot be found for auth.sch id: {}", id);
             return null;
         }
     }
