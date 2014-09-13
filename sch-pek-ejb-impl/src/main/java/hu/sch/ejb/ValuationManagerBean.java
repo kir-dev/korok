@@ -792,13 +792,14 @@ public class ValuationManagerBean implements ValuationManagerLocal {
     }
 
     @Override
-    public List<ApprovedEntrant> getApprovedEntrants(final String neptun,
-            final Semester semester) throws UserNotFoundException {
-
-        final User user = userManager.findUserByNeptun(neptun);
-
+    public List<ApprovedEntrant> getApprovedEntrants(final String id, final Semester semester) throws UserNotFoundException {
+        // try auth.sch first then neptun, and fail if there's still no user
+        User user = userManager.findUserByAuthSchId(id);
         if (user == null) {
-            throw new UserNotFoundException(String.format("User cannot be found with %s neptun.", neptun));
+            user = userManager.findUserByNeptun(id);
+        }
+        if (user == null) {
+            throw new UserNotFoundException(String.format("User cannot be found with %s neptun neither auth.sch id.", id));
         }
 
         final List<ApprovedEntrant> results = new LinkedList<>();

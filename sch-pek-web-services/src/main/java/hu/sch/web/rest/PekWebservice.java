@@ -3,6 +3,7 @@ package hu.sch.web.rest;
 import hu.sch.domain.user.User;
 import hu.sch.services.UserManagerLocal;
 import hu.sch.util.PatternHolder;
+import java.util.UUID;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
@@ -60,6 +61,15 @@ public abstract class PekWebservice {
         }
     }
 
+    protected void checkUUID(final String uuid) {
+        try {
+            UUID.fromString(uuid);
+        } catch (IllegalArgumentException ex) {
+            log.error("wrong uuid in url ({})", uuid);
+            triggerErrorResponse(Response.Status.BAD_REQUEST);
+        }
+    }
+
     protected User findUserByNeptun(final String neptun) {
         final User user = userManager.findUserByNeptun(neptun, true);
 
@@ -79,6 +89,14 @@ public abstract class PekWebservice {
             triggerErrorResponse(Response.Status.NOT_FOUND);
         }
 
+        return user;
+    }
+
+    protected User findUserByAuthSchId(final String id) {
+        User user = userManager.findUserByAuthSchId(id, true);
+        if (user == null) {
+            triggerErrorResponse(Response.Status.NOT_FOUND);
+        }
         return user;
     }
 }
